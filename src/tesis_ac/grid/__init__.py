@@ -1,0 +1,1 @@
+"""Grid operations and spatial processing utilities."""

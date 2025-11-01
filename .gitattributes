@@ -1,0 +1,44 @@
+* text=auto eol=lf
+
+# Source files
+*.py text
+*.yaml text
+*.yml text
+*.json text
+*.md text
+*.rst text
+*.txt text
+*.cfg text
+*.ini text
+
+# LaTeX files
+*.tex text
+*.bib text
+*.cls text
+*.sty text
+
+# Data files (treat as binary)
+*.tif binary
+*.tiff binary
+*.geotiff binary
+*.nc binary
+*.h5 binary
+*.hdf5 binary
+*.pkl binary
+*.pickle binary
+
+# Images
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+
+# Notebooks
+*.ipynb text
