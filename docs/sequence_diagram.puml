@@ -1,0 +1,142 @@
+@startuml SequenceDiagram
+!theme plain
+
+title Satellite Image Processing Pipeline - Sequence Diagram
+
+actor User
+participant "CLI" as cli
+participant "BatchProcessor" as batch
+participant "SatelliteImagePipeline" as pipeline
+participant "FeatureExtractor" as extractor
+participant "FeaturePreprocessor" as preprocessor
+participant "SatelliteImageProcessor" as processor
+participant "ImageClusterer" as clusterer
+participant "ImageClassifier" as classifier
+participant "VisualizationEngine" as viz
+
+User -> cli : python cli.py batch data/raw --visualize
+activate cli
+
+cli -> cli : parse_arguments()
+cli -> batch : BatchProcessor(input_dir="data/raw")
+activate batch
+
+batch -> batch : discover_images()
+note right : Finds imagen_1984.png\nimagen_2003.png\nimagen_2020.png
+
+batch -> pipeline : SatelliteImagePipeline(config)
+activate pipeline
+
+loop for each image [1984, 2003, 2020]
+    batch -> pipeline : process_image(image_path)
+    
+    pipeline -> extractor : load_image(image_path)
+    activate extractor
+    extractor -> extractor : cv2.imread() + cv2.cvtColor()
+    note right : BGR to RGB conversion
+    extractor --> pipeline : RGB image array (1792x3024x3)
+    deactivate extractor
+    
+    pipeline -> extractor : extract_features(image)
+    activate extractor
+    
+    extractor -> extractor : extract_basic_features()
+    note right : RGB channels: red, green, blue\nDerived: intensity, brightness\nVariations: red_std, green_std, blue_std
+    extractor -> extractor : extract_texture_features()
+    note right : Sobel: horizontal, vertical, gradient\nAdvanced: LBP, entropy, contrast
+    extractor -> extractor : extract_spectral_indices()
+    note right : NDVI approximation\nColor spaces: LAB, HSV\nIndices: excess_green, excess_red
+    
+    extractor -> extractor : consolidate_features()
+    extractor --> pipeline : feature_matrix (5.4M pixels × 23 features)
+    deactivate extractor
+    
+    pipeline -> preprocessor : fit_transform(feature_matrix)
+    activate preprocessor
+    preprocessor -> preprocessor : StandardScaler().fit_transform()
+    preprocessor -> preprocessor : PCA(n_components=8).fit_transform()
+    note right : Reduces dimensionality\nPreserves ~96% variance
+    preprocessor --> pipeline : X_pca (5.4M × 8)
+    deactivate preprocessor
+    
+    pipeline -> processor : fit(X_pca, sample_size=5000)
+    activate processor
+    
+    processor -> clusterer : fit_predict_all(X_pca)
+    activate clusterer
+    
+    loop for n_clusters in [2, 3, 4]
+        clusterer -> clusterer : KMeans(n_clusters, random_state=42)
+        clusterer -> clusterer : fit_predict(X_pca)
+        note right : Clusters pixels by similarity\nCalculates inertia metrics
+    end
+    
+    clusterer --> processor : clustering_results
+    deactivate clusterer
+    
+    processor -> classifier : train_on_clustering_results(X_pca, clustering_results)
+    activate classifier
+    
+    loop for each clustering result
+        classifier -> classifier : sample_data(X_pca, labels, sample_size=5000)
+        classifier -> classifier : train_test_split(X_sample, y_sample, test_size=0.2)
+        classifier -> classifier : SVC(kernel='linear').fit(X_train, y_train)
+        classifier -> classifier : predict(X_test) + accuracy_score()
+        note right : SVM achieves >99% accuracy\nUses cluster labels as ground truth
+    end
+    
+    classifier --> processor : svm_models + accuracies
+    deactivate classifier
+    
+    processor --> pipeline : fitted_processor
+    deactivate processor
+    
+    pipeline -> processor : transform(X_pca, original_shape, method='all')
+    activate processor
+    processor -> processor : generate_prediction_maps()
+    processor --> pipeline : prediction_maps (K-means + SVM results)
+    deactivate processor
+    
+    pipeline -> pipeline : calculate_spectral_statistics()
+    note right : Vegetation %: NDVI > 0.1\nUrban %: high brightness\nMean NDVI, brightness
+    
+    pipeline --> batch : {year: processing_results}
+end
+
+batch -> batch : generate_batch_summary()
+note right : Consolidates all years\nCalculates temporal changes\nGenerates metadata JSON
+
+alt visualize flag enabled
+    batch -> viz : plot_temporal_comparison(all_results)
+    activate viz
+    viz -> viz : create_evolution_plots()
+    note right : Vegetation vs Urban trends\nNDVI evolution 1984→2020\nSVM accuracy by year\nNet changes bar chart
+    viz -> viz : save_temporal_comparison.png()
+    viz --> batch : temporal_plots_saved
+    deactivate viz
+    
+    loop for each year
+        batch -> viz : visualize_single_image_results(year_results)
+        activate viz
+        viz -> viz : create_analysis_plots()
+        note right : Original image + K-means maps\nSVM predictions + feature maps\nMetrics comparison
+        viz -> viz : save_analysis_{year}.png()
+        viz --> batch : year_plots_saved
+        deactivate viz
+    end
+end
+
+batch -> batch : save_batch_results()
+note right : Creates timestamped directory\nSaves JSON metadata\nOrganizes prediction maps\nStores visualizations
+
+batch --> cli : batch_processing_complete
+deactivate pipeline
+deactivate batch
+
+cli -> cli : print_summary()
+note right : Shows processing statistics:\n• Images processed: 3\n• Features extracted: 23\n• PCA variance: ~96%\n• Best SVM accuracy: >99%\n• Output directory path
+
+cli --> User : 🎉 Processing completed!\nResults in data/processed/batch_YYYYMMDD_HHMMSS/
+deactivate cli
+
+@enduml

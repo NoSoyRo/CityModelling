@@ -1,0 +1,179 @@
+@startuml ClassDiagram
+!theme plain
+
+package "tesis_ac.pipeline" {
+    
+    class FeatureExtractor {
+        - extract_full: bool
+        - feature_names: list
+        --
+        + __init__(extract_full: bool)
+        + load_image(image_path: str): np.ndarray
+        + extract_basic_features(image: np.ndarray): dict
+        + extract_texture_features(image: np.ndarray): dict  
+        + extract_spectral_indices(image: np.ndarray): dict
+        + extract_features(image: np.ndarray): tuple
+        + consolidate_features(): np.ndarray
+        + get_feature_names(): list
+    }
+    
+    class FeaturePreprocessor {
+        - scaler: StandardScaler
+        - pca: PCA
+        - n_components: int
+        - is_fitted: bool
+        --
+        + __init__(n_components: int)
+        + fit_transform(X: np.ndarray): np.ndarray
+        + transform(X: np.ndarray): np.ndarray
+        + get_explained_variance(): float
+        + get_pca_components(): np.ndarray
+        + inverse_transform(X: np.ndarray): np.ndarray
+    }
+    
+    class ImageClusterer {
+        - models: dict
+        - n_clusters_list: list
+        - random_state: int
+        - results: dict
+        --
+        + __init__(n_clusters_list: list, random_state: int)
+        + fit_predict_all(X: np.ndarray): dict
+        + predict(X: np.ndarray, n_clusters: int): np.ndarray
+        + get_cluster_metrics(): dict
+        + get_cluster_centers(n_clusters: int): np.ndarray
+        + get_best_clustering(): tuple
+    }
+    
+    class ImageClassifier {
+        - models: dict
+        - accuracies: dict
+        - svm_kernel: str
+        - random_state: int
+        --
+        + __init__(svm_kernel: str, random_state: int)
+        + train_on_clustering_results(X: np.ndarray, clustering_results: dict): dict
+        + predict(X: np.ndarray, model_key: str): np.ndarray
+        + get_classification_metrics(): dict
+        + get_best_model(): tuple
+        + evaluate_model(model, X_test, y_test): float
+    }
+    
+    class SatelliteImageProcessor {
+        - clusterer: ImageClusterer
+        - classifier: ImageClassifier
+        - n_clusters_list: list
+        - svm_kernel: str
+        - random_state: int
+        --
+        + __init__(n_clusters_list: list, svm_kernel: str, random_state: int)
+        + fit(X: np.ndarray, sample_size: int): void
+        + transform(X: np.ndarray, original_shape: tuple, method: str): dict
+        + fit_transform(X: np.ndarray, original_shape: tuple): dict
+        + get_metrics(): dict
+    }
+    
+    class SatelliteImagePipeline {
+        - feature_extractor: FeatureExtractor
+        - preprocessor: FeaturePreprocessor
+        - processor: SatelliteImageProcessor
+        - n_clusters_list: list
+        - n_pca_components: int
+        - extract_full_features: bool
+        - svm_kernel: str
+        - random_state: int
+        - is_fitted: bool
+        --
+        + __init__(n_clusters_list: list, n_pca_components: int, ...)
+        + process_image(image_path: str, sample_size: int): SatelliteImagePipeline
+        + process_multiple_images(image_paths: dict, sample_size: int): dict
+        + get_summary(): dict
+        + save_results(output_dir: str, save_models: bool): str
+        + load_results(results_dir: str): SatelliteImagePipeline
+    }
+    
+    class VisualizationEngine {
+        --
+        + visualize_single_image_results(pipeline: SatelliteImagePipeline, output_path: str): void
+        + visualize_batch_results(results: dict, output_path: str): void
+        + plot_temporal_comparison(results: dict, output_path: str): void
+        + create_prediction_map_grid(results: dict): Figure
+        + plot_feature_importance(pca_components: np.ndarray, feature_names: list): Figure
+        + plot_clustering_metrics(metrics: dict): Figure
+    }
+    
+    class BatchProcessor {
+        - pipeline: SatelliteImagePipeline
+        - input_dir: str
+        - output_dir: str
+        - image_paths: dict
+        --
+        + __init__(input_dir: str, config: dict)
+        + discover_images(): dict
+        + process_all_images(): dict
+        + generate_batch_summary(): dict
+        + create_temporal_analysis(): dict
+        + save_batch_results(): void
+    }
+}
+
+package "External Dependencies" {
+    class "scikit-learn" as sklearn {
+        StandardScaler
+        PCA
+        KMeans
+        SVC
+        train_test_split
+        accuracy_score
+    }
+    
+    class "scikit-image" as skimage {
+        filters.sobel_h()
+        filters.sobel_v()
+        feature.local_binary_pattern()
+        filters.rank.entropy()
+        color.rgb2lab()
+        color.rgb2hsv()
+    }
+    
+    class "OpenCV" as cv2 {
+        imread()
+        cvtColor()
+        COLOR_BGR2RGB
+        COLOR_RGB2GRAY
+    }
+    
+    class "matplotlib" as plt {
+        pyplot
+        figure()
+        subplot()
+        imshow()
+        savefig()
+    }
+}
+
+' Composition relationships
+SatelliteImageProcessor *-- ImageClusterer
+SatelliteImageProcessor *-- ImageClassifier
+
+SatelliteImagePipeline *-- FeatureExtractor
+SatelliteImagePipeline *-- FeaturePreprocessor
+SatelliteImagePipeline *-- SatelliteImageProcessor
+
+BatchProcessor *-- SatelliteImagePipeline
+
+' Usage relationships
+FeatureExtractor ..> cv2 : uses
+FeatureExtractor ..> skimage : uses
+FeaturePreprocessor ..> sklearn : uses
+ImageClusterer ..> sklearn : uses
+ImageClassifier ..> sklearn : uses
+VisualizationEngine ..> plt : uses
+
+' Notes
+note right of FeatureExtractor : Extracts 23 features:\n8 basic RGB features\n6 texture features\n9 spectral indices
+note right of FeaturePreprocessor : StandardScaler + PCA\nReduces to 8 components\n~96% variance explained
+note right of ImageClusterer : K-Means clustering\nTests 2, 3, 4 clusters\nSelects best by inertia
+note right of ImageClassifier : SVM classification\nUses clustering as ground truth\n>99% accuracy achieved
+
+@enduml
