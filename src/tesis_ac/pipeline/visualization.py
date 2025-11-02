@@ -6,6 +6,8 @@ create comparison plots, and generate publication-ready figures.
 """
 
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # Use non-interactive backend
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
@@ -162,7 +164,7 @@ def create_comprehensive_comparison(image: np.ndarray,
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Comprehensive comparison saved to: {save_path}")
     
-    plt.show()
+    plt.close()  # Close the figure to free memory
 
 
 def visualize_single_image_results(image: np.ndarray, 
@@ -242,7 +244,8 @@ def visualize_single_image_results(image: np.ndarray,
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Figure saved to: {save_path}")
     
-    plt.show()
+    # Close the figure to free memory
+    plt.close()
 
 
 def plot_metrics_comparison(metrics: Dict, 
@@ -308,7 +311,8 @@ def plot_metrics_comparison(metrics: Dict,
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Metrics plot saved to: {save_path}")
     
-    plt.show()
+    # Close the figure to free memory
+    plt.close()
 
 
 def plot_temporal_comparison(batch_results: Dict[str, Dict],
@@ -444,7 +448,8 @@ def plot_temporal_comparison(batch_results: Dict[str, Dict],
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Temporal comparison saved to: {save_path}")
     
-    plt.show()
+    # Close the figure to free memory
+    plt.close()
 
 
 def create_prediction_map_grid(prediction_maps: Dict[str, np.ndarray],
@@ -516,7 +521,8 @@ def create_prediction_map_grid(prediction_maps: Dict[str, np.ndarray],
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Prediction maps grid saved to: {save_path}")
     
-    plt.show()
+    # Close the figure to free memory
+    plt.close()
 
 
 def plot_feature_importance(feature_names: List[str], 
@@ -563,4 +569,5 @@ def plot_feature_importance(feature_names: List[str],
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
         logger.info(f"Feature importance plot saved to: {save_path}")
     
-    plt.show()
+    # Close the figure to free memory
+    plt.close()
