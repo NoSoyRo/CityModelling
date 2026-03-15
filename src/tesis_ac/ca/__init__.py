@@ -1,1 +1,1 @@
-"""Cellular Automaton simulation utilities."""
+"""Utilidades para simulación de Autómatas Celulares."""

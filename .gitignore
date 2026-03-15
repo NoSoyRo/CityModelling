@@ -143,18 +143,33 @@ figs/*
 !figs/.gitkeep
 
 # LaTeX build files
-docs/**/*.aux
-docs/**/*.bbl
-docs/**/*.blg
-docs/**/*.fdb_latexmk
-docs/**/*.fls
-docs/**/*.log
-docs/**/*.out
-docs/**/*.synctex.gz
-docs/**/*.toc
-docs/**/*.nav
-docs/**/*.snm
-docs/**/*.vrb
+**/*.aux
+**/*.bbl
+**/*.blg
+**/*.fdb_latexmk
+**/*.fls
+**/*.log
+**/*.out
+**/*.synctex.gz
+**/*.toc
+**/*.nav
+**/*.snm
+**/*.vrb
+**/*.run.xml
+**/*.bcf
+**/*.blg
+**/*.idx
+**/*.ind
+**/*.ilg
+
+# Latexmk / biber fallbacks
+**/*.bbl-SAVE-ERROR
+**/*.bcf-SAVE-ERROR
+
+# Output logs/caches that tend to be generated locally
+pipeline_output.log
+validation_output.log
+compile_output.txt
 
 # VS Code
 .vscode/
@@ -169,3 +184,6 @@ docs/**/*.vrb
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Large archives (exceed GitHub 100MB limit)
+report/tesis/*.zip

@@ -1,1 +1,1 @@
-"""Weight of Evidence (WoE) calculation utilities."""
+"""Utilidades para cálculo de Weight of Evidence (WoE)."""

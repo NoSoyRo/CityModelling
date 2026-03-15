@@ -1,0 +1,292 @@
+%=========== caps_larraga/main.tex ===========
+% Main independiente para el nuevo índice (Lárraga)
+% Compilar desde esta carpeta: report/tesis/tesis_indice_nuevo/caps_larraga
+
+\documentclass[12pt,oneside,openright]{book}
+
+% ---- Configuración de página y márgenes ----
+\usepackage[
+    left=3cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    includeheadfoot,
+    headheight=15pt
+]{geometry}
+
+% ---- Paquetes básicos ----
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{csquotes}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{microtype}
+
+% ---- Índice analítico (makeindex) ----
+\usepackage{makeidx}
+\makeindex
+
+% ---- Fuentes y tipografía avanzada ----
+\usepackage{lmodern}
+\usepackage{libertine}
+\usepackage[libertine]{newtxmath}
+\usepackage[scaled=0.85]{beramono}
+
+% ---- Paquetes para código y tablas avanzadas ----
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{longtable}
+\usepackage{ltxtable}
+
+% ---- Paquetes para TikZ y gráficos ----
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pgf-pie}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+
+% ---- Espaciado y listas ----
+\usepackage{enumitem}
+\usepackage{setspace}
+\linespread{1.15}
+\setlength{\parskip}{4pt}
+\setlength{\itemsep}{1pt}
+\setlength{\parsep}{2pt}
+
+% ---- Paquetes para algoritmos ----
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{subcaption}
+
+% ---- Comandos personalizados ----
+% Nota: el archivo vive en report/tesis/book/. Cargamos el .sty con ruta explícita
+% y dejamos un fallback por si compilas desde otra raíz.
+\IfFileExists{report/tesis/book/thesis-commands.sty}{%
+    \usepackage{report/tesis/book/thesis-commands}%
+}{%
+    \usepackage{thesis-commands}%
+}
+
+% ---- Configuración adicional de espaciado ----
+\setlist[itemize]{itemsep=1pt,parsep=1pt,topsep=3pt,partopsep=1pt}
+\setlist[enumerate]{itemsep=1pt,parsep=1pt,topsep=3pt,partopsep=1pt}
+\setlist[description]{itemsep=1pt,parsep=1pt,topsep=3pt,partopsep=1pt}
+
+\setlength{\textfloatsep}{8pt plus 1pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 1pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
+% ---- Definición de colores corporativos ----
+\definecolor{ThesisBlue}{RGB}{28,69,135}
+\definecolor{ThesisGray}{RGB}{64,64,64}
+\definecolor{ThesisLightGray}{RGB}{240,240,240}
+\definecolor{ThesisGreen}{RGB}{34,139,34}
+\definecolor{ThesisRed}{RGB}{178,34,34}
+
+% ---- Configuración avanzada de listings ----
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{ThesisBlue}\bfseries,
+    commentstyle=\color{ThesisGreen}\itshape,
+    stringstyle=\color{ThesisRed},
+    numberstyle=\tiny\color{ThesisGray},
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    numbers=left,
+    stepnumber=1,
+    numbersep=10pt,
+    frame=tb,
+    framerule=0.8pt,
+    rulecolor=\color{ThesisBlue},
+    backgroundcolor=\color{ThesisLightGray},
+    captionpos=b,
+    aboveskip=20pt,
+    belowskip=20pt,
+    xleftmargin=20pt,
+    xrightmargin=10pt,
+    tabsize=4,
+    columns=flexible,
+    escapeinside={(*@}{@*)},
+    morekeywords={self,def,class,import,from,as,return,None,True,False},
+    showspaces=false,
+    showtabs=false,
+    extendedchars=true,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'\i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+}
+
+% ---- Configuración adicional para JSON ----
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{gray!10},
+    string=[s]{"}{"},
+    stringstyle=\color{blue},
+    comment=[l]{//},
+    commentstyle=\color{gray},
+    morecomment=[s]{/*}{*/}
+}
+
+% ---- Bibliografía en APA con biblatex ----
+\usepackage[
+    backend=biber,
+    style=apa,
+    sortcites=true,
+    sorting=nyt,
+    doi=true,
+    isbn=false,
+    url=true,
+    eprint=false
+]{biblatex}
+
+\DeclareLanguageMapping{spanish}{spanish-apa}
+% Ruta al .bib original (ref 1)
+\addbibresource{../back/referencias.bib}
+
+% Alias compatibilidad con natbib (algunos capítulos usan \citep, \citet)
+\providecommand{\citep}{\parencite}
+\providecommand{\citet}{\textcite}
+\providecommand{\citealp}{\cite}
+\providecommand{\citealt}{\cite}
+
+% ---- Headers y footers elegantes ----
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[C]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+% ---- Configuración de enlaces ----
+\hypersetup{
+    colorlinks=true,
+    linkcolor=ThesisBlue,
+    citecolor=ThesisBlue,
+    urlcolor=ThesisBlue,
+    filecolor=ThesisBlue,
+    pdfborder={0 0 0},
+    pdftitle={Modelado Evolutivo del Crecimiento Urbano},
+    pdfauthor={Rodrigo Moreno López},
+    pdfsubject={Tesis de Maestría - Autómatas Celulares.},
+    pdfkeywords={AutomatasCelulares,AlgoritmosGeneticos,CrecimientoUrbano,MachineLearning}
+}
+
+% ---- Diseño de capítulos y secciones ----
+\usepackage{sectsty}
+\chapterfont{\color{ThesisBlue}\Huge\bfseries}
+\sectionfont{\color{ThesisBlue}\Large\bfseries}
+\subsectionfont{\color{ThesisGray}\large\bfseries}
+\subsubsectionfont{\color{ThesisGray}\normalsize\bfseries}
+
+\usepackage[compact]{titlesec}
+\titlespacing{\chapter}{0pt}{10pt}{15pt}
+\titlespacing{\section}{0pt}{8pt}{4pt}
+\titlespacing{\subsection}{0pt}{6pt}{3pt}
+\titlespacing{\subsubsection}{0pt}{4pt}{2pt}
+
+% ===================== DOCUMENT =====================
+\begin{document}
+
+% ---- Portada (copiada de ref 1) ----
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+
+    {\LARGE\bfseries UNIVERSIDAD [NOMBRE]}\\[0.5cm]
+    {\large Facultad de [NOMBRE]}\\[0.3cm]
+    {\large Programa de Maestría en Ciencias de la Computación}\\[2cm]
+
+    \rule{\linewidth}{0.5mm}\\[0.4cm]
+    {\huge\bfseries\color{ThesisBlue} MODELADO EVOLUTIVO DEL\\[0.2cm] CRECIMIENTO URBANO}\\[0.5cm]
+    {\Large\color{ThesisGray} Integración de Autómatas Celulares y Weight of Evidence\\
+    para el Análisis Temporal de Querétaro, México (1984-2020)}\\[0.4cm]
+    \rule{\linewidth}{0.5mm}\\[2cm]
+
+    {\Large\textbf{Tesis de Maestría}}\\[1cm]
+
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushleft}
+            \textbf{Presentada por:}\\
+            José Rodrigo Moreno López
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.4\textwidth}
+        \begin{flushright}
+            \textbf{Asesora:}\\
+            Maria Elena Lárraga
+        \end{flushright}
+    \end{minipage}
+
+    \vfill
+
+    {\large México}\\
+    {\large \today}
+\end{titlepage}
+
+\cleardoublepage
+
+% ---- Tabla de contenidos ----
+\frontmatter
+\setcounter{tocdepth}{2}
+\tableofcontents
+\cleardoublepage
+
+\listoffigures
+\cleardoublepage
+
+\listoftables
+\cleardoublepage
+
+% ---- Contenido principal ----
+\mainmatter
+
+% Índice de Lárraga (6 capítulos)
+\input{cap01_introduccion}
+\input{cap02_marco_teorico}
+\input{cap03_area_estudio}
+\input{cap04_modelo_crecimiento_urbano}
+\input{cap05_resultados_analisis}
+\input{cap06_conclusiones}
+
+% ---- Material final ----
+\backmatter
+
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+
+% Índice analítico
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Índice}
+\printindex
+
+\end{document}

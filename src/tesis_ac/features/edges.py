@@ -1,4 +1,4 @@
-"""Edge detection using Sobel and gradient operators."""
+"""Detección de bordes usando Sobel y operadores de gradiente."""
 
 import logging
 from typing import Tuple
@@ -11,21 +11,23 @@ logger = logging.getLogger(__name__)
 
 
 def compute_sobel_mag_and_dir(image: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """Compute Sobel magnitude and direction for an image.
-    
-    Args:
-        image: Input image array with shape (H, W, C) or (H, W).
-        
-    Returns:
-        Tuple of (magnitude, direction) arrays with same spatial dimensions.
-        For RGB input (H, W, C) -> (H, W, C), (H, W, C)
-        For grayscale (H, W) -> (H, W), (H, W)
-        
-    Example:
+    """Computa magnitud y dirección del gradiente con el operador Sobel.
+
+    Argumentos:
+        image: Imagen de entrada con shape ``(H, W, C)`` o ``(H, W)``.
+
+    Retorna:
+        Tupla ``(magnitude, direction)`` con las mismas dimensiones espaciales.
+
+        - Entrada RGB ``(H, W, C)`` -> salidas ``(H, W, C)`` y ``(H, W, C)``.
+        - Entrada en escala de grises ``(H, W)`` -> salidas ``(H, W)`` y ``(H, W)``.
+
+    Ejemplo:
         >>> import numpy as np
         >>> img = np.random.rand(100, 100, 3)
-        >>> mag, dir = compute_sobel_mag_and_dir(img)
-        >>> print(mag.shape, dir.shape)  # (100, 100, 3) (100, 100, 3)
+        >>> mag, dir_ = compute_sobel_mag_and_dir(img)
+        >>> mag.shape == dir_.shape  # doctest: +SKIP
+        True
     """
     if image.ndim == 2:
         # Grayscale image
@@ -59,13 +61,13 @@ def compute_sobel_mag_and_dir(image: np.ndarray) -> Tuple[np.ndarray, np.ndarray
 
 
 def compute_gradient_magnitude(image: np.ndarray) -> np.ndarray:
-    """Compute gradient magnitude using Sobel operator.
-    
-    Args:
-        image: Input image array with shape (H, W, C) or (H, W).
-        
-    Returns:
-        Gradient magnitude with same spatial dimensions as input.
+    """Computa la magnitud del gradiente usando el operador Sobel.
+
+    Argumentos:
+        image: Imagen de entrada con shape ``(H, W, C)`` o ``(H, W)``.
+
+    Retorna:
+        Magnitud del gradiente con la misma forma espacial que la entrada.
     """
     if image.ndim == 2:
         return sobel(image).astype(np.float32)
@@ -88,15 +90,18 @@ def compute_edge_density(
     threshold: float = 0.1,
     window_size: int = 5
 ) -> np.ndarray:
-    """Compute local edge density from gradient magnitude.
-    
-    Args:
-        magnitude: Gradient magnitude array.
-        threshold: Threshold for edge detection.
-        window_size: Size of local window for density computation.
-        
-    Returns:
-        Edge density map.
+    """Computa densidad local de bordes a partir de la magnitud del gradiente.
+
+    Se umbraliza la magnitud para obtener un mapa binario de bordes y luego se
+    calcula una densidad local con un filtro uniforme.
+
+    Argumentos:
+        magnitude: Array de magnitud del gradiente.
+        threshold: Umbral para detectar bordes.
+        window_size: Tamaño de la ventana local para la densidad.
+
+    Retorna:
+        Mapa de densidad de bordes.
     """
     # Threshold to get binary edge map
     edges = magnitude > threshold
@@ -122,14 +127,17 @@ def compute_edge_density(
 
 
 def normalize_gradients(magnitude: np.ndarray, direction: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    """Normalize gradient magnitude and direction.
-    
-    Args:
-        magnitude: Gradient magnitude array.
-        direction: Gradient direction array (in radians).
-        
-    Returns:
-        Tuple of normalized (magnitude, direction).
+    """Normaliza magnitud y dirección del gradiente.
+
+    - Magnitud: se escala a $[0, 1]$.
+    - Dirección: se mapea de $[-\pi, \pi]$ a $[0, 1]$.
+
+    Argumentos:
+        magnitude: Magnitud del gradiente.
+        direction: Dirección del gradiente (radianes).
+
+    Retorna:
+        Tupla ``(magnitude_norm, direction_norm)``.
     """
     # Normalize magnitude to [0, 1]
     mag_min, mag_max = magnitude.min(), magnitude.max()
@@ -145,14 +153,15 @@ def normalize_gradients(magnitude: np.ndarray, direction: np.ndarray) -> Tuple[n
 
 
 def compute_edge_statistics(magnitude: np.ndarray, direction: np.ndarray) -> dict:
-    """Compute statistics of edge features.
-    
-    Args:
-        magnitude: Gradient magnitude array.
-        direction: Gradient direction array.
-        
-    Returns:
-        Dictionary with edge statistics.
+    """Calcula estadísticas descriptivas de características de borde.
+
+    Argumentos:
+        magnitude: Magnitud del gradiente.
+        direction: Dirección del gradiente.
+
+    Retorna:
+        Diccionario con estadísticas de magnitud/dirección y conteos simples de
+        bordes fuertes/débiles.
     """
     stats = {
         'magnitude': {

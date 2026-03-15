@@ -1,1 +1,1 @@
-"""Feature extraction utilities."""
+"""Utilidades para extracción de características."""

@@ -1,0 +1,227 @@
+% Capítulo 6. Conclusiones
+% Estructura según índice de la Dra. Lárraga.
+
+\chapter{Conclusiones}
+\label{ch:conclusiones}
+
+\begin{resumen}
+Este capítulo sintetiza los hallazgos de la investigación, discute las implicaciones para la planificación urbana, identifica las limitaciones del modelo y propone direcciones de trabajo futuro. Se presentan las respuestas a las preguntas de investigación, la validación de hipótesis y las contribuciones originales al campo del modelado urbano, a la luz de los resultados de la validación quinquenal múltiple (cinco períodos, 2011--2020).
+\end{resumen}
+
+% ============================================================
+\section{Principales hallazgos}
+% ============================================================
+
+\subsection{Síntesis de la investigación}
+
+Esta investigación abordó el desafío de modelar el crecimiento urbano de Querétaro (1984--2020) mediante la integración de tres metodologías complementarias: \textbf{Weight of Evidence (WoE)} para cuantificar empíricamente la evidencia espacial, \textbf{Autómatas Celulares (AC)} para simular dinámicas espaciales locales, y una estrategia de \textbf{calibración sistemática} para ajuste de parámetros. La validación quinquenal múltiple sobre cinco períodos independientes (2011→2016, 2012→2017, 2013→2018, 2014→2019, 2015→2020) demostró que la metodología WoE-AC:
+
+\begin{itemize}
+	\item Clasifica automáticamente 37 imágenes satelitales (1984--2020) en mapas binarios urbano/no-urbano con precisión interna superior al 99\%.
+	\item Cuantifica empíricamente la evidencia espacial a partir de transiciones históricas observadas en 26 años de datos (1984--2010).
+	\item Logra un \textbf{FoM promedio de 0.317} sobre cinco períodos de validación independientes, superando el rango típico de CA-Markov (0.10--0.30) con un único predictor espacial.
+	\item Reproduce los patrones de expansión urbana con Accuracy promedio de 72.2\%, Kappa promedio de 0.445 y similitud morfológica global $>$95\%, capturando el mecanismo de difusión/contagio espacial con alta fidelidad.
+\end{itemize}
+
+\subsection{Respuestas a las preguntas de investigación}
+
+\subsubsection{P1: Mejora mediante optimización evolutiva}
+
+La calibración sistemática de parámetros del AC mediante grid search logró una mejora de 15-20\% en FoM respecto a parámetros heurísticos no calibrados. La integración de WoE como función de transición probabilística supera enfoques de regresión logística estática al capturar no-linealidades empíricas en la relación vecindad-urbanización.
+
+\subsubsection{P2: Configuración óptima de parámetros}
+
+La configuración (umbral=0.75, $\alpha$=0.50, peso$_{\text{distancia}}$=1.963) produjo la mejor concordancia generalizada en los cinco períodos de validación independientes, logrando FoM promedio de 0.317 y Kappa promedio de 0.445 sin reentrenamiento por período.
+
+\subsubsection{P3: Variables con mayor influencia}
+
+El análisis de la tabla WoE confirma que la \textbf{densidad de vecindad urbana} ($\rho_{neighborhood}$) es el predictor dominante del crecimiento urbano de Querétaro. El WoE varía monotónicamente desde $-1.342$ (vecindad$\approx$0) hasta $+5.098$ (vecindad$\approx$1), validando la teoría de difusión por contagio espacial.
+
+\subsubsection{P4: Robustez temporal del modelo}
+
+El modelo es robusto en métricas morfológicas (similitud FRAGSTATS $>$95\%, Moran's I similarity = 98\%) a través de los cinco períodos evaluados. El FoM varía entre 0.222 y 0.378 según la dinámica de crecimiento observada en cada período, con los mejores resultados en condiciones de crecimiento real positivo sostenido (2012→2017, 2013→2018, 2015→2020).
+
+\subsection{Validación de hipótesis}
+
+\begin{table}[htbp]
+\centering
+\caption{Resumen de validación de hipótesis}
+\label{tab:hypothesis_validation}
+\begin{tabular}{lp{5.5cm}lp{3cm}}
+\toprule
+\textbf{Hip.} & \textbf{Enunciado (resumido)} & \textbf{Estado} & \textbf{Evidencia} \\
+\midrule
+H1 & Modelo integrado supera CA-Markov en FoM & Confirmada & FoM prom. = 0.317 $>$ 0.25 \\
+H2 & Calibración mejora $>$15\% sobre heurísticos & Confirmada & $+$15-20\% en FoM \\
+H3 & WoE empírico supera pesos heurísticos & Confirmada & WoE captura no-linealidades \\
+H4 & Robustez morfológica $>$95\% en 5 años & Confirmada & FRAGSTATS sim. = 95.7\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Contribuciones originales}
+
+\begin{enumerate}
+	\item \textbf{Framework WoE-AC integrado}: Primera implementación en el contexto mexicano que combina WoE como función de transición dinámica en AC urbanos, superando enfoques estáticos de regresión logística.
+
+	\item \textbf{Protocolo de validación morfológica}: Aplicación de métricas FRAGSTATS y Moran's I para evaluar fidelidad de patrones espaciales más allá de métricas pixel-based (FoM, Kappa), demostrando que el modelo supera percentil 95 en similitud morfológica.
+
+	\item \textbf{Pipeline reproducible end-to-end}: Sistema modular open-source que transforma imágenes satelitales RGB en proyecciones de crecimiento urbano, desde clasificación no supervisada hasta simulación AC y evaluación cuantitativa.
+
+	\item \textbf{Dataset histórico de Querétaro}: Serie temporal procesada de 37 años (1984-2020) de mapas binarios urbano/no-urbano, disponible para la comunidad investigadora.
+
+	\item \textbf{Análisis bibliométrico con métricas avanzadas}: Primer posicionamiento del modelo WoE-AC en el contexto latinoamericano comparando más de 30 métricas en 7 categorías contra 5 estudios internacionales de referencia.
+\end{enumerate}
+
+% ============================================================
+\section{Implicaciones para la planificación urbana}
+% ============================================================
+
+\subsection{Herramientas para decisión informada}
+
+Los resultados demuestran aplicabilidad directa en planificación urbana metropolitana. El modelo puede utilizarse para:
+
+\begin{enumerate}
+	\item \textbf{Provisión anticipada de infraestructura}: Identificar zonas de alta probabilidad de urbanización futura ($\rho_{neighborhood}$ elevado) para extender redes de agua, drenaje y electricidad antes de la demanda.
+
+	\item \textbf{Reserva de suelo para espacios públicos}: Adquirir terrenos en áreas pre-urbanización para parques, equipamiento comunitario y zonas de amortiguamiento ambiental.
+
+	\item \textbf{Zonificación proactiva}: Definir usos de suelo permitidos antes de que la presión inmobiliaria haga inviable la planificación reactiva.
+
+	\item \textbf{Evaluación de impacto ambiental}: Identificar áreas ecológicamente sensibles en la trayectoria de expansión urbana proyectada.
+\end{enumerate}
+
+\subsection{Escenarios de política pública}
+
+La flexibilidad del modelo permite simular el impacto de diferentes intervenciones de política urbana. A partir del estado calibrado (2014-2020), se pueden proyectar escenarios alternativos ajustando los parámetros del AC:
+
+\begin{table}[htbp]
+\centering
+\caption{Escenarios de política pública simulables con el modelo WoE-AC}
+\label{tab:policy_scenarios}
+\begin{tabular}{lp{6cm}l}
+\toprule
+\textbf{Política} & \textbf{Implementación en el modelo} & \textbf{Efecto esperado} \\
+\midrule
+Tendencial (BAU) & Sin cambios de parámetros & Referencia \\
+Densificación & Aumentar peso WoE en zonas intraurbanas & $-8$ a $-10\%$ de sprawl \\
+Contención urbana & Reducir probabilidad de transición en anillo exterior & $-11$ a $-15\%$ de sprawl \\
+Corredores TOD & Amplificar probabilidad a lo largo de ejes BRT & Crecimiento dirigido \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Accesibilidad computacional}
+
+Una ventaja significativa del modelo WoE-AC respecto a enfoques de Deep Learning es la eficiencia computacional: el pipeline completo (clasificación + WoE + simulación + validación) se ejecuta en $\sim$3 horas en CPU estándar (MacBook Pro M1), sin requerir GPU. Esto hace la herramienta accesible para municipios con recursos computacionales limitados.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparación WoE-AC vs.\ Deep Learning para planificación urbana}
+\label{tab:dl_comparison}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Criterio} & \textbf{WoE-AC (este trabajo)} & \textbf{Deep Learning} \\
+\midrule
+FoM (desempeño pixel) & 0.317 promedio (5 períodos) & 0.20--0.30 \\
+Similitud morfológica & $>$95\% & 75--90\% típico \\
+Datos requeridos & 3-5 timesteps & 10-20 timesteps \\
+Tiempo de entrenamiento & $\sim$3 horas (CPU) & 8-12 horas (GPU) \\
+Interpretabilidad & Alta (pesos WoE explicables) & Baja (caja negra) \\
+Hardware requerido & CPU estándar & GPU NVIDIA recomendada \\
+Transferibilidad & Alta (con fine-tuning WoE) & Moderada \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Relevancia para ciudades intermedias mexicanas}
+
+Los hallazgos son directamente aplicables a ciudades mexicanas con características similares a Querétaro: población entre 500{,}000 y 2{,}000{,}000 habitantes, economía industrial-servicios, tasa de crecimiento de 2-4\% anual, y topografía de valle. Ciudades candidatas incluyen León, Aguascalientes, San Luis Potosí, Saltillo y Hermosillo.
+
+El protocolo de aplicación requiere: (1) imágenes Landsat 1980-2020 de Google Earth Engine, (2) clasificación binaria urbano/no-urbano, (3) cálculo de WoE con transiciones históricas locales, (4) calibración de parámetros con datos del área objetivo, y (5) simulación y evaluación con métricas estándar. El costo computacional total es inferior a una semana de cómputo en hardware modesto.
+
+% ============================================================
+\section{Limitaciones del modelo}
+% ============================================================
+
+\subsection{Limitaciones conceptuales}
+
+\begin{enumerate}
+	\item \textbf{Estados binarios}: La clasificación urbano/no-urbano no captura la diversidad de usos urbanos (residencial, comercial, industrial, servicios). Esta simplificación facilita el modelado pero excluye dinámicas de cambio de uso intraurbano.
+
+	\item \textbf{Vecindario estático}: El vecindario de Moore ($3 \times 3$ píxeles) captura interacciones locales pero puede ser insuficiente para modelar influencias de largo alcance como distancia a centros de empleo o nodos de transporte.
+
+	\item \textbf{Ausencia de retroalimentación dinámica}: Las variables explicativas (densidad de vecindad) no se actualizan durante la simulación en respuesta al crecimiento predicho, reduciendo el realismo en simulaciones de largo plazo.
+
+	\item \textbf{Asunción de estacionariedad}: Las relaciones WoE calibradas en 1984-2014 se asumen válidas en el período de validación, lo que puede violarse ante transformaciones económicas o políticas disruptivas.
+\end{enumerate}
+
+\subsection{Limitaciones empíricas}
+
+\begin{enumerate}
+	\item \textbf{Calidad de datos}: La clasificación no supervisada (K-means + SVM) genera errores de clasificación ($\sim$1\% por imagen, $\sim$54{,}000 píxeles) que se propagan al cálculo WoE y se amplifican en la simulación AC.
+
+	\item \textbf{Resolución espectral}: Las imágenes contienen únicamente bandas RGB, sin información infrarroja. El índice de vegetación aproximado $(G-R)/(G+R)$ es menos discriminativo que el NDVI real $(NIR-R)/(NIR+R)$.
+
+	\item \textbf{Variable única}: El modelo actual usa exclusivamente densidad de vecindad urbana como predictor, omitiendo variables potencialmente relevantes como distancia a vialidades, pendiente topográfica, zonificación oficial y variables socioeconómicas.
+
+	\item \textbf{Crecimiento disperso no modelado}: El mecanismo de difusión por vecindad no captura el desarrollo tipo leapfrog (saltos discontinuos de urbanización), que representa una fracción significativa del crecimiento real observado.
+\end{enumerate}
+
+\subsection{Limitaciones de transferibilidad}
+
+\begin{enumerate}
+	\item \textbf{Especificidad contextual}: Los pesos WoE son específicos al patrón histórico de Querétaro y requieren recalibración para su aplicación en otras ciudades.
+
+	\item \textbf{Dependencia de resolución}: Los resultados son específicos a $\sim$30 m/píxel (resolución Landsat); otras resoluciones requerirán re-evaluación metodológica.
+
+	\item \textbf{Horizonte temporal}: La aplicabilidad del modelo para horizontes $>$15 años es incierta sin recalibración periódica, dado que las dinámicas urbanas pueden cambiar estructuralmente.
+\end{enumerate}
+
+\subsection{Trabajo futuro}
+
+Con base en las limitaciones identificadas, se proponen las siguientes extensiones prioritarias:
+
+\subsubsection{Corto plazo (1-2 años)}
+
+\begin{enumerate}
+	\item \textbf{Variables adicionales}: Incorporar distancia a vialidades principales, distancia a centros de empleo y pendiente topográfica mediante análisis WoE multi-variable.
+	\item \textbf{Optimización AG}: Implementar el algoritmo genético completo para calibración automática de parámetros, explorando sistemáticamente el espacio de soluciones.
+	\item \textbf{Validación en más ciudades}: Aplicar la metodología a Aguascalientes, León y San Luis Potosí para evaluar transferibilidad geográfica.
+\end{enumerate}
+
+\subsubsection{Mediano plazo (3-5 años)}
+
+\begin{enumerate}
+	\item \textbf{WoE temporal}: Desarrollar pesos que evolucionan dinámicamente para capturar cambios en las dinámicas de crecimiento a lo largo del tiempo.
+	\item \textbf{Integración multi-escala}: Acoplar el modelo AC con modelos económicos regionales que proporcionen demanda agregada de urbanización.
+	\item \textbf{Datos de movilidad}: Incorporar patrones de origen-destino de viajes (disponibles vía telefonía móvil) como variable explicativa.
+	\item \textbf{AG multiobjetivo}: Optimizar simultáneamente FoM (precisión), similitud morfológica y compacidad urbana (sostenibilidad).
+\end{enumerate}
+
+\subsubsection{Largo plazo (5-10 años)}
+
+\begin{enumerate}
+	\item \textbf{Integración con cambio climático}: Adaptar el modelo para incorporar escenarios de cambio climático (temperatura, precipitación) como restricciones o drivers de urbanización.
+	\item \textbf{Transfer learning}: Desarrollar pre-entrenamiento en múltiples ciudades para reducir los datos requeridos en nuevas aplicaciones.
+	\item \textbf{Estándares de validación}: Promover el uso de métricas avanzadas (FRAGSTATS, Moran's I, Fuzzy Accuracy) como estándar en la comunidad de modelado urbano.
+\end{enumerate}
+
+\section{Mensaje central}
+
+El mensaje central de esta investigación es que \textbf{la parsimonia metodológica, respaldada por evidencia empírica robusta y validación en múltiples períodos independientes, puede ser más valiosa que la complejidad para la planificación urbana práctica}.
+
+El modelo WoE-AC demuestra que es posible:
+\begin{itemize}
+	\item Lograr un FoM promedio de 0.317 sobre cinco períodos quinquenales independientes, superando el rango de CA-Markov de la literatura, con un único predictor espacial y datos de acceso libre.
+	\item Capturar el mecanismo de difusión/contagio espacial con fidelidad morfológica $>$95\% (similitud FRAGSTATS, Moran's I = 98\%), sin requerir variables socioeconómicas ni hardware especializado.
+	\item Proporcionar herramientas interpretables y reproducibles para municipios con recursos limitados, donde las ``cajas negras'' de Machine Learning son inviables operativamente.
+\end{itemize}
+
+La complejidad de los sistemas urbanos no debe venir a expensas de la interpretabilidad y la aplicabilidad práctica. Este trabajo establece una base sólida para herramientas de modelado urbano que sean simultáneamente rigurosas, avanzadas, aplicables y eficientes computacionalmente.
+
+\section{Palabras finales}
+
+El crecimiento urbano continuado y la urgencia de la planificación sostenible hacen que el desarrollo de herramientas predictivas precisas sea más importante que nunca. Esta investigación representa un paso hacia modelos más robustos y aplicables para ciudades intermedias mexicanas, contribuyendo directamente a los Objetivos de Desarrollo Sostenible 11 (Ciudades y Comunidades Sostenibles), 13 (Acción climática) y 15 (Vida terrestre).
+
+La metodología desarrollada no es un fin en sí misma, sino una base sobre la cual construir herramientas cada vez más sofisticadas para entender y planificar el crecimiento de nuestras ciudades en un mundo en constante cambio.

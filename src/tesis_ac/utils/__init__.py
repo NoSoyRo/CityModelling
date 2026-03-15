@@ -1,1 +1,1 @@
-"""General utilities."""
+"""Utilidades generales compartidas por el pipeline."""

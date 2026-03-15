@@ -27,44 +27,35 @@ def stack_features(
     include_sobel: bool = True,
     sobel_combine_method: str = 'magnitude_only'
 ) -> np.ndarray:
-    """
-    Combina características RGB, LBP y Sobel en un vector unificado.
-    
-    Parameters:
-    -----------
-    rgb_image : np.ndarray
-        Imagen RGB original (H, W, 3)
-    lbp_features : np.ndarray  
-        Características LBP (H, W, C) donde C depende de los parámetros LBP
-    sobel_mag : np.ndarray
-        Magnitudes Sobel (H, W, 3) para cada canal RGB
-    sobel_dir : np.ndarray
-        Direcciones Sobel (H, W, 3) para cada canal RGB
-    include_rgb : bool, default=True
-        Si incluir valores RGB originales
-    include_lbp : bool, default=True
-        Si incluir características LBP
-    include_sobel : bool, default=True
-        Si incluir características Sobel
-    sobel_combine_method : str, default='magnitude_only'
-        Método para combinar Sobel:
-        - 'magnitude_only': Solo magnitudes
-        - 'direction_only': Solo direcciones  
-        - 'both': Magnitudes y direcciones
-        - 'magnitude_mean': Promedio de magnitudes RGB
-        
-    Returns:
-    --------
-    np.ndarray
-        Array combinado con shape (H, W, N) donde N es el número total de features
-        
-    Notes:
-    ------
-    Vector típico resultante (ejemplo con P=8, R=1.0):
-    - RGB: 3 features (R, G, B)
-    - LBP: 3 features (LBP por canal RGB)  
-    - Sobel: 3 o 6 features (dependiendo del método)
-    Total: 9-12 features por píxel
+    """Combina características RGB, LBP y Sobel en un vector unificado por píxel.
+
+    Argumentos:
+        rgb_image: Imagen RGB original con shape ``(H, W, 3)``.
+        lbp_features: Características LBP con shape ``(H, W, C)``.
+        sobel_mag: Magnitudes Sobel con shape ``(H, W, 3)``.
+        sobel_dir: Direcciones Sobel con shape ``(H, W, 3)``.
+        include_rgb: Si ``True``, incluye valores RGB originales.
+        include_lbp: Si ``True``, incluye características LBP.
+        include_sobel: Si ``True``, incluye características Sobel.
+        sobel_combine_method: Método para combinar Sobel:
+
+            - ``'magnitude_only'``: solo magnitudes.
+            - ``'direction_only'``: solo direcciones.
+            - ``'both'``: magnitudes y direcciones.
+            - ``'magnitude_mean'``: promedio (por píxel) de magnitudes en RGB.
+
+    Retorna:
+        Array combinado con shape ``(H, W, N)``, donde ``N`` es el número total
+        de features.
+
+    Notas:
+        Vector típico resultante (ejemplo con ``P=8`` y ``R=1.0``):
+
+        - RGB: 3 features (R, G, B)
+        - LBP: 3 features (LBP por canal RGB)
+        - Sobel: 3 o 6 features (según ``sobel_combine_method``)
+
+        Total: 9-12 features por píxel.
     """
     # Validaciones básicas
     h, w = rgb_image.shape[:2]
@@ -129,27 +120,22 @@ def normalize_stacked_features(
     method: str = 'standardize',
     feature_groups: Optional[Dict[str, List[int]]] = None
 ) -> np.ndarray:
-    """
-    Normaliza características apiladas con métodos específicos por tipo.
-    
-    Parameters:
-    -----------
-    stacked_features : np.ndarray
-        Características combinadas (H, W, N)
-    method : str, default='standardize'
-        Método de normalización:
-        - 'standardize': Z-score (media=0, std=1)
-        - 'minmax': Escala a [0,1]
-        - 'robust': Usar mediana y percentiles (robusto a outliers)
-        - 'by_group': Normalizar cada grupo de features por separado
-    feature_groups : Dict[str, List[int]], optional
-        Grupos de features para normalización separada
-        Ej: {'rgb': [0,1,2], 'lbp': [3,4,5], 'sobel': [6,7,8]}
-        
-    Returns:
-    --------
-    np.ndarray
-        Características normalizadas con misma shape
+    """Normaliza características apiladas con distintos métodos.
+
+    Argumentos:
+        stacked_features: Array combinado con shape ``(H, W, N)``.
+        method: Método de normalización:
+
+            - ``'standardize'``: Z-score (media=0, std=1)
+            - ``'minmax'``: escala a $[0,1]$
+            - ``'robust'``: usa mediana e IQR (robusto a outliers)
+            - ``'by_group'``: normaliza cada grupo de features por separado
+
+        feature_groups: Grupos de índices para normalización separada.
+            Ejemplo: ``{'rgb': [0,1,2], 'lbp': [3,4,5], 'sobel': [6,7,8]}``.
+
+    Retorna:
+        Características normalizadas con la misma shape.
     """
     if stacked_features.size == 0:
         raise ValueError("Empty stacked_features array")
@@ -207,18 +193,13 @@ def normalize_stacked_features(
 
 
 def get_feature_statistics(stacked_features: np.ndarray) -> Dict[str, Union[float, int, np.ndarray]]:
-    """
-    Computa estadísticas descriptivas de características apiladas.
-    
-    Parameters:
-    -----------
-    stacked_features : np.ndarray
-        Características combinadas (H, W, N)
-        
-    Returns:
-    --------
-    Dict[str, Union[float, int, np.ndarray]]
-        Estadísticas por feature y globales
+    """Computa estadísticas descriptivas de características apiladas.
+
+    Argumentos:
+        stacked_features: Características combinadas con shape ``(H, W, N)``.
+
+    Retorna:
+        Diccionario con estadísticas globales y por feature.
     """
     h, w, n_features = stacked_features.shape
     features_flat = stacked_features.reshape(-1, n_features)

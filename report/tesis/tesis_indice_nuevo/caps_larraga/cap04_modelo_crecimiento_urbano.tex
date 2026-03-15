@@ -1,0 +1,541 @@
+% Capítulo 4. Modelo de crecimiento urbano (propuesta)
+% Estructura según índice de la Dra. Lárraga.
+
+\chapter{Modelo de crecimiento urbano}
+\label{ch:modelo-crecimiento-urbano}
+
+% ---- Contenido migrado (copy/paste) desde report/tesis/book/cap04/cap04.tex ----
+
+\begin{resumen}
+Este capítulo presenta la metodología completa del modelo híbrido WoE-AC (Weight of Evidence - Autómatas Celulares) para simulación de crecimiento urbano. Se describe el pipeline de preprocesamiento que transforma imágenes satelitales de Google Earth en mapas binarios urbano/no-urbano mediante clasificación híbrida LBP+K-Means+SVM. Se formaliza matemáticamente el componente Weight of Evidence que cuantifica evidencia espacial a partir de 8.2M transiciones históricas (1984-2010), empleando pooling temporal y ponderación por Information Value. Se define el componente de Autómatas Celulares con reglas de transición probabilísticas que integran evidencias WoE, influencia vecinal y decaimiento espacial exponencial. Se establece el protocolo de calibración mediante grid search sistemático optimizando threshold, neighbor\_weight y distance\_weight. Finalmente, se desarrolla el marco de validación temporal con métricas de coincidencia espacial (IoU, Kappa), cambio (FoM, F1), morfología (métricas de paisaje) y eficiencia temporal, justificando ventanas quinquenales para evaluación rigurosa en sistemas urbanos consolidados.
+\end{resumen}
+
+\section{Marco Conceptual de la Metodología}
+
+\subsection{Arquitectura General WoE-AC}
+
+La metodología propuesta integra dos paradigmas complementarios en un framework coherente. El \textbf{Weight of Evidence (WoE)} realiza la transformación de variables espaciales en evidencia probabilística cuantificada a partir de patrones históricos observados. Los \textbf{Autómatas Celulares (AC)} proporcionan el mecanismo de simulación espacialmente explícita de dinámicas urbanas, incorporando las evidencias WoE en reglas de transición probabilísticas.
+
+\subsection{Principios de Diseño}
+
+La metodología se basa en tres principios fundamentales:
+
+\begin{description}
+\item[Evidencia empírica] Weight of Evidence aporta cuantificación objetiva de relaciones espaciales observadas históricamente mediante análisis estadístico de transiciones urbanas pasadas
+\item[Simulación espacial explícita] Autómatas Celulares capturan dinámicas espaciales complejas, efectos de vecindario y patrones emergentes mediante reglas locales de transición
+\item[Validación rigurosa] Protocolo de validación temporal garantiza robustez predictiva evaluando el desempeño en múltiples horizontes temporales
+\end{description}
+
+\subsection{Flujo Metodológico}
+
+El proceso metodológico sigue una secuencia estructurada en cinco fases. La \textbf{preparación de datos} comprende la construcción de mapas urbanos históricos binarios y el cálculo de variables espaciales derivadas. El \textbf{cálculo WoE} cuantifica la evidencia espacial mediante análisis de transiciones históricas agregadas (pooling temporal). La \textbf{configuración AC} define las reglas de transición que combinan evidencias WoE con influencia vecinal y decaimiento espacial exponencial. La \textbf{calibración de parámetros} ajusta pesos y tasas de crecimiento mediante búsqueda sistemática (grid search). Finalmente, la \textbf{validación temporal} evalúa el rendimiento predictivo en períodos independientes con métricas espaciales estándar.
+
+\section{Preprocesamiento de Imágenes Satelitales}
+
+\subsection{Transformación a Mapas Binarios Urbano/No-Urbano}
+
+El primer paso metodológico crítico consiste en transformar imágenes satelitales multiespectrales en mapas binarios que representen la cobertura urbana. Este preprocesamiento sienta las bases para todo el análisis posterior WoE-AC.
+
+\subsubsection{Extracción de Características con Local Binary Patterns}
+
+Se emplea \textbf{Local Binary Pattern (LBP)} \parencite{Ojala2002} como descriptor de textura para capturar patrones espaciales característicos de áreas urbanas en imágenes Landsat. LBP es especialmente efectivo para distinguir texturas urbanas (edificaciones, calles, infraestructura) de texturas naturales (vegetación, suelo descubierto).
+
+El algoritmo LBP opera sobre ventanas $3 \times 3$ píxeles, calculando para cada píxel central $p_c$ un patrón binario basado en sus 8 vecinos $p_i$:
+
+\begin{equation}
+LBP(x, y) = \sum_{i=0}^{7} s(p_i - p_c) \cdot 2^i
+\label{eq:lbp_formula}
+\end{equation}
+
+donde la función signo $s(x)$ devuelve 1 si $x \geq 0$, y 0 en caso contrario. Este patrón binario captura la estructura local de intensidades, generando un código de 8 bits (valores 0-255) que caracteriza la textura.
+
+
+\textbf{Extensión Multi-Canal:} Para imágenes RGB o multiespectrales, se calcula LBP independientemente en cada banda (Roja, Verde, Azul, NIR si está disponible), generando un vector de características de textura por píxel.
+
+
+\textbf{Invariancia Rotacional:} Se utiliza la variante \texttt{uniform} de LBP que identifica patrones invariantes a rotación, reduciendo los 256 patrones posibles a $\sim$59 patrones uniformes que concentran el 90\% de la información textura en escenas naturales.
+
+\subsubsection{Clasificación Binaria Urbano/No-Urbano}
+
+Las características LBP extraídas alimentan un clasificador binario híbrido que combina clustering no supervisado (K-Means) con clasificación supervisada (SVM) para máxima precisión y consistencia temporal.
+
+
+\textbf{Pipeline de Clasificación Híbrida:}
+
+\begin{enumerate}[itemsep=2pt]
+	\item \textbf{Extracción de características multi-canal}: Se procesan las bandas RGB generando mapas LBP por banda (P=8 puntos, R=1.0 radio, método \texttt{uniform})
+	\item \textbf{Consolidación del vector de características}: Para cada píxel se construye un vector $\mathbf{f}(x,y) \in \mathbb{R}^{d}$ concatenando:
+	\begin{itemize}[itemsep=1pt]
+		\item Valores RGB originales (3 características)
+		\item Valores LBP por canal (3 características de textura)
+		\item Gradientes Sobel horizontal/vertical (2 características de bordes)
+		\item Estadísticas locales: intensidad, brillo (2 características)
+	\end{itemize}
+	Resultando en vectores de características de $d \approx 10$ dimensiones por píxel.
+    
+	\item \textbf{Reducción dimensional con PCA}: Se aplica Análisis de Componentes Principales para reducir a 8 componentes principales, capturando $>$95\% de la varianza mientras se reduce ruido y costo computacional.
+    
+	\item \textbf{Clustering K-Means ($k=2$ clusters)}: Se aplica K-Means con 2 clusters para segmentación inicial no supervisada. El algoritmo minimiza la inercia:
+	\begin{equation}
+	\min_{\mathbf{C}} \sum_{i=1}^{2} \sum_{\mathbf{f} \in C_i} \|\mathbf{f} - \boldsymbol{\mu}_i\|^2
+	\label{eq:kmeans_objective}
+	\end{equation}
+	donde $C_1, C_2$ son los dos clusters y $\boldsymbol{\mu}_1, \boldsymbol{\mu}_2$ sus centroides. Las etiquetas K-Means proporcionan pseudo-ground-truth para entrenar el clasificador SVM.
+    
+	\item \textbf{Clasificación SVM con kernel lineal}: Se entrena un Support Vector Machine usando las etiquetas K-Means como supervisión. El SVM busca el hiperplano óptimo:
+	\begin{equation}
+	\max_{\mathbf{w}, b} \frac{2}{\|\mathbf{w}\|} \quad \text{s.t.} \quad y_i(\mathbf{w}^T\mathbf{f}_i + b) \geq 1, \; \forall i
+	\label{eq:svm_objective}
+	\end{equation}
+	donde $y_i \in \{-1, +1\}$ son las etiquetas K-Means, y $\mathbf{w}, b$ definen el hiperplano de separación. Se utiliza kernel lineal para eficiencia computacional y capacidad de interpretar pesos de características.
+    
+	\item \textbf{Predicción final}: El clasificador SVM entrenado predice la clase binaria para todos los píxeles de la imagen:
+\end{enumerate}
+
+\textbf{Formalización matemática unificada:}
+
+Sea $I(x,y) \in \mathbb{R}^{H \times W \times 3}$ la imagen RGB de entrada. El mapa binario urbano $U(x,y) \in \{0,1\}$ se obtiene mediante:
+
+\begin{equation}
+U(x,y) = \text{SVM}\big(\text{PCA}(\mathbf{f}_{LBP}(x,y))\big)
+\label{eq:binary_classification}
+\end{equation}
+
+donde $\mathbf{f}_{LBP}(x,y)$ es el vector consolidado de características RGB+LBP+Sobel del píxel, PCA realiza la reducción dimensional, y SVM ejecuta la clasificación binaria final usando el modelo entrenado con etiquetas K-Means.
+
+\subsubsection{Validación de Clasificación}
+
+
+\textbf{Validación interna (train/test split):}
+
+La calidad del clasificador SVM se evalúa mediante validación cruzada estándar durante el entrenamiento:
+
+\begin{itemize}[itemsep=2pt]
+	\item \textbf{División estratificada 80/20}: Se reserva 20\% de los píxeles para conjunto de prueba, manteniendo proporciones de clases balanceadas
+	\item \textbf{Evaluación en test set independiente}: El SVM entrenado con 80\% de datos predice sobre el 20\% restante nunca visto durante entrenamiento
+	\item \textbf{Métricas reportadas}: 
+	\begin{itemize}[itemsep=1pt]
+		\item \textit{Exactitud (Accuracy)}: Fracción de píxeles correctamente clasificados en test set
+		\item \textit{Precision/Recall por clase}: Evaluación de falsos positivos y falsos negativos
+		\item \textit{Classification Report completo}: Incluye F1-score y soporte por clase
+	\end{itemize}
+\end{itemize}
+
+\textbf{Validación cruzada SVM:} Durante el entrenamiento del SVM, se reserva 20\% de los datos para testing, permitiendo evaluar la exactitud de clasificación. Típicamente, el método híbrido LBP+K-Means+SVM alcanza exactitudes de \textbf{88-94\%} en el conjunto de prueba independiente, superando métodos no supervisados puros (Otsu simple: 80-85\%) al combinar la segmentación inicial no supervisada con la refinación supervisada del SVM.
+
+\textbf{Limitación metodológica reconocida:} Esta validación evalúa la \textit{consistencia interna} del pipeline (qué tan bien el SVM aprende los patrones identificados por K-Means), no la \textit{exactitud absoluta} respecto a verdad terreno externa. Una validación completa requeriría:
+
+\begin{itemize}[itemsep=2pt]
+	\item Mapas cartográficos oficiales de uso de suelo urbano (no disponibles para todos los años)
+	\item Imágenes de muy alta resolución (Google Earth, SPOT) con digitalización manual
+	\item Muestras de campo geolocalizadas con GPS (costoso en series temporales largas)
+\end{itemize}
+
+Sin embargo, la validación \textit{temporal} posterior del modelo AC completo (Sección 4.6) proporciona evidencia indirecta de la calidad de los mapas binarios: si el AC calibrado con mapas históricos predice correctamente períodos futuros (IoU $>$ 0.70, Kappa $>$ 0.65), esto valida la utilidad de los mapas binarios generados para modelado urbano, que es el objetivo final del pipeline.
+
+\subsubsection{Serie Temporal de Mapas Binarios}
+
+El proceso se repite para cada año disponible en la serie temporal Landsat (1984-2020 en el caso de Querétaro), generando una colección de mapas binarios $\{U_t(x,y)\}_{t=1984}^{2020}$ que captura la evolución histórica de la huella urbana.
+
+Esta serie temporal binaria constituye el insumo fundamental para:
+\begin{enumerate}[itemsep=2pt]
+	\item Cálculo de transiciones urbanas $\Delta U_t = U_{t+1} - U_t$
+	\item Derivación de variables espaciales (distancias, densidades, gradientes)
+	\item Entrenamiento del modelo WoE mediante pooling temporal de transiciones
+	\item Validación temporal del modelo AC en períodos independientes
+\end{enumerate}
+
+% ---- Continúa migración (copy/paste) desde report/tesis/book/cap04/cap04.tex ----
+
+\subsection{Implementación Computacional}
+
+El pipeline de preprocesamiento se implementa en Python utilizando bibliotecas especializadas de Machine Learning y procesamiento de imágenes:
+
+\begin{lstlisting}[language=Python, caption=Pipeline Hibrido LBP+K-Means+SVM]
+from skimage.feature import local_binary_pattern
+from skimage import filters
+from sklearn.cluster import KMeans
+from sklearn.svm import SVC
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+def preprocess_satellite_to_binary(image_rgb):
+	"""
+	Transforma imagen RGB a mapa binario urbano/no-urbano
+	mediante pipeline hibrido LBP + K-Means + SVM.
+    
+	Parameters:
+	-----------
+	image_rgb : np.ndarray
+		Imagen RGB con shape (H, W, 3)
+        
+	Returns:
+	--------
+	binary_urban_map : np.ndarray
+		Mapa binario (H, W) con 1=urbano, 0=no-urbano
+	svm_model : sklearn.svm.SVC
+		Modelo SVM entrenado (para aplicar a otras imagenes)
+	"""
+	height, width, _ = image_rgb.shape
+    
+	# Paso 1: Extraer caracteristicas LBP por canal RGB
+	lbp_features = []
+	for c in range(3):  # R, G, B
+		channel = image_rgb[:, :, c]
+		lbp_map = local_binary_pattern(
+			channel, P=8, R=1.0, method='uniform'
+		)
+		lbp_features.append(lbp_map.flatten())
+    
+	# Paso 2: Extraer gradientes Sobel (bordes)
+	gray = np.mean(image_rgb, axis=2)
+	sobel_h = filters.sobel_h(gray).flatten()
+	sobel_v = filters.sobel_v(gray).flatten()
+    
+	# Paso 3: Consolidar vector de caracteristicas
+	# [R, G, B, LBP_R, LBP_G, LBP_B, Sobel_H, Sobel_V, Intensity, Brightness]
+	features_matrix = np.column_stack([
+		image_rgb[:,:,0].flatten(),  # Red
+		image_rgb[:,:,1].flatten(),  # Green
+		image_rgb[:,:,2].flatten(),  # Blue
+		*lbp_features,               # LBP per channel
+		sobel_h,                     # Sobel horizontal
+		sobel_v,                     # Sobel vertical
+		gray.flatten(),              # Intensity
+		(0.299*image_rgb[:,:,0] + 0.587*image_rgb[:,:,1] + 
+		 0.114*image_rgb[:,:,2]).flatten()  # Brightness
+	])
+    
+	# Paso 4: Reduccion dimensional con PCA (8 componentes)
+	pca = PCA(n_components=8)
+	features_pca = pca.fit_transform(features_matrix)
+    
+	print(f"Varianza explicada PCA: {pca.explained_variance_ratio_.sum():.2%}")
+    
+	# Paso 5: Clustering K-Means con 2 clusters (segmentacion inicial)
+	kmeans = KMeans(n_clusters=2, random_state=42, n_init=10)
+	pseudo_labels = kmeans.fit_predict(features_pca)
+    
+	print(f"Distribucion K-Means: Cluster 0={np.sum(pseudo_labels==0)}, "
+		  f"Cluster 1={np.sum(pseudo_labels==1)}")
+    
+	# Paso 6: Entrenar SVM con etiquetas K-Means
+	# Usar 80% para entrenamiento, 20% para validación
+	from sklearn.model_selection import train_test_split
+    
+	X_train, X_test, y_train, y_test = train_test_split(
+		features_pca, pseudo_labels, test_size=0.2, 
+		random_state=42, stratify=pseudo_labels
+	)
+    
+	svm_model = SVC(kernel='linear', C=1.0, random_state=42)
+	svm_model.fit(X_train, y_train)
+    
+	# Evaluar exactitud en conjunto de prueba
+	test_accuracy = svm_model.score(X_test, y_test)
+	print(f"Exactitud SVM (test set): {test_accuracy:.2%}")
+    
+	# Paso 7: Predecir clase final para todos los píxeles
+	final_labels = svm_model.predict(features_pca)
+	binary_map = final_labels.reshape(height, width)
+    
+	return binary_map.astype(np.uint8), svm_model
+
+# Aplicar a serie temporal completa
+urban_maps_temporal = {}
+for year in range(1984, 2021):
+	landsat_image = load_landsat_image(year)  # shape (H, W, 3)
+	urban_map, svm_model = preprocess_satellite_to_binary(landsat_image)
+	urban_maps_temporal[year] = urban_map
+    
+	print(f"Anio {year}: {urban_map.sum()} pixeles urbanos "
+		  f"({urban_map.sum()/(urban_map.size)*100:.1f}%)")
+\end{lstlisting}
+
+	\textbf{Optimizaciones Computacionales:}
+
+\begin{itemize}[itemsep=2pt]
+	\item \textbf{Vectorización NumPy}: Operaciones matriciales aceleradas con BLAS/LAPACK subyacente
+	\item \textbf{PCA para reducción dimensional}: Reduce de $\sim$10 características a 8 componentes principales, acelerando K-Means y SVM
+	\item \textbf{Muestreo estratificado para SVM}: Entrenar SVM con submuestra ($\sim$5000 píxeles) en lugar de millones acelera sin pérdida de precisión
+	\item \textbf{Cacheo de modelos}: Una vez entrenado el SVM en una imagen, puede aplicarse rápidamente a imágenes similares sin re-entrenamiento
+\end{itemize}
+
+Con estas optimizaciones, el procesamiento de una imagen Landsat típica (1800×3000 píxeles, 3 bandas RGB) toma $\sim$10-20 segundos en hardware estándar (CPU Intel i5, 16GB RAM), permitiendo procesar series temporales completas (37 años) en 10-15 minutos.
+
+\subsection{Consideraciones Metodológicas}
+
+\subsubsection{Ventajas del Enfoque Híbrido No Supervisado + Supervisado}
+
+El método híbrido LBP + K-Means + SVM combina lo mejor de ambos paradigmas:
+
+\textbf{Ventajas del enfoque:}
+\begin{itemize}[itemsep=2pt]
+	\item \textbf{No requiere etiquetas manuales costosas}: K-Means genera pseudo-ground-truth automáticamente para entrenar el SVM
+	\item \textbf{Mayor precisión que métodos puramente no supervisados}: SVM refina la segmentación inicial de K-Means, alcanzando 88-94\% vs. 80-85\% de Otsu simple
+	\item \textbf{Consistente a través de la serie temporal}: Mismo pipeline aplicado a todos los años (1984-2020)
+	\item \textbf{Transferible a nuevas regiones}: Una vez entrenado, el modelo SVM puede aplicarse rápidamente a imágenes similares
+	\item \textbf{Eficiente computacionalmente}: PCA+muestreo permiten procesar imágenes grandes (1800×3000 px) en 10-20 segundos
+\end{itemize}
+
+\textbf{Limitaciones reconocidas:}
+\begin{itemize}[itemsep=2pt]
+	\item Menor precisión que métodos supervisados con etiquetas manuales (Random Forest con ground truth: 93-97\%)
+	\item Sensible a cambios drásticos de iluminación o condiciones atmosféricas entre imágenes
+	\item Dificultad en áreas periurbanas con uso mixto del suelo (transición gradual urbano-rural)
+	\item K-Means asume clusters esféricos, lo cual puede no capturar formas urbanas irregulares complejas
+\end{itemize}
+
+\subsubsection{Alternativas Metodológicas Evaluadas}
+
+Otros enfoques de clasificación urbana considerados incluyen:
+
+\begin{enumerate}[itemsep=2pt]
+	\item \textbf{Índices espectrales puros}: NDVI (vegetación), NDBI (construcción), NDWI (agua). Más simples (sin entrenamiento) pero menos robustos ante variabilidad espectral intra-clase. Exactitud típica: 70-80\%.
+    
+	\item \textbf{Umbralización simple (Otsu no supervisado)}: Aplica umbral automático sobre intensidad o LBP promedio. Muy eficiente pero sensible a iluminación desigual. Exactitud típica: 80-85\%.
+    
+	\item \textbf{Clasificación supervisada pura (Random Forest, SVM con etiquetas manuales)}: Requiere digitalizarc manualmente muestras urbanas/no-urbanas para cada imagen ($\sim$500-1000 píxeles/año). Mayor precisión (93-97\%) pero costo prohibitivo para series temporales largas (37 años × 1000 muestras = 37,000 píxeles a etiquetar manualmente).
+    
+	\item \textbf{Deep Learning (U-Net, SegNet)}: CNNs semánticas ofrecen máxima precisión (95-98\%) pero requieren:
+	\begin{itemize}[itemsep=1pt]
+		\item Datasets enormes etiquetados (miles de imágenes completas)
+		\item Hardware GPU especializado (NVIDIA V100, A100)
+		\item Semanas de entrenamiento
+	\end{itemize}
+	No es viable para investigación con recursos limitados.
+\end{enumerate}
+
+\textbf{Justificación del método híbrido seleccionado:}
+
+Se seleccionó LBP+K-Means+SVM por su balance óptimo entre:
+\begin{itemize}[itemsep=2pt]
+	\item \textbf{Precisión aceptable} (88-94\%, superior a Otsu pero comparable a Random Forest semi-supervisado)
+	\item \textbf{Costo computacional moderado} (10-20 seg/imagen en CPU estándar vs. horas en GPU para Deep Learning)
+	\item \textbf{No dependencia de etiquetas manuales costosas} (auto-genera pseudo-ground-truth con K-Means)
+	\item \textbf{Consistencia temporal} (mismo pipeline para 37 años sin necesidad de re-etiquetar cada período)
+\end{itemize}
+
+Este método representa el estado del arte en clasificación urbana para series temporales largas cuando no se dispone de ground truth exhaustivo \parencite{Ma2019}.
+
+\section{Componente Weight of Evidence}
+
+\subsection{Fundamento Teórico}
+
+Weight of Evidence \parencite{BonhamCarter1994} cuantifica la fuerza de asociación entre variables predictoras y la ocurrencia de crecimiento urbano. Para cada variable espacial $X_i$ y cada bin $j$:
+
+\begin{equation}
+WoE_{ij} = \ln\left(\frac{P(X_i = j | U = 1)}{P(X_i = j | U = 0)}\right)
+\label{eq:woe_definition}
+\end{equation}
+
+donde $U = 1$ indica crecimiento urbano observado, $U = 0$ indica ausencia de crecimiento urbano, y $P(X_i = j | U = k)$ representa la probabilidad condicional de la clase $j$ dado el estado urbano $k$.
+
+\subsection{Information Value}
+
+El poder predictivo de cada variable se cuantifica mediante Information Value:
+
+\begin{equation}
+IV_i = \sum_{j=1}^{n_i} \left[P(X_i = j | U = 1) - P(X_i = j | U = 0)\right] \times WoE_{ij}
+\label{eq:information_value}
+\end{equation}
+
+La interpretación estándar de IV establece cinco categorías: valores menores a 0.02 indican variable no predictiva; el rango $0.02 \leq IV < 0.1$ señala poder predictivo débil; valores entre 0.1 y 0.3 corresponden a poder predictivo moderado; el rango $0.3 \leq IV < 0.5$ indica poder predictivo fuerte; finalmente, $IV \geq 0.5$ sugiere poder predictivo muy fuerte, siendo sospechoso de overfitting.
+
+\subsection{Discretización Optimal}
+
+Para variables continuas, se implementa discretización que maximiza IV:
+
+\begin{algorithm}[H]
+\caption{Discretización Optimal para WoE}
+\label{alg:optimal_binning}
+\begin{algorithmic}
+\STATE \textbf{Input:} Variable continua $X$, objetivo binario $U$, número máximo de bins $n_{max}$
+\STATE \textbf{Output:} Bins óptimos $B = \{b_1, b_2, ..., b_n\}$
+\STATE 
+\STATE Inicializar con percentiles uniformes
+\FOR{$n = 2$ \textbf{to} $n_{max}$}
+	\STATE Calcular $IV$ para configuración de $n$ bins
+	\STATE Evaluar significancia estadística (Chi-cuadrado)
+	\IF{$IV$ no mejora significativamente}
+		\STATE \textbf{return} configuración anterior
+	\ENDIF
+\ENDFOR
+\STATE \textbf{return} configuración con máximo $IV$ válido
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Implementación Computacional}
+
+El cálculo WoE se implementa eficientemente:
+
+\begin{lstlisting}[language=Python, caption=Implementacion de Weight of Evidence]
+def calculate_woe(self, variable_map, urban_change_map):
+	"""
+	Calcula Weight of Evidence para variable espacial.
+    
+	Parameters:
+	-----------
+	variable_map : numpy.ndarray
+		Mapa de variable explicativa
+	urban_change_map : numpy.ndarray  
+		Mapa binario de cambio urbano (1=crecimiento, 0=no crecimiento)
+    
+	Returns:
+	--------
+	woe_map : numpy.ndarray
+		Mapa de valores WoE transformados
+	iv_score : float
+		Information Value de la variable
+	"""
+	# Discretizacion optimal
+	bins = self._optimal_binning(variable_map, urban_change_map)
+    
+	# Calculo de WoE por bin
+	woe_values = {}
+	total_positive = np.sum(urban_change_map == 1)
+	total_negative = np.sum(urban_change_map == 0)
+    
+	for i, (bin_min, bin_max) in enumerate(bins):
+		# Mascara para bin actual
+		bin_mask = (variable_map >= bin_min) & (variable_map < bin_max)
+        
+		# Casos positivos y negativos en bin
+		pos_in_bin = np.sum((bin_mask) & (urban_change_map == 1))
+		neg_in_bin = np.sum((bin_mask) & (urban_change_map == 0))
+        
+		# Probabilidades condicionales
+		p_pos = (pos_in_bin + 0.5) / (total_positive + 1)  # Suavizado Laplace
+		p_neg = (neg_in_bin + 0.5) / (total_negative + 1)
+        
+		# Weight of Evidence
+		woe_values[i] = np.log(p_pos / p_neg)
+        
+	# Transformar mapa original a valores WoE
+	woe_map = self._apply_woe_transformation(variable_map, bins, woe_values)
+    
+	# Calcular Information Value
+	iv_score = self._calculate_iv(bins, woe_values, urban_change_map)
+    
+	return woe_map, iv_score
+\end{lstlisting}
+
+\section{Componente Autómatas Celulares}
+
+\subsection{Arquitectura del Autómata}
+
+El AC implementado sigue una arquitectura estándar con las siguientes especificaciones:
+
+\begin{description}
+\item[Espacio celular] Grid regular correspondiente a píxeles de imagen satelital
+\item[Estados celulares] Binarios: urbano (1) vs. no-urbano (0), con estado adicional RESTRICTED (2) para zonas protegidas, cuerpos de agua y áreas con restricciones ambientales
+\item[Vecindario] Moore de radio 1 (8 celdas adyacentes) con ponderación por distancia
+\item[Reglas de transición] Probabilísticas combinando evidencia WoE, influencia vecinal y decaimiento espacial exponencial
+\item[Evolución temporal] Iteraciones discretas con restricción de tasa máxima de crecimiento por paso
+\end{description}
+
+\subsection{Variables Espaciales Multi-Escala}
+
+El modelo deriva siete variables espaciales directamente del grid urbano histórico, capturando patrones a múltiples escalas:
+
+\begin{enumerate}
+\item \texttt{distance\_urban}: Distancia euclidiana a la celda urbana más cercana (transformación distance\_transform\_edt)
+\item \texttt{neighbor\_density\_3x3}: Densidad urbana en vecindario inmediato (ventana 3×3)
+\item \texttt{neighbor\_density\_5x5}: Densidad urbana en vecindario amplio (ventana 5×5)  
+\item \texttt{neighbor\_density\_7x7}: Densidad urbana en contexto regional (ventana 7×7)
+\item \texttt{local\_fragmentation}: Heterogeneidad espacial calculada como varianza local (ventana 5×5)
+\item \texttt{nearest\_cluster\_size}: Tamaño del cluster urbano contiguo más cercano
+\item \texttt{urban\_gradient}: Magnitud del gradiente espacial de urbanización (filtro Sobel)
+\end{enumerate}
+
+Estas variables capturan tanto efectos de proximidad como patrones estructurales del crecimiento urbano sin requerir datos externos adicionales.
+
+\subsection{Reglas de Transición con Decaimiento Exponencial}
+
+La probabilidad de urbanización para la celda $(i,j)$ se calcula mediante un proceso de tres etapas:
+
+\textbf{Etapa 1 - Agregación de evidencia:} Se combina la influencia vecinal directa con las evidencias WoE de las variables espaciales:
+
+\begin{equation}
+S_{i,j} = w_n \cdot I_{neigh}(i,j) + \sum_{k=1}^{7} w_k \cdot \text{WoE}_k(i,j)
+\label{eq:evidence_aggregation}
+\end{equation}
+
+donde $I_{neigh}(i,j)$ es la proporción de vecinos urbanos en el vecindario Moore, $w_n$ es el peso de influencia vecinal, $w_k$ son los pesos específicos por variable, y $\text{WoE}_k(i,j)$ son los valores transformados de Weight of Evidence para cada variable espacial en la celda $(i,j)$.
+
+\textbf{Etapa 2 - Decaimiento espacial exponencial:} Se aplica penalización por distancia para concentrar el crecimiento cerca de zonas urbanas existentes:
+
+\begin{equation}
+S_{i,j}^{decay} = S_{i,j} \cdot \exp\left(-\lambda \cdot d_{urban}(i,j)\right)
+\label{eq:exponential_decay}
+\end{equation}
+
+donde $d_{urban}(i,j)$ es la distancia a la zona urbana más cercana y $\lambda$ es la tasa de decaimiento exponencial. Este factor garantiza que zonas muy alejadas ($d > 20$ celdas) tengan probabilidad prácticamente nula independientemente de otros factores.
+
+\textbf{Etapa 3 - Conversión probabilística:} El score combinado se transforma a probabilidad mediante función logística con componente estocástico:
+
+\begin{equation}
+P_{i,j}^{raw} = \sigma(S_{i,j}^{decay}) = \frac{1}{1 + \exp(-S_{i,j}^{decay})}
+\label{eq:logistic_transform}
+\end{equation}
+
+\begin{equation}
+P_{i,j}^{final} = \begin{cases}
+0.1 \cdot P_{i,j}^{raw} + \mathcal{N}(0, \sigma_{stoch}) & \text{si } P_{i,j}^{raw} < \theta_{base} \\
+P_{i,j}^{raw} + \mathcal{N}(0, \sigma_{stoch}) & \text{si } P_{i,j}^{raw} \geq \theta_{base}
+\end{cases}
+\label{eq:final_probability}
+\end{equation}
+
+donde $\theta_{base}$ es el umbral base (típicamente 0.5) y $\sigma_{stoch}$ controla la variabilidad estocástica (típicamente 0.1). Las probabilidades finales se recortan al intervalo $[0, 1]$.
+
+\subsection{Cálculo de Influencia Vecinal}
+
+La influencia vecinal con ponderación por distancia se calcula como:
+
+\begin{equation}
+I_{neigh}(i,j) = \frac{\sum_{(m,n) \in \mathcal{V}_{i,j}} \frac{U_{m,n}^t}{d_{m,n} + 1}}{\sum_{(m,n) \in \mathcal{V}_{i,j}} \frac{1}{d_{m,n} + 1}}
+\label{eq:neighborhood_influence}
+\end{equation}
+
+donde $\mathcal{V}_{i,j}$ es el vecindario Moore excluyendo la celda central, $U_{m,n}^t \in \{0,1\}$ es el estado urbano, y $d_{m,n} = \max(|i-m|, |j-n|)$ es la distancia Chebyshev. Esta formulación da mayor peso a vecinos inmediatamente adyacentes que a vecinos diagonales.
+
+\subsection{Restricciones de Crecimiento}
+
+Se implementan dos tipos de restricciones para realismo:
+
+\begin{description}
+\item[Restricciones absolutas] Celdas con estado RESTRICTED ($U_{i,j} = 2$) no pueden urbanizarse: $P_{i,j} = 0$
+\item[Restricción de tasa máxima] En cada paso de simulación, el número de nuevas celdas urbanas $N_{new}$ se limita a:
+\begin{equation}
+N_{new} \leq r_{max} \cdot N_{current}
+\end{equation}
+donde $N_{current}$ es el número actual de celdas urbanas y $r_{max}$ es la tasa máxima de crecimiento (típicamente 0.02-0.05 para crecimiento del 2-5\% por iteración). Si el número de transiciones candidatas excede este límite, se seleccionan las celdas con mayor probabilidad.
+\end{description}
+
+\subsection{Algoritmo de Simulación}
+
+\begin{algorithm}[H]
+\caption{Simulación AC-WoE con Decaimiento Exponencial}
+\label{alg:ca_simulation}
+\begin{algorithmic}
+\STATE \textbf{Input:} Estado inicial $U^0$, variables WoE $\{W_k\}$, parámetros $\theta$, período $T$
+\STATE \textbf{Output:} Secuencia de estados $\{U^0, U^1, ..., U^T\}$
+\STATE 
+\FOR{$t = 0$ \textbf{to} $T-1$}
+	\FOR{cada celda $(i,j)$ no-urbana}
+			\STATE Calcular $P_{i,j}^{t+1}$ usando Ecuación~\ref{eq:logistic_transform}
+		\STATE Generar número aleatorio $r \sim \mathcal{U}(0,1)$
+		\IF{$r < P_{i,j}^{t+1}$}
+			\STATE $U_{i,j}^{t+1} = 1$ (transición a urbano)
+		\ELSE
+			\STATE $U_{i,j}^{t+1} = 0$ (permanece no-urbano)
+		\ENDIF
+	\ENDFOR
+	\STATE Aplicar restricciones post-procesamiento
+	\STATE Actualizar métricas de monitoreo
+\ENDFOR
+\STATE \textbf{return} $\{U^0, U^1, ..., U^T\}$
+\end{algorithmic}
+\end{algorithm}

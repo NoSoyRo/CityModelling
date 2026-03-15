@@ -1,0 +1,21 @@
+\babel@toc {spanish}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Distribución temática de la literatura revisada}}{11}{figure.caption.9}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Distribución de enfoques AC+AG vs otros temas}}{12}{figure.caption.10}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Evolución temporal de enfoques de modelado urbano}}{26}{figure.caption.13}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Pipeline de preprocesamiento implementado}}{35}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Distribución de métricas de calidad por década}}{39}{figure.caption.21}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Arquitectura completa del framework WoE-AC-AG para modelado de crecimiento urbano. Diagrama UML mostrando todas las clases del sistema organizadas en paquetes: Configuration (configuración), Data/IO (manejo de datos históricos), Feature \& Spatial (extracción de características), Weight of Evidence (cálculo de pesos), Cellular Automaton (simulación AC) y Orchestrator/Optimization (pipeline y optimización genética). El diagrama se genera automáticamente desde el código fuente usando PlantUML (ver \texttt {diagramas/architecture.puml}).}}{41}{figure.caption.22}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces \textbf {Evolución del crecimiento urbano de Querétaro mediante transformación binaria inteligente (1984-2020).} La metodología desarrollada captura exitosamente la expansión urbana compleja de la zona metropolitana, transformando datos multiespectrales en representaciones binarias optimizadas para modelado con Autómatas Celulares{}. La transformación preserva patrones espaciales críticos mientras simplifica la complejidad computacional.}}{49}{figure.caption.24}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Evolución del crecimiento urbano de Querétaro (1984-2020). Se observa la expansión sostenida de la mancha urbana con aceleración notable a partir de la década de 2000.}}{70}{figure.caption.27}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Pesos WoE por bin de densidad de vecindad urbana. La relación monotónica creciente valida el mecanismo de difusión espacial como driver principal del crecimiento urbano en Querétaro.}}{72}{figure.caption.30}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Validación quinquenal 2011→2016. De izquierda a derecha: estado inicial (2011), mapa observado 2016 (\textit {ground truth}), mapa predicho 2016 y diferencia (verde=TP, naranja=FP, azul=FN). FoM=0.222; la anomalía se debe a que el área urbana observada disminuyó levemente por variabilidad espectral en la clasificación satelital.}}{75}{figure.caption.36}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Validación quinquenal 2012→2017. FoM=0.345; notable mejora respecto al período anterior, con crecimiento observado real positivo ($+$27.9\%) que el modelo captura con alta fidelidad. Los 602{,}889 hits reflejan la correcta identificación de las zonas de expansión perimetral.}}{76}{figure.caption.38}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Validación quinquenal 2013→2018. FoM=0.355; resultado consistente con el período 2012→2017, confirmando la estabilidad del modelo en condiciones de crecimiento real positivo. El mayor número de omisiones (231K) sugiere que la expansión hacia el norte y este del período no es completamente capturada.}}{77}{figure.caption.40}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Validación quinquenal 2014→2019. FoM=0.287; el crecimiento real modesto ($+$9.5\%) contrasta con la predicción agresiva del modelo ($+$68.3\%), explicando la mayor proporción de falsas alarmas (1.2M). El alto Recall (0.965) muestra que el modelo sigue cubriendo correctamente el área urbana real.}}{78}{figure.caption.42}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Validación quinquenal 2015→2020. FoM=0.378; mejor resultado del experimento, con el mayor crecimiento real observado ($+$33.5\%) y la concordancia más alta entre predicción y realidad. El período concentra el mayor número de hits (704{,}983) y la menor proporción relativa de falsas alarmas.}}{79}{figure.caption.44}%
+\addvspace {10\p@ }

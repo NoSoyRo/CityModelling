@@ -1,0 +1,16 @@
+{
+  "threshold": 0.39963209507789,
+  "iterations": 5,
+  "fitness": 0.17248596914567688,
+  "metrics": {
+    "figure_of_merit": 0.17248596914567688,
+    "iou": 0.17248596914567688,
+    "accuracy": 0.6033652284698602,
+    "kappa": 0.16662075404362028,
+    "simulated_transitions": 2203593,
+    "observed_transitions": 391095,
+    "hits": 381708,
+    "misses": 9387,
+    "false_alarms": 1821885
+  }
+}

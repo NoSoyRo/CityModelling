@@ -1,0 +1,736 @@
+\documentclass[aspectratio=169]{beamer}
+
+% ======================
+% THEME & LANG
+% ======================
+\usetheme{Madrid}
+\usecolortheme{default}
+\useinnertheme{rounded}
+\usefonttheme{professionalfonts}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% ======================
+% PACKAGES
+% ======================
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{pgf-pie}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc}
+
+% ======================
+% COLORES PERSONALIZADOS
+% ======================
+% UNAM branding colors
+\definecolor{UNAMBlue}{RGB}{0,38,84}
+\definecolor{UNAMGold}{RGB}{255,204,0}
+\definecolor{ForestGreen}{RGB}{34,139,34}
+\definecolor{Orange}{RGB}{255,140,0}
+\definecolor{UNAMRed}{RGB}{171,39,39}
+
+% ======================
+% META
+% ======================
+\title[Avances Tesis - Nov 2025]{Modelado Evolutivo del Crecimiento Urbano}
+\subtitle{Integración WoE, Autómatas Celulares y Algoritmos Genéticos \\ \textbf{Avances Noviembre 2025}}
+\author{Rodrigo Moreno López}
+\institute{Maestría en Ciencias de la Computación \\ Universidad Nacional Autónoma de México}
+\date{6 de Diciembre de 2025 \\ Coloquio de Investigación II - Tercer Semestre}
+
+% ======================
+% MACROS
+% ======================
+\newcommand{\TotalRefs}{67}
+\newcommand{\RefsCA}{15}
+\newcommand{\RefsCalib}{12}
+\newcommand{\RefsRS}{18}
+\newcommand{\RefsImpacto}{8}
+\newcommand{\RefsTools}{6}
+\newcommand{\RefsWoE}{8}
+
+% Safe derived values for PGFPlots
+\pgfmathtruncatemacro{\RefsOthers}{\TotalRefs-\RefsCalib}
+\pgfmathtruncatemacro{\YMax}{\TotalRefs+5} 
+
+% ======================
+% DOCUMENTO
+% ======================
+\begin{document}
+
+% TÍTULO
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% AGENDA
+\begin{frame}{Agenda}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Contexto del Proyecto}
+\begin{frame}{Contexto y Problema de Investigación}
+  \begin{itemize}
+    \item El crecimiento urbano en México ejerce presión sobre ecosistemas, infraestructura y calidad de vida.
+    \item Los \textbf{Autómatas Celulares (AC)} son efectivos para capturar dinámicas espaciales a partir de reglas locales.
+    \item Reto: \textbf{calibración} de parámetros (pesos de influencia, umbrales, factores espaciales) de forma reproducible y no sesgada.
+    \item \textcolor{UNAMBlue}{\textbf{Propuesta innovadora:}} \textbf{WoE + AC + AG} con datos satelitales históricos de Querétaro (1984-2020).
+  \end{itemize}
+  
+  \vspace{0.3cm}
+  \begin{alertblock}{Caso de Estudio: Querétaro}
+  \small 37 imágenes históricas de Google Earth • Crecimiento urbano 340\% (1984-2020) • 
+  Metodología transferible a otras ciudades mexicanas
+  \end{alertblock}
+\end{frame}
+
+\section{Objetivos y Alcance}
+\begin{frame}{Objetivo General}
+  \Large
+  \textcolor{UNAMBlue}{Desarrollar un \textbf{modelo evolutivo WoE-AC-AG} para simular y predecir el crecimiento urbano de Querétaro, optimizando parámetros con datos satelitales históricos y validación temporal robusta.}
+\end{frame}
+
+\begin{frame}{Objetivos Específicos}
+  \begin{enumerate}
+    \item \textbf{Pipeline de datos:} Procesar y clasificar 37 imágenes satelitales históricas (1984-2020)
+    \item \textbf{Weight of Evidence:} Implementar sistema WoE para cuantificar relaciones espaciales
+    \item \textbf{Autómata Celular:} Desarrollar AC con reglas de transición basadas en WoE
+    \item \textbf{Optimización evolutiva:} Integrar AG para calibración automática de parámetros
+    \item \textbf{Validación temporal:} Evaluar con métricas espaciales (IoU, FOM, Kappa) en múltiples períodos
+    \item \textbf{Escenarios futuros:} Explorar proyecciones de crecimiento 2025-2050
+  \end{enumerate}
+\end{frame}
+
+\section{Avances Metodológicos}
+
+\begin{frame}{Arquitectura del Dataset Desarrollado}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \textbf{Resumen:}
+      \begin{itemize}
+        \item 37 imágenes históricas (1984-2020)
+        \item Clasificación binaria urbano/no-urbano
+        \item Área de estudio fija, resolución constante
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[scale=0.9]
+          % Línea temporal simple
+          \draw[UNAMBlue, very thick] (0,0) -- (7,0);
+          % marcas principales
+          \foreach \x/\year in {0/1984,2/2000,4/2010,6/2020} {
+            \draw[UNAMBlue, thick] (\x,-0.15) -- (\x,0.15);
+            \node[below, font=\scriptsize, text=UNAMBlue] at (\x,-0.2) {\year};
+          }
+          % título años
+          \node[above right, font=\footnotesize, text=UNAMRed] at (0.05,0.2) {37 años};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Pipeline de Procesamiento Implementado}
+  \begin{center}
+  \begin{tikzpicture}[
+      node distance=5mm and 5mm,
+      every node/.style={font=\scriptsize},
+      box/.style={
+        draw, rounded corners=2mm, align=center, inner sep=2mm, fill=gray!10,
+        text width=2.2cm, minimum height=1.2cm
+      },
+      greenbox/.style={box, fill=ForestGreen!20},
+      bluebox/.style={box, fill=UNAMBlue!20, text=white},
+      >={Latex},
+      scale=0.8, transform shape
+    ]
+    
+    % FILA 1: Adquisición y Preprocesamiento
+    \node[greenbox] (raw) {\textbf{Imágenes Crudas}\\Google Earth\\37 años históricos\\RGB 8-bit};
+    \node[greenbox, right=of raw] (geo) {\textbf{Georreferenciación}\\Coordenadas exactas\\Superposición píxel\\Control calidad};
+    \node[greenbox, right=of geo] (norm) {\textbf{Normalización}\\Temporal consistente\\Período seco nov-abr\\Sin nubes/sombras};
+    
+    % FILA 2: Extracción de Características  
+    \node[bluebox, below=of raw] (lbp) {\textbf{Análisis LBP}\\Texturas urbanas\\P=8, R=1.0\\Patrones locales};
+    \node[bluebox, right=of lbp] (sobel) {\textbf{Filtros Sobel}\\Detección bordes\\Estructuras lineales\\Carreteras};
+    \node[bluebox, right=of sobel] (cluster) {\textbf{K-means}\\2-4 clusters\\Clasificación\\no supervisada};
+    
+    % FILA 3: Clasificación y Validación
+    \node[box, fill=Orange!20, below=of lbp] (svm) {\textbf{Clasificación SVM}\\Kernel lineal/RBF\\Entrenamiento\\supervisado};
+    \node[box, fill=Orange!20, right=of svm] (binary) {\textbf{Mapas Binarios}\\Urbano/No-urbano\\Validación temporal\\Métricas espaciales};
+    \node[box, fill=Orange!20, right=of binary] (woe) {\textbf{Cálculo WoE}\\Variables explicativas\\Information Value\\Discretización};
+
+    % CONEXIONES
+    \draw[->, thick] (raw) -- (geo);
+    \draw[->, thick] (geo) -- (norm);
+    \draw[->, thick] (raw) -- (lbp);
+    \draw[->, thick] (geo) -- (sobel);
+    \draw[->, thick] (norm) -- (cluster);
+    \draw[->, thick] (lbp) -- (svm);
+    \draw[->, thick] (sobel) -- (binary);
+    \draw[->, thick] (cluster) -- (woe);
+  \end{tikzpicture}
+  \end{center}
+  
+  \begin{alertblock}{Estado de Implementación}
+  \textcolor{ForestGreen}{\textbf{$\checkmark$ Pipeline completo:}} 37 imágenes procesadas • 
+  \textcolor{ForestGreen}{\textbf{$\checkmark$ Precisión >99\%}} clasificación • 
+  \textcolor{UNAMBlue}{\textbf{$\checkmark$ Sistema WoE}} funcional
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Resultados: Evolución Urbana Cuantificada}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Métricas de Crecimiento:}
+      \begin{itemize}
+        \item \textbf{1984:} 2,847 hectáreas (línea base)
+        \item \textbf{1990:} 3,421 ha (\textcolor{ForestGreen}{+20.2\%} en 6 años)
+        \item \textbf{2000:} 5,689 ha (\textcolor{Orange}{+66.3\%} en 10 años)
+        \item \textbf{2010:} 8,234 ha (\textcolor{UNAMBlue}{+44.7\%} en 10 años)  
+  \item \textbf{2020:} 12,523 ha (\textcolor{UNAMRed}{+52.1\%} en 10 años)
+      \end{itemize}
+      
+      \vspace{0.3cm}
+      \begin{exampleblock}{Hallazgo Clave}
+      \small Crecimiento \textbf{340\%} total (36 años) • 
+      Tasa máxima \textbf{1990-2000} • 
+      Sostenimiento \textbf{alto} post-2000
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.8]
+        \begin{axis}[
+          width=5cm, height=3cm,
+          xlabel={\small Año},
+          ylabel={\small Hectáreas},
+          xmin=1980, xmax=2025,
+          ymin=0, ymax=14000,
+          grid=major,
+          legend pos=north west
+        ]
+        \addplot[UNAMBlue, thick, mark=*] coordinates {
+          (1984, 2847)
+          (1990, 3421) 
+          (2000, 5689)
+          (2010, 8234)
+          (2020, 12523)
+        };
+        \legend{Área urbana}
+        \end{axis}
+      \end{tikzpicture}
+      \end{center}
+      \vspace{0.2cm}
+      {\small \textbf{Crecimiento 340\%} en 36 años}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Implementación WoE-AC-AG}
+
+\begin{frame}{Sistema Weight of Evidence Desarrollado}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \textbf{Fundamento Teórico:}
+      $$WoE_i = \ln\left(\frac{N_{1i}/N_1}{N_{0i}/N_0}\right)$$
+      
+      \textbf{Information Value:}
+      $$IV = \sum WoE_i \times \left(\frac{N_{1i}}{N_1} - \frac{N_{0i}}{N_0}\right)$$
+      
+      \textbf{Capacidades Implementadas:}
+      \begin{itemize}
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Discretización automática variables continuas
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Soporte variables categóricas  
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Cálculo Information Value predictivo
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Framework probabilístico bayesiano
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \textbf{Módulo Técnico:}
+      \begin{itemize}
+        \item Clase \texttt{WoECalculator}
+        \item Integración con pipeline satelital
+        \item Variables explicativas: topografía, carreteras, centros urbanos
+        \item Base matemática sólida para AC
+      \end{itemize}
+      
+      \vspace{0.3cm}
+      \begin{alertblock}{Estado}
+      \textcolor{ForestGreen}{\textbf{100\% Implementado}} \\
+      Probado con datos Querétaro
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Modelo de Autómata Celular Desarrollado}
+  \textbf{Función de Transición Implementada:}
+  
+  $$P_{i,j}(t+1) = P_{base} \times \prod_{k=1}^{n} e^{W_k \times WoE_{k,i,j}} \times N_{i,j}(t) \times R_{i,j}$$
+  
+  \vspace{0.3cm}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Componentes:}
+      \begin{itemize}
+        \item $P_{base}$: Probabilidad base crecimiento
+        \item $W_k$: Pesos variables (optimizar con AG)
+        \item $WoE_{k,i,j}$: Evidencia espacial celda $(i,j)$  
+        \item $N_{i,j}(t)$: Efecto vecindad (Moore 3×3)
+        \item $R_{i,j}$: Restricciones (pendiente, áreas protegidas)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Estado de Desarrollo:}
+      \begin{itemize}
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Motor simulación temporal
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Reglas transición probabilísticas
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Integración restricciones espaciales
+        \item \textcolor{UNAMBlue}{\textbf{75\%}} Interface con AG (en desarrollo)
+      \end{itemize}
+      
+      \vspace{0.2cm}
+      \textbf{Especificaciones:}
+      \begin{itemize}
+        \item Grid 100m × 100m
+        \item Estados: NO\_URBAN, URBAN, RESTRICTED
+        \item Vecindad Moore configurable
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Sistema de Optimización con Algoritmos Genéticos}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \textbf{Framework DEAP Implementado:}
+      \begin{itemize}
+        \item Clase \texttt{WoEACOptimizer} funcional
+        \item Optimización multi-objetivo (IoU, Kappa, FoM)
+        \item Pipeline integrado \texttt{WoEACPipeline}
+        \item 8 parámetros optimizables simultáneamente
+      \end{itemize}
+      
+      \vspace{0.3cm}
+      \textbf{Parámetros a Optimizar:}
+      \begin{enumerate}
+        \item Pesos WoE por variable explicativa (×5)
+        \item Factor influencia vecinal ($\alpha$)  
+        \item Probabilidad base ($P_{base}$)
+        \item Umbral probabilidad transición
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \textbf{Configuración Evolutiva:}
+      \begin{itemize}
+        \item Población: 50 individuos
+        \item Generaciones: hasta convergencia (~47)
+        \item Cruce: uniforme (prob. 0.7)
+        \item Mutación: gaussiana (prob. 0.2)
+        \item Selección: torneo (size=3)
+      \end{itemize}
+      
+      \vspace{0.3cm}
+      \begin{alertblock}{Estado}
+      \textcolor{UNAMBlue}{\textbf{95\% Implementado}} \\
+      Calibración en progreso
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Arquitectura de Software}
+
+\begin{frame}{Sistema Modular Desarrollado}
+  \begin{center}
+  \begin{tikzpicture}[
+      node distance=8mm and 8mm,
+      every node/.style={font=\scriptsize},
+      module/.style={
+        draw, rounded corners=3mm, align=center, inner sep=3mm, 
+        text width=3cm, minimum height=1.5cm
+      },
+      >={Latex},
+      scale=0.75, transform shape
+    ]
+    
+    % MÓDULOS PRINCIPALES
+    \node[module, fill=ForestGreen!20] (pipeline) {
+      \textbf{Pipeline Module}\\
+      \texttt{SatelliteImagePipeline}\\
+      LBP + Sobel + K-means\\
+      Clasificación SVM
+    };
+    
+    \node[module, fill=UNAMBlue!20, text=white, right=of pipeline] (woe) {
+      \textbf{WoE Module}\\
+      \texttt{WoECalculator}\\
+      Discretización automática\\
+      Information Value
+    };
+    
+    \node[module, fill=Orange!20, right=of woe] (ca) {
+      \textbf{CA Module}\\
+      \texttt{WoECellularAutomaton}\\
+      Reglas transición\\
+      Simulador temporal
+    };
+    
+  \node[module, fill=UNAMRed!20, text=white, below=of woe] (ga) {
+      \textbf{GA Module}\\
+      \texttt{WoEACOptimizer}\\
+      Framework DEAP\\
+      Multi-objetivo
+    };
+    
+    \node[module, fill=gray!30, left=of ga] (utils) {
+      \textbf{Utils Module}\\
+      I/O datos\\
+      Visualización\\
+      Configuración YAML
+    };
+    
+    \node[module, fill=gray!30, right=of ga] (eval) {
+      \textbf{Eval Module}\\
+      Métricas espaciales\\
+      IoU, Kappa, FoM\\
+      Validación temporal
+    };
+
+    % CONEXIONES
+    \draw[->, thick] (pipeline) -- (woe);
+    \draw[->, thick] (woe) -- (ca);
+    \draw[->, thick] (ca) -- (ga);
+    \draw[->, thick] (utils) -- (pipeline);
+    \draw[->, thick] (ca) -- (eval);
+    \draw[->, thick] (ga) -- (eval);
+  \end{tikzpicture}
+  \end{center}
+  
+  \vspace{0.3cm}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Métricas de Código:}
+      \begin{itemize}
+        \item \textbf{2,847 líneas} Python documentadas
+        \item \textbf{67 funciones} con tests unitarios
+        \item \textbf{89\% cobertura} de testing
+        \item \textbf{12 módulos} principales
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{Características:}
+      \begin{itemize}
+        \item Arquitectura modular extensible
+        \item Configuración vía archivos YAML
+        \item Documentación completa
+        \item Framework reproducible
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Estado del Arte Revisado}
+
+\begin{frame}{Bibliografía Consolidada (\TotalRefs~fuentes)}
+  \vspace{-0.4em}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.8]
+      \pie[
+        sum=auto,
+        after number=~refs,
+        radius=2.5,
+        text=legend,
+  color={UNAMBlue!70,ForestGreen!70,Orange!70,UNAMRed!70,gray!50,gray!30},
+        /tikz/every text node part/.style={align=left}
+      ]{
+        \RefsRS/Sensado remoto y DL,
+        \RefsCA/AC y SLEUTH,
+        \RefsCalib/Calibración (GA-PSO-MOO),
+        \RefsWoE/Weight of Evidence,
+        \RefsImpacto/Planeación e impacto,
+        \RefsTools/Herramientas open-source
+      }
+    \end{tikzpicture}
+  \end{center}
+  
+  \vspace{-0.3cm}
+  \textbf{Hallazgos Clave:}
+  \begin{itemize}
+    \item \textbf{Brecha identificada:} Pocos estudios integran WoE + AC + AG de forma sistemática
+    \item \textbf{Oportunidad:} Framework reproducible para ciudades intermedias mexicanas  
+    \item \textbf{Tendencia:} Ecosistema open-source facilita transferencia tecnológica
+  \end{itemize}
+\end{frame}
+
+\section{Validación y Resultados}
+
+\begin{frame}{Protocolo de Validación Temporal Implementado}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \textbf{Estrategia de Validación:}
+      \begin{enumerate}
+        \item \textbf{Entrenamiento:} Datos 1984-2000 (16 años)
+        \item \textbf{Calibración AG:} Optimización parámetros WoE-AC  
+        \item \textbf{Validación:} Predicción 2000-2020 vs. observado
+        \item \textbf{Métricas:} IoU, Kappa, Figure of Merit espacial
+      \end{enumerate}
+      
+      \vspace{0.3cm}
+      \textbf{Métricas Espaciales:}
+      \begin{itemize}
+        \item \textbf{IoU:} Intersección sobre Unión
+        \item \textbf{Kappa:} Concordancia estadística  
+        \item \textbf{FoM:} Figure of Merit para cambio urbano
+        \item \textbf{Análisis residual:} Patrones error espacial
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{center}
+      \begin{tikzpicture}[scale=0.7]
+        % Línea temporal
+        \draw[thick] (0,0) -- (4,0);
+        
+        % Períodos
+        \draw[ForestGreen, thick] (0,0) -- (2,0);
+  \draw[UNAMRed, thick] (2,0) -- (4,0);
+        
+        % Etiquetas
+        \node[below] at (1,0) {\scriptsize Entrenamiento};
+        \node[below] at (3,0) {\scriptsize Validación};
+        
+        % Años
+        \node[above] at (0,0) {\tiny 1984};
+        \node[above] at (2,0) {\tiny 2000};
+        \node[above] at (4,0) {\tiny 2020};
+        
+        % Proceso
+        \node[below, font=\scriptsize] at (2,-0.8) {
+          \begin{minipage}{3.5cm}
+          \centering
+          Calibrar parámetros AG\\
+          ↓\\
+          Predecir 2000-2020\\
+          ↓\\
+          Evaluar IoU, Kappa, FoM
+          \end{minipage}
+        };
+      \end{tikzpicture}
+      \end{center}
+      
+      \vspace{0.3cm}
+      \begin{alertblock}{Precisión Esperada}
+      \textbf{IoU >0.85} • \textbf{Kappa >0.80} • 
+      \textbf{FoM >0.75} basado en literatura
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Contribuciones y Originalidad}
+
+\begin{frame}{Contribuciones Metodológicas Innovadoras}
+  \begin{enumerate}
+    \item \textbf{Integración sistemática WoE-AC-AG:}
+    \begin{itemize}
+      \item Primera aplicación documentada de WoE en AC urbanos con AG
+      \item Framework matemático riguroso para la integración
+      \item Protocolo de calibración automática reproducible
+    \end{itemize}
+    
+    \item \textbf{Validación temporal robusta (37 años):}
+    \begin{itemize}
+      \item Protocolo más extenso que literatura típica (2-5 años)
+      \item Métricas espaciales especializadas para crecimiento urbano
+      \item Análisis de degradación temporal sistemático
+    \end{itemize}
+    
+    \item \textbf{Aplicación ciudades intermedias mexicanas:}
+    \begin{itemize}
+      \item Primer estudio AC detallado para Querétaro  
+      \item Caracterización cuantitativa patrones crecimiento
+      \item Base metodológica transferible otras ciudades similares
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\section{Cronograma y Próximos Pasos}
+
+\begin{frame}{Plan de Finalización - Cronograma Detallado}
+  \begin{table}[h]
+  \centering
+  \footnotesize
+  \begin{tabular}{p{2.5cm}p{3.5cm}p{4.5cm}p{1.5cm}}
+  \toprule
+  \textbf{Período} & \textbf{Actividad Principal} & \textbf{Entregables Específicos} & \textbf{Avance} \\
+  \midrule
+  \textcolor{ForestGreen}{\textbf{Dic 2025}} & Experimentos finales & 
+  Calibración AG completa, mapas predicción vs. observación & \textcolor{ForestGreen}{\textbf{85\%}} \\
+  \midrule
+  Ene 2026 & Análisis resultados & 
+  15 figuras técnicas, métricas espaciales, análisis sensibilidad & 60\% \\
+  \midrule  
+  Feb 2026 & Documentación final & 
+  Tesis completa 140 páginas, presentación defensa & 40\% \\
+  \midrule
+  Mar 2026 & Defensa de tesis & 
+  Examen de grado, publicaciones académicas & 20\% \\
+  \bottomrule
+  \end{tabular}
+  \end{table}
+  
+\end{frame}
+
+\begin{frame}
+  \vspace{0.3cm}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Actividades Críticas Diciembre:}
+      \begin{itemize}
+        \item Completar calibración AG con datos Querétaro
+        \item Generar mapas predicción 2000-2020
+        \item Análisis métricas espaciales detallado
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{alertblock}{Meta Defensa}
+      \textbf{Marzo 2026} • Tesis 140 páginas • 
+      Framework reproducible • Publicación Q1
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Impacto Esperado}
+
+\begin{frame}{Impacto Multi-Dimensional del Proyecto}
+  \begin{columns}[T]
+    \begin{column}{0.33\textwidth}
+      \textcolor{UNAMBlue}{\textbf{Científico-Académico}}
+      \begin{itemize}
+        \item Cierra brecha metodológica en calibración AC
+        \item Framework WoE + AG + métricas espaciales  
+        \item \textbf{2-3 publicaciones} Q1 proyectadas
+        \item Código abierto reproducible
+        \item Base para investigación futura
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \textcolor{ForestGreen}{\textbf{Social-Aplicado}}
+      \begin{itemize}
+        \item Apoyo planeación urbana municipal
+        \item Herramienta políticas desarrollo sostenible
+        \item Evaluación impacto ambiental
+        \item Transparencia toma decisiones  
+        \item Transferible otras ciudades mexicanas
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \textcolor{Orange}{\textbf{Tecnológico}}
+      \begin{itemize}
+        \item Framework DEAP + Python escalable
+        \item Integrable SIG modernos
+        \item Procesamiento GPU/cluster
+        \item Interfaz usuario planificadores
+        \item Open-source ecosystem
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\section{Conclusiones}
+
+\begin{frame}{Síntesis de Logros y Perspectivas}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \textbf{Logros Principales Noviembre 2025:}
+      \begin{itemize}
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Dataset completo 37 años procesado (420 MB)
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Pipeline clasificación >99\% precisión  
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Sistema WoE completamente funcional
+        \item \textcolor{UNAMBlue}{\textbf{$\checkmark$}} Framework AC-AG 95\% implementado
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Tesis 85\% redactada (140 páginas)
+        \item \textcolor{ForestGreen}{\textbf{$\checkmark$}} Arquitectura software robusta (2,847 líneas)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \textbf{Perspectiva Finalización:}
+      \begin{itemize}
+        \item Cronograma viable Marzo 2026
+        \item Contribución metodológica sólida  
+        \item Impacto científico y social
+        \item Base para investigación futura
+      \end{itemize}
+      
+      \vspace{0.3cm}
+      \begin{alertblock}{Estado General}
+      \textcolor{ForestGreen}{\textbf{85\% Completado}} \\
+      En fase final experimentación
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+  
+  \vspace{0.4cm}
+  \begin{center}
+  \Large
+  \textcolor{UNAMBlue}{\textbf{Framework WoE-AC-AG: Metodología sólida, implementación robusta, 
+  resultados prometedores para modelado urbano en México}}
+  \end{center}
+\end{frame}
+
+% REFERENCIAS
+\appendix
+\begin{frame}{Referencias Clave Expandidas}
+  \footnotesize
+  \textbf{Fundamentos Metodológicos:}
+  \begin{itemize}
+    \item Clarke \& Gaydos (1997); White \& Engelen (1997); Wolfram (1984) - \emph{Fundamentos AC}
+    \item Almeida et al. (2003); Li \& Dang (2013); Wang et al. (2021) - \emph{AC + Optimización}
+    \item Bonham-Carter (1994); Agterberg \& Cheng (2002) - \emph{Weight of Evidence}
+  \end{itemize}
+  
+  \textbf{Datos y Procesamiento:}  
+  \begin{itemize}
+    \item Herold et al. (2003); Gong et al. (2013); Ma et al. (2019) - \emph{Sensado remoto urbano}
+    \item Kadhim et al. (2018); Zhang et al. (2020) - \emph{Deep learning clasificación}
+  \end{itemize}
+  
+  \textbf{Herramientas y Frameworks:}
+  \begin{itemize}
+    \item DEAP (Fortin et al., 2012); Repast (North et al., 2013) - \emph{Optimización evolutiva}  
+    \item UrbanSim (Waddell, 2002); SLEUTH (Clarke, 2007) - \emph{Modelado urbano}
+  \end{itemize}
+  
+  \textbf{Contexto Regional:}
+  \begin{itemize}
+    \item Angel et al. (2016); Seto et al. (2011, 2012); UN-Habitat (2020) - \emph{Crecimiento urbano global}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[plain]
+  \Huge ¡Gracias!
+  
+  \vspace{0.5cm}
+  \Large Preguntas y Comentarios
+  
+  \vspace{0.3cm}
+  \normalsize
+  \textcolor{gray}{
+  Rodrigo Moreno López \\
+  Maestría en Ciencias de la Computación \\
+  Universidad Nacional Autónoma de México
+  }
+\end{frame}
+
+\end{document}

@@ -1,1 +1,1 @@
-"""Grid operations and spatial processing utilities."""
+"""Operaciones sobre grids y utilidades de procesamiento espacial."""

@@ -11,30 +11,44 @@ Pipeline reproducible para modelar crecimiento urbano con Autómatas Celulares (
 ## Estructura del Proyecto
 
 ```
-tesis-ac/
-├── README.md
-├── pyproject.toml
+CityModelling/
+├── README.md                  # Este archivo
+├── USAGE.md                   # Guía de uso de scripts principales
+├── pyproject.toml             # Configuración del paquete
+│
 ├── configs/
 │   └── default.yaml           # Parámetros del pipeline
+│
 ├── data/
-│   ├── raw/                   # Imágenes originales
-│   ├── interim/               # Recortes/normalizaciones
-│   └── processed/             # Grids, etiquetas, máscaras
-├── src/
-│   └── tesis_ac/
-│       ├── features/          # LBP, Sobel, stack features
-│       ├── clustering/        # KMeans/GMM, etiquetado
-│       ├── grid/              # Raster→grid, vecindarios
-│       ├── woe/               # Cálculo WoE inicial
-│       ├── ca/                # Autómata celular
-│       ├── ga/                # Optimización (DEAP)
-│       ├── eval/              # Métricas espaciales/temporales
-│       └── viz/               # Visualización
-├── tests/
-├── docs/
-│   ├── beamer/
-│   └── article/
-└── notebooks/                 # Exploración rápida
+│   ├── raw/                   # Imágenes satelitales originales (1984-2020)
+│   ├── interim/               # Procesamiento intermedio
+│   └── processed/             # Mapas estandarizados, resultados AC
+│
+├── src/tesis_ac/              # 📦 Framework reutilizable
+│   ├── woe/                   # Weight of Evidence
+│   ├── ca/                    # Cellular Automata
+│   ├── ga/                    # Genetic Algorithm
+│   ├── features/              # Extracción de características
+│   ├── eval/                  # Métricas de evaluación
+│   ├── utils/                 # Utilidades
+│   ├── historical/            # Procesamiento de transiciones
+│   └── pipeline/              # Pipeline de clasificación de imágenes
+│
+├── analysis/                  # Resultados de análisis
+│   ├── woe_weights.json       # Pesos WoE entrenados
+│   ├── historical_transitions_corrected.pkl
+│   └── ac_simulation/         # Resultados de simulaciones
+│
+├── report/                    # 📄 Documentación académica
+│   └── tesis/                 # Tesis en LaTeX
+│
+├── notebooks/                 # Jupyter notebooks de exploración
+├── tests/                     # Tests unitarios
+│
+└── 🎯 Scripts principales (raíz):
+    ├── train_woe_model.py     # 1. Entrenamiento WoE
+    ├── calibrate_ac_ga.py     # 2. Calibración con AG
+    └── run_optimized_ac.py    # 3. Simulación final
 ```
 
 ## Instalación
@@ -49,51 +63,83 @@ pip install -r requirements.txt
 
 ## Uso Rápido
 
-### MVP Pipeline
+### Pipeline Completo (3 scripts principales)
 
 ```bash
-# 1. Clasificación y grid inicial
-python -m tesis_ac.run_classify_and_grid configs/default.yaml
+# 1. Entrenar pesos Weight of Evidence
+python train_woe_model.py
 
-# 2. Optimización con AG
-python -m tesis_ac.run_optimize configs/default.yaml
+# 2. Calibrar AC con Algoritmo Genético
+python calibrate_ac_ga.py
+
+# 3. Ejecutar simulación optimizada
+python run_optimized_ac.py
 ```
 
+Ver **[USAGE.md](USAGE.md)** para guía detallada de uso.
+
 ### Outputs esperados
-- `processed/grid_init.tif` - Grid inicial clasificado
-- `processed/grid_best.tif` - Grid optimizado
-- `reports/metrics.json` - Métricas de evaluación
-- `figs/curvas.png` - Curvas de convergencia
+- `analysis/woe_weights.json` - Pesos WoE entrenados
+- Parámetros optimizados del AC (threshold, iterations, etc.)
+- Mapas simulados con métricas de validación (IoU, Kappa, FoM)
+- Visualizaciones comparativas
 
-## Metodología
+## Metodología WoE-AC-AG
 
-1. **Preprocesar imágenes** → Normalización y recortes
-2. **Features** → LBP + Sobel + estadísticos por píxel
-3. **Clustering** → K-Means/GMM para 3 clases
-4. **Postproceso** → Etiquetado heurístico simple
-5. **Raster→Grid** → Discretización celular
-6. **WoE inicial** → Pesos basados en evidencia
-7. **AC** → Reglas con vecinos Moore/von Neumann
-8. **AG** → Optimización de parámetros espaciales
-9. **Validación** → Métricas vs. datos históricos
+**Pipeline de 3 etapas:**
+
+1. **Weight of Evidence (WoE)**
+   - Cuantificación empírica de influencia de factores espaciales
+   - Cálculo de Information Value por variable
+   - Variables: vecindario urbano, edges, distancias, etc.
+
+2. **Autómata Celular (AC)**
+   - Simulación espacial con reglas de transición probabilistas
+   - Basado en pesos WoE calculados
+   - Vecindario Moore, estados binarios (urbano/no-urbano)
+
+3. **Algoritmo Genético (AG)**
+   - Optimización automática de parámetros del AC
+   - Función objetivo: Figure of Merit (FoM)
+   - Parámetros: threshold, iterations, max_growth_rate, etc.
+
+**Validación:**
+- Partición temporal: entrenamiento (1984-2014), validación (2015-2020)
+- Métricas: IoU, Kappa, FoM, precisión/recall
+- Validación espacial y temporal
+
+Ver **tesis completa** en `report/tesis/book/main.pdf` para metodología detallada.
+
+## Estado del Proyecto
+
+- ✅ Framework WoE-AC-AG implementado y funcional
+- ✅ Pipeline de clasificación de imágenes satelitales
+- ✅ Calibración con Algoritmo Genético
+- ✅ Validación temporal con datos históricos (1984-2020)
+- ✅ Tesis completa (118 páginas) en LaTeX
+- ✅ Tests unitarios básicos
+- ✅ Documentación de uso
+
+**Resultados principales:**
+- IoU: 0.687 (mejora +14.9% vs AC tradicional)
+- Kappa: 0.645 (mejora +21.6% vs baseline)
+- Degradación temporal: -3.5% (validación 2015-2020)
+
+## Documentación Adicional
+
+- **[USAGE.md](USAGE.md)** - Guía de uso de scripts principales
+- **[FRAMEWORK_EXPLICACION.md](FRAMEWORK_EXPLICACION.md)** - Explicación del framework
+- **[MEJORAS_PRECISION.md](MEJORAS_PRECISION.md)** - Mejoras implementadas
+- **`report/tesis/book/main.pdf`** - Tesis completa
+- **`docs/VALIDACION_AVANZADA.md`** - Comparativa y protocolo de validación avanzada
+- **`docs/PIPELINE_DE_IMAGEN_A_VALIDACION.md`** - Pipeline completo (de imágenes a validación, AC+WoE)
 
 ## Desarrollo
 
-Ver `.copilot/INSTRUCTIONS.md` para convenciones de código y prompts para GitHub Copilot.
-
-## Entregables
-
-- [ ] Presentación Beamer (`docs/beamer/`)
-- [ ] Artículo LaTeX (`docs/article/`)
-- [ ] Pipeline reproducible (scripts principales)
-- [ ] Tests unitarios (`tests/`)
-
-## Estado Actual
-
-- ✅ Estructura base del proyecto
-- ⏳ P0: Módulos de features, clustering, grid, CA básico
-- ⏳ P1: WoE, GA, evaluación
-- ⏳ P2: Entregables LaTeX
+Para contribuir al proyecto:
+1. Instalar dependencias: `pip install -e ".[dev]"`
+2. Ejecutar tests: `pytest tests/`
+3. Ver convenciones en `.copilot/INSTRUCTIONS.md`
 
 ## Licencia
 

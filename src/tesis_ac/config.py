@@ -1,3 +1,10 @@
+"""Configuración central del proyecto (YAML -> dataclasses).
+
+Este módulo define la estructura tipada de la configuración (paths, parámetros
+de extracción de features, clustering, Autómata Celular, GA, evaluación y
+visualización) y ofrece helpers para cargarla desde un archivo YAML.
+"""
+
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict
@@ -9,14 +16,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class FeatureConfig:
-    """Configuration for feature extraction."""
+    """Configuración para extracción de características."""
     lbp: Dict[str, Any]
     sobel: Dict[str, Any]
 
 
 @dataclass
 class ClusteringConfig:
-    """Configuration for clustering."""
+    """Configuración para clustering."""
     clusters: int
     algorithm: str
     random_state: int
@@ -24,7 +31,7 @@ class ClusteringConfig:
 
 @dataclass
 class CAConfig:
-    """Configuration for Cellular Automaton."""
+    """Configuración para el Autómata Celular (AC)."""
     neighborhood: str
     radius: int
     T: int
@@ -34,7 +41,7 @@ class CAConfig:
 
 @dataclass
 class GAConfig:
-    """Configuration for Genetic Algorithm."""
+    """Configuración para el Algoritmo Genético (GA)."""
     pop_size: int
     n_generations: int
     crossover_prob: float
@@ -44,14 +51,14 @@ class GAConfig:
 
 @dataclass
 class EvaluationConfig:
-    """Configuration for evaluation metrics."""
+    """Configuración para métricas/evaluación."""
     metrics: list
     validation_split: float
 
 
 @dataclass
 class VisualizationConfig:
-    """Configuration for visualization."""
+    """Configuración para visualización."""
     dpi: int
     figsize: list
     colormap: str
@@ -59,7 +66,7 @@ class VisualizationConfig:
 
 @dataclass
 class Config:
-    """Main configuration class."""
+    """Configuración principal (paths + sub-configs)."""
     data_raw: Path
     data_processed: Path
     data_reports: Path
@@ -75,17 +82,17 @@ class Config:
 
 
 def load_config(path: str) -> Config:
-    """Load configuration from YAML file.
-    
-    Args:
-        path: Path to configuration YAML file.
-        
-    Returns:
-        Config: Loaded configuration object.
-        
-    Raises:
-        FileNotFoundError: If config file doesn't exist.
-        yaml.YAMLError: If YAML parsing fails.
+    """Carga la configuración desde un archivo YAML.
+
+    Argumentos:
+        path: Ruta al YAML de configuración.
+
+    Retorna:
+        Objeto :class:`Config` con paths resueltos y sub-secciones tipadas.
+
+    Lanza:
+        FileNotFoundError: Si el archivo no existe.
+        yaml.YAMLError: Si el parseo del YAML falla.
     """
     config_path = Path(path)
     if not config_path.exists():
@@ -118,10 +125,10 @@ def load_config(path: str) -> Config:
 
 
 def create_directories(config: Config) -> None:
-    """Create necessary directories if they don't exist.
-    
-    Args:
-        config: Configuration object containing paths.
+    """Crea directorios necesarios si no existen.
+
+    Argumentos:
+        config: Configuración que contiene las rutas a crear.
     """
     directories = [
         config.data_raw,

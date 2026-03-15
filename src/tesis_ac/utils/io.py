@@ -1,4 +1,15 @@
-"""Input/Output utilities for loading and preprocessing images."""
+"""Utilidades de entrada/salida para cargar y preprocesar imágenes.
+
+Este módulo concentra helpers para:
+
+- Cargar series de imágenes por patrón de nombres (p. ej. un año en el nombre).
+- Normalizar/desnormalizar valores de píxel.
+- Validar consistencia básica (dimensiones, continuidad temporal).
+
+Nota:
+    La lógica aquí es intencionalmente ligera; el objetivo es proveer I/O
+    reproducible para el pipeline de extracción de características.
+"""
 
 import logging
 from pathlib import Path
@@ -16,19 +27,23 @@ def load_image_series(
     pattern: str = "qrtro_12_*.jpg",
     normalize: bool = True
 ) -> Dict[int, np.ndarray]:
-    """Load a series of images matching a pattern and extract years.
-    
-    Args:
-        data_path: Path to directory containing images.
-        pattern: Glob pattern to match image files.
-        normalize: Whether to normalize pixel values to [0, 1].
-        
-    Returns:
-        Dictionary mapping year -> image array (H, W, C).
-        
-    Example:
-        >>> images = load_image_series("data/raw", "qrtro_12_*.jpg")
-        >>> print(list(images.keys()))  # [1984, 1985, ..., 2020]
+    """Carga una serie de imágenes que hacen match con un patrón y extrae el año.
+
+    El año se extrae buscando un token de 4 dígitos en el nombre del archivo.
+
+    Argumentos:
+        data_path: Ruta al directorio que contiene las imágenes.
+        pattern: Patrón tipo glob para hacer match con archivos de imagen.
+        normalize: Si ``True``, normaliza los valores de píxel a $[0, 1]$.
+
+    Retorna:
+        Diccionario ``{año: imagen}`` donde la imagen es un ``np.ndarray`` con
+        shape ``(H, W, C)``.
+
+    Ejemplo:
+        >>> images = load_image_series("data/raw", pattern="qrtro_12_*.jpg")
+        >>> sorted(images.keys())[:3]  # doctest: +SKIP
+        [1984, 1985, 1986]
     """
     data_path = Path(data_path)
     
@@ -75,15 +90,15 @@ def load_single_image(
     normalize: bool = True,
     target_size: Optional[Tuple[int, int]] = None
 ) -> np.ndarray:
-    """Load a single image file.
-    
-    Args:
-        img_path: Path to image file.
-        normalize: Whether to normalize pixel values to [0, 1].
-        target_size: Optional (width, height) to resize image.
-        
-    Returns:
-        Image array with shape (H, W, C) for RGB or (H, W) for grayscale.
+    """Carga una sola imagen desde disco y la devuelve como array.
+
+    Argumentos:
+        img_path: Ruta al archivo de imagen.
+        normalize: Si ``True``, normaliza los valores de píxel a $[0, 1]$.
+        target_size: Tamaño objetivo opcional ``(width, height)`` para reescalar.
+
+    Retorna:
+        Array de imagen con shape ``(H, W, C)`` (RGB) o ``(H, W)`` (escala de grises).
     """
     img_path = Path(img_path)
     
@@ -115,12 +130,13 @@ def save_processed_image(
     output_path: Union[str, Path],
     denormalize: bool = True
 ) -> None:
-    """Save a processed image array to file.
-    
-    Args:
-        img_array: Image array to save.
-        output_path: Output file path.
-        denormalize: Whether to denormalize from [0, 1] to [0, 255].
+    """Guarda un array de imagen procesada a disco.
+
+    Argumentos:
+        img_array: Array de imagen a guardar.
+        output_path: Ruta destino.
+        denormalize: Si ``True`` y el array es ``float32``, asume $[0,1]$ y
+            desnormaliza a $[0,255]$ (``uint8``).
     """
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -142,13 +158,13 @@ def save_processed_image(
 
 
 def get_image_stats(images: Dict[int, np.ndarray]) -> Dict[str, any]:
-    """Get statistics about a series of images.
-    
-    Args:
-        images: Dictionary of year -> image array.
-        
-    Returns:
-        Dictionary with statistics.
+    """Calcula estadísticas descriptivas de una serie de imágenes.
+
+    Argumentos:
+        images: Diccionario ``{año: imagen}``.
+
+    Retorna:
+        Diccionario con estadísticas (rango de años, shape, dtype, etc.).
     """
     if not images:
         return {}
@@ -178,13 +194,16 @@ def get_image_stats(images: Dict[int, np.ndarray]) -> Dict[str, any]:
 
 
 def validate_image_series(images: Dict[int, np.ndarray]) -> bool:
-    """Validate that all images in series have consistent properties.
-    
-    Args:
-        images: Dictionary of year -> image array.
-        
-    Returns:
-        True if valid, False otherwise.
+    """Valida que una serie de imágenes sea consistente para análisis temporal.
+
+    Chequea que existan imágenes, que las dimensiones sean consistentes, y que
+    haya suficientes años para considerarse serie temporal.
+
+    Argumentos:
+        images: Diccionario ``{año: imagen}``.
+
+    Retorna:
+        ``True`` si la serie parece válida; ``False`` si se detecta un problema.
     """
     if not images:
         logger.error("Empty image series")

@@ -1,0 +1,56 @@
+% ---- Comandos y definiciones personalizadas ----
+
+% Abreviaciones comunes
+\newcommand{\AC}{Autómatas Celulares}
+\newcommand{\AG}{Algoritmos Genéticos}
+\newcommand{\ML}{Machine Learning}
+\newcommand{\DL}{Deep Learning}
+\newcommand{\GA}{Genetic Algorithm}
+\newcommand{\CA}{Cellular Automata}
+\newcommand{\SVM}{Support Vector Machine}
+\newcommand{\PCA}{Principal Component Analysis}
+\newcommand{\WoE}{Weight of Evidence}
+\newcommand{\IoU}{Intersection over Union}
+\newcommand{\FOM}{Figure of Merit}
+
+% Comandos para métricas
+% kappa is already defined in LaTeX
+\newcommand{\accuracy}{\textit{accuracy}}
+\newcommand{\precision}{\textit{precision}}
+\newcommand{\recall}{\textit{recall}}
+\newcommand{\fscore}{\textit{F1-score}}
+
+% Comandos para código
+\newcommand{\code}[1]{\texttt{\color{ThesisBlue}#1}}
+\newcommand{\variable}[1]{\texttt{\color{ThesisGray}#1}}
+\newcommand{\function}[1]{\texttt{\color{ThesisGreen}#1}}
+
+% Comando para destacar términos importantes
+\newcommand{\term}[1]{\textbf{\color{ThesisBlue}#1}}
+
+% Comando para citas de figuras y tablas
+\newcommand{\figref}[1]{Figura~\ref{#1}}
+\newcommand{\tabref}[1]{Tabla~\ref{#1}}
+\newcommand{\secref}[1]{Sección~\ref{#1}}
+\newcommand{\chapref}[1]{Capítulo~\ref{#1}}
+
+% Entornos personalizados
+\newtheorem{definition}{Definición}[chapter]
+\newtheorem{theorem}{Teorema}[chapter]
+\newtheorem{lemma}{Lema}[chapter]
+
+% Entorno para resúmenes de capítulo
+\newenvironment{resumen}
+  {\begin{quote}\small\itshape}
+  {\end{quote}}
+
+% Comando para checkmarks
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+% Comando para notas de margen en borradores
+\newcommand{\todo}[1]{\marginpar{\color{red}\scriptsize TODO: #1}}
+
+% Comando para ecuaciones importantes
+\newcommand{\eqnumber}[1]{\tag{\ref{#1}}}

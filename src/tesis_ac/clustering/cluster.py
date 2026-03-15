@@ -30,40 +30,33 @@ def cluster_kmeans(
     batch_size: Optional[int] = None,
     verbose: bool = True
 ) -> Tuple[np.ndarray, object]:
-    """
-    Aplica clustering K-Means a características de píxeles.
-    
-    Parameters:
-    -----------
-    features : np.ndarray
-        Características preparadas para clustering (N_samples, N_features)
-        Típicamente salida de prepare_for_clustering()
-    n_clusters : int, default=3
-        Número de clusters (ej: 3 para urbano/rural/carreteras)
-    method : str, default='kmeans'
-        Algoritmo de clustering:
-        - 'kmeans': K-Means estándar
-        - 'minibatch': Mini-Batch K-Means (más rápido para datasets grandes)
-    random_state : int, default=42
-        Semilla para reproducibilidad
-    max_iter : int, default=300
-        Máximo número de iteraciones
-    batch_size : int, optional
-        Tamaño de batch para MiniBatch K-Means (auto si None)
-    verbose : bool, default=True
-        Si imprimir información del progreso
-        
-    Returns:
-    --------
-    Tuple[np.ndarray, object]
-        - Etiquetas de cluster para cada muestra (N_samples,)
-        - Objeto KMeans entrenado
-        
-    Examples:
-    ---------
-    >>> features = prepare_for_clustering(stacked_features)[0]
-    >>> labels, model = cluster_kmeans(features, n_clusters=3)
-    >>> print(f"Found {len(np.unique(labels))} clusters")
+    """Aplica clustering K-Means a características a nivel píxel.
+
+    Argumentos:
+        features: Características para clustering con shape ``(n_muestras, n_features)``.
+            Típicamente es la salida de ``prepare_for_clustering``.
+        n_clusters: Número de clusters (p. ej. 3 para urbano/rural/carreteras).
+        method: Algoritmo a usar:
+
+            - ``'kmeans'``: K-Means estándar.
+            - ``'minibatch'``: Mini-Batch K-Means (más rápido en datasets grandes).
+
+        random_state: Semilla para reproducibilidad.
+        max_iter: Máximo número de iteraciones.
+        batch_size: Tamaño de batch para MiniBatch K-Means (si ``None`` se estima).
+        verbose: Si ``True``, imprime información de progreso.
+
+    Retorna:
+        Tupla ``(labels, model)``:
+
+        - ``labels``: etiquetas de cluster para cada muestra, shape ``(n_muestras,)``.
+        - ``model``: instancia entrenada de ``KMeans``/``MiniBatchKMeans``.
+
+    Ejemplo:
+        >>> features = prepare_for_clustering(stacked_features)[0]  # doctest: +SKIP
+        >>> labels, model = cluster_kmeans(features, n_clusters=3)  # doctest: +SKIP
+        >>> len(np.unique(labels))  # doctest: +SKIP
+        3
     """
     if features.ndim != 2:
         raise ValueError(f"Features must be 2D (N_samples, N_features), got {features.shape}")
@@ -128,35 +121,30 @@ def assign_semantic_labels(
     urban_threshold: float = 0.5,
     edge_threshold: float = 0.3
 ) -> Dict[int, str]:
-    """
-    Asigna etiquetas semánticas a clusters basado en características de centros.
-    
-    Parameters:
-    -----------
-    cluster_labels : np.ndarray
-        Etiquetas de cluster de cluster_kmeans()
-    cluster_centers : np.ndarray
-        Centros de clusters (n_clusters, n_features)
-    feature_names : List[str], optional
-        Nombres de features ['R','G','B','LBP1',...,'Sobel1',...]
-    urban_threshold : float, default=0.5
-        Umbral para clasificar como urbano (basado en LBP promedio normalizado)
-    edge_threshold : float, default=0.3
-        Umbral para clasificar como carretera (basado en Sobel promedio)
-        
-    Returns:
-    --------
-    Dict[int, str]
-        Mapeo de cluster_id -> etiqueta semántica
-        
-    Notes:
-    ------
-    Heurísticas de clasificación:
-    - Alto LBP + Alto Sobel = "Urbano Denso" 
-    - Alto LBP + Bajo Sobel = "Urbano Residencial"
-    - Bajo LBP + Alto Sobel = "Carreteras"
-    - Bajo LBP + Bajo Sobel = "Rural/Natural"
-    - Valores RGB específicos pueden indicar "Agua" o "Vegetación"
+    """Asigna etiquetas semánticas a clusters con base en sus centros.
+
+    La idea es mapear clusters numéricos a categorías interpretables (urbano,
+    rural, carreteras, etc.) usando heurísticas sobre promedios de grupos de
+    features (LBP/Sobel/RGB).
+
+    Argumentos:
+        cluster_labels: Etiquetas de cluster producidas por :func:`cluster_kmeans`.
+        cluster_centers: Centros de cluster con shape ``(n_clusters, n_features)``.
+        feature_names: Nombres de features, p. ej. ``['R','G','B','LBP_0',...,'Sobel_mag_R',...]``.
+            Si es ``None``, se generan nombres genéricos.
+        urban_threshold: Umbral para identificar clusters urbanos (basado en LBP).
+        edge_threshold: Umbral para identificar infraestructura/carreteras (basado en Sobel).
+
+    Retorna:
+        Diccionario ``{cluster_id: etiqueta}``.
+
+    Notas:
+        Heurísticas (alto/bajo) de clasificación:
+
+        - Alto LBP + Alto Sobel -> ``"Urbano Denso"``
+        - Alto LBP + Bajo Sobel -> ``"Urbano Residencial"``
+        - Bajo LBP + Alto Sobel -> ``"Carreteras/Infraestructura"``
+        - Bajo LBP + Bajo Sobel -> ``"Rural/Natural"`` (con sub-heurísticas RGB)
     """
     n_clusters, n_features = cluster_centers.shape
     
@@ -214,32 +202,25 @@ def evaluate_clustering(
     labels: np.ndarray,
     verbose: bool = True
 ) -> Dict[str, float]:
-    """
-    Evalúa calidad del clustering usando métricas estándar.
-    
-    Parameters:
-    -----------
-    features : np.ndarray
-        Características usadas para clustering (N_samples, N_features)
-    labels : np.ndarray
-        Etiquetas de cluster (N_samples,)
-    verbose : bool, default=True
-        Si imprimir métricas
-        
-    Returns:
-    --------
-    Dict[str, float]
-        Métricas de evaluación:
-        - silhouette_score: [-1, 1], mayor es mejor
-        - calinski_harabasz_score: [0, inf], mayor es mejor  
-        - davies_bouldin_score: [0, inf], menor es mejor
-        - n_clusters: número de clusters únicos
-        
-    Notes:
-    ------
-    - Silhouette Score: Mide qué tan similar es un punto a su cluster vs otros
-    - Calinski-Harabasz: Ratio de dispersión entre/dentro clusters
-    - Davies-Bouldin: Promedio de similitud entre clusters
+    """Evalúa la calidad del clustering usando métricas estándar.
+
+    Argumentos:
+        features: Características usadas para clustering con shape ``(n_muestras, n_features)``.
+        labels: Etiquetas asignadas a cada muestra, shape ``(n_muestras,)``.
+        verbose: Si ``True``, imprime métricas.
+
+    Retorna:
+        Diccionario con métricas:
+
+        - ``silhouette_score``: $[-1, 1]$, mayor es mejor.
+        - ``calinski_harabasz_score``: $[0, \infty)$, mayor es mejor.
+        - ``davies_bouldin_score``: $[0, \infty)$, menor es mejor.
+        - ``n_clusters``: número de clusters únicos.
+
+    Notas:
+        - Silhouette: similitud intra-cluster vs inter-cluster.
+        - Calinski-Harabasz: razón de dispersión entre/dentro clusters.
+        - Davies-Bouldin: similitud promedio entre clusters.
     """
     unique_labels = np.unique(labels)
     n_clusters = len(unique_labels)
