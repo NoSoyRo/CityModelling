@@ -128,13 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Data files
+# Data files (raw/interim excluded; processed included for backup)
 data/raw/*
 data/interim/*
-data/processed/*
 !data/raw/.gitkeep
 !data/interim/.gitkeep
-!data/processed/.gitkeep
 
 # Reports and figures
 reports/*

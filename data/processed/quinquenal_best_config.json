@@ -1,0 +1,43 @@
+{
+  "description": "Mejor configuración para validación quinquenal 2011→2016",
+  "woe_model": {
+    "file": "data/processed/woe_pooled_1984_2010.pkl",
+    "training_period": "1984-2010",
+    "n_periods": 26,
+    "total_transitions": 8196264,
+    "variables": [
+      "distance_urban",
+      "neighbor_density_3x3",
+      "neighbor_density_5x5",
+      "neighbor_density_7x7",
+      "local_fragmentation",
+      "nearest_cluster_size",
+      "urban_gradient"
+    ],
+    "iv_weights": {
+      "distance_urban": 0.2817,
+      "neighbor_density_3x3": 0.2495,
+      "neighbor_density_5x5": 0.1445,
+      "neighbor_density_7x7": 0.1068,
+      "local_fragmentation": 0.1062,
+      "urban_gradient": 0.0996,
+      "nearest_cluster_size": 0.0120
+    }
+  },
+  "ac_parameters": {
+    "threshold": 0.75,
+    "neighbor_weight": 0.5,
+    "distance_weight": 1.963,
+    "n_steps": 5,
+    "notes": "threshold=0.75 calibrado manualmente (el 0.596 del AG causaba sobre-predicción de 58%). neighbor_weight y distance_weight del AG (ga_calibrated_params.json). Ponderación WoE por Information Value normalizado."
+  },
+  "validation_period": {
+    "start_year": 2011,
+    "end_year": 2016,
+    "map_inicial": "data/processed/standardized_maps/2011.npy",
+    "map_observado": "data/processed/standardized_maps/2016.npy"
+  },
+  "results_path": "data/processed/validation_quinquenal_2011_2016_v3_weighted/validation_results.json",
+  "run_command": "python validate_quinquenal_2011_2016.py",
+  "last_run": "2026-03-01T11:05:43"
+}

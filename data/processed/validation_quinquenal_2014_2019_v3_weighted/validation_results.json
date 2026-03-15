@@ -1,0 +1,33 @@
+{
+  "metadata": {
+    "validation_period": "2014\u21922019",
+    "timestamp": "2026-03-14T17:14:26.447832"
+  },
+  "confusion_matrix": {
+    "TP": 2611594,
+    "TN": 1168128,
+    "FP": 1545800,
+    "FN": 93486
+  },
+  "pixel_metrics": {
+    "accuracy": 0.6974933419548375,
+    "iou": 0.6143654960855164,
+    "precision": 0.6281805380967019,
+    "recall": 0.9654405784671802,
+    "f1_score": 0.761123175111483,
+    "kappa": 0.3955141047248824
+  },
+  "fom_metrics": {
+    "fom": 0.2871440208527836,
+    "B_hits": 511475,
+    "C_misses": 93486,
+    "A_false_alarms": 1176288
+  },
+  "growth_statistics": {
+    "urban_start": 2469631,
+    "urban_end_observed": 2705080,
+    "urban_end_predicted": 4157394,
+    "growth_observed": 235449,
+    "growth_predicted": 1687763
+  }
+}
