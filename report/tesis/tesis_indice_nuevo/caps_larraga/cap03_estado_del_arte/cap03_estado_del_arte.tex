@@ -1,0 +1,330 @@
+% !TEX root = cap03_standalone.tex
+% Capítulo 3. Estado del arte
+% Reestructurado siguiendo la revisión de la Dra. Lárraga:
+% catálogo descriptivo -> análisis crítico por problemas metodológicos.
+
+\chapter{Estado del arte}
+\label{ch:estado-del-arte}
+
+\begin{resumen}
+El modelado computacional del crecimiento urbano ha producido en treinta años
+una literatura abundante pero metodológicamente desigual. Este capítulo no
+cataloga trabajos por autor sino que identifica los cuatro problemas
+metodológicos que siguen abiertos en el campo, calibración por fuerza bruta,
+validación sobreajustada a una sola ventana temporal, opacidad de la función de
+transición en modelos de aprendizaje profundo y dependencia de software
+propietario, y muestra cómo cada uno justifica una decisión concreta del diseño
+del modelo WoE-AC propuesto. La discusión cierra con un mapa de la literatura
+para ciudades mexicanas, donde ningún trabajo publicado satisface simultáneamente
+los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1}.
+\end{resumen}
+
+% ============================================================
+\section{Evolución del modelado urbano computacional}
+\label{sec:evolucion}
+% ============================================================
+
+El modelado de la dinámica urbana mediante autómatas celulares se consolidó con
+\textcite{White1997}, que mostró que reglas locales basadas en distancia y
+vecindad podían reproducir patrones metropolitanos realistas. La generalización
+del enfoque vino con SLEUTH \parencite{Clarke1998,Silva2002}, que durante dos
+décadas funcionó como referencia y se aplicó en decenas de ciudades.
+Paralelamente, la tradición LUCC (Land Use and Cover Change) introdujo modelos
+basados en mapas de idoneidad estadística: familias como CLUE-S, Dinamica EGO,
+CA-Markov y, más recientemente, FLUS, GeoSOS y MOLUSCE, ofrecieron
+arquitecturas alternativas al CA puro en las que la función de transición
+emerge de regresiones logísticas o pesos bayesianos sobre datos históricos.
+
+Una corriente posterior sustituyó la regresión por modelos de aprendizaje
+automático e híbridos metaheurísticos. \textcite{almeida2008stochastic} acopló
+una red neuronal feedforward a un CA estocástico para Piracicaba, Brasil; años
+más tarde \textcite{Wang2021} combinó un autómata celular con un algoritmo
+genético para optimizar la forma urbana de Wuhan, mientras
+\textcite{Hagenauer2022} introdujo una red neuronal geográficamente ponderada
+para capturar relaciones espaciales no lineales. Estos enfoques reportan
+ganancias cuantitativas, pero sustituyen pesos legibles por activaciones
+internas o cromosomas que no admiten una lectura geográfica directa.
+
+La tensión central del campo no es entonces entre AC y aprendizaje automático,
+sino entre dos objetivos que parecen contrapuestos: maximizar precisión
+predictiva y mantener la trazabilidad de cada decisión espacial. Las secciones
+siguientes muestran que esta tensión es resoluble si se cambia la pregunta
+metodológica.
+
+% ============================================================
+\section{Problemas metodológicos persistentes}
+\label{sec:problemas-metodologicos}
+% ============================================================
+
+\subsection{Calibración: equifinalidad y costo computacional}
+
+SLEUTH calibra cinco coeficientes enteros mediante búsqueda en cuadrícula sobre
+el espacio discreto $[0,100]^4 \times [0,20]$, es decir, en el orden de $10^9$
+combinaciones evaluadas con simulaciones Monte Carlo de 100 iteraciones cada
+una. \textcite{Clarke1998} resolvió el problema con tres fases: coarse, fine,
+final, que reducen el espacio iterativamente; aun así, una calibración completa
+toma días en hardware contemporáneo \parencite{Jantz2003}. El problema
+metodológico no es solo el costo: es la \textbf{equifinalidad}, esto es, la
+existencia de múltiples combinaciones de coeficientes que producen patrones
+indistinguibles a la métrica de calibración pero divergen en proyecciones de
+largo plazo \parencite{Clarke2008}. Sin un criterio adicional, la elección
+entre combinaciones equifinales termina dependiendo del operador.
+
+El presente trabajo evita el problema redefiniéndolo: en lugar de calibrar
+coeficientes que controlan reglas geométricas genéricas (diffusion, breed,
+spread), calibra dos parámetros que controlan la combinación de evidencia
+espacial empírica (umbral de transición y peso de vecindad). El espacio de
+búsqueda es de dos dimensiones y la calibración termina en minutos. Más
+importante: cada configuración candidata produce mapas de idoneidad cuyos pesos
+por variable son directamente auditables, eliminando la ambigüedad asociada a
+la equifinalidad.
+
+\subsection{Validación: sobreajuste temporal y métricas no comparables}
+
+\textcite{pontius2008comparing} analizó trece aplicaciones independientes de
+nueve modelos de cambio de uso de suelo y propuso el Figure of Merit (FoM) como
+métrica estándar comparable entre estudios. Su hallazgo es incómodo: seis de
+las trece aplicaciones obtienen FoM inferior al $15\%$ y solo una supera el
+$50\%$. La dispersión no se explica por la sofisticación del modelo sino por la
+magnitud del cambio neto observado: el FoM crece monotónicamente con el
+porcentaje de celdas que efectivamente cambian de estado.
+
+Esto tiene dos implicaciones que la literatura rara vez confronta. Primero,
+\textbf{validar en una sola ventana temporal es estadísticamente insuficiente}:
+si el FoM depende de la magnitud del cambio, una validación única no permite
+distinguir entre un modelo robusto y uno ajustado a una fase específica del
+crecimiento. \textcite{Sante2010} y \textcite{Aburas2016} confirman, en sus
+respectivas revisiones sistemáticas, que la validación en un único período es
+la norma, no la excepción, en la literatura de Autómatas Celulares. Segundo, \textbf{reportar
+Kappa o Accuracy sin FoM infla artificialmente la calidad del modelo}: en un
+sistema urbano consolidado donde el 90\% de las celdas permanece sin cambio,
+un modelo trivial que predice ``no cambio'' en todas las celdas obtiene
+Accuracy de $0.90$ sin capturar ninguna dinámica.
+
+La consecuencia metodológica es directa: la validación del WoE-AC se realiza en
+cinco ventanas quinquenales independientes (2011--2016 a 2015--2020),
+reportando FoM, Kappa e IoU simultáneamente. La estabilidad del FoM a través de
+las cinco ventanas, no su valor absoluto en una sola, es lo que permite
+distinguir mecanismos espaciales reales de sobreajuste.
+
+\subsection{Interpretabilidad: el problema de la caja negra}
+
+\textcite{almeida2008stochastic} entrenó una red neuronal feedforward con
+backpropagation sobre variables biofísicas e infraestructurales de Piracicaba
+(Brasil, 1985--1999); la red aprende pesos sinápticos que alimentan a un CA
+estocástico. El modelo reporta concordancia espacial superior a los AC clásicos
+de la época, pero los pesos no son traducibles a una pregunta geográfica: no se
+puede afirmar que ``la distancia a vialidades contribuyó un $X\%$ a la
+transición de esta celda''. La activación de cada neurona es una combinación no
+lineal de todas las variables de entrada, sin descomposición legible.
+
+Trabajos posteriores intensifican esta opacidad por dos vías. La primera es la
+optimización metaheurística: \textcite{Wang2021} acopla un autómata celular a
+un algoritmo genético para generar formas urbanas que maximizan un índice de
+vitalidad en Wuhan, donde cada generación produce cromosomas que carecen de
+lectura geográfica directa. La segunda es el aprendizaje profundo aplicado a
+teledetección y modelado espacial \parencite{Ma2019,Hagenauer2022}, que
+requiere GPU y conjuntos de datos masivos para entrenar redes cuyas
+representaciones internas no son auditables. La ganancia en exactitud es
+real, pero el costo metodológico es alto: el modelo clasifica sin justificar,
+y la justificación es exactamente lo que un instrumento de planeación urbana
+requiere. Un plan municipal sustentado en ``el modelo lo predijo'' es
+jurídica y políticamente más débil que uno sustentado en ``históricamente, la
+proximidad al frente urbano contribuye con un Information Value de $X$ a la
+probabilidad de transición''.
+
+El método de Pesos de Evidencia provee exactamente esa descomposición. La
+elección de WoE en este trabajo no responde a una preferencia estética por la
+transparencia: responde al requerimiento R4 de la
+Tabla~\ref{tab:requerimientos_modelo_1}, que define la auditabilidad como
+condición de uso del modelo, no como propiedad accesoria.
+
+\subsection{Transferibilidad: software propietario y reproducibilidad}
+
+Una fracción significativa de los modelos LUCC más citados depende de software
+propietario. Dinamica EGO opera bajo licencia académica restringida; IDRISI y
+TerrSet son comerciales; SLEUTH funciona con un código en C disponible pero
+cuya instalación en sistemas modernos requiere ajustes no documentados. La
+consecuencia práctica es que la reproducibilidad de los resultados publicados
+es, en el mejor de los casos, parcial: el lector puede leer el método pero no
+ejecutarlo sin acceso a infraestructura específica.
+
+Esta dependencia tiene una consecuencia material poco discutida en la
+literatura metodológica: el acceso a licencias y a hardware especializado
+introduce una barrera de entrada que condiciona qué grupos académicos pueden
+reproducir o extender los modelos publicados. En contextos donde estos recursos
+son limitados, la única alternativa práctica es reescribir el pipeline desde
+cero. El presente trabajo opta por esta vía: se implementa íntegramente en
+Python con dependencias de código abierto (NumPy, SciPy, scikit-learn) sobre
+datos públicos (Google Earth Engine, INEGI), satisfaciendo R3 sin
+concesiones.
+
+% ============================================================
+\section{Pesos de Evidencia y modelos probabilísticos espaciales}
+\label{sec:woe-literatura}
+% ============================================================
+
+El método de Pesos de Evidencia, desarrollado por \textcite{BonhamCarter1994}
+en el contexto de la prospección mineral, se formaliza en el Capítulo~\ref{ch:marco-teorico}
+(ecuación~\ref{eq:woe}): para cada clase de una variable espacial discretizada
+se calcula un peso bayesiano que cuantifica la asociación entre dicha clase y
+la ocurrencia del evento de interés en este trabajo, la transición de suelo
+no urbano a urbano. El peso total por celda es la suma de los pesos de las
+variables evaluadas en ella, transformada por la función logística para
+obtener una probabilidad acotada (ecuación~\ref{eq:woe_sigmoid}); el
+Information Value sintetiza el poder discriminatorio de cada variable. La
+presente sección no repite la derivación matemática, sino que la sitúa en la
+literatura LUCC.
+
+La adaptación al modelado LUCC se consolidó con herramientas como Dinamica EGO,
+que combinan mapas de idoneidad WoE con un autómata celular de dos pasos, \textit{expander} y \textit{patcher}, que reproduce la geometría del cambio
+observado. La literatura derivada documenta aplicaciones a deforestación
+amazónica, expansión agrícola y, en menor medida, crecimiento urbano.
+
+El WoE tiene tres limitaciones estadísticas reconocidas que es necesario
+explicitar para evitar atribuirle propiedades que no posee:
+
+\paragraph{Independencia condicional.} La suma de pesos asume que las variables
+son condicionalmente independientes dada la ocurrencia del evento. Este
+supuesto rara vez se satisface en variables espaciales urbanas, donde
+proximidad a vialidades y proximidad al frente urbano están correlacionadas. El
+presente trabajo no introduce una corrección formal para esta dependencia;
+sigue la práctica estándar de la literatura LUCC, que reporta el sesgo derivado
+mediante el contraste empírico con el cambio observado. La validación
+multi-período mitiga parcialmente el problema: si el sesgo fuera dominante, el
+FoM degradaría sistemáticamente entre ventanas.
+
+\paragraph{Sensibilidad a la discretización.} Los pesos dependen de cómo se
+categorice cada variable continua. El presente trabajo adopta una discretización
+basada en cuantiles uniformes, que es la convención más reproducible aunque no
+necesariamente la óptima en términos de IV.
+
+\paragraph{Multicolinealidad entre drivers.} Variables fuertemente correlacionadas
+producen pesos redundantes que inflan la magnitud aparente de la evidencia. Este
+trabajo aplica un análisis de componentes principales sobre el conjunto de
+variables espaciales antes del cálculo de IV, lo que reduce la redundancia sin
+sacrificar interpretabilidad.
+
+% ============================================================
+\section{Validación espacial en modelos LUCC}
+\label{sec:validacion-literatura}
+% ============================================================
+
+La métrica más reportada en LUCC sigue siendo el coeficiente Kappa de Cohen, a
+pesar de las críticas explícitas a su uso en mapas de cambio. Kappa mezcla dos
+fuentes de error: desacuerdo en cantidad y desacuerdo en asignación, que
+tienen significados metodológicos distintos
+\parencite{pontius2008comparing}. Esta descomposición separa:
+\begin{itemize}
+    \item \textbf{Quantity disagreement}: el modelo predice un total de celdas
+    de cambio distinto al observado, sin importar dónde.
+    \item \textbf{Allocation disagreement}: el modelo predice el total correcto
+    de cambio pero lo asigna a celdas incorrectas.
+\end{itemize}
+
+Un modelo puede ser perfecto en \textit{quantity} y catastrófico en
+\textit{allocation}: predice exactamente el área urbana total pero en lugares
+equivocados. El FoM, definido como el índice de Jaccard restringido a las
+celdas de cambio, es sensible exactamente a este problema.
+
+La Intersection over Union (IoU) sobre la clase urbana provee información
+complementaria: mientras el FoM evalúa la calidad de la predicción del cambio,
+la IoU evalúa la calidad de la predicción del estado urbano final. Reportar
+ambas evita el sesgo de evaluar solo la dinámica o solo el estado.
+
+El presente trabajo adopta este protocolo de evaluación: FoM como métrica
+primaria para el cambio, IoU para el estado, Kappa por compatibilidad con la
+literatura previa y un análisis explícito de la descomposición quantity vs.
+allocation cuando el FoM es bajo.
+
+% ============================================================
+\section{Vacíos específicos en el contexto mexicano}
+\label{sec:vacios-mexico}
+% ============================================================
+
+La literatura mexicana sobre modelado de crecimiento urbano es escasa pero
+reveladora. \textcite{SuarezDelgado2007} construyó el primer estudio de
+prospección espacial sistemática para la Zona Metropolitana de la Ciudad de
+México: a partir de proyecciones demográficas de CONAPO al 2020, distribuyó
+hectáreas adicionales en contornos metropolitanos bajo tres escenarios de
+densidad. El trabajo es relevante por su pionería pero no es un modelo CA: no
+hay reglas de vecindad, no hay calibración sobre datos históricos de cambio
+celular y la validación se hace a nivel de totales de hectáreas, no a nivel de
+celda. R1, R4 y la replicabilidad pública no aplican; la única dimensión
+satisfecha es R2.
+
+\textcite{RamirezHernandez2021}, en un libro institucional de IIEc-UNAM, aplica
+un AC inspirado en SLEUTH a la ZMCM con datos de 1990--2010 y proyecta al
+2040. Los parámetros se describen en el texto pero el código no está
+disponible y la validación no reporta FoM ni Kappa de forma sistemática. La
+obra es valiosa como referencia conceptual pero no como benchmark cuantitativo:
+no es posible comparar su desempeño con el rango de
+\textcite{pontius2008comparing}.
+
+\textcite{Chihuahua2023} aplica una cadena SVM + regresión logística +
+CA-Markov en TerrSet/IDRISI a núcleos urbanos asentados en cinco cuencas
+hidrológicas del estado de Chihuahua (Laguna Bustillos y de los Mexicanos,
+río Conchos, Ojinaga, río Conchos, Presa de la Colina, río Conchos, Presa el
+Granero y río San Pedro), con proyecciones a 2030, 2040 y 2050. La
+clasificación SVM sobre mapas de uso de suelo 2010--2020 es reproducible y la
+regresión logística aporta interpretabilidad parcial (pseudo $R^2$ de
+McFadden superior a $0.2$, ROC aceptable), pero la asignación CA-Markov
+ocurre dentro del módulo Land Change Modeler de TerrSet, software
+propietario, y la validación cuantitativa se reporta sobre la regresión
+logística, no sobre la simulación CA en sí. R4 se cumple parcialmente; R3 no
+se cumple.
+
+El cuadrante metodológico que estos tres trabajos definen es claro:
+
+\begin{table}[H]
+\centering
+\caption{Posicionamiento de la literatura mexicana frente a R1--R4.}
+\label{tab:cuadrante-mexico}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Trabajo} & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} \\
+\midrule
+\textcite{SuarezDelgado2007}    & ---     & \checkmark & ---        & ---       \\
+\textcite{RamirezHernandez2021} & ---     & \checkmark & ---        & parcial   \\
+\textcite{Chihuahua2023}        & parcial & \checkmark & ---        & parcial   \\
+\midrule
+\textbf{Presente trabajo}       & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ningún trabajo publicado para una ciudad mexicana cumple simultáneamente con
+validación multi-período cuantitativa, reproducibilidad abierta e
+interpretabilidad auditable a nivel de celda. Esa es la brecha que el presente
+trabajo atiende, y es la razón por la cual la elección de Querétaro como caso
+de estudio no es sustituible: aplicar el método sobre una ciudad ya estudiada
+por modelos de caja negra no generaría comparación válida con la literatura
+existente; aplicarlo sobre una ciudad intermedia sin estudios previos abre el
+espacio metodológico.
+
+% ============================================================
+\section{Síntesis: posicionamiento del presente trabajo}
+\label{sec:sintesis-estado-arte}
+% ============================================================
+
+Los cuatro problemas metodológicos analizados (equifinalidad en la
+calibración, sobreajuste en la validación, opacidad en la función de
+transición y dependencia de software propietario) se cruzan con la geografía
+del campo. Las revisiones sistemáticas de \textcite{Sante2010} y
+\textcite{Aburas2016} muestran que las aplicaciones documentadas se concentran
+en China, Europa y Estados Unidos, mientras que la literatura mexicana
+revisada en la sección anterior avanza con modelos heredados o con
+herramientas propietarias que limitan la auditoría.
+
+El presente trabajo se ubica en la intersección de tres decisiones:
+(i) usar WoE como función de transición, lo que satisface R4 sin renunciar a
+la rigurosidad estadística; (ii) validar en cinco ventanas quinquenales
+independientes con FoM, Kappa e IoU, lo que satisface R1 y permite distinguir
+robustez de sobreajuste; (iii) implementar el pipeline completo en Python con
+datos abiertos, lo que satisface R3 y abre la posibilidad de replicación en
+otras ciudades intermedias mexicanas. R2, la utilidad para planeación urbana,
+se cumple por construcción: los mapas resultantes son raster celda a celda
+con probabilidades de transición auditables.
+
+El siguiente capítulo describe el área de estudio y la construcción de la serie
+histórica de mapas urbano/no-urbano que alimenta el modelo.

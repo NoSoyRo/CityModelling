@@ -5,7 +5,7 @@
 ### 1. Duplicados eliminados
 Se eliminaron **17 entradas duplicadas** que causaban que Biber usara la primera ocurrencia (a veces incorrecta) y descartara la segunda. Los duplicados eliminados eran versiones alternativas o erróneas de:
 
-- Wolfram1984, White1997, Clarke1998, Clarke2007
+- Wolfram1984, White1997, Clarke1998, Clarke2008
 - Wang2021, Tang2024
 - Ma2019, Gomez2020, Herold2003, Gong2013
 - Fortin2024, North2023, Waddell2002, Chen2022
@@ -25,12 +25,12 @@ Se eliminaron **17 entradas duplicadas** que causaban que Biber usara la primera
 |------|--------------|------------------|
 | Wolfram1984 | Bases teóricas de AC | Nature 1984, artículo |
 | Clarke1998, White1997 | Primeros AC urbanos | Clarke & Gaydos 1998: San Francisco/Washington; White: Env. Planning B |
-| Clarke2007 | SLEUTH | "A Decade of Cellular Urban Modeling with SLEUTH" |
+| Clarke2008 | SLEUTH | "A Decade of Cellular Urban Modeling with SLEUTH" (capítulo en Planning Support Systems for Cities and Regions, ed. R.K. Brail, Lincoln Institute of Land Policy) |
 | Wang2021, Tang2024 | AC+AG para vitalidad urbana; GSA-CA heurístico | IJERPH Wuhan; Scientific Reports regiones áridas |
 | Ma2019, Gomez2020 | Deep Learning; modelado ML espaciotemporal | ISPRS; Remote Sensing |
 | Herold2003, Gong2013 | Series temporales satelitales | Remote Sensing Env.; Int. J. Remote Sensing |
 | Fortin2024, North2023, Waddell2002, Chen2022 | Herramientas open-source | DEAP, Repast, UrbanSim, PyLUSAT |
-| pontius2008comparing | FoM 0.10-0.30 | Annals of Regional Science |
+| pontius2008comparing | Comparativo 13 aplicaciones; FoM heterogéneo (seis casos bajo 15\%, un caso sobre 50\%); no fija intervalo universal | Annals of Regional Science |
 
 ### 4. Nota sobre la tabla en cap05
 
@@ -66,7 +66,7 @@ Se verificaron los 15 DOIs contra doi.org. **3 resultaron inválidos (404)** y s
 | **Clarke1997→1998** | Año incorrecto | Paper publicado en IJGIS 1998, no 1997. Corregido a Clarke1998. |
 | **Seto2011→2012** | Año incorrecto | "Global forecasts of urban expansion to 2030" publicado en PNAS 2012. DOI 10.1073/pnas.1211658109 añadido. |
 | **Angel2016→2012** | Año incorrecto | *Planet of Cities* publicado en 2012 por Lincoln Institute. Corregido a Angel2012. |
-| **Li2011→2007** | Revista y año incorrectos | Paper en Journal of Environmental Management 2007, 85(4):1063-1075. DOI 10.1016/j.jenvman.2006.10.010. |
+| **Li2011→2007** | Revista y año incorrectos | Paper en Journal of Environmental Management 2007, 85(4):1063--1075. **DOI correcto:** 10.1016/j.jenvman.2006.11.006 (el 10.1016/j.jenvman.2006.10.010 es otro artículo del vol.\ 85). |
 | **Seto2012 duplicado** | Dos papers Seto 2012 | Renombrado teleconnections a Seto2012teleconnections. |
 
 **Referencias verificadas como correctas:** Wolfram1984, White1997, Silva2002, Herold2003, Weng2002, Gong2013, Ma2019, Gomez2020, Seto2012, ArribasBel2014, Sante2010, Wang2021, Tang2024, Arfiansyah2024, Chen2022, Waddell2002, pontius2008comparing, BonhamCarter1994, Ojala2002, Gorelick2017, alonso1964location, Batty2005, goldberg1991comparative.

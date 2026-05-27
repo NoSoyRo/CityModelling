@@ -1,0 +1,104 @@
+\documentclass[12pt,letterpaper]{article}
+
+% ---- Paquetes básicos ----
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+
+% ---- Colores institucionales ----
+\definecolor{UAQBlue}{RGB}{0,51,102}
+\definecolor{UAQGold}{RGB}{255,204,0}
+
+% ---- Encabezado y pie ----
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Reporte para Obtención de Grado 2026-II}
+\fancyhead[R]{\small PCIC, UNAM}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=UAQBlue,
+    urlcolor=UAQBlue,
+    citecolor=UAQBlue,
+    pdftitle={Reporte para Obtención de Grado 2026-II},
+    pdfauthor={Rodrigo Moreno López}
+}
+
+\graphicspath{{figures/}}
+
+\title{%
+  \textbf{\color{UAQBlue}REPORTE PARA OBTENCIÓN DE GRADO 2026-II}\\[0.6cm]
+  \Large Modelado del crecimiento urbano en la Zona Metropolitana de Querétaro mediante Weight of Evidence y Autómatas Celulares.
+}
+
+\author{%
+  \textbf{José Rodrigo Moreno López}\\
+  PCIC\\
+  Universidad Nacional Autónoma de México\\
+  \texttt{rodri.mo@ciencias.unam.mx}
+}
+
+\date{Semestre 2026-II}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================================
+
+\begin{table}[H]
+\centering
+\label{tab:datos_generales}
+\begin{tabular}{@{}p{4.2cm}p{10.3cm}@{}}
+\toprule
+\midrule
+Programa & Maestría en Ciencias e Ingeniería de la Computación, UNAM \\
+Periodo & 2026-II \\
+Título de tesis & Modelado del crecimiento urbano en la Zona Metropolitana de Querétaro mediante Weight of Evidence y Autómatas Celulares. \\
+Asesor(a) & Dra. María Elena Lárraga Ramírez. \\
+Comité tutorial & Dra. Suemi Rodríguez Romo y Dr. Lukas Nellen \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
+% ============================================================================
+\section{Resumen.}
+
+Este reporte documenta los avances del ultimo semestre de la maestría (2026-II) en el desarrollo de la tesis de modelado del crecimiento urbano. Durante el periodo se consolidó el planteamiento del problema, la delimitación del área de estudio, la obtención de los datos crudos que se usan para el modelo, la definición del modelo de Autómatas Celulares con el método Weight of Evidence como función de transición, la definición de las métricas de evaluación del modelo, la implementación del mismo, el análisis de los resultados del modelo y la validación de los mismos de la simulación del crecimiento urbano de la ciudad de Querétaro con la asesora de tesis Dra. María Elena Lárraga Ramírez. Se realizó con la escritura completa de la tesis y actualmente se encuenta en iteración de revisión y mejora con el asesor de tesis. 
+
+% ============================================================================
+\section{Objetivos del periodo 2026-II}
+
+Durante el semestre 2026-2 se realizaron las siguientes actividades. En lo referente al trabajo de tesis se concluyó la implementación de todo el modelo propuesto: desde el preprocesamiento de los datos, el cálculos de las dimensiones espaciales, el cálculo del Weight of Evidence, la configuración del Autómata Celular, la calibración de los parámetros, la validación del modelo y la simulación del crecimiento urbano de la ciudad de Querétaro.
+
+Consecuentemente, se realizó el escrito de 7 capítulos de la tesis, los cuales se encuentran en estado de revisión con el asesor de tesis asi como en estado de constante mejora con el asesor de tesis y yo mismo.
+
+Como el organigrama presentado en el primer reporte de avances se planeó, para este momento nos encontramos en las iteraciones de revisión y mejora del escrito de tesis a dia de hoy llevamos 2 iteraciones con comentarios de todos los capítulos de la tesis y los cambios necesarios para cada uno de ellos. Con el objetivo de que se envíe la tesis a sinodales.
+
+Por otro lado, con respecto a los resultados, se obtuvieron 5 periodos quinquenales de simulación del crecimiento urbano de la ciudad de Querétaro. Dichos fueron validados cuantitativamente mediante las métricas de evaluación del modelo. Todo esto en cuento a las de investigación. 
+
+En cuanto a las actividades académicas se impartieron 2 cursos en la Facultad de Ingenieria: Estructura de Datos y Algoritmos II y Mineria de Datos, el primer curso fue dado en español mientras que le segundo fue brindado en ingles. 
+
+El organigrama de actividades académicas se puede observar en la figura \ref{fig:organigrama_actividades_academicas}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{/Users/rod/.cursor/projects/Users-rod-Projects-MSC-Tesis-CityModelling/assets/cronograma_2026_ii.png}
+\caption{Organigrama de actividades académicas.}
+\label{fig:organigrama_actividades_academicas}
+\end{figure}
+
+\end{document}

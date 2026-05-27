@@ -1,182 +1,70 @@
 ---
-description: Contexto completo del proyecto de tesis: modelo AC-WoE-AG para crecimiento urbano en Querétaro
+description: Contexto del proyecto de tesis — modelo WoE-AC con validación quinquenal (7 capítulos LaTeX). El texto de la tesis NO presenta AG como calibración implementada; el código opcional en src/tesis_ac/ga/ es histórico de experimentación.
 alwaysApply: true
 ---
 
 # Proyecto: Modelado de Crecimiento Urbano — Tesis MSC
 
-## Descripción General
+## Descripción general
 
 Modelo de crecimiento urbano para la Zona Metropolitana de Querétaro, México (1984–2020) basado en:
 - **WoE** (Weight of Evidence): cuantifica evidencia espacial de transición urbana
 - **AC** (Autómata Celular): simula la dinámica celda a celda
-- **AG** (Algoritmo Genético): calibra parámetros óptimos del AC
+- **Calibración sistemática**: grid search y ajuste documentados en `data/processed/quinquenal_best_config.json` (umbral 0.75, vecindad 0.50, pesos IV)
+
+En el repositorio existe **código opcional** de algoritmos genéticos (`src/tesis_ac/ga/`, `analysis/ga_calibration/best_ac_config.json`); la **narrativa defendible en la tesis** es búsqueda en cuadrícula + ajuste manual, no AG como implementación principal.
 
 Período de análisis: imágenes satelitales anuales 1984–2020 → mapas binarios urbano/no-urbano.
 
 ---
 
-## Estructura del Repositorio
+## Estructura del repositorio (resumen)
 
 ```
 CityModelling/
-├── src/tesis_ac/          # Paquete Python principal (NO MODIFICAR sin entender)
-│   ├── ca/
-│   │   ├── rules.py       # WoECellularAutomaton + create_default_spatial_variables
-│   │   └── simulate.py    # ACSimulator
-│   ├── woe/
-│   │   └── woe.py         # WoECalculator, WoEResult, calculate_spatial_woe_variables
-│   ├── historical/
-│   │   ├── extract_transitions.py   # load_historical_maps, HistoricalTransitionsDataset
-│   │   └── spatial_variables.py     # SpatialVariableCalculator
-│   ├── ga/
-│   │   └── optimizer.py   # GAConfig, ParameterBounds, Algoritmo Genético (DEAP)
-│   └── eval/
-│       ├── train_woe_historical.py  # CLI: genera woe_trained_*.pkl
-│       ├── validate_comprehensive.py
-│       └── metrics.py
+├── src/tesis_ac/          # Paquete Python (ca/, woe/, historical/, eval/; ga/ opcional)
 ├── data/processed/
-│   ├── standardized_maps/           # Mapas binarios .npy por año (1984–2020) ← ENTRADA PRINCIPAL
-│   │   └── svm_2_classes.npy        # Patrón de archivo por año
-│   ├── woe_pooled_1984_2010.pkl     # WoE entrenado 1984-2010 (para validación quinquenal)
-│   ├── woe_pooled_1984_2014.pkl     # WoE entrenado 1984-2014 (calibración completa)
-│   └── ga_calibrated_params.json   # Parámetros AC calibrados por AG ← CRÍTICO
-├── train_woe_pooled.py              # Genera woe_pooled_1984_2010.pkl
-├── validate_quinquenal_2011_2016.py # Validación quinquenal principal
-├── report/tesis/tesis_indice_nuevo/caps_larraga/   # Tesis LaTeX (estructura Lárraga, 6 caps)
-└── analysis/ga_calibration/
-    └── best_ac_config.json          # Mejor configuración AG encontrada
+│   ├── standardized_maps/           # Mapas .npy por año
+│   ├── woe_pooled_1984_2010.pkl   # WoE entrenado 1984–2010 (validación quinquenal)
+│   ├── quinquenal_best_config.json # Configuración usada en la tesis (umbral, IV, rutas)
+│   ├── ga_calibrated_params.json   # Parámetros numéricos heredados (vecindad, distancia)
+│   └── validation_quinquenal_*_v3_weighted/
+│       └── validation_results.json # Métricas por período (FoM, Kappa, etc.)
+├── validate_quinquenal_2011_2016.py
+├── train_woe_pooled.py
+├── analysis/ga_calibration/best_ac_config.json  # Experimento AG (FoM ~0.172; referencia histórica)
+└── report/tesis/tesis_indice_nuevo/caps_larraga/  # Tesis LaTeX (índice Lárraga, 7 capítulos)
 ```
 
 ---
 
-## Pipeline: Generar WoE Full Vars PKL
+## Métricas verificables (cinco períodos quinquenales)
 
-### Script principal
-```bash
-python -m tesis_ac.eval.train_woe_historical \
-  --data-dir data/processed/standardized_maps \
-  --train-years 1984 2014 \
-  --output reports/woe_trained_1984_2014_full_vars.pkl
-```
+Fuente: `data/processed/validation_quinquenal_*_v3_weighted/validation_results.json`
 
-### Pasos internos (train_woe_historical.py)
-1. `load_historical_maps(data_dir, file_pattern="svm_2_classes.npy")` — carga mapas por año
-2. Por cada par consecutivo (t0, t1): calcula `create_default_spatial_variables(g0.shape, existing_urban=g0)`
-3. Detecta transiciones `(g0==0) & (g1==1)` → target binario (0→1 = urbanización)
-4. Acumula (pooling) variables y targets de todos los pares
-5. Entrena `WoECalculator(min_bin_size=100, max_bins=8)` con método 'quantile'
-6. Guarda PKL con: `woe_calculator`, `woe_results`, `train_years`, `variables`, etc.
+| Período   | FoM (aprox.) | Kappa (aprox.) |
+|-----------|--------------|----------------|
+| 2011→2016 | 0.222        | 0.349          |
+| 2012→2017 | 0.345        | 0.499          |
+| 2013→2018 | 0.355        | 0.482          |
+| 2014→2019 | 0.287        | 0.396          |
+| 2015→2020 | 0.378        | 0.498          |
 
-### Variables espaciales generadas por `create_default_spatial_variables`
-| Variable | Descripción | Método |
-|---|---|---|
-| `distance_urban` | Distancia euclidiana a zona urbana más cercana | `scipy.ndimage.distance_transform_edt` |
-| `neighbor_density_3x3` | Densidad urbana en ventana 3×3 | `uniform_filter(size=3)` |
-| `neighbor_density_5x5` | Densidad urbana en ventana 5×5 | `uniform_filter(size=5)` |
-| `neighbor_density_7x7` | Densidad urbana en ventana 7×7 | `uniform_filter(size=7)` |
-| `local_fragmentation` | Varianza local en ventana 5×5 (borde/interior) | `generic_filter(np.var, size=5)` |
-| `nearest_cluster_size` | Tamaño del cluster urbano más cercano | `scipy.ndimage.label` + EDT |
-| `urban_gradient` | Magnitud del gradiente espacial de urbanización | Filtro Sobel |
+Promedios: FoM **0.317**, Kappa **0.445**, Accuracy **0.722**, IoU **0.633** (redondeo coherente con tablas del cap. 6).
 
 ---
 
-## Pipeline: Validación Quinquenal 2011 → 2016
+## Pipeline validación (resumen)
 
-### Script: `validate_quinquenal_2011_2016.py`
-
-### Parámetros utilizados
-```python
-# Parámetros AC (de ga_calibrated_params.json)
-threshold       = 0.75   # CALIBRADO (original 0.596 causaba sobre-predicción 59%)
-neighbor_weight = 0.5    # de ga_calibrated_params.json
-distance_weight = 1.963  # de ga_calibrated_params.json
-```
-
-### Dependencias de entrada
-| Archivo | Descripción |
-|---|---|
-| `data/processed/woe_pooled_1984_2010.pkl` | WoE entrenado SOLO con 1984-2010 (validación pura) |
-| `data/processed/ga_calibrated_params.json` | Parámetros óptimos del AC |
-| `data/processed/standardized_maps/2011.npy` | Mapa inicial de simulación |
-| `data/processed/standardized_maps/2016.npy` | Mapa observado (ground truth) |
-
-### Flujo de simulación (5 pasos: 2011→2016)
-Para cada paso t:
-1. `create_default_spatial_variables(current_state)` → 7 features espaciales
-2. Aplicar `woe_calculator.apply_woe_transform(feature, name)` → WoE score por variable
-3. Ponderar WoE por **Information Value (IV)**: `weight_i = IV_i / sum(IV)`
-4. Combinar: `total_woe = Σ(weight_i * woe_i)` → `prob = sigmoid(total_woe)`
-5. Vecindad: `neighbor_density = convolve(state, kernel_3x3) / 8`
-6. Combinación final: `combined_prob = prob + neighbor_weight * neighbor_density`
-7. Transición: celda cambia si `combined_prob > threshold` AND `random() < combined_prob`
-
-### Métricas calculadas
-- **Pixel-a-pixel**: Accuracy, Precision, Recall, F1, IoU, Kappa Cohen
-- **FoM** (Figure of Merit): `B / (A + B + C)` donde B=hits, C=misses, A=falsas alarmas
-- **Change metrics**: Change Precision, Change Recall, Change F1
-- **Error decomposition**: Quantity Disagreement, Allocation Disagreement
-- **Growth statistics**: celdas urbanas 2011 vs 2016 (observado vs predicho)
-
-### Output generado
-```
-data/processed/validation_quinquenal_2011_2016_v3_weighted/
-├── yearly_predictions/    # Mapas .npy por año (2012–2016 predichos)
-├── visualizations/        # PNGs comparación año a año
-├── predicted_2016.npy     # Mapa final predicho
-└── validation_results.json # Todas las métricas
-```
-
----
-
-## Mejor Configuración AG Encontrada
-
-### `data/processed/ga_calibrated_params.json` (usado en validación)
-```json
-{"configuration": {"threshold": 0.596, "neighbor_weight": 0.5, "distance_weight": 1.963}}
-```
-
-### `analysis/ga_calibration/best_ac_config.json` (resultado bruto AG)
-```json
-{
-  "threshold": 0.39963,
-  "iterations": 5,
-  "fitness": 0.17249,
-  "metrics": {
-    "figure_of_merit": 0.17249,
-    "accuracy": 0.6034,
-    "kappa": 0.1666,
-    "simulated_transitions": 2203593,
-    "observed_transitions": 391095,
-    "hits": 381708,
-    "misses": 9387,
-    "false_alarms": 1821885
-  }
-}
-```
-
-**Nota importante**: El threshold de 0.596 del JSON calibrado es diferente al 0.39963 del AG porque se ajustó manualmente para evitar la sobre-predicción masiva (FP/FN ratio de 18x observado en análisis de 2012). La validación quinquenal usa threshold=0.75 (más restrictivo).
-
----
-
-## Archivos CRÍTICOS (NO BORRAR)
-
-```
-src/tesis_ac/**                          # Todo el paquete Python
-data/processed/standardized_maps/**     # Mapas binarios por año
-data/processed/woe_pooled_1984_2010.pkl # WoE para validación quinquenal
-data/processed/woe_pooled_1984_2014.pkl # WoE para calibración completa
-data/processed/ga_calibrated_params.json
-analysis/ga_calibration/best_ac_config.json
-validate_quinquenal_2011_2016.py
-train_woe_pooled.py
-```
+Script típico: `validate_quinquenal_2011_2016.py` (y variantes de ventana). Parámetros efectivos en validación publicada: ver `quinquenal_best_config.json` y notas sobre umbral 0.75 vs 0.596.
 
 ---
 
 ## Tesis LaTeX
 
-**Ubicación**: `report/tesis/tesis_indice_nuevo/caps_larraga/`
+**Ubicación**: `report/tesis/tesis_indice_nuevo/caps_larraga/`  
+**Bibliografía**: `report/tesis/tesis_indice_nuevo/back/referencias.bib` (referenciada desde `main.tex`)
+
 **Compilar**:
 ```bash
 cd report/tesis/tesis_indice_nuevo/caps_larraga
@@ -186,17 +74,61 @@ pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
 ```
 
-**Estructura de capítulos**:
-| Archivo | Contenido |
-|---|---|
-| `cap01_introduccion.tex` | Problema, objetivos, hipótesis, contexto Querétaro |
-| `cap02_marco_teorico.tex` | WoE, AC, AG — fundamentos teóricos |
-| `cap03_area_estudio.tex` | Zona Metropolitana de Querétaro, datos satelitales |
-| `cap04_modelo_crecimiento_urbano.tex` | Diseño del modelo WoE-AC-AG |
-| `cap05_resultados_analisis.tex` | Resultados: WoE, calibración AG, simulación, métricas |
-| `cap06_conclusiones.tex` | Conclusiones, limitaciones, trabajo futuro |
+**PDF por capítulo** (incluir `biber` con el mismo `-jobname` que `pdflatex`).
 
-**Problemas conocidos resueltos**:
-- Comandos `\t` corrompidos (e.g., `\textbf` → `extbf`) → corregidos con script Python
-- `\citep` → usar `\parencite` (biblatex APA)
-- UTF-8 en lstlisting → `extendedchars=true` + `literate` con tildes
+### Estructura de capítulos (7)
+
+| Archivo | Contenido |
+|---------|-----------|
+| `cap01_introduccion/cap01_introduccion.tex` | Problema, objetivos, hipótesis, alcance |
+| `cap02_marco_teorico/cap02_marco_teorico.tex` | AC, WoE, métricas (marco teórico) |
+| `cap03_estado_del_arte/cap03_estado_del_arte.tex` | Literatura y análisis crítico |
+| `cap04_area_estudio/cap04_area_estudio.tex` | Área de estudio y datos |
+| `cap05_modelo_crecimiento_urbano/cap05_modelo_crecimiento_urbano.tex` | Pipeline clasificación + WoE-AC |
+| `cap06_resultados_analisis/cap06_resultados_analisis.tex` | Resultados y métricas (JSON) |
+| `cap07_conclusiones/cap07_conclusiones.tex` | Conclusiones y trabajo futuro |
+
+---
+
+## Archivos críticos (no borrar)
+
+`src/tesis_ac/**`, `data/processed/standardized_maps/**`, `data/processed/woe_pooled_1984_2010.pkl`, `data/processed/quinquenal_best_config.json`, `validate_quinquenal_2011_2016.py`, `train_woe_pooled.py`, y los cinco `validation_results.json` bajo `validation_quinquenal_*_v3_weighted/`.
+
+---
+
+## Agentes especializados disponibles
+
+Roster completo en `.cursor/agents/`:
+
+| Agente | Cuándo invocarlo |
+|---|---|
+| `/orquestador` | Cuando la Dra. Lárraga o un revisor pida cualquier cambio. Coordina la cadena completa. |
+| `/analizador` | Detectar qué archivos `.tex` y datos reales afecta un cambio. |
+| `/implementador` | Editar el `.tex` en tono académico, cauteloso, sin superlativos. |
+| `/verificador` | Revisar consistencia entre capítulos y labels LaTeX rotos. |
+| `/compilador` | Compilar a PDF (`pdflatex` + `biber` + 2 pasadas más). |
+| `/validador-fuentes` | Verificar cifras citadas contra los papers originales (Tang, Pontius, Li, Wang, Ma, Wolfram, Bonham-Carter, Ojala, Silva, Clarke, etc.). |
+| `/front-matter` | Portada UNAM-PCIC, dedicatoria, agradecimientos, resumen/abstract, hoja de restricciones. |
+| `/bibliografia` | Auditoría completa de `referencias.bib`: zombies, rotas, DOIs, densidad de citas. |
+| `/zombies-bib` | Decidir integrar o borrar las 24 entradas no citadas; propone texto exacto. |
+| `/acronimos` | Construir y mantener `front/acronimos.tex` y verificar definición en primera aparición. |
+| `/estilo-citacion` | Alternar APA ↔ numérico estilo Israel. SOLO con confirmación explícita. |
+| `/comparador-isra` | Comparar formato y estructura contra la tesis de Israel Velázquez (referencia del PCIC-UNAM). |
+| `/figures-tesis` | Figuras reproducibles desde datos del repo, diagramas Mermaid→PNG/SVG en `figures/`. |
+
+## Tesis de referencia del PCIC-UNAM
+
+Israel Velázquez Gutiérrez (2023), misma asesora (Dra. Lárraga). PDF en `/Users/rod/Downloads/0842504 (2).pdf`. Estructura:
+
+1. Front matter: portada UNAM-PCIC → hoja restricciones UNAM → dedicatoria → agradecimientos → resumen+abstract (misma página) → TOC.
+2. Cuerpo: 6 capítulos.
+3. Citas en formato **numérico con paréntesis** `(1), (2), (3)`.
+4. Back matter: apéndice + bibliografía numerada.
+
+## Pendientes operativos antes de la entrega final
+
+1. **Front matter institucional**: portada con placeholders, falta hoja UNAM, dedicatoria, agradecimientos, resumen+abstract.
+2. **Lista de acrónimos** no existe en `front/`.
+3. **Bibliografía**: 24 zombies (de 39 entradas, solo 15 citadas). Densidad baja para una tesis MSC.
+4. **Estilo de citación**: la Dra. usó numérico en Israel; preguntarle si Rodrigo debe migrar de APA a numérico.
+5. **Sinodales, beca y fecha de defensa**: el usuario debe proporcionarlos.

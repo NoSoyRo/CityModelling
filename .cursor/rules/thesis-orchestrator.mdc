@@ -1,0 +1,45 @@
+---
+description: Orquestador de cambios en la tesis. Úsalo cuando el usuario mencione un cambio, comentario o corrección de la Dra. Lárraga.
+alwaysApply: false
+---
+
+# Orquestador de Cambios en la Tesis
+
+Cuando el usuario diga que la Dra. Lárraga (o cualquier revisor) pidió un cambio, sigue este flujo de agentes en orden:
+
+## Flujo de trabajo
+
+### Agente 1 — Análisis
+Antes de tocar cualquier archivo:
+1. Identifica qué capítulos/secciones afecta el cambio solicitado
+2. Lee los `.tex` relevantes para entender el estado actual
+3. Verifica si el cambio requiere datos reales (métricas, parámetros, figuras)
+4. Si requiere datos, búscalos en `data/processed/` o en el código fuente antes de escribir
+
+### Agente 2 — Implementación
+1. Edita SOLO los archivos `.tex` necesarios
+2. Regla de oro: **nunca inventes números** — si no encuentras el dato real, escribe texto cualitativo
+3. Si se elimina contenido, reemplázalo con algo (no dejes secciones vacías)
+4. Mantén el tono académico cauteloso: sin superlativos, sin comparaciones de superioridad
+
+### Agente 3 — Verificación
+Después de editar, verifica:
+- ¿El cambio contradice algo en otro capítulo? Revisar consistencia entre caps
+- ¿Los números siguen teniendo fuente verificable?
+- ¿La conclusión en cap07 sigue siendo válida?
+
+### Agente 4 — Compilación
+```bash
+cd report/tesis/tesis_indice_nuevo/caps_larraga
+pdflatex -interaction=nonstopmode main.tex
+biber main
+pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+```
+Reporta: páginas totales, advertencias de referencias indefinidas, errores.
+
+## Reglas de escritura académica
+- Tono: cauteloso, nunca "el mejor", "superior a", "innovador sin precedentes"
+- Limitaciones: mencionar siempre con propuesta de mejora futura
+- Citas: solo afirmar lo que el paper realmente dice
+- Números: solo los que vienen de `validation_results.json`, `quinquenal_best_config.json` o código real

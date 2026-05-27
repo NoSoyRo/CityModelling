@@ -1,0 +1,11 @@
+% pdflatex cap03_standalone && biber cap03_standalone && pdflatex cap03_standalone && pdflatex cap03_standalone
+\input{../standalone_preamble.tex}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{2}
+\input{cap03_estado_del_arte}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+\end{document}

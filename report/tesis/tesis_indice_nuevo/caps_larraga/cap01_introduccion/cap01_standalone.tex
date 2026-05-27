@@ -1,0 +1,12 @@
+% Compilación standalone — solo Capítulo 1 (desde esta carpeta).
+% pdflatex cap01_standalone && biber cap01_standalone && pdflatex cap01_standalone && pdflatex cap01_standalone
+\input{../standalone_preamble.tex}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{0}
+\input{cap01_introduccion}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+\end{document}

@@ -1,0 +1,11 @@
+% pdflatex cap02_standalone && biber cap02_standalone && pdflatex cap02_standalone && pdflatex cap02_standalone
+\input{../standalone_preamble.tex}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{1}
+\input{cap02_marco_teorico}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+\end{document}

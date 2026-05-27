@@ -24,10 +24,10 @@ Este documento permite a los árbitros verificar la trazabilidad y legalidad de 
 - **Autores:** North, M.J.; Collier, N.T.; Ozik, J.; Tatara, E.R.
 - **Verificación:** Proyecto oficial en https://repast.github.io/ — plataforma de simulación basada en agentes, citada como herramienta open-source.
 
-### Clarke2007
+### Clarke2008
 - **Título:** A Decade of Cellular Urban Modeling with SLEUTH: Unresolved Issues and Problems
-- **Revista:** Planning Support Systems for Cities and Regions (capítulo), 2007
-- **Verificación:** Publicación en volumen editado; autor Keith C. Clarke (UCSB), desarrollador de SLEUTH.
+- **Tipo:** Capítulo 3 del libro *Planning Support Systems for Cities and Regions* (editor Richard K. Brail), Lincoln Institute of Land Policy, Cambridge, MA, 2008, pp. 47–60.
+- **Verificación:** PDF oficial en el sitio NCGIA-UCSB (Clarke, K.C., UCSB, desarrollador de SLEUTH) confirma año 2008 y datos completos del volumen editado.
 
 ## Correcciones realizadas (marzo 2025)
 

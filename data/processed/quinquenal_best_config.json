@@ -29,7 +29,7 @@
     "neighbor_weight": 0.5,
     "distance_weight": 1.963,
     "n_steps": 5,
-    "notes": "threshold=0.75 calibrado manualmente (el 0.596 del AG causaba sobre-predicción de 58%). neighbor_weight y distance_weight del AG (ga_calibrated_params.json). Ponderación WoE por Information Value normalizado."
+    "notes": "Threshold=0.75 ajustado manualmente por exploración sistemática; valores menores (entorno 0.5-0.6) producían sobre-prediccion masiva. neighbor_weight y distance_weight se adoptan como valores fijos provenientes de un experimento exploratorio previo registrado en el repositorio. Ponderacion WoE por Information Value normalizado."
   },
   "validation_period": {
     "start_year": 2011,

@@ -1,0 +1,11 @@
+% pdflatex cap05_standalone && biber cap05_standalone && pdflatex cap05_standalone && pdflatex cap05_standalone
+\input{../standalone_preamble.tex}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{4}
+\input{cap05_modelo_crecimiento_urbano}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+\end{document}

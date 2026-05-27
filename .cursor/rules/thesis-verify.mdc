@@ -1,0 +1,56 @@
+---
+description: Checklist de verificación antes de compilar la tesis. Aplica después de cualquier cambio en .tex.
+globs: report/tesis/tesis_indice_nuevo/caps_larraga/**/*.tex
+alwaysApply: false
+---
+
+# Checklist de Verificación Post-Edición
+
+Después de cualquier cambio en los `.tex`, verifica siempre:
+
+## 1. Consistencia numérica entre capítulos
+- FoM en cap06/cap07: rango **0.222–0.378**, promedio **0.317** (de los cinco `validation_results.json`)
+- Kappa: rango **0.349–0.499**, promedio **0.445**
+- IoU promedio **0.633**; Accuracy media **0.722** (no confundir con accuracy SVM del clasificador)
+- Accuracy SVM interna: **88–94%**, nunca 99%
+- Variables WoE: **7 variables espaciales**
+- Períodos: **2011→2016 … 2015→2020** (5 ventanas)
+- No afirmar **porcentajes de mejora** (p. ej. 15–20 %) sin tabla o JSON que lo respalde; usar `quinquenal_best_config.json` + JSON de validación + `best_ac_config.json` solo como contraste cualitativo documentado
+
+## 2. Referencias cruzadas LaTeX
+Verifica que estos labels existan si se citan:
+- `\ref{sec:evaluacion}` — en cap06
+- `\ref{tab:iv_weights}` — tabla de Information Values en cap06
+- `\ref{tab:ac_final_config}` — configuración del AC en cap06
+- Si se elimina una sección/tabla, buscar sus `\ref{}` en todo el documento
+
+## 3. Comandos de compilación completos
+```bash
+cd report/tesis/tesis_indice_nuevo/caps_larraga
+pdflatex -interaction=nonstopmode main.tex 2>&1 | grep -E "Error|Warning|Undefined"
+biber main 2>&1 | tail -5
+pdflatex -interaction=nonstopmode main.tex 2>&1 | grep -E "Error|Undefined"
+pdflatex -interaction=nonstopmode main.tex 2>&1 | tail -3
+```
+
+## 4. PDFs individuales por capítulo
+Incluir **biber** con el mismo `-jobname` que `pdflatex`, o las citas aparecerán vacías:
+```bash
+pdflatex -jobname Cap06_Resultados main_tmp.tex
+biber Cap06_Resultados
+pdflatex -jobname Cap06_Resultados main_tmp.tex
+pdflatex -jobname Cap06_Resultados main_tmp.tex
+```
+
+## 5. Señales de alerta en el log de LaTeX
+- `Citation ... undefined` → verificar clave en `referencias.bib`
+- `Reference ... undefined` → label eliminado o mal escrito
+- `Overfull \hbox` → tabla o imagen demasiado ancha (menor prioridad)
+- `! LaTeX Error` → error crítico que impide PDF
+
+## 6. Tono académico final
+Antes de entregar, buscar y suavizar si aparecen:
+- "el mejor", "la mejor", "mejor concordancia", "superior a", "demostró que", "rango superior" (preferir: coherente con, por encima del intervalo típico, sugiere)
+- "innovador", "sin precedentes", "revolucionario"
+- "100% de precisión", "perfectamente", "supera a todos"
+- Cualquier cifra atribuida a papers o a mejora relativa sin fuente verificable (`validador-fuentes`)

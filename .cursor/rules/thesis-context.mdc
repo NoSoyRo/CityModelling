@@ -1,0 +1,56 @@
+---
+description: Contexto completo de la tesis de Rodrigo para cualquier agente que trabaje en ella.
+globs: report/tesis/tesis_indice_nuevo/caps_larraga/**/*.tex
+alwaysApply: false
+---
+
+# Contexto de la Tesis
+
+## Estructura de archivos
+```
+report/tesis/tesis_indice_nuevo/caps_larraga/
+  main.tex                          ← compilar desde aquí
+  cap01_introduccion/cap01_introduccion.tex
+  cap02_marco_teorico/cap02_marco_teorico.tex
+  cap03_estado_del_arte/cap03_estado_del_arte.tex
+  cap04_area_estudio/cap04_area_estudio.tex   ← Querétaro, capturas Google Earth RGB, preprocesamiento
+  cap05_modelo_crecimiento_urbano/cap05_modelo_crecimiento_urbano.tex
+  cap06_resultados_analisis/cap06_resultados_analisis.tex
+  cap07_conclusiones/cap07_conclusiones.tex
+  cap0X_standalone.tex              ← PDF por capítulo (en raíz de caps_larraga)
+  figures/                          ← Imágenes compartidas
+  ../back/referencias.bib
+```
+
+## Fuentes de datos verificables (NUNCA inventar números fuera de estas)
+| Dato | Fuente |
+|------|--------|
+| FoM, IoU, Kappa, Accuracy | `data/processed/validation_quinquenal_XXXX_XXXX_v3_weighted/validation_results.json` |
+| Parámetros AC (threshold, neighbor_weight) | `data/processed/quinquenal_best_config.json` |
+| Information Value (IV) por variable | `data/processed/quinquenal_best_config.json` → `variable_weights` |
+| Accuracy interna SVM | 88–94% (documentado en código, no en logs externos) |
+| Períodos de validación | 2011→2016, 2012→2017, 2013→2018, 2014→2019, 2015→2020 |
+| FoM range real | 0.222 – 0.378 (promedio 0.317) |
+| Kappa range real | 0.349 – 0.499 (promedio 0.445) |
+| IoU range real | 0.581 – 0.669 |
+| Accuracy range real | 66.5% – 75.5% (promedio 72.2%) |
+
+## Pipeline del modelo (cap05)
+- **Preprocesamiento**: LBP sobre imagen en escala de grises (R=3, P=24, variante uniforme)
+- **Features**: 23 dimensiones (ver `FeatureExtractor` en `tesis_ac/pipeline/feature_extraction.py`: RGB+std, textura con LBP R=3 P=24, índices y LAB/HSV)
+- **Clustering**: K-Means con k automático de {2,3,4}
+- **Clasificación**: SVM sobre features normalizados con StandardScaler + PCA (8 componentes)
+- **WoE**: 7 variables espaciales (distancia, densidades 3×3/5×5/7×7, fragmentación, gradiente, cluster size)
+- **AC**: umbral=0.75, neighbor_weight=0.50, ponderación por IV normalizado
+
+## Qué NO hacer (lecciones aprendidas)
+- NO mencionar Algoritmos Genéticos (no se implementaron); usar "grid search" o "calibración sistemática"
+- NO reportar área urbana como % de Querétaro real (el clasificador detecta "no-verde", ~45-52% de imagen)
+- NO usar tablas con métricas FRAGSTATS específicas (no calculadas externamente)
+- NO atribuir limitaciones a autores citados sin que el paper lo diga explícitamente
+- NO dejar secciones vacías al eliminar contenido
+
+## Separación de capítulos (requisito de la Dra. Lárraga)
+- **cap02** = Marco Teórico: definiciones, bases matemáticas, conceptos — sin valoraciones del propio trabajo
+- **cap03** = Estado del Arte: papers analizados críticamente, limitaciones reales, diferencias con el trabajo actual
+- Contribuciones propias van en cap05 (metodología) y cap06 (resultados)

@@ -1,0 +1,11 @@
+% pdflatex cap06_standalone && biber cap06_standalone && pdflatex cap06_standalone && pdflatex cap06_standalone
+\input{../standalone_preamble.tex}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{5}
+\input{cap06_resultados_analisis}
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+\end{document}
