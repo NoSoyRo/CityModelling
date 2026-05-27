@@ -115,27 +115,27 @@ denotar un modelo que generaliza bien de uno que no lo hace tan bien.
 backpropagation sobre variables biofísicas e infraestructurales de Piracicaba
 (Brasil, 1985--1999); la red aprende pesos sinápticos que alimentan a un CA
 estocástico. El modelo reporta concordancia espacial superior a los AC clásicos
-de la época, pero los pesos no son traducibles a una pregunta geográfica: no se
+de la época, pero los pesos no son transformables o explicables a una pregunta geográfica, es decir, no se
 puede afirmar que ``la distancia a vialidades contribuyó un $X\%$ a la
 transición de esta celda''. La activación de cada neurona es una combinación no
-lineal de todas las variables de entrada, sin descomposición legible.
+lineal de todas las variables de entrada, sin descomposición legible o dicho de otra forma, no es auditables en cuestión de lo que aprenden.
 
 Trabajos posteriores intensifican esta opacidad por dos vías. La primera es la
-optimización metaheurística: \textcite{Wang2021} acopla un autómata celular a
+optimización metaheurística: \textcite{Wang2021} integra un autómata celular a
 un algoritmo genético para generar formas urbanas que maximizan un índice de
 vitalidad en Wuhan, donde cada generación produce cromosomas que carecen de
 lectura geográfica directa. La segunda es el aprendizaje profundo aplicado a
 teledetección y modelado espacial \parencite{Ma2019,Hagenauer2022}, que
 requiere GPU y conjuntos de datos masivos para entrenar redes cuyas
-representaciones internas no son auditables. La ganancia en exactitud es
-real, pero el costo metodológico es alto: el modelo clasifica sin justificar,
+representaciones internas no son auditables, una vez mas. La ganancia en exactitud es
+real, pero el costo epistémico es alto: el modelo clasifica sin justificar,
 y la justificación es exactamente lo que un instrumento de planeación urbana
 requiere. Un plan municipal sustentado en ``el modelo lo predijo'' es
 jurídica y políticamente más débil que uno sustentado en ``históricamente, la
 proximidad al frente urbano contribuye con un Information Value de $X$ a la
 probabilidad de transición''.
 
-El método de Pesos de Evidencia provee exactamente esa descomposición. La
+El método de Pesos de Evidencia (WoE) provee exactamente esa descomposición. La
 elección de WoE en este trabajo no responde a una preferencia estética por la
 transparencia: responde al requerimiento R4 de la
 Tabla~\ref{tab:requerimientos_modelo_1}, que define la auditabilidad como
@@ -143,10 +143,10 @@ condición de uso del modelo, no como propiedad accesoria.
 
 \subsection{Transferibilidad: software propietario y reproducibilidad}
 
-Una fracción significativa de los modelos LUCC más citados depende de software
-propietario. Dinamica EGO opera bajo licencia académica restringida; IDRISI y
+Hoy en dia el sotware libre ha demostrado contundentemente que es la mejor forma de construir modelos reproducibles y transferibles. Una fracción significativa de los modelos LUCC más citados depende de software
+propietario. Por ejemplo, dinamica EGO opera bajo licencia académica restringida; IDRISI y
 TerrSet son comerciales; SLEUTH funciona con un código en C disponible pero
-cuya instalación en sistemas modernos requiere ajustes no documentados. La
+cuya instalación en sistemas modernos requiere ajustes no documentados, aun cuando la Inteligencia Artificial podria ayudar en este aspecto no es trivial y requiere de un gran esfuerzo de parte del usuario. La
 consecuencia práctica es que la reproducibilidad de los resultados publicados
 es, en el mejor de los casos, parcial: el lector puede leer el método pero no
 ejecutarlo sin acceso a infraestructura específica.
@@ -156,10 +156,10 @@ literatura metodológica: el acceso a licencias y a hardware especializado
 introduce una barrera de entrada que condiciona qué grupos académicos pueden
 reproducir o extender los modelos publicados. En contextos donde estos recursos
 son limitados, la única alternativa práctica es reescribir el pipeline desde
-cero. El presente trabajo opta por esta vía: se implementa íntegramente en
+cero o dedicar un esfurzo importrante descifrando requerimientos no documentados. El presente trabajo opta por esta vía: se implementa íntegramente en
 Python con dependencias de código abierto (NumPy, SciPy, scikit-learn) sobre
-datos públicos (Google Earth Engine, INEGI), satisfaciendo R3 sin
-concesiones.
+datos públicos (Google Earth Engine), satisfaciendo R3 sin
+problemas.
 
 % ============================================================
 \section{Pesos de Evidencia y modelos probabilísticos espaciales}
@@ -170,7 +170,7 @@ El método de Pesos de Evidencia, desarrollado por \textcite{BonhamCarter1994}
 en el contexto de la prospección mineral, se formaliza en el Capítulo~\ref{ch:marco-teorico}
 (ecuación~\ref{eq:woe}): para cada clase de una variable espacial discretizada
 se calcula un peso bayesiano que cuantifica la asociación entre dicha clase y
-la ocurrencia del evento de interés en este trabajo, la transición de suelo
+la ocurrencia del evento de interés, en este trabajo, la transición de suelo
 no urbano a urbano. El peso total por celda es la suma de los pesos de las
 variables evaluadas en ella, transformada por la función logística para
 obtener una probabilidad acotada (ecuación~\ref{eq:woe_sigmoid}); el
@@ -183,25 +183,25 @@ que combinan mapas de idoneidad WoE con un autómata celular de dos pasos, \text
 observado. La literatura derivada documenta aplicaciones a deforestación
 amazónica, expansión agrícola y, en menor medida, crecimiento urbano.
 
-El WoE tiene tres limitaciones estadísticas reconocidas que es necesario
+Sin embargo, el WoE tiene tres limitaciones estadísticas reconocidas que conviene
 explicitar para evitar atribuirle propiedades que no posee:
 
 \paragraph{Independencia condicional.} La suma de pesos asume que las variables
 son condicionalmente independientes dada la ocurrencia del evento. Este
-supuesto rara vez se satisface en variables espaciales urbanas, donde
-proximidad a vialidades y proximidad al frente urbano están correlacionadas. El
+supuesto claramente rara vez sucede en variables espaciales urbanas, debido a que es un sistema complejo, donde
+proximidad a vialidades y proximidad al frente urbano están correlacionadas, por mencionar un ejemplo. El
 presente trabajo no introduce una corrección formal para esta dependencia;
 sigue la práctica estándar de la literatura LUCC, que reporta el sesgo derivado
-mediante el contraste empírico con el cambio observado. La validación
-multi-período mitiga parcialmente el problema: si el sesgo fuera dominante, el
+mediante el contraste empírico con el cambio observado. Sin embargo, la validación
+multi-período mitiga parcialmente el problema, esto ya que si el sesgo fuera dominante, el
 FoM degradaría sistemáticamente entre ventanas.
 
 \paragraph{Sensibilidad a la discretización.} Los pesos dependen de cómo se
 categorice cada variable continua. El presente trabajo adopta una discretización
 basada en cuantiles uniformes, que es la convención más reproducible aunque no
-necesariamente la óptima en términos de IV.
+necesariamente la óptima en términos de IV (Information Value).
 
-\paragraph{Multicolinealidad entre drivers.} Variables fuertemente correlacionadas
+\paragraph{Multicolinealidad entre drivers.} Variables correlacionadas
 producen pesos redundantes que inflan la magnitud aparente de la evidencia. Este
 trabajo aplica un análisis de componentes principales sobre el conjunto de
 variables espaciales antes del cálculo de IV, lo que reduce la redundancia sin
@@ -232,7 +232,7 @@ celdas de cambio, es sensible exactamente a este problema.
 La Intersection over Union (IoU) sobre la clase urbana provee información
 complementaria: mientras el FoM evalúa la calidad de la predicción del cambio,
 la IoU evalúa la calidad de la predicción del estado urbano final. Reportar
-ambas evita el sesgo de evaluar solo la dinámica o solo el estado.
+ambas evita el sesgo de evaluar solo la dinámica o solo el estado. Dicho de forma sencilla: FoM es una métrica que penaliza la cantidad de celdas que no cambian de estado, mientras que IoU es una métrica que penaliza la cantidad de celdas que se clasifican incorrectamente.
 
 El presente trabajo adopta este protocolo de evaluación: FoM como métrica
 primaria para el cambio, IoU para el estado, Kappa por compatibilidad con la
@@ -245,25 +245,25 @@ allocation cuando el FoM es bajo.
 % ============================================================
 
 La literatura mexicana sobre modelado de crecimiento urbano es escasa pero
-reveladora. \textcite{SuarezDelgado2007} construyó el primer estudio de
-prospección espacial sistemática para la Zona Metropolitana de la Ciudad de
-México: a partir de proyecciones demográficas de CONAPO al 2020, distribuyó
+útil y de vanguardia. \textcite{SuarezDelgado2007} construyó el primer estudio de
+predicción espacial sistemática para la Zona Metropolitana de la Ciudad de
+México: a partir de proyecciones demográficas de CONAPO al 2020, éste distribuyó
 hectáreas adicionales en contornos metropolitanos bajo tres escenarios de
-densidad. El trabajo es relevante por su pionería pero no es un modelo CA: no
+densidad. El trabajo es relevante por su pionería pero no es un modelo Autómatas Celulares: no
 hay reglas de vecindad, no hay calibración sobre datos históricos de cambio
 celular y la validación se hace a nivel de totales de hectáreas, no a nivel de
-celda. R1, R4 y la replicabilidad pública no aplican; la única dimensión
+celda, pues se usan agregados y no datos a nivel grano. R1, R4 y la replicabilidad pública no aplican; la única dimensión
 satisfecha es R2.
 
 \textcite{RamirezHernandez2021}, en un libro institucional de IIEc-UNAM, aplica
 un AC inspirado en SLEUTH a la ZMCM con datos de 1990--2010 y proyecta al
 2040. Los parámetros se describen en el texto pero el código no está
 disponible y la validación no reporta FoM ni Kappa de forma sistemática. La
-obra es valiosa como referencia conceptual pero no como benchmark cuantitativo:
-no es posible comparar su desempeño con el rango de
+obra es valiosa como referencia conceptual pero no como benchmark cuantitativo, es decir,
+no es posible comparar su desempeño con el rango de métricas reportadas en
 \textcite{pontius2008comparing}.
 
-\textcite{Chihuahua2023} aplica una cadena SVM + regresión logística +
+Así pues, \textcite{Chihuahua2023} aplica una cadena SVM + regresión logística +
 CA-Markov en TerrSet/IDRISI a núcleos urbanos asentados en cinco cuencas
 hidrológicas del estado de Chihuahua (Laguna Bustillos y de los Mexicanos,
 río Conchos, Ojinaga, río Conchos, Presa de la Colina, río Conchos, Presa el
@@ -272,7 +272,7 @@ clasificación SVM sobre mapas de uso de suelo 2010--2020 es reproducible y la
 regresión logística aporta interpretabilidad parcial (pseudo $R^2$ de
 McFadden superior a $0.2$, ROC aceptable), pero la asignación CA-Markov
 ocurre dentro del módulo Land Change Modeler de TerrSet, software
-propietario, y la validación cuantitativa se reporta sobre la regresión
+no libre, y la validación cuantitativa se reporta sobre la regresión
 logística, no sobre la simulación CA en sí. R4 se cumple parcialmente; R3 no
 se cumple.
 
@@ -311,7 +311,7 @@ espacio metodológico.
 
 Los cuatro problemas metodológicos analizados (equifinalidad en la
 calibración, sobreajuste en la validación, opacidad en la función de
-transición y dependencia de software propietario) se cruzan con la geografía
+transición y dependencia de software propietario) se cruzan con la topología espacial
 del campo. Las revisiones sistemáticas de \textcite{Sante2010} y
 \textcite{Aburas2016} muestran que las aplicaciones documentadas se concentran
 en China, Europa y Estados Unidos, mientras que la literatura mexicana
@@ -322,7 +322,7 @@ El presente trabajo se ubica en la intersección de tres decisiones:
 (i) usar WoE como función de transición, lo que satisface R4 sin renunciar a
 la rigurosidad estadística; (ii) validar en cinco ventanas quinquenales
 independientes con FoM, Kappa e IoU, lo que satisface R1 y permite distinguir
-robustez de sobreajuste; (iii) implementar el pipeline completo en Python con
+robustez de sobreajuste; (iii) implementar el flujo completo en Python con
 datos abiertos, lo que satisface R3 y abre la posibilidad de replicación en
 otras ciudades intermedias mexicanas. R2, la utilidad para planeación urbana,
 se cumple por construcción: los mapas resultantes son raster celda a celda
