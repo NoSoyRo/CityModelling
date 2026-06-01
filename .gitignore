@@ -185,3 +185,4 @@ Desktop.ini
 
 # Large archives (exceed GitHub 100MB limit)
 report/tesis/*.zip
+data-copy-tesis.zip
