@@ -1,0 +1,627 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% ============================================================
+% Presentación final de semestre — Overview de la tesis
+% Modelado del crecimiento urbano de la ZMQ con WoE + AC
+% Narrativa alineada con la versión nueva de la tesis (7 caps).
+% ============================================================
+
+% ---- TEMA ----
+\usetheme{Madrid}
+\usecolortheme{default}
+\useinnertheme{rounded}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{}      % sin símbolos de navegación
+\setbeamertemplate{caption}[numbered]
+\setbeamercovered{transparent}
+
+% ---- IDIOMA Y FUENTES ----
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---- PAQUETES ----
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,calc,backgrounds}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+% ---- RUTAS DE FIGURAS ----
+\graphicspath{%
+  {figures/}%
+  {../tesis/tesis_indice_nuevo/caps_larraga/figures/}%
+}
+
+% ---- PALETA (sobria, institucional, no genérica) ----
+\definecolor{UNAMBlue}{RGB}{0,38,84}
+\definecolor{Steel}{RGB}{31,78,121}
+\definecolor{Teal}{RGB}{17,122,128}
+\definecolor{Amber}{RGB}{201,140,30}
+\definecolor{Slate}{RGB}{70,80,92}
+\definecolor{Ink}{RGB}{33,37,41}
+\definecolor{Mist}{RGB}{238,241,245}
+\definecolor{GreenOK}{RGB}{34,120,72}
+\definecolor{RedNo}{RGB}{171,39,39}
+
+% ---- APLICAR PALETA AL TEMA ----
+\setbeamercolor{structure}{fg=UNAMBlue}
+\setbeamercolor{palette primary}{bg=UNAMBlue,fg=white}
+\setbeamercolor{palette secondary}{bg=Steel,fg=white}
+\setbeamercolor{palette tertiary}{bg=Teal,fg=white}
+\setbeamercolor{frametitle}{bg=UNAMBlue,fg=white}
+\setbeamercolor{title}{fg=UNAMBlue}
+\setbeamercolor{block title}{bg=Steel,fg=white}
+\setbeamercolor{block body}{bg=Mist,fg=Ink}
+\setbeamercolor{block title alerted}{bg=Amber,fg=white}
+\setbeamercolor{block title example}{bg=Teal,fg=white}
+\setbeamercolor{item}{fg=Teal}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamerfont{title}{series=\bfseries}
+
+% ---- MACROS ----
+\newcommand{\yes}{\textcolor{GreenOK}{\ding{51}}}
+\newcommand{\no}{\textcolor{RedNo}{\ding{55}}}
+\newcommand{\parcial}{\textcolor{Amber}{$\sim$}}
+\newcommand{\highlight}[1]{\textcolor{UNAMBlue}{\textbf{#1}}}
+\newcommand{\keynum}[1]{\textcolor{Teal}{\textbf{#1}}}
+
+% Inserción de figura (las rutas se resuelven vía \graphicspath)
+\newcommand{\safefig}[2][width=\linewidth]{\includegraphics[#1]{#2}}
+
+% ---- META ----
+\title[Crecimiento urbano ZMQ · WoE-AC]{Modelado del crecimiento urbano de la Zona Metropolitana de Querétaro}
+\subtitle{Un autómata celular con función de transición \emph{Weight of Evidence} (1984--2020)}
+\author[J. R. Moreno López]{José Rodrigo Moreno López}
+\institute[PCIC · UNAM]{Posgrado en Ciencia e Ingeniería de la Computación\\Universidad Nacional Autónoma de México}
+\date{Coloquio de Investigación · Semestre 2026-II}
+
+% ============================================================
+\begin{document}
+
+% ---- PORTADA (layout propio para control total del color) ----
+\begin{frame}[plain]
+  \vfill
+  \begin{center}
+    {\color{UNAMBlue}\rule{0.9\linewidth}{1.4pt}}\\[0.35cm]
+    {\LARGE\bfseries\color{UNAMBlue} Modelado del crecimiento urbano de la\\[2pt] Zona Metropolitana de Querétaro}\\[0.30cm]
+    {\large\color{Slate} Un autómata celular con función de transición \emph{Weight of Evidence} (1984--2020)}\\[0.25cm]
+    {\color{UNAMBlue}\rule{0.9\linewidth}{1.4pt}}\\[0.7cm]
+    {\large\bfseries José Rodrigo Moreno López}\\[0.22cm]
+    {\small Posgrado en Ciencia e Ingeniería de la Computación\\ Universidad Nacional Autónoma de México}\\[0.30cm]
+    {\small\color{Slate} Asesora: \textbf{Dra. María Elena Lárraga Ramírez}}\\[0.35cm]
+    {\small\color{Teal}\textbf{Coloquio de Investigación}~~$\cdot$~~Semestre 2026-II}\\[0.5cm]
+    {\footnotesize\color{Slate} Overview integral del proyecto de tesis $\cdot$ presentación de cierre de semestre}
+  \end{center}
+  \vfill
+\end{frame}
+
+% ---- AGENDA ----
+\begin{frame}{Agenda}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+% ============================================================
+\section{Planteamiento del problema}
+% ============================================================
+
+\begin{frame}{El problema: crecimiento disperso que rebasa a la planeación}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \small
+      \begin{itemize}
+        \item México tiene instrumentos de ordenamiento territorial (LGAHOTDU, SEDATU, ONU-Hábitat), pero su cobertura efectiva es \highlight{limitada}.
+        \item Solo el \keynum{20.5\%} de los municipios tiene un instrumento vigente; dos tercios de los planes no se han actualizado.
+        \item Según INEGI, entre el \keynum{43\%} y el \keynum{80\%} de la población reside en zonas urbanas.
+        \item Resultado: un patrón de \highlight{crecimiento disperso} que supera la capacidad de planeación.
+      \end{itemize}
+      \begin{alertblock}{Caso de estudio: Querétaro}
+        \footnotesize Ciudad intermedia dinámica, con serie histórica larga (\textbf{37 años}) y datos de acceso libre.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+        \safefig[width=\linewidth]{crecimiento_disperso_zmq_1984_2020.png}\\
+        \scriptsize\textcolor{Slate}{Capturas RGB de la ZMQ (1984 · 2010 · 2020): expansión periférica dispersa.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{¿Qué debe cumplir un modelo útil para la planeación?}
+  \small
+  Para servir como herramienta de apoyo a la planeación, el modelo debe satisfacer \highlight{cuatro requerimientos} simultáneos:
+  \vspace{0.2cm}
+  \begin{block}{Requerimientos R1--R4}
+  \begin{tabularx}{\linewidth}{@{}p{0.7cm}>{\raggedright\arraybackslash}p{3.3cm}X@{}}
+    \textbf{R1} & Simulación histórica precisa & Reproducir el cambio urbano/no-urbano; evaluado con \textbf{FoM, Kappa, IoU} en ventanas independientes. \\[2pt]
+    \textbf{R2} & Soporte a planeación & Mapas y escenarios espacialmente explícitos. \\[2pt]
+    \textbf{R3} & Replicabilidad y apertura & Flujo reproducible \textbf{sin software propietario} ni hardware especializado. \\[2pt]
+    \textbf{R4} & Interpretabilidad & La función de transición debe ser \textbf{auditable}: pesos legibles como evidencia espacial, no parámetros opacos. \\
+  \end{tabularx}
+  \end{block}
+  \centering\footnotesize R4 resultó ser la condición \highlight{más restrictiva} del campo.
+\end{frame}
+
+% ============================================================
+\section{Preguntas e hipótesis}
+% ============================================================
+
+\begin{frame}{Preguntas de investigación e hipótesis centrales}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{\textcolor{UNAMBlue}{Preguntas}}
+      \footnotesize
+      \begin{enumerate}
+        \item ¿Puede un WoE-AC calibrado reproducir el patrón de Querétaro con métricas comparables a la literatura?
+        \item ¿Qué variables espaciales discriminan mejor la transición urbana?
+        \item ¿El desempeño es estable en las cinco ventanas?
+        \item ¿Es replicable el pipeline sin software propietario?
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{\textcolor{UNAMBlue}{Hipótesis (resumen)}}
+      \scriptsize
+      \begin{itemize}
+        \item \textbf{H1} La evidencia espacial histórica tiene poder predictivo (FoM $>0{,}10$).
+        \item \textbf{H2} La calibración sistemática supera a la configuración por omisión.
+        \item \textbf{H3} La proximidad al frente urbano y la densidad de vecindad dominan el IV.
+        \item \textbf{H4} El desempeño es estable a través de las cinco ventanas.
+        \item \textbf{H5} Una caja blanca (WoE) iguala a las cajas negras en FoM/IoU \emph{sin} perder interpretabilidad.
+        \item \textbf{H6} El pipeline corre íntegramente con herramientas abiertas y datos libres, sin hardware especializado.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.15cm}
+  \begin{exampleblock}{}
+    \centering\footnotesize La apuesta de fondo: \textbf{interpretabilidad y reproducibilidad} sin sacrificar desempeño.
+  \end{exampleblock}
+\end{frame}
+
+% ============================================================
+\section{Estado del arte}
+% ============================================================
+
+\begin{frame}{Treinta años de modelado urbano computacional}
+  \small
+  \begin{itemize}
+    \item \highlight{1997--} Reglas locales de distancia/vecindad reproducen patrones realistas (\textit{White \& Engelen}); \textbf{SLEUTH} (\textit{Clarke}) se vuelve referencia por dos décadas.
+    \item \highlight{LUCC} Mapas de idoneidad estadística: CLUE-S, Dinamica EGO, CA-Markov, FLUS, MOLUSCE (regresión logística o pesos bayesianos).
+    \item \highlight{ML/DL e híbridos} Redes neuronales y metaheurísticas (\textit{Almeida, Wang, Hagenauer, Ma}) mejoran la precisión\ldots
+    \item \ldots pero sustituyen parámetros legibles por \highlight{activaciones internas o cromosomas} no auditables.
+  \end{itemize}
+  \vspace{0.2cm}
+  \begin{block}{La tensión real del campo}
+    \centering No es ``AC vs.\ aprendizaje automático'', sino \highlight{precisión predictiva} frente a \highlight{trazabilidad de cada decisión espacial}.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Problemas abiertos $\rightarrow$ decisiones de diseño}
+  \scriptsize
+  \begin{block}{}
+  \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.0cm}XX@{}}
+    \toprule
+    \textbf{Problema en la literatura} & \textbf{Consecuencia} & \textbf{Decisión WoE-AC} \\
+    \midrule
+    Calibración por fuerza bruta & \textbf{Equifinalidad}: muchos parámetros producen el mismo ajuste & Calibrar \textbf{2} parámetros con significado espacial; AC con \textbf{decaimiento} y vecindario \textbf{ponderado} \\[3pt]
+    Validación en una sola ventana & No distingue robustez de \textbf{sobreajuste} & \textbf{Cinco ventanas} quinquenales; FoM, Kappa, IoU simultáneos \\[3pt]
+    Opacidad de la función de transición & ``El modelo lo predijo'' es débil para política & \textbf{WoE}: cada peso es Information Value geográfico (R4) \\[3pt]
+    Dependencia de software propietario & Reproducibilidad parcial; barrera de entrada & \textbf{Python} abierto y modular (R3) \\[3pt]
+    Datos satelitales costosos o restringidos & Réplica inviable en contextos de bajo presupuesto & \textbf{Datos de acceso libre} (Google Earth histórico), sin imágenes comerciales \\
+    \bottomrule
+  \end{tabularx}
+  \end{block}
+\end{frame}
+
+\begin{frame}{El vacío en el contexto mexicano}
+  \small
+  Tres trabajos representativos para ciudades mexicanas, evaluados frente a R1--R4:
+  \vspace{0.15cm}
+  \begin{block}{}
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Trabajo} & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} \\
+    \midrule
+    Suárez-Delgado (2007)      & \no       & \yes & \no  & \no \\
+    Ramírez-Hernández (2021)   & \no       & \yes & \no  & \parcial \\
+    Chihuahua (2023)           & \parcial  & \yes & \no  & \parcial \\
+    \midrule
+    \textbf{Presente trabajo}  & \yes      & \yes & \yes & \yes \\
+    \bottomrule
+  \end{tabular}
+  \end{block}
+  \vspace{0.15cm}
+  \centering Ningún trabajo publicado para una ciudad mexicana cumple \highlight{simultáneamente} validación multi-período cuantitativa, reproducibilidad abierta e interpretabilidad auditable. \textbf{Esa es la brecha.}
+\end{frame}
+
+% ============================================================
+\section{Datos y modelo WoE-AC}
+% ============================================================
+
+\begin{frame}{Preprocesamiento: de RGB a mapa binario}
+  \begin{columns}[c]
+    \begin{column}{0.44\textwidth}
+      \begin{center}
+        \safefig[width=\linewidth]{pipeline_rgb_features_binary_cap02.png}
+      \end{center}
+    \end{column}
+    \begin{column}{0.56\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \item RGB $\rightarrow$ \highlight{23 features} por celda (textura LBP/Sobel/entropía + color LAB/HSV): NDVI/NDWI/NDBI \textbf{no} son computables sin NIR/SWIR.
+        \item \highlight{StandardScaler} $\rightarrow$ \highlight{PCA} a 8 componentes ($\sim$96\% de varianza).
+        \item \highlight{K-Means} ($k{=}2$): no supervisado $\Rightarrow$ \textbf{consistencia} del criterio en los 37 años.
+        \item \highlight{SVM lineal} sobre pseudo-etiquetas regulariza la frontera: exactitud \keynum{88--94\%} en \emph{hold-out}.
+        \item Convención urbano${=}1$ / no-urbano${=}0$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{WoE como función de transición}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.58\textwidth}
+      \begin{itemize}
+        \item \highlight{Transición}: celda no-urbana en $t$ que pasa a urbana en $t{+}1$.
+        \item \highlight{WoE} en vez de regresión logística: no impone forma funcional lineal; discretiza y estima un peso bayesiano por intervalo $\Rightarrow$ captura la \textbf{no linealidad} real (caída abrupta cerca del frente urbano).
+        \item \highlight{7 variables} derivadas \emph{solo} del mapa binario (sin capas externas): distancia al frente, densidades $3{\times}3/5{\times}5/7{\times}7$, fragmentación, tamaño de cluster, gradiente.
+        \item \highlight{Pooling} de 26 pares (1984--2010): \keynum{$8{,}196{,}264$} transiciones $\Rightarrow$ pesos estables.
+        \item Combinación ponderada por \textbf{IV} y sigmoide $\rightarrow$ probabilidad en $[0,1]$.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{center}
+        \safefig[width=\linewidth]{woe_weights.png}\\
+        \scriptsize\textcolor{Slate}{Relación monótona WoE vs.\ densidad de vecindad: valida el mecanismo de difusión.}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{¿Por qué un autómata celular y no el mapa WoE estático?}
+  \small
+  \begin{block}{La razón}
+    El mapa WoE describe la \highlight{idoneidad} de cada celda dada la configuración inicial, pero \highlight{no simula cómo se propaga} el crecimiento en el tiempo.
+  \end{block}
+  \begin{itemize}
+    \item El AC aplica la regla de transición \highlight{iterativamente}: en cada paso anual se \textbf{recalculan} las 7 variables sobre el estado actualizado.
+    \item Cuando una celda se urbaniza, eleva la densidad de sus vecinas $\Rightarrow$ \highlight{contagio borde a borde} (mancha compacta, relleno de huecos, corredores).
+    \item Regla de transición = \keynum{WoE} $+$ \keynum{vecindad de Moore} (8 vecinos, peso $\alpha$) $>$ \keynum{umbral} $\theta$, con componente \highlight{estocástica}.
+  \end{itemize}
+  \vspace{0.1cm}
+  \centering\footnotesize Que las dos variables más predictivas sean de proximidad local confirma que el crecimiento es por \highlight{contagio}, no difusión aleatoria.
+\end{frame}
+
+\begin{frame}{Definición matemática de la función de transición}
+  \begin{block}{Probabilidad de transición de la celda $(i,j)$ en el paso $t$}
+  \[
+    P_{\text{trans}}(i,j,t)=\sigma\!\Bigg(
+    \underbrace{\sum_{k=1}^{7}\frac{\textcolor{Steel}{IV_k}}{\sum_{l} IV_l}\,\mathrm{WoE}_k(i,j,t)}_{\text{evidencia espacial ponderada por IV}}
+    \;+\;
+    \underbrace{\textcolor{Teal}{\alpha}\,I_{\text{neigh}}(i,j,t)}_{\text{vecindad de Moore}}
+    \Bigg)
+  \]
+  \end{block}
+  \[
+    \text{La celda transita a urbana si}\quad P_{\text{trans}}(i,j,t)\;>\;\textcolor{Amber}{\theta}
+    \quad\text{(con confirmación estocástica).}
+  \]
+  \vspace{-0.15cm}
+  \footnotesize
+  \begin{itemize}
+    \item $\sigma(\cdot)$: función sigmoide $\Rightarrow$ probabilidad acotada en $[0,1]$.
+    \item $\dfrac{\textcolor{Steel}{IV_k}}{\sum_l IV_l}$: \highlight{ponderación por Information Value} normalizado; las variables más discriminativas pesan más (la distancia al frente concentra $\approx 28\%$).
+    \item $\textcolor{Teal}{\alpha}=0{,}50$: \highlight{peso de la vecindad} de Moore $I_{\text{neigh}}$ (8 vecinos).
+    \item $\textcolor{Amber}{\theta}=0{,}75$: \highlight{umbral} de urbanización (calibrado; valores menores sobre-predicen).
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+\section{Resultados}
+% ============================================================
+
+\begin{frame}{Information Value: qué mueve la transición}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \scriptsize
+      \begin{block}{IV por variable (sintonización 1984--2010)}
+      \begin{tabular}{lc}
+        \toprule
+        \textbf{Variable} & \textbf{IV} \\
+        \midrule
+        Distancia al área urbana          & $0{,}2817$ \\
+        Densidad de vecindad $3\times3$    & $0{,}2495$ \\
+        Densidad de vecindad $5\times5$    & $0{,}1445$ \\
+        Densidad de vecindad $7\times7$    & $0{,}1068$ \\
+        Fragmentación local               & $0{,}1062$ \\
+        Gradiente urbano                  & $0{,}0996$ \\
+        Tamaño del cluster más cercano    & $0{,}0120$ \\
+        \bottomrule
+      \end{tabular}
+      \end{block}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \small
+      \begin{itemize}
+        \item Distancia + densidades concentran $\approx$\keynum{75\%} del poder predictivo.
+        \item Coherente con el mecanismo de \highlight{difusión espacial} desde lo ya urbanizado.
+        \item Cada peso es \highlight{auditable} geográficamente (R4): el modelo no es una caja negra.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Resultados: cinco ventanas quinquenales ($\theta=0{,}75$,\ $\alpha=0{,}50$)}
+\begin{columns}[T]
+
+% ============ Izquierda: Acc · IoU · F1 ============
+\begin{column}{0.49\textwidth}
+  \centering
+  {\scriptsize\textbf{\color{UNAMBlue}Métricas globales}}\\[2pt]
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=71mm, height=3.9cm,
+      xtick={1,2,3,4,5},
+      xticklabels={\tiny 11-16, \tiny 12-17, \tiny 13-18, \tiny 14-19, \tiny 15-20},
+      tick label style={font=\tiny},
+      ymajorgrids=true, grid style={dotted,gray!35},
+      axis line style={gray!55}, tick style={draw=none},
+      ymin=0.53, ymax=0.87, ytick={0.60,0.70,0.80},
+      yticklabel style={font=\tiny},
+      enlarge x limits=0.12,
+    ]
+      \addplot[Steel, mark=*, mark size=1.6pt, line width=1.1pt]
+        coordinates {(1,0.665)(2,0.750)(3,0.744)(4,0.697)(5,0.755)};
+      \addplot[Teal, mark=square*, mark size=1.3pt, line width=1.1pt]
+        coordinates {(1,0.581)(2,0.652)(3,0.648)(4,0.614)(5,0.669)};
+      \addplot[GreenOK, mark=triangle*, mark size=1.5pt, line width=1.1pt]
+        coordinates {(1,0.735)(2,0.789)(3,0.787)(4,0.761)(5,0.802)};
+    \end{axis}
+  \end{tikzpicture}\\[3pt]
+  \begin{minipage}{0.97\linewidth}
+  \tiny\color{Slate}
+  \textcolor{Steel}{$\bullet$}\,\textbf{Acc\,0,722} ($\pm$0,037): alta porque incluye la \emph{permanencia}
+  (clase mayoritaria que el modelo repite por inercia). Variación baja: predecible.\\[1pt]
+  \textcolor{Teal}{$\blacksquare$}\,\textbf{IoU\,0,633} ($\pm$0,033): solapamiento real\,/\,predicho \emph{solo}
+  en la zona de cambio. Desvío pequeño → localización espacial estable entre períodos.\\[1pt]
+  \textcolor{GreenOK}{$\blacktriangle$}\,\textbf{F1\,0,775} ($\pm$0,025): sube de 0,73 a 0,80 a lo largo
+  de las ventanas → el modelo mejora con más historia disponible.
+  \end{minipage}
+\end{column}
+
+% ============ Derecha: Recall · Kappa · FoM ============
+\begin{column}{0.49\textwidth}
+  \centering
+  {\scriptsize\textbf{\color{UNAMBlue}Métricas centradas en el cambio}}\\[2pt]
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=71mm, height=3.9cm,
+      xtick={1,2,3,4,5},
+      xticklabels={\tiny 11-16, \tiny 12-17, \tiny 13-18, \tiny 14-19, \tiny 15-20},
+      tick label style={font=\tiny},
+      ymajorgrids=true, grid style={dotted,gray!35},
+      axis line style={gray!55}, tick style={draw=none},
+      ymin=0.17, ymax=1.03, ytick={0.25,0.45,0.65,0.85},
+      yticklabel style={font=\tiny},
+      enlarge x limits=0.12,
+    ]
+      \addplot[GreenOK, mark=triangle*, mark size=1.5pt, line width=1.1pt]
+        coordinates {(1,0.975)(2,0.925)(3,0.917)(4,0.965)(5,0.936)};
+      \addplot[Steel, mark=square*, mark size=1.3pt, line width=1.1pt]
+        coordinates {(1,0.349)(2,0.499)(3,0.482)(4,0.396)(5,0.498)};
+      \addplot[UNAMBlue, mark=*, mark size=1.7pt, line width=1.3pt]
+        coordinates {(1,0.222)(2,0.345)(3,0.355)(4,0.287)(5,0.378)};
+    \end{axis}
+  \end{tikzpicture}\\[3pt]
+  \begin{minipage}{0.97\linewidth}
+  \tiny\color{Slate}
+  \textcolor{GreenOK}{$\blacktriangle$}\,\textbf{Recall\,0,944} ($\pm$0,025): captura $>91\%$ del crecimiento real.
+  Desvío mínimo → el modelo \emph{nunca} subestima el cambio, sea poco o mucho.\\[1pt]
+  \textcolor{Steel}{$\blacksquare$}\,\textbf{$\kappa$\,0,445} ($\pm$0,063): mayor variabilidad → sensible al crecimiento \emph{neto}
+  del período; cae en ventanas con menor cambio observable (2011-16 y 2014-19).\\[1pt]
+  \textcolor{UNAMBlue}{$\bullet$}\,\textcolor{UNAMBlue}{\textbf{FoM\,0,317}} ($\pm$0,058): \textbf{métrica primaria}—solo zona de cambio.
+  Las tres bandas del gráfico (Recall arriba, $\kappa$ medio, FoM abajo) muestran que
+  \textbf{ninguna ventana se desploma}: dinámica estructural, no sobreajuste.
+  \end{minipage}
+\end{column}
+
+\end{columns}
+\end{frame}
+
+% ---- Slide 1: franja de las 5 ventanas (2+2+1) ----
+\begin{frame}[shrink=5]{Validación visual: cinco ventanas quinquenales}
+\vspace{0.05cm}
+% Fila 1
+\begin{columns}[c]
+  \begin{column}{0.38\textwidth}\centering
+    \includegraphics[width=\linewidth]{summary_2011_to_2016}\\[1pt]
+    {\footnotesize\bfseries 2011--2016\quad\textcolor{UNAMBlue}{FoM\,0,222}}
+  \end{column}
+  \begin{column}{0.38\textwidth}\centering
+    \includegraphics[width=\linewidth]{summary_2012_to_2017}\\[1pt]
+    {\footnotesize\bfseries 2012--2017\quad\textcolor{UNAMBlue}{FoM\,0,345}}
+  \end{column}
+\end{columns}
+\vspace{0.08cm}
+% Fila 2
+\begin{columns}[c]
+  \begin{column}{0.38\textwidth}\centering
+    \includegraphics[width=\linewidth]{summary_2013_to_2018}\\[1pt]
+    {\footnotesize\bfseries 2013--2018\quad\textcolor{UNAMBlue}{FoM\,0,355}}
+  \end{column}
+  \begin{column}{0.38\textwidth}\centering
+    \includegraphics[width=\linewidth]{summary_2014_to_2019}\\[1pt]
+    {\footnotesize\bfseries 2014--2019\quad\textcolor{UNAMBlue}{FoM\,0,287}}
+  \end{column}
+\end{columns}
+\vspace{0.08cm}
+% Fila 3 — centrada
+\begin{columns}[c]
+  \begin{column}{0.31\textwidth}\end{column}
+  \begin{column}{0.38\textwidth}\centering
+    \includegraphics[width=\linewidth]{summary_2015_to_2020}\\[1pt]
+    {\footnotesize\bfseries 2015--2020\quad\textcolor{UNAMBlue}{FoM\,0,378}}
+  \end{column}
+  \begin{column}{0.31\textwidth}\end{column}
+\end{columns}
+\vspace{0.06cm}
+{\tiny\color{Slate}\centering
+ inicio $\cdot$ observado $\cdot$ predicho $\cdot$ diferencia\;
+ (\textcolor{GreenOK}{$\blacksquare$}\,TP · \textcolor{orange}{$\blacksquare$}\,FP · \textcolor{Steel}{$\blacksquare$}\,FN)}
+\vspace{0.05cm}
+\hrule height 0.2pt\color{gray!20}
+\vspace{0.04cm}
+{\tiny\color{black}\centering
+  \textbf{\textcolor{UNAMBlue}{FoM\,0,317}} — cambio correcto/total, triple del piso Pontius (0,10)\quad
+  \textbf{\textcolor{UNAMBlue}{Kappa\,0,445}} — acuerdo más allá del azar (rango moderado–sustancial)\\[1pt]
+  \textbf{\textcolor{UNAMBlue}{IoU\,0,633}} — solapación espacial del cambio predicho vs observado: buena\quad
+  \textbf{\textcolor{UNAMBlue}{Accuracy\,0,722}} — $>$72\,\% de píxeles urbano/no-urbano bien clasificados
+}
+\end{frame}
+
+% ---- Slide 2: posicionamiento en la literatura ----
+\begin{frame}{Posicionamiento frente a la literatura}
+\begin{columns}[T]
+  \begin{column}{0.62\textwidth}
+    \small
+    \begin{itemize}
+      \item \textcolor{Slate}{Pontius et al.\ (2008)}: de 13 aplicaciones, \keynum{6} con FoM $<15\%$; solo \keynum{1} supera $50\%$.
+      \item \textcolor{Slate}{GSA-CA Urumqi (Tang 2024)}: FoM $\approx 37$--$43\%$ con \emph{drivers} físicos explícitos (pendiente, vialidades, empleo).
+      \item \highlight{Este trabajo}: FoM promedio \keynum{31{,}7\%} usando \emph{solo} 7 variables derivadas del mapa binario — sin datos externos.
+    \end{itemize}
+  \end{column}
+  \begin{column}{0.36\textwidth}
+    \begin{block}{}
+      \centering\footnotesize Desempeño en la \highlight{banda intermedia} del espectro empírico global, \textbf{sin sacrificar interpretabilidad} ni requerir \emph{drivers} externos.
+    \end{block}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Análisis del error: fortalezas y debilidades}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{\textcolor{GreenOK}{Fortalezas}}
+      \small
+      \begin{itemize}
+        \item Recall $>\keynum{0{,}91}$ en todas las ventanas: captura casi todo el crecimiento real.
+        \item Fidelidad morfológica: el crecimiento se concentra en bordes (difusión contigua).
+        \item Parsimonia: 7 variables, sin datos socioeconómicos externos.
+        \item \highlight{$\sim$3 h en CPU}, sin GPU.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{\textcolor{RedNo}{Debilidades}}
+      \small
+      \begin{itemize}
+        \item \highlight{Sobre-predicción sistemática} (Precision $0{,}59$--$0{,}70$): muchas falsas alarmas.
+        \item No modela crecimiento \emph{leapfrog} (saltos discontinuos).
+        \item Clase ``urbano'' incluye suelo desnudo/árido (RGB sin NIR).
+        \item Omite variables externas (vialidades, empleo, pendiente).
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.1cm}
+  \centering\footnotesize El error se origina en la clasificación y se \highlight{amplifica} por el efecto de vecindad del AC.
+\end{frame}
+
+% ============================================================
+\section{Conclusiones}
+% ============================================================
+
+\begin{frame}{Validación de hipótesis (H1--H6)}
+  \scriptsize
+  \begin{block}{}
+  \begin{tabularx}{\linewidth}{@{}cl>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Hip.} & \textbf{Estado} & \textbf{Por qué (evidencia)} \\
+    \midrule
+    H1 & \textcolor{GreenOK}{\textbf{Confirmada}} & FoM $>0{,}10$ en \textbf{5/5} ventanas (rango $0{,}222$--$0{,}378$, prom.\ $0{,}317$ $\approx 3\times$ el piso); Kappa $0{,}445$ $\Rightarrow$ la evidencia espacial histórica es predictiva. \\
+    H2 & \textcolor{GreenOK}{\textbf{Confirmada}} & Config.\ calibrada ($\theta{=}0{,}75$, $\alpha{=}0{,}50$, IV) da FoM $0{,}222$--$0{,}378$; una config.\ previa ($\theta{\approx}0{,}60$) sobre-predecía con FoM $\approx 0{,}17$ $\Rightarrow$ calibrar es necesario. \\
+    H3 & \textcolor{GreenOK}{\textbf{Confirmada}} & Distancia (IV $0{,}28$) + densidades concentran $\sim$75\% del IV; relación WoE--densidad monótona creciente $\Rightarrow$ difusión por contagio. \\
+    H4 & \textcolor{Amber}{\textbf{Parcial}} & Estabilidad morfológica en las 5 ventanas; FoM píxel-exacto sensible al crecimiento neto del período (el \emph{leapfrog} no modelado degrada la métrica). \\
+    H5 & \textcolor{Teal}{\textbf{Sustentada}} & FoM $31{,}7\%$ en banda intermedia (Pontius), comparable pese a usar \emph{solo} 7 variables del mapa, sin perder interpretabilidad (no tabulada en el Cap.~7). \\
+    H6 & \textcolor{Teal}{\textbf{Sustentada}} & Pipeline íntegro en Python abierto + datos libres, $\sim$3\,h en CPU sin GPU (discutida en ``Accesibilidad computacional''). \\
+    \bottomrule
+  \end{tabularx}
+  \end{block}
+  \centering\footnotesize H1--H4 confirmadas formalmente; H5 y H6 sustentadas por la evidencia operativa del modelo.
+\end{frame}
+
+\begin{frame}{Contribuciones originales}
+  \footnotesize
+  \begin{enumerate}
+    \item \highlight{Integración WoE--AC} para una ciudad intermedia mexicana con datos de acceso libre (válida y potencialmente \emph{publicable}).
+    \item \highlight{Validación quinquenal múltiple} (5 períodos independientes): contribución metodológica que evalúa estabilidad temporal con más rigor que una sola ventana.
+    \item \highlight{Pipeline reproducible} en Python (clasificación $\rightarrow$ WoE $\rightarrow$ AC $\rightarrow$ evaluación), documentado y abierto.
+    \item \highlight{Uso explícito de evidencia histórica} (37 años de mapas binarios de la ZMQ), bien alineado con la tradición LUCC.
+    \item \highlight{AC con decaimiento y vecindario ponderado} por distancia: regla de transición no trivial.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Implicaciones y trabajo futuro}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \textbf{\textcolor{UNAMBlue}{Implicaciones}}
+      \small
+      \begin{itemize}
+        \item Provisión anticipada de infraestructura y reserva de suelo.
+        \item Zonificación proactiva y evaluación de impacto ambiental.
+        \item Transferible a ciudades intermedias (León, Aguascalientes, SLP\ldots) \emph{con recalibración}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \textbf{\textcolor{UNAMBlue}{Trabajo futuro}}
+      \small
+      \begin{itemize}
+        \item Variables externas (vialidades, empleo, pendiente).
+        \item Imágenes con NIR para NDVI real.
+        \item Calibración metaheurística/bayesiana multiobjetivo.
+        \item WoE temporal y validación en más ciudades.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{0.2cm}
+  \begin{alertblock}{Mensaje central}
+    \footnotesize Modelos \highlight{parsimoniosos}, \highlight{interpretables} y \highlight{validados en múltiples períodos} pueden producir resultados útiles para la planeación urbana práctica, sin hardware especializado ni cajas negras.
+  \end{alertblock}
+\end{frame}
+
+% ============================================================
+\section{Cronograma}
+% ============================================================
+
+\begin{frame}{Cronograma de actividades · Semestre 2026-II}
+  \begin{center}
+    \safefig[height=0.76\textheight]{cronograma_2026_ii.png}
+  \end{center}
+  \vspace{-0.15cm}
+  \centering\footnotesize\textcolor{Slate}{Investigación y escritura concluidas; en curso la iteración por capítulos con la asesora, en paralelo con la docencia del semestre.}
+\end{frame}
+
+% ---- CIERRE ----
+\begin{frame}[plain]
+  \vfill
+  \begin{center}
+    {\Huge\textcolor{UNAMBlue}{\textbf{Gracias}}}\\[0.4cm]
+    {\large Preguntas y comentarios}\\[0.6cm]
+    \normalsize\textcolor{Slate}{
+      José Rodrigo Moreno López\\
+      Posgrado en Ciencia e Ingeniería de la Computación\\
+      Universidad Nacional Autónoma de México}
+  \end{center}
+  \vfill
+\end{frame}
+
+\end{document}
