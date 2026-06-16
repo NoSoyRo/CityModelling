@@ -236,7 +236,7 @@ La salida del algoritmo SVM es un mapa de clasificación $\hat{y} \in \{0,1\}^{H
 \label{sec:automatas-celulares}
 % ============================================================
 
-Un \textbf{Autómata Celular} (AC) es un sistema dinámico discreto definido sobre una cuadrícula regular de $N$ celdas. Formalmente, un AC queda definido por la cuádrupla $(Q, \mathcal{N}, \delta, q_0)$, donde:
+Un \textbf{Autómata Celular} (AC), en el sentido formalizado por \textcite{Wolfram1984}, es un sistema dinámico discreto definido sobre una cuadrícula regular de $N$ celdas. Formalmente, un AC queda definido por la cuádrupla $(Q, \mathcal{N}, \delta, q_0)$, donde:
 
 \begin{itemize}
 	\item $Q$ es el conjunto finito de estados posibles de cada celda (por ejemplo, $Q = \{0, 1\}$ para no-urbano y urbano).
@@ -247,7 +247,7 @@ Un \textbf{Autómata Celular} (AC) es un sistema dinámico discreto definido sob
 
 En el contexto del crecimiento urbano, el dominio espacial $\Omega \subset \mathbb{Z}^2$ es una cuadrícula discreta de celdas indexadas por pares $(i,j)$, donde $i \in \{1,\ldots,R\}$ indica la fila y $j \in \{1,\ldots,C\}$ la columna, con $N = R \times C$ celdas en total.
 
-En los AC probabilísticos, la función de transición $\delta$ asigna probabilidades a cada posible nuevo estado, en lugar de determinar el siguiente estado de forma determinista. Esta extensión resulta adecuada para el modelado urbano, en el que la transición de no-urbano a urbano no está garantizada incluso cuando las condiciones locales son favorables.
+En los AC probabilísticos, la función de transición $\delta$ asigna probabilidades a cada posible nuevo estado, en lugar de determinar el siguiente estado de forma determinista. Esta extensión, base de los modelos urbanos basados en AC desde \textcite{White1997} y de marcos calibrados como SLEUTH \parencite{Clarke1998}, resulta adecuada para el modelado urbano, en el que la transición de no-urbano a urbano no está garantizada incluso cuando las condiciones locales son favorables.
 
 Los dos tipos de vecindad más utilizados en modelado urbano son la vecindad de Von Neumann (cuatro celdas ortogonales) y la vecindad de Moore (ocho celdas incluyendo diagonales). En ambos casos, el radio de influencia puede extenderse más allá de la celda inmediatamente adyacente, permitiendo capturar efectos de accesibilidad y proximidad a zonas urbanas existentes.
 
@@ -373,9 +373,9 @@ p_e = \frac{(TP + FP)(TP + FN) + (TN + FN)(TN + FP)}{N^2}
 
 El rango es $\kappa \in [-1, 1]$. Conforme a la escala de interpretación de uso común propuesta por Landis y Koch (1977), $\kappa > 0{,}81$ indica acuerdo casi perfecto; $0{,}61$--$0{,}80$, acuerdo sustancial; $0{,}41$--$0{,}60$, acuerdo moderado; $0{,}21$--$0{,}40$, acuerdo justo; y $\kappa < 0{,}20$, acuerdo pobre. La ventaja del coeficiente $\kappa$ frente a la \textit{Accuracy} es que proporciona una evaluación más realista ante desbalance de clases, al descontar el acuerdo esperado por azar.
 
-Las métricas anteriores evalúan la concordancia global píxel a píxel, incluyendo tanto las transiciones como las permanencias. Sin embargo, en modelación de cambio de uso de suelo interesa específicamente predecir las \textbf{transiciones}, no las permanencias. Dado que la clase mayoritaria (píxeles sin cambio) puede inflar artificialmente las métricas globales, el \textbf{Figure of Merit} aborda esta limitación evaluando exclusivamente la predicción de cambio.
+Las métricas anteriores evalúan la concordancia global píxel a píxel, incluyendo tanto las transiciones como las permanencias. Sin embargo, en modelación de cambio de uso de suelo interesa específicamente predecir las \textbf{transiciones}, no las permanencias. Dado que la clase mayoritaria (píxeles sin cambio) puede inflar artificialmente las métricas globales, el \textbf{Figure of Merit} (FoM), propuesto como métrica comparable entre estudios de cambio de uso de suelo por \textcite{pontius2008comparing}, aborda esta limitación evaluando exclusivamente la predicción de cambio.
 
-En un sistema urbano consolidado con 95\% de territorio permanente y 5\% con transición, un modelo trivial que predice ``no cambio'' obtiene Accuracy = 0.95 sin capturar ninguna dinámica urbana. FoM evalúa únicamente el subconjunto de píxeles donde ocurren transiciones, ignorando la clase mayoritaria.
+En un sistema urbano consolidado con $95\%$ de territorio permanente y $5\%$ con transición, un modelo trivial que predice ``no cambio'' obtiene \textit{Accuracy} $= 0{,}95$ sin capturar ninguna dinámica urbana. El FoM evalúa únicamente el subconjunto de píxeles donde ocurren transiciones, ignorando la clase mayoritaria.
 
 Sea $\mathcal{T}_{obs}$ el conjunto de píxeles con cambio observado y $\mathcal{T}_{pred}$ el conjunto con cambio predicho entre $t_0$ y $t_1$. El FoM es el índice de Jaccard aplicado exclusivamente a las transiciones:
 

@@ -10,10 +10,10 @@
 El modelado computacional del crecimiento urbano ha producido en treinta años
 una literatura rica pero metodológicamente diferente. Este capítulo no busca
 ordenar trabajos por autor sino que busca identificar los cuatro problemas
-metodológicos que siguen abiertos en el campo, calibración por fuerza bruta,
+metodológicos que siguen abiertos en el campo ---calibración por fuerza bruta,
 validación sobreajustada a una sola ventana temporal, opacidad de la función de
-transición en modelos de aprendizaje profundo y dependencia de software
-propietario, no se promueve el software libre, y muestra cómo cada uno justifica una decisión concreta del diseño
+transición en los modelos de aprendizaje profundo y dependencia de software
+propietario--- y muestra cómo cada uno justifica una decisión concreta del diseño
 del modelo WoE-AC propuesto. La discusión concluye con un mapa de la literatura
 para ciudades mexicanas, donde ningún trabajo publicado satisface simultáneamente
 los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1}.
@@ -31,20 +31,20 @@ del enfoque fue introducido con SLEUTH en \parencite{Clarke1998,Silva2002}, que 
 décadas fue vanguardia y considerado como referencia, y que se aplicó en decenas de ciudades.
 
 Al mismo tiempo, la metodología LUCC (Land Use and Cover Change) introdujo modelos
-basados en mapas de el mejor estado posible de uso de suelo estadístico: sistemas como CLUE-S, Dinamica EGO,
+basados en mapas de idoneidad de uso de suelo de base estadística: sistemas como CLUE-S, Dinamica EGO,
 CA-Markov y, más recientemente, FLUS, GeoSOS y MOLUSCE, brindaron
 arquitecturas alternativas al autómata celular puro en las que la función de transición
 emerge de regresiones logísticas o pesos bayesianos sobre datos históricos.
 
-Una conjunto de académicos y profesionales de la planeación urbana posterior sustituyó la regresión por modelos de aprendizaje
-automático e híbridos metaheurísticos. \textcite{almeida2008stochastic} utilizó
+Una generación posterior de trabajos sustituyó la regresión por modelos de aprendizaje
+automático e híbridos metaheurísticos. \textcite{almeida2008stochastic} acopló
 una red neuronal feedforward a un autómata celular estocástico para Piracicaba, Brasil; años
 más tarde \textcite{Wang2021} combinó un autómata celular con un algoritmo
-genético para optimizar la forma urbana de Wuhan (la busqueda fue ineficiente en términos de tiempo computacional), mientras
-\textcite{Hagenauer2022} introdujo una red neuronal geográficamente ponderada
+genético para optimizar la forma urbana de Wuhan, a un costo computacional
+elevado, mientras que \textcite{Hagenauer2022} introdujo una red neuronal geográficamente ponderada
 para capturar relaciones espaciales no lineales. Estos enfoques reportan
-ganancias cuantitativas en temrinos de precisión, pero sustituyen parámetros legibles (o que pueden ser explicados) por activaciones
-internas o cromosomas que no admiten una lectura geográfica directa, es decir, no son auditables en cuestión de lo que aprenden.
+ganancias cuantitativas en precisión, pero sustituyen parámetros legibles por activaciones
+internas o cromosomas que no admiten una lectura geográfica directa; en esa medida, no son auditables respecto de lo que aprenden.
 
 La decisión central del campo no es en torno a AC y aprendizaje automático,
 sino entre dos directivas que a priori parecen contrapuestos: maximizar precisión
@@ -62,26 +62,40 @@ equifinalidad en la calibración, sobreajuste en la validación, opacidad en la 
 
 \subsection{Calibración: equifinalidad y costo computacional}
 
-SLEUTH calibra cinco coeficientes enteros mediante búsqueda en cuadrícula sobre
-el espacio discreto $[0,100]^4 \times [0,20]$, es decir, en el orden de $10^9$
-combinaciones evaluadas con simulaciones Monte Carlo de 100 iteraciones cada
-una. \textcite{Clarke1998} resolvió el problema con tres fases: coarse, fine,
-final, que reducen el espacio de búsqueda iterativamente; aun así, una calibración completa
-toma días en hardware contemporáneo \parencite{Jantz2003}. El problema
-metodológico no es solo el costo: es la \textbf{equifinalidad}, esto es, la
-existencia de múltiples combinaciones de coeficientes que producen patrones
-indistinguibles a la métrica de calibración pero divergen en proyecciones de
-largo plazo \parencite{Clarke2008}. Sin un criterio adicional, la elección
-entre combinaciones equifinales termina dependiendo de la persona que realice la calibración.
+SLEUTH calibra cinco coeficientes de crecimiento ---\emph{diffusion},
+\emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity}---
+mediante búsqueda por fuerza bruta sobre un espacio discreto del orden de $10^9$
+combinaciones, cada una evaluada con simulaciones Monte Carlo de múltiples
+iteraciones. \textcite{Clarke1998} estructuró la búsqueda en tres fases
+sucesivas ---gruesa, fina y final--- que estrechan iterativamente el rango de
+cada coeficiente; aun así, una calibración completa toma días en hardware
+contemporáneo \parencite{Jantz2003}. A esa carga se añaden dos rasgos que
+agravan la dificultad. Primero, SLEUTH es un autómata \emph{auto-modificable}:
+los coeficientes de \emph{spread} se reescriben durante la propia corrida en
+respuesta a la tasa de crecimiento, de modo que el resultado depende de la
+trayectoria seguida y no solo de los valores iniciales \parencite{Clarke1998}.
+Segundo, los coeficientes calibrados son sensibles a la resolución espacial de
+los datos, por lo que un conjunto ajustado a una escala no se transfiere
+directamente a otra. Sobre esa base aparece el problema metodológico de fondo,
+que no es solo el costo: es la \textbf{equifinalidad}, esto es, la existencia de
+múltiples combinaciones de coeficientes que producen patrones indistinguibles
+para la métrica de calibración pero divergen en las proyecciones de largo plazo
+\parencite{Clarke2008}. Sin un criterio adicional, la elección entre
+combinaciones equifinales termina dependiendo de quien realiza la calibración.
+Esta combinación de costo, dependencia de trayectoria y equifinalidad es,
+precisamente, lo que motiva la estrategia de validación multi-ventana que se
+adopta más adelante: una sola ventana temporal no basta para distinguir un
+conjunto de coeficientes robusto de uno meramente equifinal.
 
 El presente trabajo evita el problema redefiniéndolo: en lugar de calibrar
 coeficientes que controlan reglas geométricas genéricas (diffusion, breed,
 spread), calibra dos parámetros que controlan la combinación de evidencia
 espacial empírica (umbral de transición y peso de vecindad). El espacio de
 búsqueda es de dos dimensiones y la calibración termina en minutos. Más
-importante: cada configuración candidata produce mapas de estado deseado cuyos pesos
-por variable son directamente auditables o sabemos por qué tomó una decision, dicho de otra forma, eliminando la ambigüedad asociada a
-la equifinalidad.
+importante aún: cada configuración candidata produce mapas de idoneidad cuyos
+pesos por variable son directamente auditables, de modo que es posible explicar
+por qué una celda recibió una probabilidad de transición dada, lo que reduce la
+ambigüedad asociada a la equifinalidad.
 
 \subsection{Validación: sobreajuste temporal y métricas no comparables}
 
@@ -97,13 +111,13 @@ Esto tiene dos implicaciones que la literatura rara vez confronta. La primera,
 \textbf{validar en una sola ventana temporal es estadísticamente insuficiente}:
 si el FoM depende de la magnitud del cambio, entonces se puede concluir que una validación única no permite
 distinguir entre un modelo robusto y uno sobreajustado a una fase específica del
-crecimiento en el tiempo. Segundo, \textbf{reportar metrias como
+crecimiento en el tiempo. Segundo, \textbf{reportar métricas como
 Kappa o Accuracy sin FoM infla artificialmente la calidad del modelo}: en un
 sistema urbano consolidado donde el 90\% de las celdas permanece sin cambio,
 un modelo trivial que predice ``no cambio'' en todas las celdas obtiene
 Accuracy de $0.90$ sin capturar ninguna dinámica. Queremos capturar la dinámica, no la estabilidad.
 
-En consecuencia, la validación del WoE-AC, para el presnete trabajo, se realizó en
+En consecuencia, la validación del WoE-AC, para el presente trabajo, se realizó en
 cinco ventanas quinquenales independientes (2011--2016 a 2015--2020),
 reportando FoM, Kappa e IoU simultáneamente. La estabilidad del FoM a través de
 las cinco ventanas, no su valor absoluto en una sola, es lo que permite
@@ -166,10 +180,12 @@ condición de uso del modelo, no como propiedad accesoria.
 
 \subsection{Transferibilidad: software propietario y reproducibilidad}
 
-Hoy en dia el sotware libre ha demostrado contundentemente que es la mejor forma de construir modelos reproducibles y transferibles. Una fracción significativa de los modelos LUCC más citados depende de software
-propietario. Por ejemplo, dinamica EGO opera bajo licencia académica restringida; IDRISI y
-TerrSet son comerciales; SLEUTH funciona con un código en C disponible pero
-cuya instalación en sistemas modernos requiere ajustes no documentados, aun cuando la Inteligencia Artificial podria ayudar en este aspecto no es trivial y requiere de un gran esfuerzo de parte del usuario. La
+Una fracción significativa de los modelos LUCC más citados depende de software
+propietario, lo que limita en la práctica la reproducibilidad y la
+transferibilidad de los resultados publicados. Por ejemplo, Dinamica EGO opera bajo licencia académica restringida; IDRISI y
+TerrSet son comerciales; SLEUTH se distribuye como código en C, pero
+su instalación en sistemas modernos requiere ajustes no documentados que no son
+triviales para el usuario. La
 consecuencia práctica es que la reproducibilidad de los resultados publicados
 es, en el mejor de los casos, parcial: el lector puede leer el método pero no
 ejecutarlo sin acceso a infraestructura específica.
@@ -179,7 +195,7 @@ literatura metodológica: el acceso a licencias y a hardware especializado
 introduce una barrera de entrada que condiciona qué grupos académicos pueden
 reproducir o extender los modelos publicados. En contextos donde estos recursos
 son limitados, la única alternativa práctica es reescribir el pipeline desde
-cero o dedicar un esfurzo importrante descifrando requerimientos no documentados. El presente trabajo opta por esta vía: se implementa íntegramente en
+cero o dedicar un esfuerzo considerable a descifrar requerimientos no documentados. El presente trabajo opta por esta vía: se implementa íntegramente en
 Python con dependencias de código abierto (NumPy, SciPy, scikit-learn) sobre
 datos públicos (Google Earth Engine), satisfaciendo R3 sin
 problemas.
@@ -224,8 +240,8 @@ descomponen el problema en un módulo de cantidad (Markov o demanda exógena) y 
 módulo de localización (CA), y la mayoría se distribuye como software con
 interfaz gráfica o licencia restringida. Aquí, en cambio, la cantidad no se
 impone desde fuera, sino que emerge de la propia regla de transición, donde el
-campo WoE ponderado por IV y la influencia del vecindario con decaimiento por
-distancia deciden conjuntamente cuántas y cuáles celdas transitan. El esquema de
+campo WoE ponderado por IV y la influencia del vecindario de Moore deciden
+conjuntamente cuántas y cuáles celdas transitan. El esquema de
 dos módulos ajusta muy bien la cantidad de cambio ---esa es su fortaleza
 documentada---, pero paga ese ajuste con una dependencia mayor de software
 especializado y con una frontera difusa entre lo que decide el modelo de demanda
@@ -378,5 +394,11 @@ otras ciudades intermedias mexicanas. R2, la utilidad para planeación urbana,
 se cumple por construcción: los mapas resultantes son raster celda a celda
 con probabilidades de transición auditables.
 
-El siguiente capítulo describe el área de estudio y la construcción de la serie
-histórica de mapas urbano/no-urbano que alimenta el modelo.
+El Capítulo~\ref{ch:area-estudio} describe el área de estudio ---la Zona
+Metropolitana de Querétaro--- y la construcción de la serie histórica de mapas
+urbano/no-urbano que alimenta el modelo. Ese insumo es el que permite poner a
+prueba, sobre una ciudad intermedia mexicana aún no modelada con estas
+herramientas, las decisiones de diseño que este capítulo justificó: una
+calibración acotada e interpretable frente a la equifinalidad, una validación
+multi-ventana frente al sobreajuste temporal y una implementación abierta frente
+a la dependencia de software propietario.
