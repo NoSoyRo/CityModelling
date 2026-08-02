@@ -12,4 +12,84 @@ Este apéndice reúne los detalles de implementación del \textit{framework} WoE
 
 En la rama de \textbf{imágenes}, el flujo opera sobre matrices RGB ya homogeneizadas. El módulo \texttt{FeatureExtractor} (paquete \path{tesis_ac/pipeline/feature\_extraction}) construye las 23 variables resumidas en la Tabla~\ref{tab:features}. La clase \texttt{FeaturePreprocessor} aplica \texttt{StandardScaler} y PCA (ocho componentes por defecto). El componente \texttt{SatelliteImageProcessor} (nombre heredado en el código; procesa matrices RGB de las capturas, véase \path{tesis_ac/pipeline/clustering.py}) agrupa \texttt{ImageClusterer} e \texttt{ImageClassifier}: K-means para $k \in \{2,3,4\}$ y SVM lineal entrenado con pseudoetiquetas. La varianza acumulada explicada por PCA se consulta con \texttt{get\_variance\_explained} del preprocesador. La orquestación de alto nivel está en \texttt{SatelliteImagePipeline} (\path{tesis_ac/pipeline/main\_pipeline.py}).
 
-En la cadena \textbf{WoE--AC} usada en la validación quinquenal de la tesis intervienen \texttt{WoECalculator}, \texttt{WoECellularAutomaton} y la simulación implementada en los módulos \path{tesis_ac/woe/} y \path{tesis_ac/ca/}. La configuración efectiva ---umbral, peso de vecindad y ponderación por IV--- se encuentra registrada en \path{data/processed/quinquenal_best_config.json}. Los experimentos son reproducibles desde la raíz del repositorio con los scripts \texttt{validate\_quinquenal\_*.py}, que leen los mapas en \path{data/processed/standardized_maps/} y el modelo WoE entrenado \path{data/processed/woe_pooled_1984_2010.pkl}; el entrenamiento agregado del WoE se obtiene con \texttt{train\_woe\_pooled.py}. El repositorio conserva, además, un pipeline experimental más amplio en \path{tesis_ac/run_classify_and_grid.py}, que no forma parte de la narrativa defendida en esta tesis (la cual se centra en la búsqueda en cuadrícula y el ajuste manual del umbral descritos en el Capítulo~\ref{ch:modelo-crecimiento-urbano}).
+En la cadena \textbf{WoE--AC} usada en la validación quinquenal de la tesis intervienen \texttt{WoE\allowbreak Calculator}, \texttt{WoE\allowbreak Cellular\allowbreak Automaton} y la simulación implementada en los módulos \path{tesis_ac/woe/} y \path{tesis_ac/ca/}. La configuración efectiva ---umbral, peso de vecindad y ponderación por IV--- se encuentra registrada en \path{data/processed/quinquenal_best_config.json}. Los experimentos son reproducibles desde la raíz del repositorio con los scripts \texttt{validate\_quinquenal\_*.py}, que leen los mapas en \path{data/processed/standardized_maps/} y el modelo WoE entrenado \path{data/processed/woe_pooled_1984_2010.pkl}; el entrenamiento agregado del WoE se obtiene con \texttt{train\_woe\_pooled.py}. El repositorio conserva, además, un pipeline experimental más amplio en \path{tesis_ac/run_classify_and_grid.py}, que no forma parte de la narrativa defendida en esta tesis (la cual se centra en la búsqueda en cuadrícula y el ajuste manual del umbral descritos en el Capítulo~\ref{ch:modelo-crecimiento-urbano}).
+
+\section{Procedimiento de adquisición manual de imágenes}
+
+El conjunto de imágenes descrito en el Capítulo~\ref{ch:area-estudio} se construyó con el procedimiento manual reproducible que resume el Algoritmo~\ref{alg:adquisicion}, sobre Google Earth en escritorio y su herramienta de imagen histórica.
+
+\begin{algorithm}[H]
+\caption{Procedimiento de adquisición manual con Google Earth}
+\label{alg:adquisicion}
+\begin{algorithmic}[1]
+\State Centrar el visor en la Zona Metropolitana de Querétaro y ajustar zoom, orientación y ángulo que se mantendrán fijos para toda la serie
+\State Para cada año $y$ de 1984 a 2020:
+	\State \quad Abrir la herramienta de \textit{imagen histórica} y seleccionar el año $y$
+	\State \quad Desplazarse dentro del año hasta una fecha con cobertura nubosa baja (criterio visual)
+	\State \quad Verificar que el encuadre coincide con el resto de la serie (sin desplazamientos accidentales)
+	\State \quad Exportar o capturar la imagen y guardarla con nomenclatura estandarizada (p.\ ej.\ \texttt{YYYY.png})
+\State Revisar visualmente la continuidad de la serie (saltos bruscos, años atípicos) y repetir la captura solo cuando una escena resulte claramente inutilizable
+\end{algorithmic}
+\end{algorithm}
+
+\section{Cuadros complementarios del conjunto de datos}
+
+El conjunto de imágenes descrito en el Capítulo~\ref{ch:area-estudio} se complementa con tres cuadros de referencia: el detalle de las 23 características extraídas por píxel (Tabla~\ref{tab:features}), la estimación cualitativa de las principales fuentes de error y su mitigación (Tabla~\ref{tab:uncertainty}) y el resumen agregado del preprocesamiento aplicado a toda la serie (Tabla~\ref{tab:preprocessing_quality}).
+
+\begin{table}[h]
+\centering
+\caption{Características extraídas por píxel a partir de cada captura RGB.}
+\begin{tabular}{|l|c|p{8cm}|}
+\hline
+	\textbf{Categoría} & \textbf{Cantidad} & \textbf{Características específicas} \\
+\hline
+Básicas & 8 & Canales R, G, B; intensidad; brillo; desviación estándar de R, G y B. \\
+\hline
+Texturales & 6 & Sobel horizontal y vertical; magnitud del gradiente; LBP uniforme ($R = 3$, $P = 24$) sobre escala de grises; entropía local; contraste local. \\
+\hline
+Espectrales / color & 9 & Índice verde--rojo normalizado $(G-R)/(G+R)$; exceso de verde y exceso de rojo; componentes L, a, b (LAB); H, S, V (HSV). \\
+\hline
+	\textbf{Total} & \textbf{23} & \\
+\hline
+\end{tabular}
+\label{tab:features}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.18\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{0.26\textwidth}|}
+\hline
+	\textbf{Tipo de error} & \textbf{Nivel} & \textbf{Efecto sobre los mapas} & \textbf{Mitigación aplicada} \\
+\hline
+Georreferenciación / encuadre & Bajo--medio & Pequeños desplazamientos entre capturas por reposicionamiento manual del visor; desalineación píxel a píxel entre años. & Mismo zoom, orientación y región; ajuste a la cuadrícula de referencia en el preprocesamiento. \\
+\hline
+Temporal (fecha intra-anual) & Medio & La fecha exacta varía dentro de cada año; cambios fenológicos y estacionales alteran la respuesta de la vegetación. & Captura preferente en temporada seca (nov.--abr.) y revisión de continuidad de la serie. \\
+\hline
+Mosaico / composición del proveedor & Medio--alto & Google Earth actualiza mosaicos y mezcla fuentes y fechas; discontinuidades de textura y color no atribuibles a cambio real. & Revisión cruzada año con año y sustitución puntual de escenas claramente anómalas. \\
+\hline
+Cromático / radiométrico & Medio & Sin corrección atmosférica; diferencias de balance de color e iluminación que sesgan los índices de color (NGRDI). & Normalización y estandarización por imagen; descriptores de textura (LBP) robustos a la iluminación. \\
+\hline
+Compresión / exportación & Bajo--medio & Las capturas se exportan como imágenes comprimidas (JPEG/PNG); aparecen artefactos de bloque y suavizado de bordes que pueden alterar píxeles de frontera urbano/no-urbano. & Exportación a la máxima resolución disponible del visor y descriptores de textura locales menos sensibles al artefacto puntual. \\
+\hline
+Clasificación (LBP+K-Means+SVM) & Medio & Pseudoetiquetas no supervisadas, sin verdad terreno; ruido binario y sobre o subestimación local de lo urbano. & Validación interna \textit{train/test} y evaluación temporal indirecta del modelo AC (Capítulo~\ref{ch:resultados-analisis}). \\
+\hline
+\end{tabularx}
+\label{tab:uncertainty}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.35\textwidth}|X|}
+\hline
+	\textbf{Métrica} & \textbf{Valor} \\
+\hline
+Varianza retenida por PCA (promedio de la serie) & Cerca del $96$\,\%. \\
+Componentes finales por píxel & 8 (a partir de los 23 descriptores originales). \\
+Características válidas por imagen & 23 de 23 (ningún descriptor se descarta). \\
+Píxeles procesados por imagen & $5{,}419{,}008$ ($1{,}792 \times 3{,}024$). \\
+\hline
+\end{tabularx}
+\label{tab:preprocessing_quality}
+\end{table}

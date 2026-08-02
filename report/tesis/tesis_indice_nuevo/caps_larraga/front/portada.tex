@@ -1,0 +1,46 @@
+% Portada institucional UNAM - PCIC.
+% Los escudos son opcionales: si colocas figures/escudo_unam.png y
+% figures/logo_pcic.png se incluyen automaticamente; si no, la portada
+% funciona igual en formato solo texto.
+\begin{titlepage}
+\centering
+\thispagestyle{empty}
+\setstretch{1.15}
+
+% ---- Escudos (opcionales) ----
+\IfFileExists{figures/escudo_unam.png}{%
+  \IfFileExists{figures/logo_pcic.png}{%
+    \begin{minipage}{0.30\textwidth}\centering\includegraphics[height=2.6cm]{figures/escudo_unam.png}\end{minipage}%
+    \hfill
+    \begin{minipage}{0.30\textwidth}\centering\includegraphics[height=2.6cm]{figures/logo_pcic.png}\end{minipage}%
+  }{%
+    \includegraphics[height=2.8cm]{figures/escudo_unam.png}%
+  }
+  \\[0.8cm]
+}{\vspace*{0.4cm}}
+
+{\large\bfseries\color{ThesisBlue} UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO}\\[0.35cm]
+{\normalsize\bfseries POSGRADO EN CIENCIA E INGENIERÍA DE LA COMPUTACIÓN}\\[0.25cm]
+{\normalsize Instituto de Investigaciones en Matemáticas Aplicadas y en Sistemas}\\[1.4cm]
+
+{\color{ThesisBlue}\rule{0.85\textwidth}{1.2pt}}\\[0.5cm]
+{\LARGE\bfseries Modelado del crecimiento urbano de la\\[4pt]
+Zona Metropolitana de Querétaro (1984--2020)\\[6pt]
+mediante Pesos de Evidencia y autómatas celulares}\\[0.5cm]
+{\color{ThesisBlue}\rule{0.85\textwidth}{1.2pt}}\\[1.4cm]
+
+{\normalsize T\,E\,S\,I\,S}\\[0.35cm]
+{\normalsize QUE PARA OPTAR POR EL GRADO DE:}\\[0.30cm]
+{\large\bfseries MAESTRO EN CIENCIA E INGENIERÍA DE LA COMPUTACIÓN}\\[1.2cm]
+
+{\normalsize PRESENTA:}\\[0.30cm]
+{\large\bfseries JOSÉ RODRIGO MORENO LÓPEZ}\\[1.4cm]
+
+{\normalsize DIRECTORA DE TESIS:}\\[0.30cm]
+{\large\bfseries DRA. MARÍA ELENA LÁRRAGA RAMÍREZ}\\[0.20cm]
+{\normalsize Instituto de Investigaciones en Matemáticas Aplicadas y en Sistemas}\\[1.6cm]
+
+\vfill
+{\normalsize Ciudad Universitaria, Cd. Mx., 2026}
+\end{titlepage}
+\cleardoublepage

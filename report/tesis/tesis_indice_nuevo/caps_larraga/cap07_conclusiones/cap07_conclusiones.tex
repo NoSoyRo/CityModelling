@@ -6,7 +6,7 @@
 \label{ch:conclusiones}
 
 \begin{resumen}
-Este capítulo sintetiza los hallazgos de la investigación, discute las implicaciones para la planificación urbana, identifica las limitaciones del modelo y propone direcciones de trabajo futuro. Se presentan las respuestas a las preguntas de investigación, la validación de hipótesis y las contribuciones originales al campo del modelado urbano, a la luz de los resultados de la validación quinquenal múltiple (cinco períodos, 2011--2020).
+Este capítulo sintetiza los hallazgos de la investigación, discute las implicaciones para la planificación urbana, identifica las limitaciones del modelo y propone direcciones de trabajo futuro. Se presentan las respuestas a las preguntas de investigación, la validación de hipótesis y las aportaciones del trabajo al campo del modelado urbano, a la luz de los resultados de la validación quinquenal múltiple (cinco períodos, 2011--2020).
 \end{resumen}
 
 % ============================================================
@@ -17,24 +17,17 @@ Esta sección sintetiza los resultados centrales de la investigación, presenta 
 
 \subsection{Síntesis de la investigación}
 
-Esta investigación abordó el problema de modelar el crecimiento urbano de Querétaro (1984--2020) mediante la integración de tres metodologías complementarias: \textbf{Weight of Evidence (WoE)} para cuantificar empíricamente la evidencia espacial, \textbf{Autómatas Celulares (AC)} para simular dinámicas espaciales locales y una estrategia de \textbf{calibración sistemática} para el ajuste de parámetros. La validación quinquenal múltiple sobre cinco períodos independientes (2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020) sugiere que la metodología WoE-AC, bajo las condiciones de datos y calibración descritas en los capítulos anteriores, presenta los siguientes rasgos:
-
-\begin{itemize}
-	\item Clasifica de manera automática las 37 capturas RGB anuales (1984--2020) en mapas binarios urbano/no-urbano mediante el \textit{pipeline} LBP+K-Means+SVM, con \textit{accuracy} interno de $88$--$94$\,\% en el conjunto de prueba.
-	\item Cuantifica empíricamente la evidencia espacial a partir de las transiciones históricas observadas en 26 años de datos (1984--2010).
-	\item Obtiene un \textbf{FoM promedio de $0{,}317$} sobre cinco períodos de validación independientes ---calculado como promedio de los archivos \path{validation_results.json} en \path{data/processed/validation_quinquenal_*_v3_weighted/}---, equivalente a aproximadamente $31{,}7$\,\% en la escala porcentual usada por \textcite{pontius2008comparing}; interpretado frente al espectro empírico multi-sitio de ese estudio (seis aplicaciones con FoM inferior al $15$\,\% y una sola por encima del $50$\,\%), el resultado se ubica en una \textbf{banda intermedia} de dicho marco (Capítulo~\ref{ch:estado-del-arte}), utilizando únicamente siete variables espaciales derivadas del mapa binario.
-	\item Reproduce los patrones de expansión urbana con \textit{Accuracy} promedio de $0{,}722$, Kappa promedio de $0{,}445$ y FoM promedio de $0{,}317$, capturando el mecanismo de difusión por contagio espacial perimetral de forma coherente con los patrones observados.
-\end{itemize}
+Esta investigación abordó el problema de modelar el crecimiento urbano de Querétaro (1984--2020) mediante la integración de tres metodologías complementarias: \textbf{Weight of Evidence (WoE)} para cuantificar empíricamente la evidencia espacial, \textbf{Autómatas Celulares (AC)} para simular dinámicas espaciales locales y una estrategia de \textbf{calibración sistemática} para el ajuste de parámetros. La validación quinquenal múltiple sobre cinco períodos independientes (2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020) sugiere que la metodología WoE-AC, bajo las condiciones de datos y calibración descritas en los capítulos anteriores, presenta varios rasgos consistentes. El \textit{pipeline} LBP+K-Means+SVM clasifica de manera automática las 37 capturas RGB anuales (1984--2020) en mapas binarios urbano/no-urbano, con \textit{accuracy} interno de $88$--$94$\,\% en el conjunto de prueba. Sobre esa base, el WoE cuantifica empíricamente la evidencia espacial a partir de las transiciones históricas observadas en 26 años de datos (1984--2010). El modelo obtiene un \textbf{FoM promedio de $0{,}317$} sobre cinco períodos de validación independientes, calculado como promedio de los archivos \path{validation_results.json} en \path{data/processed/validation_quinquenal_*_v3_weighted/}, equivalente a aproximadamente $31{,}7$\,\% en la escala porcentual usada por \textcite{pontius2008comparing}; interpretado frente al espectro empírico multi-sitio de ese estudio (seis aplicaciones con FoM inferior al $15$\,\% y una sola por encima del $50$\,\%), el resultado se ubica en una \textbf{banda intermedia} de dicho marco (Capítulo~\ref{ch:estado-del-arte}), utilizando únicamente siete variables espaciales derivadas del mapa binario. En conjunto, reproduce los patrones de expansión urbana con \textit{Accuracy} promedio de $0{,}722$, Kappa promedio de $0{,}445$ y FoM promedio de $0{,}317$, y captura el mecanismo de difusión por contagio espacial perimetral de forma coherente con los patrones observados.
 
 \subsection{Respuestas a las preguntas de investigación}
 
 \subsubsection{P1: Mejora mediante calibración sistemática}
 
-La búsqueda sistemática en cuadrícula y el ajuste manual del umbral, documentados en \path{quinquenal_best_config.json}, definen la configuración utilizada en los cinco experimentos de validación quinquenal. Los FoM reportados en cada archivo \path{validation_results.json} ($0{,}222$--$0{,}378$; promedio $0{,}317$) constituyen la evidencia cuantitativa principal del trabajo. Ensayos preliminares con otras configuraciones ---en particular un experimento exploratorio con sobre-predicción masiva y FoM del orden de $0{,}17$, con magnitudes de falsas alarmas del orden de $10^{6}$ píxeles--- motivaron el umbral $0{,}75$ y la ponderación por IV finalmente adoptados. No se conserva en el repositorio una tabla A/B período a período contra parámetros puramente heurísticos; la comparación favorable frente a las configuraciones preliminares se sustenta en la trazabilidad de los archivos del repositorio y en la estabilidad de las métricas observada en las cinco ventanas temporales. La integración del WoE como función de transición probabilística capta, además, no-linealidades empíricas en la relación entre vecindad y urbanización sin supuestos paramétricos previos sobre la forma funcional.
+La búsqueda sistemática en cuadrícula y el ajuste manual del umbral, documentados en \path{quinquenal_best_config.json}, definen la configuración utilizada en los cinco experimentos de validación quinquenal. Los FoM reportados en cada archivo \path{validation_results.json} ($0{,}222$--$0{,}378$; promedio $0{,}317$) constituyen la evidencia cuantitativa principal del trabajo. Ensayos preliminares con otras configuraciones (en particular un experimento exploratorio con sobre-predicción masiva y FoM del orden de $0{,}17$, con magnitudes de falsas alarmas del orden de $10^{6}$ píxeles) motivaron el umbral $0{,}75$ y la ponderación por IV finalmente adoptados. No se conserva en el repositorio una tabla A/B período a período contra parámetros puramente heurísticos; la comparación favorable frente a las configuraciones preliminares se sustenta en la trazabilidad de los archivos del repositorio y en la estabilidad de las métricas observada en las cinco ventanas temporales. La integración del WoE como función de transición probabilística incorpora, además, relaciones empíricas no lineales entre vecindad y transición, sin supuestos paramétricos previos sobre la forma funcional.
 
 \subsubsection{P2: Configuración adoptada para la validación}
 
-La configuración registrada en \path{quinquenal_best_config.json} ---umbral $\theta = 0{,}75$, peso de vecindad $\alpha = 0{,}50$ y pesos WoE normalizados por IV--- es la empleada en los cinco períodos de validación independientes, en los que se observa un FoM promedio de $0{,}317$ y un Kappa promedio de $0{,}445$ (idénticos a los promedios reportados en la Tabla~\ref{tab:metrics_all_periods} del Capítulo~\ref{ch:resultados-analisis}), sin reentrenar el WoE por período.
+La configuración registrada en \path{quinquenal_best_config.json} (umbral $\theta = 0{,}75$, peso de vecindad $\alpha = 0{,}50$ y pesos WoE normalizados por IV) es la empleada en los cinco períodos de validación independientes, en los que se observa un FoM promedio de $0{,}317$ y un Kappa promedio de $0{,}445$ (idénticos a los promedios reportados en la Tabla~\ref{tab:metrics_all_periods} del Capítulo~\ref{ch:resultados-analisis}), sin reentrenar el WoE por período.
 
 \subsubsection{P3: Variables con mayor influencia}
 
@@ -42,77 +35,47 @@ El análisis del \textit{Information Value} muestra que las variables \textbf{di
 
 \subsubsection{P4: Robustez temporal del modelo}
 
-El FoM varía entre $0{,}222$ y $0{,}378$ en función de la dinámica de crecimiento observada en cada período, con valores más altos cuando el crecimiento real observado es positivo y sostenido (períodos 2012--2017, 2013--2018 y 2015--2020). Esa variación responde sobre todo a diferencias en la magnitud del crecimiento real entre períodos y a la sensibilidad de las métricas píxel a píxel frente al ruido de la clasificación binaria ---marcada en 2011--2016, donde el bajo crecimiento neto y la fluctuación de la clase clasificada deprimen el FoM--- más que a una inestabilidad del modelo en sí.
+El FoM varía entre $0{,}222$ y $0{,}378$ en función de la dinámica de crecimiento observada en cada período, con valores más altos cuando el crecimiento real observado es positivo y sostenido (períodos 2012--2017, 2013--2018 y 2015--2020). Conviene distinguir dos fuentes de esa variación: por un lado, las diferencias en la magnitud del crecimiento real entre períodos; por otro, una sensibilidad real del desempeño a la calidad de la clasificación binaria y al bajo crecimiento neto, que se hace evidente en 2011--2016. El valor más bajo (FoM $0{,}222$) debe leerse, por tanto, como el límite inferior del desempeño del modelo bajo condiciones de baja señal de cambio, y no minimizarse: el modelo es estable en su comportamiento morfológico, pero sus métricas píxel a píxel sí dependen de la dinámica observada y del ruido del clasificador.
 
 \subsection{Cumplimiento de los objetivos específicos}
 
-Los cinco objetivos específicos planteados en el Capítulo~\ref{ch:introduccion} se cumplieron del modo siguiente:
-
-\begin{enumerate}
-	\item \textbf{Serie histórica binaria (OE1)}: se construyó la serie anual 1984--2020 (37 mapas urbano/no-urbano) a partir de imágenes de archivo de Google Earth, con clasificación no supervisada LBP+K-Means+SVM y sin software propietario (Capítulo~\ref{ch:area-estudio}).
-	\item \textbf{Variables espaciales y WoE (OE2)}: se calcularon las siete variables derivadas del mapa binario y se adoptó el WoE como función de transición por su descomposición auditable mediante el \textit{Information Value} (Capítulos~\ref{ch:modelo-crecimiento-urbano} y \ref{ch:resultados-analisis}).
-	\item \textbf{Diseño e implementación del WoE-AC (OE3)}: se implementó el autómata celular que simula la transición no urbano $\rightarrow$ urbano sobre la ZMQ (Capítulo~\ref{ch:modelo-crecimiento-urbano}).
-	\item \textbf{Calibración y protocolo de validación (OE4)}: se calibraron umbral y peso de vecindad por búsqueda en cuadrícula y se validó el modelo en cinco ventanas quinquenales independientes con FoM, Kappa e IoU (Capítulo~\ref{ch:resultados-analisis}).
-	\item \textbf{Estabilidad temporal y posicionamiento (OE5)}: se analizó la estabilidad del desempeño a lo largo de los cinco períodos y se contrastaron los valores de FoM e IoU con los rangos de la literatura de modelos de caja blanca y de caja negra (Capítulos~\ref{ch:resultados-analisis} y \ref{ch:estado-del-arte}).
-\end{enumerate}
+Los cinco objetivos específicos planteados en el Capítulo~\ref{ch:introduccion} se cumplieron del modo que se describe a continuación. El primero (OE1) condujo a la \textbf{serie histórica binaria}: se construyó la serie anual 1984--2020 (37 mapas urbano/no-urbano) a partir de imágenes de archivo de Google Earth, con clasificación no supervisada LBP+K-Means+SVM y sin software propietario (Capítulo~\ref{ch:area-estudio}). El segundo (OE2) abordó las \textbf{variables espaciales y el WoE}: se calcularon las siete variables derivadas del mapa binario y se adoptó el WoE como función de transición por su descomposición auditable mediante el \textit{Information Value} (Capítulos~\ref{ch:modelo-crecimiento-urbano} y \ref{ch:resultados-analisis}). El tercero (OE3) corresponde al \textbf{diseño e implementación del WoE-AC}: se implementó el autómata celular que simula la transición no urbano $\rightarrow$ urbano sobre la ZMQ (Capítulo~\ref{ch:modelo-crecimiento-urbano}). El cuarto (OE4) cubrió la \textbf{calibración y el protocolo de validación}: se calibraron umbral y peso de vecindad por búsqueda en cuadrícula y se validó el modelo en cinco ventanas quinquenales independientes con FoM, Kappa e IoU (Capítulo~\ref{ch:resultados-analisis}). El quinto (OE5) atendió la \textbf{estabilidad temporal y el posicionamiento}: se analizó la estabilidad del desempeño a lo largo de los cinco períodos y se contrastaron los valores de FoM e IoU con los rangos de la literatura de modelos de caja blanca y de caja negra (Capítulos~\ref{ch:resultados-analisis} y \ref{ch:estado-del-arte}).
 
 \subsection{Validación de hipótesis}
 
-\begin{table}[htbp]
-\centering
-\caption{Resumen de validación de hipótesis}
-\label{tab:hypothesis_validation}
-\begin{tabularx}{\textwidth}{@{}l X c X@{}}
+\begin{xltabular}{\textwidth}{@{}l X c X@{}}
+\caption{Resumen de validación de hipótesis}\label{tab:hypothesis_validation}\\
 \toprule
-\textbf{Hip.} & \textbf{Enunciado (resumido)} & \textbf{Estado} & \textbf{Evidencia} \\
+\textbf{Hip.} & \textbf{Enunciado (Cap.~\ref{ch:introduccion})} & \textbf{Estado} & \textbf{Evidencia} \\
 \midrule
-H1 & La integración de WoE como función de transición empírica del AC produce simulaciones con FoM superior a $0{,}15$ en las cinco ventanas de validación quinquenal (Capítulo~\ref{ch:introduccion}). & Confirmada & FoM entre $0{,}222$ y $0{,}378$ ---por encima de $0{,}15$ en las cinco ventanas---, en banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing} (Cap.~\ref{ch:estado-del-arte}); Kappa promedio de $0{,}445$. \\
-H2 & En el espacio de parámetros (umbral de transición, peso de vecindad) existe un óptimo no trivial: la configuración calibrada por búsqueda sistemática supera a una configuración por omisión sin calibrar en el FoM medio de las cinco ventanas, y los umbrales por debajo del calibrado degradan el desempeño por sobre-predicción. & Confirmada & FoM medio $0{,}317$ ($0{,}222$--$0{,}378$ en cinco períodos) frente a una configuración exploratoria previa (FoM $\approx 0{,}17$) registrada en el repositorio. \\
-H3 & Las variables espaciales con mayor Information Value (IV) en el modelo WoE son las relacionadas con la proximidad al frente urbano y la densidad de vecindad, en coherencia con los mecanismos de difusión espacial documentados en la literatura. & Confirmada & IV concentrado en distancia al área urbana y densidad de vecindad (Sección WoE, Capítulo~\ref{ch:resultados-analisis}). \\
-H4 & El modelo mantiene FoM y Kappa estables a lo largo de las cinco ventanas quinquenales, con mayor variación en los períodos donde la extensión de nueva área urbana observada es pequeña. & Confirmada parcialmente & FoM $0{,}222$--$0{,}378$ según el período; el valor más bajo (2011--2016) coincide con la ventana de menor crecimiento neto observado (Capítulo~\ref{ch:resultados-analisis}). \\
-H5 & Un modelo de caja blanca con función de transición WoE alcanza desempeño comparable al de modelos de caja negra en FoM/IoU, sin sacrificar la interpretabilidad. & Confirmada parcialmente & El FoM promedio de $0{,}317$ se ubica en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing} y por debajo de \textcite{Tang2024}, manteniendo pesos auditables (IV) con solo siete variables derivadas del mapa binario. La comparación es cualitativa (sitios, clases y horizontes distintos), no un contraste directo sobre el mismo conjunto de datos. \\
-H6 & El pipeline completo (adquisición $\rightarrow$ validación) se ejecuta con herramientas de código abierto y datos de acceso libre, sin software propietario ni hardware especializado. & Confirmada & Implementación íntegra en Python (NumPy, SciPy, scikit-learn) sobre imágenes de Google Earth; el cómputo se mantiene del orden de tres horas en CPU estándar, sin GPU (Sección~\ref{sec:accesibilidad} y Tabla~\ref{tab:approach_characteristics}). \\
+\endfirsthead
+\toprule
+\textbf{Hip.} & \textbf{Enunciado (Cap.~\ref{ch:introduccion})} & \textbf{Estado} & \textbf{Evidencia} \\
+\midrule
+\endhead
 \bottomrule
-\end{tabularx}
-\end{table}
+\endlastfoot
+H1 & La integración de WoE como función de transición empírica del AC produce simulaciones con FoM superior a $0{,}15$ en las cinco ventanas de validación quinquenal (Capítulo~\ref{ch:introduccion}). & Confirmada & FoM entre $0{,}222$ y $0{,}378$, por encima de $0{,}15$ en las cinco ventanas, en banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing} (Cap.~\ref{ch:estado-del-arte}); Kappa promedio de $0{,}445$. \\
+H2 & En el espacio de parámetros (umbral de transición, peso de vecindad) existe un óptimo no trivial: la configuración calibrada por búsqueda sistemática supera a una configuración por omisión sin calibrar en el FoM medio de las cinco ventanas, y los umbrales por debajo del calibrado degradan el desempeño por sobre-predicción. & Confirmada & FoM medio $0{,}317$ ($0{,}222$--$0{,}378$ en cinco períodos) frente a una configuración exploratoria previa (FoM $\approx 0{,}17$) registrada en el repositorio. \\
+H3 & Entre las siete variables espaciales evaluadas, las que cuantifican la proximidad al frente urbano y la densidad de vecindad concentran el mayor Information Value (IV), por encima de las variables de fragmentación y de gradiente. & Confirmada & IV concentrado en distancia al área urbana y densidad de vecindad (en torno al 75\%), por encima de fragmentación y gradiente (Sección WoE, Capítulo~\ref{ch:resultados-analisis}). \\
+H4 & El modelo mantiene FoM y Kappa estables a lo largo de las cinco ventanas quinquenales, con mayor variación en los períodos donde la extensión de nueva área urbana observada es pequeña. & Confirmada parcialmente & FoM $0{,}222$--$0{,}378$ según el período; el valor más bajo (2011--2016) coincide con la ventana de menor crecimiento neto observado (Capítulo~\ref{ch:resultados-analisis}). \\
+H5 & Restringir la función de transición a siete variables auditables (un modelo de caja blanca) mantiene el FoM medio dentro de la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}, por encima del subconjunto con FoM inferior a $0{,}15$, sin recurrir a las representaciones no interpretables propias de los modelos de caja negra. & Confirmada & FoM promedio $0{,}317$ e IoU promedio $0{,}633$ en esa banda intermedia, por encima del subconjunto con FoM inferior a $0{,}15$, con pesos auditables (IV) y solo siete variables; la restricción a un modelo interpretable no hundió el desempeño. El contraste con caja negra es cualitativo (sitios y horizontes distintos), no directo. \\
+H6 & El pipeline completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta en una CPU estándar en un tiempo del orden de horas, sin requerir GPU, software propietario ni hardware especializado. & Confirmada & Implementación íntegra en Python (NumPy, SciPy, scikit-learn) sobre imágenes de Google Earth; el cómputo se mantiene del orden de tres horas en CPU estándar, sin GPU (Sección~\ref{sec:accesibilidad} y Tabla~\ref{tab:approach_characteristics}). \\
+\end{xltabular}
 
-\subsection{Contribuciones originales}
+\subsection{Aportaciones del trabajo}
 
-La contribución central de esta investigación es el \textbf{acoplamiento reproducible del método Weight of Evidence como campo probabilístico continuo dentro de un autómata celular calibrado y validado en múltiples ventanas temporales}, aplicado a una ciudad intermedia latinoamericana. De esta aportación principal se derivan las siguientes contribuciones específicas:
-
-\begin{enumerate}
-	\item \textbf{Integración WoE-AC para ciudad intermedia mexicana} \textit{(metodológica)}: Implementación que combina WoE como función de transición empírica en AC urbanos, aplicada al contexto de la Zona Metropolitana de Querétaro con datos de acceso libre.
-
-	\item \textbf{Protocolo de validación quinquenal múltiple} \textit{(metodológica)}: Evaluación sobre cinco períodos independientes (2011--2020) con métricas pixel-based (FoM, Kappa) y análisis visual comparativo de patrones morfológicos, que evalúa la estabilidad temporal del modelo con mayor rigor que la validación en un único período.
-
-	\item \textbf{Pipeline reproducible} \textit{(práctica)}: Sistema modular en Python que transforma capturas RGB en mapas binarios y en proyecciones de crecimiento urbano (clasificación híbrida, WoE, AC y evaluación), documentado y de acceso abierto.
-
-	\item \textbf{Serie temporal de Querétaro} \textit{(empírica)}: Conjunto de datos procesado de 37 años (1984--2020) de mapas binarios urbano/no-urbano, que puede utilizarse como base para investigaciones futuras en la región.
-
-	\item \textbf{Comparación con estudios de referencia} \textit{(empírica)}: Posicionamiento del modelo WoE-AC con respecto a estudios internacionales mediante métricas estandarizadas, facilitando la contextualización de los resultados en la literatura especializada.
-
-	\item \textbf{Campo WoE continuo ponderado por Information Value} \textit{(metodológica)}: Formulación en la que la idoneidad WoE no es un mapa estático, sino un campo probabilístico ponderado por el \textit{Information Value} normalizado de cada variable que se recalcula en cada paso sobre el estado actualizado del mapa y se acopla a la vecindad de Moore mediante una regla auditable.
-\end{enumerate}
+Conviene precisarlo sin sobrevender: el uso del Weight of Evidence y del autómata celular no constituye, por sí mismo, una novedad metodológica, pues ambos están ampliamente documentados en la literatura. La aportación central de esta investigación reside en el \textbf{protocolo de evaluación}: el acoplamiento WoE-AC \textbf{calibrado y validado de forma reproducible sobre cinco ventanas temporales independientes}, con código y datos de acceso libre, aplicado a una ciudad intermedia mexicana poco estudiada. El WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value}, pero el valor diferenciador está en poder distinguir un desempeño estable de un ajuste a un único período. De esa aportación principal se derivan varias contribuciones específicas. La primera es el \textbf{protocolo de validación quinquenal múltiple}, de carácter \textit{metodológico}: la evaluación sobre cinco períodos independientes (2011--2020) con métricas píxel a píxel (FoM, Kappa, IoU) y análisis visual comparativo de patrones morfológicos evalúa la estabilidad temporal del modelo con mayor rigor que la validación en un único período, y es la aportación que sostiene las demás. La segunda, de orden \textit{práctico}, es la \textbf{reproducibilidad abierta del pipeline}: un sistema modular en Python que transforma capturas RGB en mapas binarios y en proyecciones de crecimiento urbano (clasificación híbrida, WoE, AC y evaluación), ejecutable con herramientas de código abierto y datos de acceso libre, documentado y publicado. La tercera, también \textit{metodológica}, es el \textbf{campo WoE continuo ponderado por Information Value}: una formulación en la que la idoneidad WoE no es un mapa estático, sino un campo probabilístico ponderado por el \textit{Information Value} normalizado de cada variable, que se recalcula en cada paso sobre el estado actualizado del mapa y se acopla a la vecindad de Moore mediante una regla auditable. La cuarta, de naturaleza \textit{metodológica}, es la \textbf{aplicación a una ciudad intermedia mexicana}: la adaptación del enfoque WoE-AC al contexto de la Zona Metropolitana de Querétaro, un caso poco estudiado y sin un \textit{benchmark} comparable previo. La quinta, de carácter \textit{empírico}, es la \textbf{serie temporal de Querétaro}: un conjunto de datos procesado de 37 años (1984--2020) de mapas binarios urbano/no-urbano, que puede utilizarse como base para investigaciones futuras en la región. La sexta, igualmente \textit{empírica}, es el \textbf{posicionamiento frente a la literatura}: el contraste del modelo WoE-AC con estudios internacionales mediante métricas estandarizadas (FoM, IoU), que contextualiza los resultados en el espectro empírico multi-sitio de \textcite{pontius2008comparing}.
 
 % ============================================================
 \section{Implicaciones para la planificación urbana}
 % ============================================================
 
-Los resultados de la validación sugieren posibles usos del modelo como herramienta de apoyo a decisiones de planificación. Esta sección discute las aplicaciones potenciales, los escenarios de política pública simulables y las condiciones de transferibilidad a otras ciudades intermedias mexicanas.
+Los resultados de la validación sugieren que el modelo puede apoyar la exploración morfológica de escenarios de expansión urbana, sin sustituir los estudios con verdad terreno ni la formulación de política pública calibrada. Bajo esa lectura, esta sección discute las aplicaciones potenciales, los escenarios de política pública conceptualmente simulables y las condiciones de transferibilidad a otras ciudades intermedias mexicanas.
 
 \subsection{Herramientas para decisión informada}
 
-Los resultados sugieren una aplicabilidad potencial en la planificación urbana metropolitana, siempre en un plano hipotético y sujeto a recalibración y validación local previas. Bajo esa salvedad, el modelo podría apoyar tareas como:
-
-\begin{enumerate}
-	\item \textbf{Provisión anticipada de infraestructura}: identificar zonas con alta probabilidad de transición a urbano según el modelo WoE-AC, para extender redes de agua, drenaje y electricidad antes de que se materialice la demanda.
-
-	\item \textbf{Reserva de suelo para espacios públicos}: Adquirir terrenos en áreas pre-urbanización para parques, equipamiento comunitario y zonas de amortiguamiento ambiental.
-
-	\item \textbf{Zonificación proactiva}: Definir usos de suelo permitidos antes de que la presión inmobiliaria haga inviable la planificación reactiva.
-
-	\item \textbf{Evaluación de impacto ambiental}: Identificar áreas ecológicamente sensibles en la trayectoria de expansión urbana proyectada.
-\end{enumerate}
+Los resultados sugieren una aplicabilidad potencial en la planificación urbana metropolitana, siempre en un plano hipotético y sujeto a recalibración y validación local previas. Bajo esa salvedad, el modelo podría apoyar distintas tareas. Una sería la \textbf{provisión anticipada de infraestructura}: identificar zonas con alta probabilidad de transición a urbano según el modelo WoE-AC, para extender redes de agua, drenaje y electricidad antes de que se materialice la demanda. Otra es la \textbf{reserva de suelo para espacios públicos}, esto es, adquirir terrenos en áreas pre-urbanización para parques, equipamiento comunitario y zonas de amortiguamiento ambiental. Una tercera es la \textbf{zonificación proactiva}: definir usos de suelo permitidos antes de que la presión inmobiliaria haga inviable la planificación reactiva. La cuarta es la \textbf{evaluación de impacto ambiental}, orientada a identificar áreas ecológicamente sensibles en la trayectoria de expansión urbana proyectada.
 
 \subsection{Escenarios de política pública}
 
@@ -122,7 +85,7 @@ La estructura del modelo admite simular, de forma conceptual, el impacto de dist
 \centering
 \caption{Escenarios de política pública \textit{conceptualmente} simulables con el modelo WoE-AC mediante ajuste de parámetros o máscaras de probabilidad. Las direcciones de efecto son cualitativas; \textbf{este trabajo no calibró corridas contrafactuales por política} ni cuantificó impactos en métricas de dispersión para Querétaro.}
 \label{tab:policy_scenarios}
-\begin{tabular}{lp{6cm}p{4.2cm}}
+\begin{tabularx}{\textwidth}{l >{\raggedright\arraybackslash}p{5.4cm} >{\raggedright\arraybackslash}X}
 \toprule
 \textbf{Política} & \textbf{Implementación en el modelo (ejemplos)} & \textbf{Efecto esperado (cualitativo)} \\
 \midrule
@@ -131,7 +94,7 @@ Densificación & Aumentar peso WoE en zonas intraurbanas predefinidas & Reducci�
 Contención urbana & Reducir probabilidad de transición en anillo exterior & Menor crecimiento en borde; mayor presión intraurbano \\
 Corredores TOD & Amplificar probabilidad a lo largo de ejes de transporte prioritarios & Crecimiento más concentrado en corredores \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Accesibilidad computacional}
@@ -160,7 +123,7 @@ Transferibilidad & Requiere recalibración WoE. & Requiere reentrenamiento. \\
 
 Los hallazgos son \textbf{potencialmente transferibles} a ciudades mexicanas con características similares a Querétaro: población del orden de $500{,}000$ a $2{,}000{,}000$ de habitantes, economía industrial y de servicios, tasas de crecimiento sostenidas y topografía de valle. Ciudades como León, Aguascalientes, San Luis Potosí, Saltillo o Hermosillo son candidatas razonables para una réplica metodológica, siempre que se recalibre el modelo WoE con los datos locales correspondientes y se verifique empíricamente su desempeño antes de utilizarlo con fines de planificación.
 
-El protocolo de aplicación que se desprende de este trabajo es el siguiente: (1) construir una serie anual de imágenes con la misma extensión geográfica para el área objetivo (en este trabajo se utilizó Google Earth en modo \textit{imagen histórica}); (2) generar la clasificación binaria urbano/no-urbano con un \textit{pipeline} reproducible; (3) calcular el WoE con las transiciones históricas locales; (4) calibrar los parámetros del AC con los datos del área objetivo; y (5) ejecutar la simulación y la evaluación con métricas espaciales estándar. El cómputo propiamente dicho ---clasificación, WoE, simulación y validación--- se mantiene del orden de tres horas en CPU estándar, como se indicó arriba; el tiempo de calendario total de una réplica completa es mayor, principalmente por la adquisición manual de imágenes y por la revisión visual de la serie, y se sitúa en una ventana de trabajo de algunos días a una semana.
+El protocolo de aplicación que se desprende de este trabajo es el siguiente: (1) construir una serie anual de imágenes con la misma extensión geográfica para el área objetivo (en este trabajo se utilizó Google Earth en modo \textit{imagen histórica}); (2) generar la clasificación binaria urbano/no-urbano con un \textit{pipeline} reproducible; (3) calcular el WoE con las transiciones históricas locales; (4) calibrar los parámetros del AC con los datos del área objetivo; y (5) ejecutar la simulación y la evaluación con métricas espaciales estándar. El cómputo propiamente dicho (clasificación, WoE, simulación y validación) se mantiene del orden de tres horas en CPU estándar, como se indicó arriba; el tiempo de calendario total de una réplica completa es mayor, principalmente por la adquisición manual de imágenes y por la revisión visual de la serie, y se sitúa en una ventana de trabajo de algunos días a una semana.
 
 % ============================================================
 \section{Limitaciones del modelo}
@@ -170,37 +133,15 @@ El rigor académico exige reconocer los límites del enfoque adoptado. Esta secc
 
 \subsection{Limitaciones conceptuales}
 
-\begin{enumerate}
-	\item \textbf{Definición operativa de ``urbano''}: El clasificador K-Means+SVM, al operar sobre imágenes RGB sin banda infrarroja, aprende a separar zonas con cubierta vegetal verde de zonas sin ella. La clase ``urbano'' incluye, por tanto, tejido urbano real pero también suelo desnudo agrícola en temporada seca y superficies áridas. Una clasificación más precisa requeriría imágenes con banda NIR para calcular NDVI real, o muestras de campo geolocalizadas como ground truth. Esta limitación no invalida la validación interna del modelo (que evalúa la consistencia predictiva dentro de la misma clasificación), pero sí acota la interpretación de los resultados en términos de área urbana absoluta.
-
-	\item \textbf{Vecindario estático}: El vecindario de Moore ($3 \times 3$ píxeles) captura interacciones locales pero puede ser insuficiente para modelar influencias de largo alcance como distancia a centros de empleo o nodos de transporte.
-
-	\item \textbf{Ausencia de retroalimentación dinámica}: Las variables explicativas (densidad de vecindad) no se actualizan durante la simulación en respuesta al crecimiento predicho, reduciendo el realismo en simulaciones de largo plazo.
-
-	\item \textbf{Asunción de estacionariedad}: las relaciones WoE calibradas con datos de 1984--2010 se asumen válidas en las cinco ventanas de validación posteriores, supuesto que puede no sostenerse ante transformaciones económicas o políticas disruptivas.
-\end{enumerate}
+En el plano conceptual, la primera limitación atañe a la \textbf{definición operativa de ``urbano''}. El clasificador K-Means+SVM, al operar sobre imágenes RGB sin banda infrarroja, aprende a separar zonas con cubierta vegetal verde de zonas sin ella. La clase ``urbano'' incluye, por tanto, tejido urbano real pero también suelo desnudo agrícola en temporada seca y superficies áridas. Una clasificación más precisa requeriría imágenes con banda NIR para calcular NDVI real, o muestras de campo geolocalizadas como ground truth. Esta limitación no invalida la validación interna del modelo (que evalúa la consistencia predictiva dentro de la misma clasificación), pero sí acota la interpretación de los resultados en términos de área urbana absoluta. Una segunda limitación es el \textbf{vecindario estático}: el vecindario de Moore ($3 \times 3$ píxeles) captura interacciones locales pero puede ser insuficiente para modelar influencias de largo alcance como distancia a centros de empleo o nodos de transporte. A ella se suma la \textbf{ausencia de retroalimentación dinámica}, ya que las variables explicativas (densidad de vecindad) no se actualizan durante la simulación en respuesta al crecimiento predicho, lo que reduce el realismo en simulaciones de largo plazo. Por último, la \textbf{asunción de estacionariedad}: las relaciones WoE calibradas con datos de 1984--2010 se asumen válidas en las cinco ventanas de validación posteriores, supuesto que puede no sostenerse ante transformaciones económicas o políticas disruptivas.
 
 \subsection{Limitaciones empíricas}
 
-\begin{enumerate}
-	\item \textbf{Calidad de los datos}: la clasificación no supervisada (K-Means + SVM) tiene una \textit{accuracy} interna del $88$ al $94$\,\%, lo que equivale a un error nominal del $6$ al $12$\,\% por imagen (del orden de $325{,}000$ a $650{,}000$ píxeles sobre $5.4 \times 10^{6}$). Estos errores se propagan al cálculo WoE y pueden amplificarse en la simulación del AC mediante el efecto de vecindad.
-
-	\item \textbf{Resolución espectral}: Las imágenes contienen únicamente bandas RGB, sin información infrarroja. El índice de vegetación aproximado $(G-R)/(G+R)$ es menos discriminativo que el NDVI real $(NIR-R)/(NIR+R)$.
-
-	\item \textbf{Variables internas}: El modelo usa 7 variables espaciales derivadas del propio mapa binario (densidades, distancias, fragmentación, gradiente). No incorpora variables externas potencialmente relevantes como distancia a vialidades, pendiente topográfica, zonificación oficial o variables socioeconómicas.
-
-	\item \textbf{Crecimiento disperso no modelado}: El mecanismo de difusión por vecindad no captura el desarrollo tipo leapfrog (saltos discontinuos de urbanización), que representa una fracción significativa del crecimiento real observado.
-\end{enumerate}
+En el plano empírico, la primera limitación se relaciona con la \textbf{calidad de los datos}: la clasificación no supervisada (K-Means + SVM) tiene una \textit{accuracy} interna del $88$ al $94$\,\%, lo que equivale a un error nominal del $6$ al $12$\,\% por imagen (del orden de $325{,}000$ a $650{,}000$ píxeles sobre $5{,}4 \times 10^{6}$). Estos errores se propagan al cálculo WoE y pueden amplificarse en la simulación del AC mediante el efecto de vecindad. La segunda es la \textbf{resolución espectral}: las imágenes contienen únicamente bandas RGB, sin información infrarroja, y el índice de vegetación aproximado $(G-R)/(G+R)$ es menos discriminativo que el NDVI real $(NIR-R)/(NIR+R)$. La tercera concierne a las \textbf{variables internas}: el modelo usa 7 variables espaciales derivadas del propio mapa binario (densidades, distancias, fragmentación, gradiente) y no incorpora variables externas potencialmente relevantes como distancia a vialidades, pendiente topográfica, zonificación oficial o variables socioeconómicas. La cuarta es el \textbf{crecimiento disperso no modelado}: el mecanismo de difusión por vecindad no captura el desarrollo tipo leapfrog (saltos discontinuos de urbanización), que representa una fracción significativa del crecimiento real observado.
 
 \subsection{Limitaciones de transferibilidad}
 
-\begin{enumerate}
-	\item \textbf{Especificidad contextual}: Los pesos WoE son específicos al patrón histórico de Querétaro y requieren recalibración para su aplicación en otras ciudades.
-
-	\item \textbf{Dependencia de la resolución}: los resultados están ligados a la grilla de los mapas binarios derivada de las capturas homogeneizadas ($1{,}792 \times 3{,}024$ píxeles); modificar la extensión, el tamaño de celda o la fuente de imágenes implica reentrenar el WoE y recalibrar los parámetros del AC.
-
-	\item \textbf{Horizonte temporal}: la aplicabilidad del modelo para horizontes mayores a 15 años es incierta sin recalibración periódica, dado que las dinámicas urbanas pueden cambiar estructuralmente.
-\end{enumerate}
+En cuanto a la transferibilidad, una primera limitación es la \textbf{especificidad contextual}: los pesos WoE son específicos al patrón histórico de Querétaro y requieren recalibración para su aplicación en otras ciudades. La segunda es la \textbf{dependencia de la resolución}: los resultados están ligados a la grilla de los mapas binarios derivada de las capturas homogeneizadas ($1{,}792 \times 3{,}024$ píxeles), de modo que modificar la extensión, el tamaño de celda o la fuente de imágenes implica reentrenar el WoE y recalibrar los parámetros del AC. La tercera es el \textbf{horizonte temporal}: la aplicabilidad del modelo para horizontes mayores a 15 años es incierta sin recalibración periódica, dado que las dinámicas urbanas pueden cambiar estructuralmente.
 
 \subsection{Trabajo futuro}
 
@@ -208,44 +149,26 @@ Con base en las limitaciones identificadas, se proponen las siguientes extension
 
 \subsubsection{Corto plazo (1-2 años)}
 
-\begin{enumerate}
-	\item \textbf{Variables adicionales}: Incorporar distancia a vialidades principales, distancia a centros de empleo y pendiente topográfica mediante análisis WoE multi-variable.
-	\item \textbf{Optimización metaheurística}: Explorar el uso de metaheurísticas alternativas al grid exhaustivo (p.\,ej.\ optimización por enjambre de partículas o procedimientos bayesianos de búsqueda) para la calibración de parámetros, comparando su desempeño con el procedimiento utilizado en este trabajo.
-	\item \textbf{Validación en más ciudades}: Aplicar la metodología a Aguascalientes, León y San Luis Potosí para evaluar transferibilidad geográfica.
-\end{enumerate}
+A corto plazo destacan tres líneas. La primera es la incorporación de \textbf{variables adicionales}: distancia a vialidades principales, distancia a centros de empleo y pendiente topográfica mediante análisis WoE multi-variable. La segunda es la \textbf{optimización metaheurística}, esto es, explorar metaheurísticas alternativas al grid exhaustivo (p.\,ej.\ optimización por enjambre de partículas o procedimientos bayesianos de búsqueda) para la calibración de parámetros, comparando su desempeño con el procedimiento empleado en esta investigación. La tercera es la \textbf{validación en más ciudades}: aplicar la metodología a Aguascalientes, León y San Luis Potosí para evaluar la transferibilidad geográfica.
 
 \subsubsection{Mediano plazo (3-5 años)}
 
-\begin{enumerate}
-	\item \textbf{WoE temporal}: Desarrollar pesos que evolucionan dinámicamente para capturar cambios en las dinámicas de crecimiento a lo largo del tiempo.
-	\item \textbf{Integración multi-escala}: Acoplar el modelo AC con modelos económicos regionales que proporcionen demanda agregada de urbanización.
-	\item \textbf{Datos de movilidad}: Incorporar patrones de origen-destino de viajes (disponibles vía telefonía móvil) como variable explicativa.
-	\item \textbf{Calibración multiobjetivo}: Extender el grid search para optimizar simultáneamente FoM, similitud morfológica y compacidad urbana como criterios de sostenibilidad.
-\end{enumerate}
+A mediano plazo se perfilan cuatro extensiones. El \textbf{WoE temporal} consistiría en desarrollar pesos que evolucionan dinámicamente para capturar cambios en las dinámicas de crecimiento a lo largo del tiempo. La \textbf{integración multi-escala} acoplaría el modelo AC con modelos económicos regionales que proporcionen demanda agregada de urbanización. Los \textbf{datos de movilidad} permitirían incorporar patrones de origen-destino de viajes (disponibles vía telefonía móvil) como variable explicativa. La \textbf{calibración multiobjetivo}, por su parte, extendería el grid search para optimizar simultáneamente FoM, similitud morfológica y compacidad urbana como criterios de sostenibilidad.
 
 \subsubsection{Largo plazo (5-10 años)}
 
-\begin{enumerate}
-	\item \textbf{Integración con cambio climático}: Adaptar el modelo para incorporar escenarios de cambio climático (temperatura, precipitación) como restricciones o drivers de urbanización.
-	\item \textbf{Transfer learning}: Desarrollar pre-entrenamiento en múltiples ciudades para reducir los datos requeridos en nuevas aplicaciones.
-	\item \textbf{Métricas complementarias de validación}: adoptar de forma sistemática métricas espaciales adicionales (FRAGSTATS, índice de Moran, \textit{Fuzzy Accuracy}) para complementar las métricas píxel a píxel ya empleadas, en línea con buenas prácticas reconocidas en la literatura LUCC.
-\end{enumerate}
+A largo plazo, la \textbf{integración con cambio climático} adaptaría el modelo para incorporar escenarios de cambio climático (temperatura, precipitación) como restricciones o drivers de urbanización. El \textbf{transfer learning} buscaría desarrollar pre-entrenamiento en múltiples ciudades para reducir los datos requeridos en nuevas aplicaciones. Finalmente, las \textbf{métricas complementarias de validación} pasarían por adoptar de forma sistemática métricas espaciales adicionales (FRAGSTATS, índice de Moran, \textit{Fuzzy Accuracy}) para complementar las métricas píxel a píxel ya empleadas, en línea con buenas prácticas reconocidas en la literatura LUCC.
 
 \section{Mensaje central}
 
 El mensaje central de esta investigación es que \textbf{un modelo parsimonioso e interpretable, validado empíricamente en varios períodos independientes, puede reproducir de forma razonable la dinámica morfológica del crecimiento urbano y servir como herramienta de exploración}. Su utilidad para la planificación es indirecta: ofrece una primera lectura de hacia dónde tiende a expandirse la ciudad, no una predicción operativa lista para sustituir el análisis técnico, que exigiría recalibración local y validación adicional antes de cualquier uso real.
 
-Los resultados del modelo WoE-AC muestran que:
-\begin{itemize}
-	\item Con siete variables espaciales derivadas del mapa binario y la serie de capturas RGB procesadas en el \textit{pipeline} descrito, el FoM promedio de $0{,}317$ sobre cinco períodos quinquenales independientes (archivos \texttt{validation\_results.json}) ---equivalente a aproximadamente $31{,}7$\,\% en la escala porcentual usada por \textcite{pontius2008comparing}--- se interpreta como un desempeño en \textbf{banda intermedia} respecto al espectro empírico multi-sitio resumido en el Capítulo~\ref{ch:estado-del-arte}, sin equiparar sitio ni modelo con aquella muestra.
-	\item El mecanismo de difusión/contagio espacial se reproduce cualitativamente con razonable fidelidad: la expansión predicha se concentra en los bordes de áreas urbanas, coherente con los patrones observados, sin requerir variables socioeconómicas ni hardware especializado.
-	\item La implementación en Python de acceso abierto hace que el pipeline sea reproducible y potencialmente transferible a otros contextos urbanos con características similares.
-\end{itemize}
+Los resultados del modelo WoE-AC apuntan en tres direcciones. Con siete variables espaciales derivadas del mapa binario y la serie de capturas RGB procesadas en el \textit{pipeline} descrito, el FoM promedio de $0{,}317$ sobre cinco períodos quinquenales independientes (archivos \texttt{validation\_results.json}), equivalente a aproximadamente $31{,}7$\,\% en la escala porcentual usada por \textcite{pontius2008comparing}, se interpreta como un desempeño en \textbf{banda intermedia} respecto al espectro empírico multi-sitio resumido en el Capítulo~\ref{ch:estado-del-arte}, sin equiparar sitio ni modelo con aquella muestra. El mecanismo de difusión/contagio espacial se reproduce cualitativamente con razonable fidelidad: la expansión predicha se concentra en los bordes de áreas urbanas, coherente con los patrones observados, sin requerir variables socioeconómicas ni hardware especializado. Por último, la implementación en Python de acceso abierto hace que el pipeline sea reproducible y potencialmente transferible a otros contextos urbanos con características similares.
 
-La presente investigación constituye un punto de partida documentado para el modelado de crecimiento urbano en ciudades intermedias mexicanas. Sus limitaciones ---ausencia de variables socioeconómicas, datos RGB sin infrarrojo, clasificación binaria--- señalan las extensiones prioritarias para trabajo futuro.
+La presente investigación constituye un punto de partida documentado para el modelado de crecimiento urbano en ciudades intermedias mexicanas. Sus limitaciones (ausencia de variables socioeconómicas, datos RGB sin infrarrojo, clasificación binaria) señalan las extensiones prioritarias para trabajo futuro.
 
 \section{Palabras finales}
 
-El crecimiento urbano continuado y la necesidad de planificación sostenible hacen relevante el desarrollo de herramientas predictivas accesibles. Esta investigación representa una aportación metodológica orientada a ciudades intermedias mexicanas, en el marco de los Objetivos de Desarrollo Sostenible 11 (Ciudades y Comunidades Sostenibles) y 15 (Vida terrestre).
+El aporte concreto de este trabajo es un modelo WoE-AC para la Zona Metropolitana de Querétaro, construido sobre una serie de 37 años (1984--2020) de imágenes de acceso libre y evaluado con un protocolo de validación quinquenal reproducible. Ese protocolo, más que un valor de desempeño aislado, es lo que distingue la propuesta: permite separar un comportamiento espacial estable de un ajuste a un único período, en un contexto, las ciudades intermedias mexicanas, donde rara vez se documenta esa distinción.
 
-La metodología desarrollada no es un fin en sí misma, sino una base reproducible ---construida con datos de acceso libre y validada en cinco ventanas temporales--- sobre la cual otros trabajos pueden mejorar la clasificación, incorporar variables socioeconómicas y extender la validación a otras ciudades intermedias mexicanas.
+La metodología desarrollada no es un fin en sí misma, sino una base reproducible, construida con datos de acceso libre y validada en cinco ventanas temporales, sobre la cual otros trabajos pueden mejorar la clasificación, incorporar variables socioeconómicas y extender la validación a otras ciudades intermedias mexicanas.

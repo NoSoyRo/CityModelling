@@ -10,10 +10,10 @@
 El modelado computacional del crecimiento urbano ha producido en treinta años
 una literatura rica pero metodológicamente diferente. Este capítulo no busca
 ordenar trabajos por autor sino que busca identificar los cuatro problemas
-metodológicos que siguen abiertos en el campo ---calibración por fuerza bruta,
+metodológicos que siguen abiertos en el campo (calibración por fuerza bruta,
 validación sobreajustada a una sola ventana temporal, opacidad de la función de
 transición en los modelos de aprendizaje profundo y dependencia de software
-propietario--- y muestra cómo cada uno justifica una decisión concreta del diseño
+propietario) y muestra cómo cada uno justifica una decisión concreta del diseño
 del modelo WoE-AC propuesto. La discusión concluye con un mapa de la literatura
 para ciudades mexicanas, donde ningún trabajo publicado satisface simultáneamente
 los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1}.
@@ -32,7 +32,7 @@ décadas fue vanguardia y considerado como referencia, y que se aplicó en decen
 
 Al mismo tiempo, la metodología LUCC (Land Use and Cover Change) introdujo modelos
 basados en mapas de idoneidad de uso de suelo de base estadística: sistemas como CLUE-S, Dinamica EGO,
-CA-Markov y, más recientemente, FLUS, GeoSOS y MOLUSCE, brindaron
+CA-Markov y, más recientemente, FLUS brindaron
 arquitecturas alternativas al autómata celular puro en las que la función de transición
 emerge de regresiones logísticas o pesos bayesianos sobre datos históricos.
 
@@ -62,12 +62,12 @@ equifinalidad en la calibración, sobreajuste en la validación, opacidad en la 
 
 \subsection{Calibración: equifinalidad y costo computacional}
 
-SLEUTH calibra cinco coeficientes de crecimiento ---\emph{diffusion},
-\emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity}---
+SLEUTH calibra cinco coeficientes de crecimiento (\emph{diffusion},
+\emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity})
 mediante búsqueda por fuerza bruta sobre un espacio discreto del orden de $10^9$
 combinaciones, cada una evaluada con simulaciones Monte Carlo de múltiples
 iteraciones. \textcite{Clarke1998} estructuró la búsqueda en tres fases
-sucesivas ---gruesa, fina y final--- que estrechan iterativamente el rango de
+sucesivas (gruesa, fina y final) que estrechan iterativamente el rango de
 cada coeficiente; aun así, una calibración completa toma días en hardware
 contemporáneo \parencite{Jantz2003}. A esa carga se añaden dos rasgos que
 agravan la dificultad. Primero, SLEUTH es un autómata \emph{auto-modificable}:
@@ -82,6 +82,10 @@ múltiples combinaciones de coeficientes que producen patrones indistinguibles
 para la métrica de calibración pero divergen en las proyecciones de largo plazo
 \parencite{Clarke2008}. Sin un criterio adicional, la elección entre
 combinaciones equifinales termina dependiendo de quien realiza la calibración.
+A ello se suma un riesgo de \textbf{sobreajuste de calibración}: como el ajuste se
+optimiza contra un único intervalo histórico, los coeficientes pueden reproducir muy
+bien esa ventana y, sin embargo, degradarse al proyectar otro horizonte, sin que la
+propia métrica de calibración lo advierta \parencite{Jantz2003,Silva2002}.
 Esta combinación de costo, dependencia de trayectoria y equifinalidad es,
 precisamente, lo que motiva la estrategia de validación multi-ventana que se
 adopta más adelante: una sola ventana temporal no basta para distinguir un
@@ -115,7 +119,7 @@ crecimiento en el tiempo. Segundo, \textbf{reportar métricas como
 Kappa o Accuracy sin FoM infla artificialmente la calidad del modelo}: en un
 sistema urbano consolidado donde el 90\% de las celdas permanece sin cambio,
 un modelo trivial que predice ``no cambio'' en todas las celdas obtiene
-Accuracy de $0.90$ sin capturar ninguna dinámica. Queremos capturar la dinámica, no la estabilidad.
+Accuracy de $0{,}90$ sin capturar ninguna dinámica, es decir, captura la estabilidad pero no la dinámica de interés.
 
 En consecuencia, la validación del WoE-AC, para el presente trabajo, se realizó en
 cinco ventanas quinquenales independientes (2011--2016 a 2015--2020),
@@ -142,8 +146,8 @@ largo plazo, de modo que reportar ``el mejor conjunto de coeficientes'' sin
 declarar el conjunto de los equifinales transmite una unicidad que los datos no
 respaldan. Este trabajo toma postura frente a ese punto: no compara su FoM
 absoluto contra el de otras ciudades como si fueran intercambiables, sino que
-evalúa la estabilidad del FoM entre cinco ventanas del mismo sistema urbano ---la
-única comparación que mantiene constante la magnitud del cambio--- y reporta el
+evalúa la estabilidad del FoM entre cinco ventanas del mismo sistema urbano, la
+única comparación que mantiene constante la magnitud del cambio, y reporta el
 rango completo en lugar de un único valor favorable.
 
 \subsection{Interpretabilidad: el problema de la caja negra}
@@ -223,8 +227,8 @@ separan dos preguntas que el campo suele tratar de forma confusa: \emph{cuánto}
 suelo cambia y \emph{dónde} lo hace. La cantidad de transición se fija con una
 matriz de transición markoviana estimada del cambio histórico, mientras que la
 asignación espacial la resuelve un autómata celular de dos operadores
----\textit{expander}, que ensancha los parches urbanos existentes, y
-\textit{patcher}, que siembra parches nuevos--- alimentado por un mapa de
+(\textit{expander}, que ensancha los parches urbanos existentes, y
+\textit{patcher}, que siembra parches nuevos), alimentado por un mapa de
 idoneidad WoE. Ese diseño reproduce con fidelidad la distribución de tamaños de
 parche observada en frentes de deforestación amazónica y expansión agrícola, y
 en menor medida en crecimiento urbano.
@@ -242,8 +246,8 @@ interfaz gráfica o licencia restringida. Aquí, en cambio, la cantidad no se
 impone desde fuera, sino que emerge de la propia regla de transición, donde el
 campo WoE ponderado por IV y la influencia del vecindario de Moore deciden
 conjuntamente cuántas y cuáles celdas transitan. El esquema de
-dos módulos ajusta muy bien la cantidad de cambio ---esa es su fortaleza
-documentada---, pero paga ese ajuste con una dependencia mayor de software
+dos módulos ajusta muy bien la cantidad de cambio, esa es su fortaleza
+documentada, pero paga ese ajuste con una dependencia mayor de software
 especializado y con una frontera difusa entre lo que decide el modelo de demanda
 y lo que decide el CA; para un instrumento de planeación, donde importa poder
 rastrear por qué una celda concreta se urbaniza, la integración transparente y
@@ -273,6 +277,19 @@ trabajo aplica un análisis de componentes principales sobre el conjunto de
 variables espaciales antes del cálculo de IV, lo que reduce la redundancia sin
 sacrificar interpretabilidad.
 
+\paragraph{Sesgo y sensibilidad espacial.} Un problema menos discutido en las
+aplicaciones urbanas del WoE es la autocorrelación espacial: las celdas vecinas no
+son observaciones independientes, de modo que el tamaño muestral efectivo es menor
+que el número de píxeles y los pesos pueden estimarse con una precisión aparente
+mayor que la real \parencite{BonhamCarter1994}. El efecto se acentúa cuando las
+variables se derivan de la propia configuración urbana, como ocurre aquí, porque la
+señal de proximidad y densidad está espacialmente estructurada por construcción.
+Este trabajo no corrige formalmente la autocorrelación, pero acota su impacto por
+dos vías: la discretización por cuantiles evita que clases muy pobladas dominen el
+peso, y la validación en cinco ventanas independientes funciona como prueba de
+estabilidad, ya que un sesgo espacial dominante se manifestaría como una degradación
+sistemática del FoM entre períodos, que no se observa.
+
 % ============================================================
 \section{Validación espacial en modelos LUCC}
 \label{sec:validacion-literatura}
@@ -282,13 +299,11 @@ La métrica más reportada en LUCC sigue siendo el coeficiente Kappa de Cohen, a
 pesar de las críticas explícitas a su uso en mapas de cambio. Kappa mezcla dos
 fuentes de error: desacuerdo en cantidad y desacuerdo en asignación, que
 tienen significados metodológicos distintos
-\parencite{pontius2008comparing}. Esta descomposición separa:
-\begin{itemize}
-    \item \textbf{Quantity disagreement}: el modelo predice un total de celdas
-    de cambio distinto al observado, sin importar dónde.
-    \item \textbf{Allocation disagreement}: el modelo predice el total correcto
-    de cambio pero lo asigna a celdas incorrectas.
-\end{itemize}
+\parencite{pontius2008comparing}. Esta descomposición separa dos situaciones
+distintas. El \textbf{quantity disagreement} ocurre cuando el modelo predice un
+total de celdas de cambio distinto al observado, sin importar dónde. El
+\textbf{allocation disagreement}, en cambio, aparece cuando el modelo predice el
+total correcto de cambio pero lo asigna a celdas incorrectas.
 
 Un modelo puede ser perfecto en \textit{quantity} y catastrófico en
 \textit{allocation}: predice exactamente el área urbana total pero en lugares
@@ -336,7 +351,7 @@ río Conchos, Ojinaga, río Conchos, Presa de la Colina, río Conchos, Presa el
 Granero y río San Pedro), con proyecciones a 2030, 2040 y 2050. La
 clasificación SVM sobre mapas de uso de suelo 2010--2020 es reproducible y la
 regresión logística aporta interpretabilidad parcial (pseudo $R^2$ de
-McFadden superior a $0.2$, ROC aceptable), pero la asignación CA-Markov
+McFadden superior a $0{,}2$, ROC aceptable), pero la asignación CA-Markov
 ocurre dentro del módulo Land Change Modeler de TerrSet, software
 no libre, y la validación cuantitativa se reporta sobre la regresión
 logística, no sobre la simulación CA en sí. R4 se cumple parcialmente; R3 no
@@ -394,8 +409,8 @@ otras ciudades intermedias mexicanas. R2, la utilidad para planeación urbana,
 se cumple por construcción: los mapas resultantes son raster celda a celda
 con probabilidades de transición auditables.
 
-El Capítulo~\ref{ch:area-estudio} describe el área de estudio ---la Zona
-Metropolitana de Querétaro--- y la construcción de la serie histórica de mapas
+El Capítulo~\ref{ch:area-estudio} describe el área de estudio, la Zona
+Metropolitana de Querétaro, y la construcción de la serie histórica de mapas
 urbano/no-urbano que alimenta el modelo. Ese insumo es el que permite poner a
 prueba, sobre una ciudad intermedia mexicana aún no modelada con estas
 herramientas, las decisiones de diseño que este capítulo justificó: una

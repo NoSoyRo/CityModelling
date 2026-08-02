@@ -11,70 +11,27 @@ Este capítulo describe el área de estudio y el conjunto de datos utilizados en
 
 \section{Localización y características del área de estudio}
 
-La Zona Metropolitana de Querétaro se ubica en el centro de México y constituye uno de los polos industriales de mayor crecimiento reciente del país. Según la delimitación oficial de zonas metropolitanas~\parencite{CONAPO2018Delimitacion}, agrupa varios municipios en torno a la capital del estado y, de acuerdo con el Censo de Población y Vivienda 2020~\parencite{INEGI2020Censo}, rebasó el millón y medio de habitantes, tras décadas de expansión sostenida que la convierten en un caso representativo de las ciudades intermedias mexicanas. Su delimitación espacial precisa ---centro del encuadre, extensión cubierta y sistema de referencia--- se detalla en la Tabla~\ref{tab:spatial_criteria}, dentro de la descripción del conjunto de imágenes.
+La Zona Metropolitana de Querétaro se ubica en el centro de México y constituye uno de los polos industriales de mayor crecimiento reciente del país. Según la delimitación oficial de zonas metropolitanas~\parencite{CONAPO2018Delimitacion}, agrupa varios municipios en torno a la capital del estado y, de acuerdo con el Censo de Población y Vivienda 2020~\parencite{INEGI2020Censo}, rebasó el millón y medio de habitantes, tras décadas de expansión sostenida que la convierten en un caso representativo de las ciudades intermedias mexicanas. Su delimitación espacial precisa (centro del encuadre, extensión cubierta y sistema de referencia) se detalla más adelante, dentro de la descripción del conjunto de imágenes.
 
 \subsection{Descripción y fuente de datos}
 
-El estudio utiliza una serie anual de \textbf{capturas RGB} (1984--2020, 37 años) sobre la Zona Metropolitana de Querétaro. Las imágenes se obtuvieron con \textbf{Google Earth} en escritorio, usando la \textbf{imagen histórica} (línea de tiempo) para elegir, año a año, una fecha con baja nubosidad visible y buen contraste, manteniendo el mismo encuadre. El fondo cartográfico de Google Earth integra, según época, mosaicos que pueden incluir composiciones basadas en sensores tipo Landsat u otras fuentes; en este trabajo \textbf{no} se empleó Google Earth Engine~\parencite{Gorelick2017} ni descarga masiva por API. La elección de Querétaro se sustenta en su dinámica de crecimiento reciente ---bien documentada para la zona metropolitana~\parencite{Huacuz2018Metropolizacion,DelgadoLopez2018}---, la posibilidad de cubrir 1984--2020 con la misma ventana de visualización y su relevancia como polo industrial en el centro de México, dentro de la expansión urbana que el país arrastra desde los años setenta~\parencite{Montejano2023}. Dado que el objetivo es modelar la expansión urbana a escala macroscópica ---la mancha urbana y su frente de crecimiento--- y no una caracterización espectral fina, la fuente se eligió privilegiando la consistencia espacial y temporal del encuadre a lo largo de casi cuatro décadas por encima de la calibración radiométrica absoluta. Esta decisión es coherente con la naturaleza binaria (urbano/no urbano) del problema y con el carácter histórico de la serie, para la cual no existe una alternativa con calibración radiométrica homogénea y acceso libre que cubra desde 1984.
+El estudio utiliza una serie anual de \textbf{capturas RGB} (1984--2020, 37 años) sobre la Zona Metropolitana de Querétaro. Las imágenes se obtuvieron con \textbf{Google Earth} en escritorio, usando la \textbf{imagen histórica} (línea de tiempo) para elegir, año a año, una fecha con baja nubosidad visible y buen contraste, manteniendo el mismo encuadre. El fondo cartográfico de Google Earth integra, según época, mosaicos que pueden incluir composiciones basadas en sensores tipo Landsat u otras fuentes; en este trabajo \textbf{no} se empleó Google Earth Engine~\parencite{Gorelick2017} ni descarga masiva por API. La elección de Querétaro se sustenta en su dinámica de crecimiento reciente, bien documentada para la zona metropolitana~\parencite{Huacuz2018Metropolizacion,DelgadoLopez2018}, la posibilidad de cubrir 1984--2020 con la misma ventana de visualización y su relevancia como polo industrial en el centro de México, dentro de la expansión urbana que el país arrastra desde los años setenta~\parencite{Montejano2023}. Dado que el objetivo es modelar la expansión urbana a escala macroscópica (la mancha urbana y su frente de crecimiento) y no una caracterización espectral fina, la fuente se eligió privilegiando la consistencia espacial y temporal del encuadre a lo largo de casi cuatro décadas por encima de la calibración radiométrica absoluta. Esta decisión es coherente con la naturaleza binaria (urbano/no urbano) del problema y con el carácter histórico de la serie, para la cual no existe una alternativa con calibración radiométrica homogénea y acceso libre que cubra desde 1984.
 
-Tras el preprocesamiento, cada año queda como matriz RGB de \textbf{$1{,}792 \times 3{,}024$} píxeles (del orden de $5{,}4 \times 10^{6}$ píxeles por imagen) en formato PNG; los metadatos de cobertura y tamaño se resumen en la Tabla~\ref{tab:acquisition_stats}.
+Tras el preprocesamiento, cada año queda como matriz RGB de \textbf{$1{,}792 \times 3{,}024$} píxeles (del orden de $5{,}4 \times 10^{6}$ píxeles por imagen) en formato PNG; los metadatos de cobertura y tamaño se resumen más adelante, al conformar la serie.
 
 \section{Adquisición y conformación del conjunto de imágenes}
 
-La adquisición siguió un \textbf{protocolo manual replicable} ---misma ventana geográfica y criterios visuales de calidad en cada año--- orientado a obtener una serie temporal homogénea para estudiar la forma espaciotemporal del crecimiento urbano a partir de percepción remota, en la línea de trabajos que miden esa dinámica desde imágenes~\parencite{Herold2003}. La herramienta fue \textbf{Google Earth} en escritorio, elegida por tres razones prácticas: da acceso a la \textbf{imagen histórica} año con año sobre la misma área, ofrece una interfaz visual inmediata para evaluar nubosidad y nitidez antes de capturar, y hace viable construir la serie sin infraestructura de acceso a API ni \textit{scripts} de descarga. La contrapartida es que la repetibilidad depende de mantener la misma escala, orientación y encuadre entre capturas, y de registrar manualmente la fecha elegida en cada año.
+La adquisición siguió un \textbf{protocolo manual replicable} (misma ventana geográfica y criterios visuales de calidad en cada año) orientado a obtener una serie temporal homogénea para estudiar la forma espaciotemporal del crecimiento urbano a partir de percepción remota, en la línea de trabajos que miden esa dinámica desde imágenes~\parencite{Herold2003}. La herramienta fue \textbf{Google Earth} en escritorio, elegida por tres razones prácticas: da acceso a la \textbf{imagen histórica} año con año sobre la misma área, ofrece una interfaz visual inmediata para evaluar nubosidad y nitidez antes de capturar, y hace viable construir la serie sin infraestructura de acceso a API ni \textit{scripts} de descarga. La contrapartida es que la repetibilidad depende de mantener la misma escala, orientación y encuadre entre capturas, y de registrar manualmente la fecha elegida en cada año; el procedimiento paso a paso se detalla en el Apéndice~\ref{ap:arquitectura} (Algoritmo~\ref{alg:adquisicion}).
 
-\subsection{Criterios de selección temporal y de calidad}
+La serie se diseñó atendiendo a criterios temporales y de calidad: cobertura completa 1984--2020 (37 años, suficiente para abarcar varios ciclos de crecimiento), una imagen representativa por año sin años omitidos, captura preferente en temporada seca (noviembre--abril) con una meta visual de menos del $10\%$ de nubes, y consistencia geométrica entre años (mismo zoom, orientación y región de interés, con ajuste fino a la cuadrícula en el preprocesamiento) sin saturación evidente en los canales RGB.
 
-La serie se diseñó atendiendo a criterios temporales y de calidad de imagen:
+\subsection{Criterios de selección y parámetros espaciales}
 
-\begin{enumerate}
-	\item \textbf{Cobertura temporal completa}: 1984--2020 (37 años), suficiente para abarcar varios ciclos de crecimiento urbano.
-	\item \textbf{Resolución temporal anual}: una imagen representativa por año, sin años omitidos, para mantener consistencia estacional a lo largo de la serie.
-	\item \textbf{Período de adquisición}: imágenes capturadas preferentemente en temporada seca (noviembre--abril), con una meta equivalente a $<10\%$ de cobertura de nubes evaluada por inspección visual.
-	\item \textbf{Consistencia geométrica e intensidad}: mismo zoom, orientación y región de interés entre años (con ajuste fino a la cuadrícula en el preprocesamiento) y ausencia de saturación evidente en los canales RGB.
-\end{enumerate}
+Los parámetros espaciales que guiaron la captura pueden describirse de forma compacta. El área de estudio es la Zona Metropolitana de Querétaro, registrada con Google Earth en escritorio de forma manual mediante la imagen histórica, sin recurrir a Google Earth Engine ni a descarga masiva por API. El encuadre se centró en torno a $20{,}59^\circ$\,N y $100{,}39^\circ$\,W (equivalente aproximado a $20^\circ 35' 25''$\,N, $100^\circ 23' 25''$\,W) y cubrió del orden de $25 \times 25$~km en el visor, unos $625$~km², que sirvieron como referencia operativa para conservar la misma ventana entre años. El visor opera sobre el elipsoide WGS84 (EPSG:4326) y la georreferenciación fina se homogeneizó en el preprocesamiento. La resolución aparente, del orden de $8$ a $14$~m/píxel ($\sim 115$~m² por píxel), depende del nivel de zoom y del mosaico cartográfico que Google Earth muestra en cada fecha, por lo que se procuró mantener constantes el zoom y la orientación entre capturas. Las bandas disponibles son únicamente RGB, exportadas o capturadas desde el visor.
 
-\subsection{Criterios de selección espacial}
+A partir de estos parámetros puede estimarse una resolución espacial efectiva aproximada. La ventana operativa de unos $625$~km² ($\sim 25 \times 25$~km) se exporta a una rejilla de $1{,}792 \times 3{,}024$ píxeles, de modo que cada píxel cubre del orden de $115$~m²: un lado equivalente cercano a $11$~m/píxel como media geométrica, con un rango por eje aproximado de $8$ a $14$~m/píxel, ya que la rejilla no es cuadrada. Conviene leer esta cifra como un orden de magnitud y no como una distancia de muestreo calibrada: la extensión es una referencia de encuadre, el nivel de zoom y el mosaico subyacente varían entre fechas, y Google Earth remuestrea internamente las teselas. La resolución resultante basta para discriminar la mancha urbana a escala metropolitana, el objetivo de este trabajo, pero no para distinguir estructuras individuales finas ni para comparaciones submétricas entre años.
 
-\begin{table}[h]
-\centering
-\caption{Parámetros de selección espacial del conjunto de imágenes.}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.26\textwidth}|X|}
-\hline
-	\textbf{Parámetro} & \textbf{Especificación} \\
-\hline
-Área de estudio & Zona Metropolitana de Querétaro. \\
-Herramienta y modo & Google Earth en escritorio; adquisición \textbf{manual} con la \textbf{imagen histórica} (línea de tiempo). No se utilizó Google Earth Engine ni descarga masiva por API. \\
-Centro del encuadre (aprox., WGS84) & $20{,}59^\circ$\,N, $100{,}39^\circ$\,W (equivalente aproximado a $20^\circ 35' 25''$\,N, $100^\circ 23' 25''$\,W). \\
-Extensión cubierta & Del orden de $25 \times 25$~km en el visor, equivalente a unos $625$~km² (referencia operativa para mantener la misma ventana entre años). \\
-Sistema de referencia & El visor opera sobre el elipsoide WGS84 (EPSG:4326); la georreferenciación fina de las capturas se homogeneiza en el preprocesamiento. \\
-Resolución aparente & Del orden de $8$--$14$~m/píxel ($\sim 115$~m² por píxel; véase el cálculo en el texto). Depende del \textbf{nivel de zoom} elegido y del \textbf{mosaico cartográfico} que Google Earth muestra en cada fecha; se mantuvo el mismo zoom y orientación entre capturas en la medida de lo posible. \\
-Bandas & RGB (exportación o captura de pantalla desde Google Earth). \\
-\hline
-\end{tabularx}
-\label{tab:spatial_criteria}
-\end{table}
-
-A partir de estos parámetros puede estimarse una resolución espacial efectiva aproximada. La ventana operativa de unos $625$~km² ($\sim 25 \times 25$~km) se exporta a una rejilla de $1{,}792 \times 3{,}024$ píxeles (Tabla~\ref{tab:acquisition_stats}), de modo que cada píxel cubre del orden de $115$~m²: un lado equivalente cercano a $11$~m/píxel como media geométrica, con un rango por eje aproximado de $8$ a $14$~m/píxel, ya que la rejilla no es cuadrada. Conviene leer esta cifra como un orden de magnitud y no como una distancia de muestreo calibrada: la extensión es una referencia de encuadre, el nivel de zoom y el mosaico subyacente varían entre fechas, y Google Earth remuestrea internamente las teselas. La resolución resultante basta para discriminar la mancha urbana a escala metropolitana ---el objetivo de este trabajo---, pero no para distinguir estructuras individuales finas ni para comparaciones submétricas entre años.
-
-\subsection{Resumen cuantitativo del conjunto de imágenes}
-
-\begin{table}[h]
-\centering
-\caption{Resumen del conjunto de imágenes anuales capturadas.}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|r|}
-\hline
-	\textbf{Métrica} & \textbf{Valor} \\
-\hline
-Imágenes totales & 37. \\
-Cobertura temporal & 1984--2020 (una imagen por año). \\
-Criterio de nubes & Meta visual de cobertura inferior al $10$\,\%, evaluada al capturar. \\
-Dimensiones finales en el \textit{pipeline} & $1{,}792 \times 3{,}024$ píxeles (homogeneizadas en el preprocesamiento). \\
-Tamaño total aproximado & Del orden de $200$~MB. \\
-\hline
-\end{tabularx}
-\label{tab:acquisition_stats}
-\end{table}
+En conjunto, la serie reúne 37 imágenes, una por año entre 1984 y 2020, capturadas con una meta visual de cobertura nubosa inferior al $10$\,\% evaluada en el momento de la captura. Cada imagen se homogeneizó en el \textit{pipeline} a $1{,}792 \times 3{,}024$ píxeles, y el conjunto completo ocupa del orden de $200$~MB.
 
 \begin{figure}[h]
 \centering
@@ -83,53 +40,13 @@ Tamaño total aproximado & Del orden de $200$~MB. \\
 \label{fig:quality_temporal}
 \end{figure}
 
-\subsection{Procedimiento de adquisición (Google Earth, imagen histórica)}
+\subsection{Control de calidad, limitaciones y mitigación}
 
-Las capturas se realizaron de forma \textbf{manual}: no hubo descarga masiva programática ni filtrado automático por metadatos de nubes en un servidor. El operador fijó la misma región de interés y, para cada año, avanzó en la \textbf{línea de tiempo histórica} hasta una fecha en la que la escena presentara poca nubosidad visible y buen contraste (meta equivalente al criterio de $<10\%$ de nubes indicado en la Tabla~\ref{tab:acquisition_stats}, pero aplicada por inspección visual). Posteriormente se exportó o capturó la imagen conservando el mismo encuadre entre años.
-
-\begin{algorithm}
-\caption{Procedimiento de adquisición manual con Google Earth}
-\begin{algorithmic}[1]
-\State Centrar el visor en la Zona Metropolitana de Querétaro y ajustar zoom, orientación y ángulo que se mantendrán fijos para toda la serie
-\State Para cada año $y$ de 1984 a 2020:
-	\State \quad Abrir la herramienta de \textit{imagen histórica} y seleccionar el año $y$
-	\State \quad Desplazarse dentro del año hasta una fecha con cobertura nubosa baja (criterio visual)
-	\State \quad Verificar que el encuadre coincide con el resto de la serie (sin desplazamientos accidentales)
-	\State \quad Exportar o capturar la imagen y guardarla con nomenclatura estandarizada (p.\ ej.\ \texttt{YYYY.png})
-\State Revisar visualmente la continuidad de la serie (saltos bruscos, años atípicos) y repetir la captura solo cuando una escena resulte claramente inutilizable
-\end{algorithmic}
-\end{algorithm}
-
-\subsection{Control de calidad y representatividad}
-
-En la adquisición, el control de calidad fue principalmente \textbf{visual} (nubosidad, sombras, nitidez, consistencia del encuadre). Ya conformada la carpeta de imágenes, el \textbf{pipeline de preprocesamiento} aplica comprobaciones reproducibles ---dimensiones homogéneas, formato RGB, detección de archivos faltantes y reescalado cuando una captura varió en resolución de pantalla--- antes de alimentar al clasificador; a ello se suman una validación geométrica (dimensiones consistentes y ajuste a la cuadrícula de referencia), una de intensidades (histogramas RGB para detectar anomalías evidentes, sin calibración radiométrica entre sensores) y una temporal (continuidad de la serie y sustitución puntual de años claramente anómalos). El conjunto final queda resumido en la Tabla~\ref{tab:acquisition_stats} y en la Figura~\ref{fig:quality_temporal}; se revisó de forma cualitativa que la serie cubra el perímetro metropolitano, años representativos del crecimiento documentado y una resolución temporal anual suficiente para el modelo celular. Esta revisión no equivale a una auditoría de sensores ni de catálogos de escenas, ya que las capturas provienen del visor de Google Earth.
-
-\subsection{Limitaciones y mitigación}
+En la adquisición, el control de calidad fue principalmente \textbf{visual} (nubosidad, sombras, nitidez, consistencia del encuadre). Ya conformada la carpeta de imágenes, el \textbf{pipeline de preprocesamiento} aplica comprobaciones reproducibles (dimensiones homogéneas, formato RGB, detección de archivos faltantes y reescalado cuando una captura varió en resolución de pantalla) antes de alimentar al clasificador; a ello se suman una validación geométrica (ajuste a la cuadrícula de referencia), una de intensidades (histogramas RGB para detectar anomalías evidentes) y una temporal (continuidad de la serie y sustitución puntual de años claramente anómalos). El conjunto final queda resumido en la descripción anterior del conjunto de imágenes y en la Figura~\ref{fig:quality_temporal}.
 
 El dataset tiene cuatro limitaciones principales: la resolución y nitidez efectivas dependen del nivel de zoom, del fondo cartográfico de cada fecha y de la compresión al exportar; el operador no controla la corrección atmosférica ni el origen exacto de cada tesela subyacente; la comparabilidad cromática entre años puede variar cuando el proveedor actualiza mosaicos; y el criterio de temporada seca y baja nubosidad es visual, no un filtrado por metadatos de nubes. Para acotar su impacto se fijaron los parámetros de vista (zoom, orientación, región) lo más constantes posible entre años, se homogeneizaron formato y dimensiones en el preprocesamiento, se hizo una revisión cruzada año con año para detectar saltos de contraste o nubosidad residual, y se normalizaron los valores de píxel con vistas a la clasificación binaria, sin pretender una calibración radiométrica entre sensores.
 
-La Tabla~\ref{tab:uncertainty} organiza estas fuentes de error por tipo, con una estimación cualitativa de su nivel y de su efecto sobre los mapas binarios. Los niveles (bajo, medio, alto) son juicios del autor a partir de la inspección de la serie y no mediciones formales de incertidumbre; sirven para dar prioridad a las estrategias de mitigación y para acotar honestamente el alcance de los resultados.
-
-\begin{table}[h]
-\centering
-\caption{Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.18\textwidth}|>{\centering\arraybackslash}p{0.08\textwidth}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}p{0.26\textwidth}|}
-\hline
-	\textbf{Tipo de error} & \textbf{Nivel} & \textbf{Efecto sobre los mapas} & \textbf{Mitigación aplicada} \\
-\hline
-Georreferenciación / encuadre & Bajo--medio & Pequeños desplazamientos entre capturas por reposicionamiento manual del visor; desalineación píxel a píxel entre años. & Mismo zoom, orientación y región; ajuste a la cuadrícula de referencia en el preprocesamiento. \\
-\hline
-Temporal (fecha intra-anual) & Medio & La fecha exacta varía dentro de cada año; cambios fenológicos y estacionales alteran la respuesta de la vegetación. & Captura preferente en temporada seca (nov.--abr.) y revisión de continuidad de la serie. \\
-\hline
-Mosaico / composición del proveedor & Medio--alto & Google Earth actualiza mosaicos y mezcla fuentes y fechas; discontinuidades de textura y color no atribuibles a cambio real. & Revisión cruzada año con año y sustitución puntual de escenas claramente anómalas. \\
-\hline
-Cromático / radiométrico & Medio & Sin corrección atmosférica; diferencias de balance de color e iluminación que sesgan los índices de color (NGRDI). & Normalización y estandarización por imagen; descriptores de textura (LBP) robustos a la iluminación. \\
-\hline
-Clasificación (LBP+K-Means+SVM) & Medio & Pseudoetiquetas no supervisadas, sin verdad terreno; ruido binario y sobre o subestimación local de lo urbano. & Validación interna \textit{train/test} y evaluación temporal indirecta del modelo AC (Capítulo~\ref{ch:resultados-analisis}). \\
-\hline
-\end{tabularx}
-\label{tab:uncertainty}
-\end{table}
+Estas fuentes de error se organizan por tipo, con una estimación cualitativa de su nivel y de su efecto sobre los mapas binarios, en la Tabla~\ref{tab:uncertainty} del Apéndice~\ref{ap:arquitectura}. Los niveles (bajo, medio, alto) son juicios del autor a partir de la inspección de la serie y no mediciones formales de incertidumbre; sirven para dar prioridad a las estrategias de mitigación y para acotar honestamente el alcance de los resultados.
 
 \section{Pipeline de clasificación: de RGB a mapas binarios}
 
@@ -170,7 +87,7 @@ Antes de describirlo conviene justificar por qué se eligió esta cadena y no un
 \node[step2] (step2) at (0, -3.2) {
 	\textbf{2. Extracción de Características}\\[2pt]
 	23 variables por píxel\\
-	RGB (8) + Texturales (6) + Espectrales/color (9)
+	Básicas (8) + Texturales (6) + Espectrales/color (9)
 };
 
 
@@ -219,59 +136,19 @@ Antes de describirlo conviene justificar por qué se eligió esta cadena y no un
 
 \subsection{Extracción de características}
 
-Para cada píxel, el código extrae automáticamente 23 características (implementación en \texttt{tesis\_ac.pipeline.feature\_extraction}, clase \texttt{FeatureExtractor}), organizadas en tres categorías:
-
-\begin{table}[h]
-\centering
-\caption{Características extraídas por píxel a partir de cada captura RGB.}
-\begin{tabular}{|l|c|p{8cm}|}
-\hline
-	\textbf{Categoría} & \textbf{Cantidad} & \textbf{Características específicas} \\
-\hline
-Básicas & 8 & Canales R, G, B; intensidad; brillo; desviación estándar de R, G y B. \\
-\hline
-Texturales & 6 & Sobel horizontal y vertical; magnitud del gradiente; LBP uniforme ($R = 3$, $P = 24$) sobre escala de grises; entropía local; contraste local. \\
-\hline
-Espectrales / color & 9 & Índice verde--rojo normalizado $(G-R)/(G+R)$; exceso de verde y exceso de rojo; componentes L, a, b (LAB); H, S, V (HSV). \\
-\hline
-	\textbf{Total} & \textbf{23} & \\
-\hline
-\end{tabular}
-\label{tab:features}
-\end{table}
+Para cada píxel se extraen automáticamente 23 características, organizadas en tres categorías. Ocho son básicas y derivan directamente de los canales: rojo, verde y azul, intensidad, brillo y la desviación estándar de cada canal. Seis son texturales: los gradientes Sobel horizontal y vertical, la magnitud del gradiente, el patrón binario local uniforme (LBP con $R = 3$ y $P = 24$) sobre la escala de grises, la entropía local y el contraste local. Las nueve restantes son espectrales y de color: el índice verde--rojo normalizado $(G-R)/(G+R)$, el exceso de verde y el exceso de rojo, las componentes $L$, $a$, $b$ del espacio LAB y $H$, $S$, $V$ del HSV. El detalle por característica, con su definición de implementación, se recoge en la Tabla~\ref{tab:features} del Apéndice~\ref{ap:arquitectura}.
 
 Sobre la categoría espectral conviene una aclaración. Como las capturas son RGB y no incluyen banda infrarroja, aquí no se calcula un NDVI en sentido estricto: ese índice necesita el infrarrojo cercano, del que estas imágenes carecen. Lo que se usa son índices construidos únicamente con los canales visibles. El que se reporta como índice verde--rojo normalizado responde a la forma $(G-R)/(G+R)$ y coincide con el NGRDI que la literatura de percepción remota emplea con cámaras RGB; junto con el exceso de verde y de rojo cumple el papel de un proxy cromático de vegetación, suficiente para separar superficies vegetadas de las construidas a partir del contraste de color, que es lo que requiere la clasificación binaria de este trabajo.
 
 \subsection{Normalización y reducción dimensional}
 
-El preprocesamiento incluye dos etapas adicionales antes del clasificador:
+El preprocesamiento incluye dos etapas adicionales antes del clasificador. La primera es una normalización estadística, que aplica \texttt{StandardScaler} para centrar y escalar cada característica. La segunda es una reducción dimensional mediante análisis de componentes principales (PCA), que comprime los 23 descriptores a 8 componentes.
 
-\begin{enumerate}
-	\item \textbf{Normalización estadística}: aplicación de \texttt{StandardScaler} para centrar y escalar cada característica.
-	\item \textbf{Reducción dimensional}: análisis de componentes principales (PCA) para pasar de 23 a 8 componentes.
-\end{enumerate}
+La PCA retiene en promedio cerca del $96$\,\% de la varianza original, una compresión razonable sin pérdida apreciable de información para la clasificación binaria. El preprocesamiento aplicado a toda la serie se resume en la Tabla~\ref{tab:preprocessing_quality} del Apéndice~\ref{ap:arquitectura}.
 
-La PCA retiene en promedio cerca del $96$\,\% de la varianza original, una compresión razonable sin pérdida apreciable de información para la clasificación binaria. La Tabla~\ref{tab:preprocessing_quality} resume el preprocesamiento aplicado a toda la serie.
+La implementación se organiza en una arquitectura modular (rasterización/clasificación de las capturas, cálculo de Pesos de Evidencia y simulación con autómatas celulares) cuyo diagrama de clases UML y rutas de los módulos del repositorio se documentan en el Apéndice~\ref{ap:arquitectura}, para no recargar la descripción metodológica.
 
-\begin{table}[h]
-\centering
-\caption{Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{0.35\textwidth}|X|}
-\hline
-	\textbf{Métrica} & \textbf{Valor} \\
-\hline
-Varianza retenida por PCA (promedio de la serie) & Cerca del $96$\,\%. \\
-Componentes finales por píxel & 8 (a partir de los 23 descriptores originales). \\
-Características válidas por imagen & 23 de 23 (ningún descriptor se descarta). \\
-Píxeles procesados por imagen & $5{,}419{,}008$ ($1{,}792 \times 3{,}024$). \\
-\hline
-\end{tabularx}
-\label{tab:preprocessing_quality}
-\end{table}
-
-La implementación se organiza en una arquitectura modular ---rasterización/clasificación de las capturas, cálculo de Pesos de Evidencia y simulación con autómatas celulares--- cuyo diagrama de clases UML y rutas de los módulos del repositorio se documentan en el Apéndice~\ref{ap:arquitectura}, para no recargar la descripción metodológica.
-
-En este espacio RGB enriquecido con descriptores de textura ---en particular los patrones binarios locales (LBP) de \textcite{Ojala2002}, robustos a cambios de iluminación y útiles para distinguir la rugosidad del tejido construido---, los primeros componentes del PCA reflejan el contraste urbano--vegetación y la variabilidad local, de modo que el SVM trabaja sobre representaciones comprimidas y poco redundantes.
+En este espacio RGB enriquecido con descriptores de textura (en particular los patrones binarios locales [LBP] de \textcite{Ojala2002}, robustos a cambios de iluminación y útiles para distinguir la rugosidad del tejido construido), los primeros componentes del PCA reflejan el contraste urbano--vegetación y la variabilidad local, de modo que el SVM trabaja sobre representaciones comprimidas y poco redundantes.
 
 % Fuente: report/tesis/book/cap03/analisis-datos.tex
 \section{Análisis de datos procesados y transformación binaria}
@@ -307,21 +184,13 @@ La \figref{fig:binary_evolution} muestra la evolución temporal del crecimiento 
 
 \subsection{Calidad interna de la clasificación}
 
-La calidad del clasificador LBP+K-Means+SVM se evalúa con un reparto interno \textit{train/test} ($20$\,\% para prueba por defecto) sobre las pseudoetiquetas generadas por K-Means, conforme a la rutina de entrenamiento de \texttt{ImageClassifier} en el repositorio. En los experimentos sobre Querétaro, la concordancia del SVM con esas pseudoetiquetas ---medida como \textit{accuracy} en el reparto interno, no contra una verdad terreno--- se situó en el rango $88$--$94$\,\%, en línea con lo comentado en el Capítulo~\ref{ch:modelo-crecimiento-urbano}.
+La calidad del clasificador LBP+K-Means+SVM se evalúa con un reparto interno \textit{train/test} ($20$\,\% para prueba por defecto) sobre las pseudoetiquetas generadas por K-Means, conforme a la rutina de entrenamiento documentada en el Apéndice~\ref{ap:arquitectura}. En los experimentos sobre Querétaro, la concordancia del SVM con esas pseudoetiquetas (medida como \textit{accuracy} en el reparto interno, no contra una verdad terreno) se situó en el rango $88$--$94$\,\%, en línea con lo comentado en el Capítulo~\ref{ch:modelo-crecimiento-urbano}.
 
-Este porcentaje mide la coherencia interna del clasificador ---es decir, qué tan bien el SVM reproduce las etiquetas generadas por K-Means--- y no la exactitud respecto a una verdad terreno externa independiente. La validación externa del \textit{pipeline} se realiza, de manera indirecta, a través de la evaluación temporal del modelo AC en el Capítulo~\ref{ch:resultados-analisis}.
+Este porcentaje mide la coherencia interna del clasificador (es decir, qué tan bien el SVM reproduce las etiquetas generadas por K-Means) y no la exactitud respecto a una verdad terreno externa independiente. La validación externa del \textit{pipeline} se realiza, de manera indirecta, a través de la evaluación temporal del modelo AC en el Capítulo~\ref{ch:resultados-analisis}.
 
 \subsection{Justificación de la representación binaria}
 
-La simplificación del mapa de cobertura de suelo a dos categorías (urbano/no-urbano) responde a tres consideraciones metodológicas:
-
-\begin{enumerate}
-	\item \textbf{Compatibilidad con el AC}: Los Autómatas Celulares utilizados en este trabajo operan con estados discretos. La representación binaria elimina la necesidad de una etapa adicional de discretización y hace que las reglas de transición sean directamente interpretables.
-
-	\item \textbf{Disponibilidad de datos}: Las capturas disponibles son RGB; no se incorporan bandas térmicas ni radar. Esa restricción acota la discriminación fina de usos intraurbanos y hace razonable condensar la salida en dos clases.
-
-	\item \textbf{Objetivo del modelo}: El interés del trabajo es modelar la \textit{expansión} del área urbana, no la composición interna de usos de suelo. La clasificación binaria captura la variable de salida relevante para este propósito.
-\end{enumerate}
+La simplificación del mapa de cobertura de suelo a dos categorías (urbano/no-urbano) responde a tres consideraciones metodológicas. La primera es la compatibilidad con el AC: los autómatas celulares utilizados operan con estados discretos, de modo que la representación binaria elimina una etapa adicional de discretización y hace que las reglas de transición sean directamente interpretables. La segunda es la disponibilidad de datos: las capturas son RGB, sin bandas térmicas ni radar, lo que acota la discriminación fina de usos intraurbanos y hace razonable condensar la salida en dos clases. La tercera es el objetivo del modelo: el interés está en modelar la \textit{expansión} del área urbana y no la composición interna de usos de suelo, y la clasificación binaria captura precisamente esa variable de salida.
 
 \subsection{Síntesis del capítulo}
 

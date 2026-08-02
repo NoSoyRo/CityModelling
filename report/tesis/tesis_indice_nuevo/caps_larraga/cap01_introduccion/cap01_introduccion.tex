@@ -6,23 +6,26 @@
 \label{ch:introduccion}
 
 \begin{resumen}
-Este capítulo contextualiza el problema del crecimiento urbano disperso en México y
-justifica la selección de Querétaro como caso de estudio. A partir de la clasificación
-de la literatura existente en enfoques de caja blanca y caja negra, se identifica la
-brecha metodológica concreta que este trabajo atiende: la ausencia de modelos de
-simulación CA con función de transición interpretable, validación multi-período y
-reproducibilidad abierta en ciudades intermedias mexicanas. Sobre ese diagnóstico se
-construyen los objetivos del trabajo, las preguntas que orientaron la investigación y las
-hipótesis que el modelo permitió poner a prueba, junto con los alcances y las limitaciones
-que delimitan la interpretación de los resultados.
+El crecimiento urbano disperso de las ciudades intermedias mexicanas, y de la Zona
+Metropolitana de Querétaro en particular, ha rebasado la capacidad de los instrumentos
+de planeación, sin que exista para ese contexto un modelo de simulación que sea, a la vez,
+interpretable celda a celda, validado en varios horizontes temporales y reproducible con
+datos abiertos. Para atender ese vacío, este trabajo desarrolló y validó un modelo de
+autómata celular con función de transición basada en Pesos de Evidencia (WoE-AC),
+calibrado por búsqueda sistemática y evaluado sobre cinco ventanas quinquenales
+independientes dentro de la serie 1984--2020. El diagnóstico que abre el capítulo
+delimita esa brecha científica concreta y la traduce en los requerimientos, las preguntas
+de investigación y las hipótesis falsables que estructuran el resto de la tesis; la
+aportación del trabajo no radica en el acoplamiento WoE-AC en sí, sino en su evaluación
+reproducible y multi-período para una ciudad intermedia mexicana.
 \end{resumen}
 
 \section{Contexto y problema}
 
-México cuenta con instrumentos de ordenamiento territorial —la Ley General de Asentamientos
-Humanos, los Programas Municipales de Ordenamiento Territorial y Desarrollo Urbano (PMOTDU),
-la SEDATU y acuerdos con ONU-Hábitat—, pero su cobertura efectiva es limitada: solo el
-20.5\,\% de los municipios dispone de un instrumento vigente, casi dos tercios de los planes
+México cuenta con instrumentos de ordenamiento territorial (la Ley General de Asentamientos
+Humanos, los Programas Municipales de Ordenamiento Territorial y Desarrollo Urbano [PMOTDU],
+la SEDATU y acuerdos con ONU-Hábitat), pero su cobertura efectiva es limitada: solo el
+20{,}5\,\% de los municipios dispone de un instrumento vigente, casi dos tercios de los planes
 publicados no han sido actualizados y, según el INEGI, entre el 43\,\% y el 80\,\% de la
 población mexicana reside en zonas urbanas. El resultado observable es un patrón de
 crecimiento disperso que supera la capacidad de planificación disponible, con impactos
@@ -70,7 +73,7 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 	\centering
 	\caption{Requerimientos del modelo de crecimiento urbano para la ZMQ.}
 	\label{tab:requerimientos_modelo_1}
-	\begin{tabular}{clp{8cm}}
+	\begin{tabularx}{\textwidth}{c >{\raggedright\arraybackslash}p{3.3cm} >{\raggedright\arraybackslash}X}
 	\toprule
 	\textbf{ID} & \textbf{Requerimiento} & \textbf{Descripción y criterio de cumplimiento} \\
 	\midrule
@@ -92,7 +95,7 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 	legibles como evidencia espacial cuantificable, no como parámetros opacos de una red
 	neuronal. \\
 	\bottomrule
-	\end{tabular}
+	\end{tabularx}
 \end{table}
 
 \section{Literatura existente y brecha metodológica}
@@ -122,10 +125,10 @@ disponibles para el país corresponde a mecanismos espaciales estables o a un
 sobreajuste de corto plazo a una fase concreta del crecimiento. Los requerimientos
 R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} son la forma operativa de
 comprobar si un modelo cierra esa brecha: descomponen esa única pregunta
----¿es el modelo, a la vez, interpretable, temporalmente robusto y reproducible?---
+(¿es el modelo, a la vez, interpretable, temporalmente robusto y reproducible?)
 en criterios verificables. Esa es la brecha que el presente trabajo atiende.
 
-El presente trabajo desarrolla y valida un modelo WoE-AC que satisface R1–R4 de forma conjunta:
+El presente trabajo desarrolló y validó un modelo WoE-AC que satisface R1–R4 de forma conjunta:
 WoE como función de transición produce pesos de evidencia (IV) cuantificables por
 variable y clase espacial (R4); la calibración mediante búsqueda sistemática en cuadrícula
 sobre cinco ventanas quinquenales independientes evalúa robustez temporal y no solo
@@ -145,90 +148,88 @@ Desarrollar un modelo basado en autómatas celulares que integre el método Weig
 
 \subsection{Objetivos específicos}
 
-\begin{enumerate}
-	\item Construir una serie histórica anual (1984--2020) de mapas binarios urbano/no-urbano
-	para la ZMQ a partir de imágenes de archivo de Google Earth, empleando clasificación
-	no supervisada para prescindir de etiquetas manuales y garantizar que el flujo de
-	adquisición y preprocesamiento sea replicable sin software propietario.
+El primer objetivo específico consiste en construir una serie histórica anual
+(1984--2020) de mapas binarios urbano/no-urbano para la ZMQ a partir de imágenes de
+archivo de Google Earth, empleando clasificación no supervisada para prescindir de
+etiquetas manuales y garantizar que el flujo de adquisición y preprocesamiento sea
+replicable sin software propietario. Sobre esa serie, el segundo objetivo selecciona y
+calcula las variables espaciales derivadas de los mapas binarios, que sirven de evidencia
+empírica al modelo WoE. La elección de WoE como función de transición, frente a
+alternativas como la regresión logística o las redes neuronales, responde a su capacidad
+de descomponer la contribución de cada variable mediante el Valor de Información (IV),
+propiedad que hace auditable la decisión celda a celda y cumple el requerimiento R4 de la
+Tabla~\ref{tab:requerimientos_modelo_1}.
 
-	\item Seleccionar y calcular las variables espaciales derivadas de los mapas binarios,
-	que sirven de evidencia empírica al modelo WoE. La elección de WoE como función de
-	transición, frente a alternativas como regresión logística o redes neuronales, responde
-	a su capacidad de descomponer la contribución de cada variable mediante el Valor de
-	Información (IV), propiedad que hace auditable la decisión celda a celda y cumple
-	el requerimiento R4 de la Tabla~\ref{tab:requerimientos_modelo_1}.
+El tercer objetivo diseña e implementa el autómata celular WoE-AC que simula la transición
+de no urbano a urbano en la ZMQ. La decisión de usar AC sobre enfoques basados en agentes
+(ABM) o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de
+difusión espacial emergente sin requerir la especificación de reglas de comportamiento
+individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial
+\parencite{Clarke1998,Sante2010}. El cuarto objetivo calibra sistemáticamente los
+parámetros del WoE-AC (umbral de transición y peso de vecindad) mediante búsqueda en
+cuadrícula y establece un protocolo de validación multi-período con cinco ventanas
+quinquenales independientes (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU. La
+validación en ventanas desplazadas, en lugar de un único período final, hace posible
+detectar el sobreajuste a una fase específica del crecimiento urbano
+\parencite{pontius2008comparing}.
 
-	\item Diseñar e implementar el autómata celular WoE-AC que simule la transición
-	no urbano a urbano en la ZMQ. La decisión de usar AC sobre enfoques basados en agentes
-	(ABM) o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica
-	de difusión espacial emergente sin requerir la especificación de reglas de comportamiento
-	individual, manteniendo la interpretabilidad del modelo al nivel de la rejilla espacial
-	\parencite{Clarke1998,Sante2010}.
-
-	\item Calibrar sistemáticamente los parámetros del WoE-AC (umbral de transición y peso
-	de vecindad) mediante búsqueda en cuadrícula, y establecer un protocolo de validación
-	multi-período con cinco ventanas quinquenales independientes (2011--2016 a 2015--2020)
-	usando FoM, Kappa e IoU. La validación en ventanas desplazadas, en lugar de un único
-	período final, permite detectar sobreajuste a una fase específica del crecimiento urbano
-	\parencite{pontius2008comparing}.
-
-	\item Analizar la estabilidad temporal del desempeño del modelo a través de los cinco
-	períodos y comparar los valores de FoM e IoU obtenidos con los rangos reportados en
-	la literatura para modelos de caja blanca y de caja negra, con el fin de posicionar
-	la contribución del trabajo en el contexto del estado del arte.
-\end{enumerate}
+Por último, el quinto objetivo analiza la estabilidad temporal del desempeño del modelo a
+lo largo de los cinco períodos y compara los valores de FoM e IoU obtenidos con los rangos
+reportados en la literatura para modelos de caja blanca y de caja negra, con el fin de
+posicionar la contribución del trabajo en el contexto del estado del arte.
 
 \section{Preguntas de investigación e hipótesis}
 
 \subsection{Preguntas de investigación}
 
-\begin{enumerate}
-	\item ¿Puede un modelo WoE-AC calibrado reproducir el patrón de crecimiento urbano
-	observado en Querétaro con métricas espaciales comparables a la literatura?
-	\item ¿Qué variables espaciales tienen mayor poder discriminatorio para predecir la
-	transición urbana en la ZMQ?
-	\item ¿El modelo mantiene estabilidad en su desempeño al evaluarse en cinco ventanas
-	quinquenales independientes?
-	\item ¿Es posible replicar el pipeline completo en otra ciudad intermedia con datos
-	equivalentes y sin software propietario?
-\end{enumerate}
+La investigación se articula en torno a cuatro preguntas. La primera indaga si un modelo
+WoE-AC calibrado puede reproducir el patrón de crecimiento urbano observado en Querétaro
+con métricas espaciales comparables a las de la literatura. La segunda interroga qué
+variables espaciales tienen mayor poder discriminatorio para predecir la transición urbana
+en la ZMQ. La tercera examina si el modelo mantiene la estabilidad de su desempeño al
+evaluarse en cinco ventanas quinquenales independientes. La cuarta plantea si es posible
+replicar el pipeline completo en otra ciudad intermedia con datos equivalentes y sin
+software propietario.
 
 \subsection{Hipótesis}
 
-\begin{itemize}
-	\item \textbf{H1:} La integración de WoE como función de transición empírica del AC produce
-	simulaciones con FoM superior a $0{,}15$ en las cinco ventanas de validación quinquenal.
-	El umbral no es arbitrario: \textcite{pontius2008comparing} documenta que una fracción
-	importante de los modelos LUCC publicados no lo alcanza, de modo que superarlo de forma
-	sostenida ---y no en una sola ventana--- indicaría que la evidencia espacial histórica
-	contiene información predictiva relevante y no un acierto puntual.
+El trabajo se guía por seis hipótesis falsables. La primera, \textbf{H1}, sostiene que la
+integración de WoE como función de transición empírica del AC produce simulaciones con FoM
+superior a $0{,}15$ en las cinco ventanas de validación quinquenal. El umbral no es
+arbitrario: \textcite{pontius2008comparing} documenta que una fracción importante de los
+modelos LUCC publicados no lo alcanza, de modo que superarlo de forma sostenida, y no en
+una sola ventana, indicaría que la evidencia espacial histórica contiene información
+predictiva relevante y no un acierto puntual.
 
-	\item \textbf{H2:} En el espacio de parámetros (umbral de transición, peso de vecindad)
-	existe un óptimo no trivial: la configuración calibrada por búsqueda sistemática supera
-	a una configuración por omisión sin calibrar en el FoM medio de las cinco ventanas, y los
-	umbrales por debajo del calibrado degradan el desempeño por sobre-predicción. De no
-	observarse esa mejora, la calibración sería un refinamiento marginal; que se observe
-	implica que es necesaria para este enfoque.
+La segunda, \textbf{H2}, plantea que en el espacio de parámetros (umbral de transición,
+peso de vecindad) existe un óptimo no trivial: la configuración calibrada por búsqueda
+sistemática supera a una configuración por omisión sin calibrar en el FoM medio de las
+cinco ventanas, y los umbrales por debajo del calibrado degradan el desempeño por
+sobre-predicción. De no observarse esa mejora, la calibración sería un refinamiento
+marginal; que se observe implica que es necesaria para este enfoque.
 
-	\item \textbf{H3:} Entre las siete variables espaciales evaluadas, las que cuantifican la
-	proximidad al frente urbano y la densidad de vecindad concentran el mayor Information Value
-	(IV), por encima de las variables de fragmentación y de gradiente. La hipótesis es falsable:
-	si el ordenamiento del IV estuviera dominado por estas últimas, el crecimiento de la ZMQ no
-	respondería principalmente a la difusión por contigüidad descrita en la literatura
-	\parencite{Clarke1998,BonhamCarter1994}.
+La tercera, \textbf{H3}, afirma que entre las siete variables espaciales evaluadas, las que
+cuantifican la proximidad al frente urbano y la densidad de vecindad concentran el mayor
+Information Value (IV), por encima de las variables de fragmentación y de gradiente. La
+hipótesis es falsable: si el ordenamiento del IV estuviera dominado por estas últimas, el
+crecimiento de la ZMQ no respondería principalmente a la difusión por contigüidad descrita
+en la literatura \parencite{Clarke1998,BonhamCarter1994}.
 
-	\item \textbf{H4:} El modelo mantiene FoM y Kappa estables a lo largo de las cinco ventanas
-	quinquenales, con mayor variación en los períodos donde la extensión de nueva área urbana
-	observada es pequeña.
+La cuarta, \textbf{H4}, supone que el modelo mantiene FoM y Kappa estables a lo largo de
+las cinco ventanas quinquenales, con mayor variación en los períodos donde la extensión de
+nueva área urbana observada es pequeña.
 
-	\item \textbf{H5:} Un modelo de caja blanca con función de transición WoE alcanza un
-	desempeño comparable al de modelos de caja negra \parencite{almeida2008stochastic,Chihuahua2023}
-	en las métricas FoM e IoU, sin sacrificar la interpretabilidad de los pesos espaciales.
+La quinta, \textbf{H5}, propone que restringir la función de transición a siete variables
+auditables (un modelo de caja blanca) mantiene el FoM medio dentro de la banda intermedia
+del espectro multi-sitio de \textcite{pontius2008comparing}, por encima del subconjunto de
+aplicaciones con FoM inferior a $0{,}15$, sin recurrir a las representaciones no
+interpretables propias de los modelos de caja negra \parencite{almeida2008stochastic,Chihuahua2023}.
+La hipótesis es falsable: si la interpretabilidad tuviera un costo grande en desempeño, el
+FoM medio caería por debajo de esa banda.
 
-	\item \textbf{H6:} El pipeline completo —desde la adquisición de imágenes hasta la validación
-	quinquenal— puede ejecutarse íntegramente con herramientas de código abierto y datos de
-	acceso libre, sin requerir software propietario ni hardware especializado.
-\end{itemize}
+Por último, la sexta, \textbf{H6}, afirma que el pipeline completo, desde la adquisición de
+imágenes hasta la validación quinquenal, se ejecuta en una CPU estándar en un tiempo del
+orden de horas, sin requerir GPU, software propietario ni hardware especializado.
 
 \section{Alcances y limitaciones}
 
@@ -282,12 +283,12 @@ ventanas el modelo simuló el crecimiento de la ZMQ con métricas dentro del ran
 la literatura (FoM promedio $0{,}317$, Kappa promedio $0{,}445$), un resultado sostenido a lo
 largo de los cinco horizontes y no concentrado en uno solo.
 
-En segundo lugar, el estudio se apoya en una serie histórica larga ---37 años continuos
-(1984--2020)--- construida a partir de imágenes de archivo de acceso libre, lo que ofrece una
+En segundo lugar, el estudio se apoya en una serie histórica larga, 37 años continuos
+(1984--2020), construida a partir de imágenes de archivo de acceso libre, lo que ofrece una
 base temporal más extensa que la habitual en trabajos comparables para el país.
 
-Por último, el flujo completo ---desde la adquisición de imágenes hasta la validación
-quinquenal--- se implementó con herramientas de código abierto y quedó documentado paso a
+Por último, el flujo completo, desde la adquisición de imágenes hasta la validación
+quinquenal, se implementó con herramientas de código abierto y quedó documentado paso a
 paso, de modo que otros investigadores puedan reproducirlo, adaptarlo o extenderlo a otras
 ciudades intermedias. En este enfoque, la función de transición WoE aporta además pesos de
 evidencia (IV) legibles por variable, lo que mantiene auditable cada decisión del modelo y
@@ -296,13 +297,4 @@ sustentan.
 
 \section{Organización del documento}
 
-El presente trabajo se organiza en siete capítulos:
-\begin{itemize}
-	\item \textbf{Capítulo~\ref{ch:introduccion} (Introducción):} Presenta el contexto del problema, los objetivos, las hipótesis, el alcance y las aportaciones de la investigación.
-	\item \textbf{Capítulo~\ref{ch:marco-teorico} (Marco teórico):} Expone las bases formales: autómatas celulares probabilísticos, método de Pesos de Evidencia y métricas de evaluación espacial.
-	\item \textbf{Capítulo~\ref{ch:estado-del-arte} (Estado del arte):} Revisa trabajos previos, compara enfoques e identifica las limitaciones que contextualizan el diseño de la investigación.
-	\item \textbf{Capítulo~\ref{ch:area-estudio} (Área de estudio):} Describe la Zona Metropolitana de Querétaro, la obtención de imágenes históricas de Google Earth y el preprocesamiento para construir la serie temporal de mapas binarios urbano/no-urbano.
-	\item \textbf{Capítulo~\ref{ch:modelo-crecimiento-urbano} (Modelo de crecimiento urbano):} Detalla el diseño del autómata celular WoE-AC, la calibración sistemática de parámetros mediante búsqueda en cuadrícula y el protocolo de validación quinquenal múltiple.
-	\item \textbf{Capítulo~\ref{ch:resultados-analisis} (Resultados y análisis):} Presenta los resultados de las cinco simulaciones quinquenales, analiza las métricas de desempeño y los compara con la literatura.
-	\item \textbf{Capítulo~\ref{ch:conclusiones} (Conclusiones):} Sintetiza los hallazgos, discute sus implicaciones para la planificación urbana e identifica líneas de investigación futura.
-\end{itemize}
+El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo (autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial) que el modelo necesita. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación de un solo período, opacidad de la caja negra y dependencia de software propietario) siguen abiertos en la literatura LUCC, y que el caso de las ciudades intermedias mexicanas es donde más se acumulan. El Capítulo~\ref{ch:area-estudio} justifica la Zona Metropolitana de Querétaro y la fuente de datos abierta, y documenta cómo se construyó la serie binaria 1984--2020. El Capítulo~\ref{ch:modelo-crecimiento-urbano} formaliza el acoplamiento WoE-AC, su calibración por búsqueda en cuadrícula y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones y acota lo que el modelo sí y no permite afirmar.

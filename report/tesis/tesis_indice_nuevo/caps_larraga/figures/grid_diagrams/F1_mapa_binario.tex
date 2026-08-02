@@ -1,0 +1,167 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc,positioning,arrows.meta}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+%% Paleta
+\definecolor{CU}{RGB}{27,38,49}
+\definecolor{CNU}{RGB}{238,241,245}
+\definecolor{CBRD}{RGB}{200,205,208}
+\definecolor{CNEW}{RGB}{192,57,43}
+\definecolor{CMO}{RGB}{36,113,163}
+\definecolor{CCTR}{RGB}{211,84,0}
+\definecolor{CHIT}{RGB}{29,106,57}
+\definecolor{CFAL}{RGB}{183,119,13}
+\definecolor{CMIS}{RGB}{21,67,96}
+\definecolor{CPU}{RGB}{113,125,126}
+\begin{document}
+
+\begin{tikzpicture}[font=\sffamily]
+  % — grid background
+  \fill[CNU] (0.0000cm,0.0000cm) rectangle (5.2000cm,5.2000cm);
+  \fill[CU] (2.6000cm,4.1600cm) rectangle (3.1200cm,4.6800cm);
+  \fill[CU] (2.0800cm,3.6400cm) rectangle (2.6000cm,4.1600cm);
+  \fill[CU] (2.6000cm,3.6400cm) rectangle (3.1200cm,4.1600cm);
+  \fill[CU] (3.1200cm,3.6400cm) rectangle (3.6400cm,4.1600cm);
+  \fill[CU] (1.5600cm,3.1200cm) rectangle (2.0800cm,3.6400cm);
+  \fill[CU] (2.0800cm,3.1200cm) rectangle (2.6000cm,3.6400cm);
+  \fill[CU] (2.6000cm,3.1200cm) rectangle (3.1200cm,3.6400cm);
+  \fill[CU] (3.1200cm,3.1200cm) rectangle (3.6400cm,3.6400cm);
+  \fill[CU] (3.6400cm,3.1200cm) rectangle (4.1600cm,3.6400cm);
+  \fill[CU] (1.0400cm,2.6000cm) rectangle (1.5600cm,3.1200cm);
+  \fill[CU] (1.5600cm,2.6000cm) rectangle (2.0800cm,3.1200cm);
+  \fill[CU] (2.0800cm,2.6000cm) rectangle (2.6000cm,3.1200cm);
+  \fill[CU] (2.6000cm,2.6000cm) rectangle (3.1200cm,3.1200cm);
+  \fill[CU] (3.1200cm,2.6000cm) rectangle (3.6400cm,3.1200cm);
+  \fill[CU] (3.6400cm,2.6000cm) rectangle (4.1600cm,3.1200cm);
+  \fill[CU] (1.0400cm,2.0800cm) rectangle (1.5600cm,2.6000cm);
+  \fill[CU] (1.5600cm,2.0800cm) rectangle (2.0800cm,2.6000cm);
+  \fill[CU] (2.0800cm,2.0800cm) rectangle (2.6000cm,2.6000cm);
+  \fill[CU] (2.6000cm,2.0800cm) rectangle (3.1200cm,2.6000cm);
+  \fill[CU] (3.1200cm,2.0800cm) rectangle (3.6400cm,2.6000cm);
+  \fill[CU] (3.6400cm,2.0800cm) rectangle (4.1600cm,2.6000cm);
+  \fill[CU] (4.1600cm,2.0800cm) rectangle (4.6800cm,2.6000cm);
+  \fill[CU] (1.0400cm,1.5600cm) rectangle (1.5600cm,2.0800cm);
+  \fill[CU] (1.5600cm,1.5600cm) rectangle (2.0800cm,2.0800cm);
+  \fill[CU] (2.0800cm,1.5600cm) rectangle (2.6000cm,2.0800cm);
+  \fill[CU] (2.6000cm,1.5600cm) rectangle (3.1200cm,2.0800cm);
+  \fill[CU] (3.1200cm,1.5600cm) rectangle (3.6400cm,2.0800cm);
+  \fill[CU] (3.6400cm,1.5600cm) rectangle (4.1600cm,2.0800cm);
+  \fill[CU] (1.5600cm,1.0400cm) rectangle (2.0800cm,1.5600cm);
+  \fill[CU] (2.0800cm,1.0400cm) rectangle (2.6000cm,1.5600cm);
+  \fill[CU] (2.6000cm,1.0400cm) rectangle (3.1200cm,1.5600cm);
+  \fill[CU] (3.1200cm,1.0400cm) rectangle (3.6400cm,1.5600cm);
+  \fill[CU] (2.0800cm,0.5200cm) rectangle (2.6000cm,1.0400cm);
+  \fill[CU] (2.6000cm,0.5200cm) rectangle (3.1200cm,1.0400cm);
+  \draw[CBRD,line width=0.35pt,xstep=0.5200cm,ystep=0.5200cm] (0.0000cm,0.0000cm) grid (5.2000cm,5.2000cm);
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.8200cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (2.3400cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (2.8600cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.3800cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.9000cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,4.9400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.8200cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (2.3400cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.3800cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.9000cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,4.4200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.8200cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.9000cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,3.9000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,3.3800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,3.3800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,3.3800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,3.3800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,3.3800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,2.8600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,2.8600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,2.8600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,2.8600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,2.3400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,2.3400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,2.3400cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,1.8200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,1.8200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,1.8200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,1.8200cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,1.3000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,1.3000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,1.3000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.9000cm,1.3000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,1.3000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,1.3000cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.8200cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.3800cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.9000cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,0.7800cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.2600cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (0.7800cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.3000cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (1.8200cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (2.3400cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (2.8600cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.3800cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (3.9000cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.4200cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=CU!55] at (4.9400cm,0.2600cm) {0};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,4.4200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,3.9000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,3.9000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.3800cm,3.9000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.8200cm,3.3800cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,3.3800cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,3.3800cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.3800cm,3.3800cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.9000cm,3.3800cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.3000cm,2.8600cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.8200cm,2.8600cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,2.8600cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,2.8600cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.3800cm,2.8600cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.9000cm,2.8600cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.3000cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.8200cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.3800cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.9000cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (4.4200cm,2.3400cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.3000cm,1.8200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.8200cm,1.8200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,1.8200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,1.8200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.3800cm,1.8200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.9000cm,1.8200cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (1.8200cm,1.3000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,1.3000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,1.3000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (3.3800cm,1.3000cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.3400cm,0.7800cm) {1};
+  \node[font=\fontsize{5.5}{6.5}\selectfont\ttfamily\bfseries,text=white] at (2.8600cm,0.7800cm) {1};
+  \node[font=\large\bfseries,anchor=south] at (2.6000cm,5.4000cm) {Mapa binario: $U_t(i,j)\in\{0,\,1\}$};
+  \fill[CU] (-0.2000cm,-0.9000cm) rectangle (0.1500cm,-0.5500cm);
+  \draw[CU,line width=0.6pt] (-0.2000cm,-0.9000cm) rectangle (0.1500cm,-0.5500cm);
+  \node[font=\small,anchor=west] at (0.2800cm,-0.7250cm) {Urbano~$(U_t=1)$};
+  \fill[CNU] (2.7000cm,-0.9000cm) rectangle (3.0500cm,-0.5500cm);
+  \draw[CBRD,line width=0.6pt] (2.7000cm,-0.9000cm) rectangle (3.0500cm,-0.5500cm);
+  \node[font=\small,anchor=west] at (3.1800cm,-0.7250cm) {No~urbano~$(U_t=0)$};
+  \node[font=\footnotesize\itshape,text=gray,anchor=north] at (2.6000cm,-1.0000cm) {Cada celda representa $\approx30\,\text{m}\times30\,\text{m}$};
+\end{tikzpicture}
+\end{document}

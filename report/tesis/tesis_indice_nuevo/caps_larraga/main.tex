@@ -1,0 +1,41 @@
+% Documento completo de la tesis (agregador de capitulos).
+% Compilar desde la carpeta caps_larraga:
+%   pdflatex -interaction=nonstopmode main.tex
+%   biber main
+%   pdflatex -interaction=nonstopmode main.tex
+%   pdflatex -interaction=nonstopmode main.tex
+\input{standalone_preamble.tex}
+
+\begin{document}
+
+\frontmatter
+\input{front/portada.tex}
+\input{front/dedicatoria.tex}
+\pagestyle{plain}
+\input{front/resumen.tex}
+\input{front/abstract.tex}
+\tableofcontents
+\listoffigures
+\listoftables
+\input{front/acronimos.tex}
+
+\mainmatter
+\pagestyle{fancy}
+\input{cap01_introduccion/cap01_introduccion}
+\input{cap02_marco_teorico/cap02_marco_teorico}
+\input{cap03_estado_del_arte/cap03_estado_del_arte}
+\input{cap04_area_estudio/cap04_area_estudio}
+\input{cap05_modelo_crecimiento_urbano/cap05_modelo_crecimiento_urbano}
+\input{cap06_resultados_analisis/cap06_resultados_analisis}
+\input{cap07_conclusiones/cap07_conclusiones}
+
+\appendix
+\input{apendice_arquitectura/apendice_arquitectura}
+
+\backmatter
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliografía}
+\printbibliography[title={Bibliografía}]
+
+\end{document}

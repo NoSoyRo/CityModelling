@@ -1,6 +1,7 @@
 % !TEX root = cap05_standalone.tex
 % Capítulo 5. Modelo de crecimiento urbano
 % Estructura según índice de la Dra. Lárraga.
+\graphicspath{{figures/}{../figures/}}
 
 \chapter{Modelo de crecimiento urbano}
 \label{ch:modelo-crecimiento-urbano}
@@ -8,30 +9,79 @@
 % ---- Contenido migrado (copy/paste) desde report/tesis/book/cap04/cap04.tex ----
 
 \begin{resumen}
-Este capítulo muestra una visión exhaustiva del modelo citado a lo largo de todo este trabajo como WoE-AC, se presentan las decisiones explícitas de cada componente del modelo, preprocesamiento y validación. Si bien el segundo capítulo del presente trabajo da una definición a cada concepto utilizado, no hay una argumentación de por qué se utiliza cada una de las componentes del flujo completo que al trabajo presente le compete. Se inicia con un recordatorio breve del preprocesamiento que produce la serie binaria de entrada ---cuyo detalle queda en el Capítulo~\ref{ch:area-estudio}---, seguido por el modelo que consume esos mapas para calcular la matriz de transiciones históricas, la definición del autómata celular probabilístico y, finalmente, la validación del modelo.
+Este capítulo muestra una visión exhaustiva del modelo citado a lo largo de todo este trabajo como WoE-AC, se presentan las decisiones explícitas de cada componente del modelo, preprocesamiento y validación. Si bien el segundo capítulo del presente trabajo da una definición a cada concepto utilizado, no hay una argumentación de por qué se utiliza cada una de las componentes del flujo completo que al trabajo presente le compete. Se inicia con un recordatorio breve del preprocesamiento que produce la serie binaria de entrada, cuyo detalle queda en el Capítulo~\ref{ch:area-estudio}, seguido por el modelo que consume esos mapas para calcular la matriz de transiciones históricas, la definición del autómata celular probabilístico y, finalmente, la validación del modelo. Conviene anticipar que la novedad de este trabajo no es el acoplamiento WoE-AC en sí, ampliamente documentado en la literatura, sino su calibración y validación reproducibles sobre cinco ventanas quinquenales independientes, aplicadas a una ciudad intermedia mexicana con código y datos abiertos.
 \end{resumen}
 
 \section{Del preprocesamiento a la serie binaria de entrada}
 
-El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas binarios urbano/no-urbano $\{U_t\}_{t=1984}^{2020}$. Su construcción ---la conversión de cada captura RGB de $1{,}792 \times 3{,}024$ píxeles en un mapa $U_t(x,y) \in \{0,1\}$ mediante la cadena LBP\,+\,K-Means\,+\,SVM--- se describe en detalle en el Capítulo~\ref{ch:area-estudio} y no se reproduce aquí. Basta recordar dos restricciones que ese flujo resuelve: la ausencia de banda infrarroja descarta los índices espectrales habituales (NDVI, NDBI) y obliga a apoyarse en descriptores de textura y color, y la falta de verdad terreno para los 37 años obliga a etiquetar de forma no supervisada.
+El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas binarios urbano/no-urbano $\{U_t\}_{t=1984}^{2020}$. Su construcción (la conversión de cada captura RGB de $1{,}792 \times 3{,}024$ píxeles en un mapa $U_t(x,y) \in \{0,1\}$ mediante la cadena LBP\,+\,K-Means\,+\,SVM) se describe en detalle en el Capítulo~\ref{ch:area-estudio} y no se reproduce aquí. Basta recordar dos restricciones que ese flujo resuelve: la ausencia de banda infrarroja descarta los índices espectrales habituales (NDVI, NDBI) y obliga a apoyarse en descriptores de textura y color, y la falta de verdad terreno para los 37 años obliga a etiquetar de forma no supervisada.
 
-De ese flujo conviene rescatar, eso sí, la decisión que condiciona todo lo que sigue: el criterio que separa lo urbano de lo no-urbano es \textbf{idéntico para todos los años de la serie}. Esa consistencia inter-anual ---y no la exactitud cartográfica frente a una verdad terreno--- es lo que vuelve comparables las transiciones entre años consecutivos y permite que alimenten el cálculo de Pesos de Evidencia sin sesgos por cambios de criterio. La representación binaria, por su parte, es la entrada natural de un autómata celular, que opera sobre estados discretos, y captura justo la variable de interés: la expansión de la mancha urbana, no la composición interna de usos. Como respaldo de su fiabilidad interna, el clasificador reprodujo entre el $88\%$ y el $94\%$ de las pseudoetiquetas en el reparto de prueba (Capítulo~\ref{ch:area-estudio}); su validación externa, de carácter indirecto, se realiza a través del desempeño temporal del propio modelo en el Capítulo~\ref{ch:resultados-analisis}.
+\begin{wrapfigure}{r}{0.42\linewidth}
+  \vspace{-4pt}
+  \centering
+  \includegraphics[width=\linewidth]{F1_mapa_binario_ai}
+  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas.}
+  \label{fig:mapa-binario}
+  \vspace{-6pt}
+\end{wrapfigure}
+De ese flujo conviene rescatar, eso sí, la decisión que condiciona todo lo que sigue: el criterio que separa lo urbano de lo no-urbano es \textbf{idéntico para todos los años de la serie}. Esa consistencia inter-anual, y no la exactitud cartográfica frente a una verdad terreno, es lo que vuelve comparables las transiciones entre años consecutivos y permite que alimenten el cálculo de Pesos de Evidencia sin sesgos por cambios de criterio. La representación binaria, por su parte, es la entrada natural de un autómata celular, que opera sobre estados discretos, y captura justo la variable de interés: la expansión de la mancha urbana, no la composición interna de usos. Como respaldo de su fiabilidad interna, el clasificador reprodujo entre el $88\%$ y el $94\%$ de las pseudoetiquetas en el reparto de prueba (Capítulo~\ref{ch:area-estudio}); su validación externa, de carácter indirecto, se realiza a través del desempeño temporal del propio modelo en el Capítulo~\ref{ch:resultados-analisis}.
 
 \section{Modelo de crecimiento urbano.}
 \label{sec:calibracion-narrativa}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.78\linewidth]{F4_pipeline_woe_ac_ai}
+  \caption{Pipeline completo del modelo WoE-AC: del dato satelital a la validación quinquenal. Las etapas~1--2 producen la serie binaria; la etapa~3 estima los pesos de evidencia sobre 26 pares históricos; la etapa~4 ejecuta el autómata celular de forma iterativa; la etapa~5 evalúa con cinco ventanas temporales independientes.}
+  \label{fig:pipeline-woe-ac}
+\end{figure}
+
+\begin{wrapfigure}{l}{0.52\linewidth}
+  \vspace{-4pt}
+  \centering
+  \includegraphics[width=\linewidth]{F2_transicion_ai}
+  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$.}
+  \label{fig:transicion}
+  \vspace{-6pt}
+\end{wrapfigure}
 Con la serie de mapas binarios $\{U_t\}_{t=1984}^{2020}$ ya construida, el modelo de crecimiento urbano debe responder a una pregunta distinta de la del preprocesamiento: ya no se trata de decidir qué es urbano, sino de aprender dónde y por qué aparece lo urbano nuevo. El primer paso es, por tanto, definir el objeto de estudio del modelo: la transición. Una transición ocurre cuando una celda que era no-urbana en el año $t$ pasa a urbana en $t+1$, es decir, $U_t(i,j)=0$ y $U_{t+1}(i,j)=1$. Estas transiciones son los eventos que el modelo busca primero explicar a partir de la historia y, más adelante, reproducir hacia el futuro.
+
+Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de forma entrelazada pero que son conceptualmente distintos. El primero es el \textbf{modelo conceptual}: las reglas matemáticas generales del acoplamiento WoE-AC (la cuantificación de evidencia, la regla de transición probabilística y la actualización del estado), válidas para cualquier ciudad. El segundo es la \textbf{implementación}: el recálculo iterativo del campo de evidencia y de la vecindad sobre el estado actualizado del mapa en cada paso de simulación. El tercero es la \textbf{configuración experimental}: los valores concretos fijados para la Zona Metropolitana de Querétaro (el umbral $\theta = 0{,}75$, el peso de vecindad $\alpha = 0{,}50$, la ponderación por \textit{Information Value} y las ventanas quinquenales de validación), que son objeto del Capítulo~\ref{ch:resultados-analisis}. La narración avanza del primero al tercero.
 
 La primera decisión del modelo es cómo cuantificar la evidencia que vincula la configuración espacial de una celda con su probabilidad de transición. La vía más común en la literatura es la regresión logística, pero conlleva un supuesto fuerte: que el logit de la probabilidad es una función lineal de las variables explicativas. Las relaciones espaciales del crecimiento urbano no son lineales; la probabilidad de urbanización cae de forma abrupta en los primeros cientos de metros desde el frente urbano y luego se aplana. Por eso se elige el método de Pesos de Evidencia (WoE, ecuación~\ref{eq:woe} del Capítulo~\ref{ch:marco-teorico}), que no impone ninguna forma funcional: discretiza cada variable en intervalos y estima un peso bayesiano independiente para cada uno, capturando la curvatura real de la relación. Como ventaja adicional, cada peso es interpretable en términos geográficos, lo que satisface el requisito de transparencia que motivó este trabajo y que los enfoques de caja negra no ofrecen.
 
+\begin{wrapfigure}{r}{0.50\linewidth}
+  \vspace{-4pt}
+  \centering
+  \includegraphics[width=\linewidth]{F5_variables_espaciales_ai}
+  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas.}
+  \label{fig:variables-espaciales}
+  \vspace{-6pt}
+\end{wrapfigure}
 La segunda decisión es qué variables espaciales alimentan el WoE. Aquí opera de nuevo una restricción de los datos: no se dispone de capas externas homogéneas (vialidades, pendiente, uso de suelo oficial) para los 37 años de la serie. Por tanto, todas las variables deben derivarse de la propia configuración urbana histórica, sin insumos adicionales. Se definen siete: la distancia euclidiana a la celda urbana más cercana, la densidad de vecinos urbanos a tres escalas (ventanas $3\times3$, $5\times5$ y $7\times7$), la fragmentación local, el tamaño del cluster urbano contiguo más cercano y el gradiente de urbanización. Cada una captura un aspecto distinto del proceso: la proximidad al frente consolidado, la presión del vecindario a múltiples escalas y la morfología del borde urbano. El que las siete provengan únicamente del mapa binario es lo que hace al modelo transferible a cualquier ciudad para la que exista esa serie, sin depender de bases de datos locales.
 
 La tercera decisión es sobre qué datos afinar. En lugar de ajustar el WoE a un único par de años, se agregan (\textit{pooling}) las transiciones de los 26 pares consecutivos del período 1984--2010. El motivo es estadístico: las transiciones de un solo año son escasas y ruidosas, y producirían pesos inestables. Al acumular los 26 períodos se reúnen $8{,}196{,}264$ transiciones observadas, lo que reduce el error de estimación de cada bin a un nivel en el que los pesos pueden tratarse como constantes del modelo. El período 2011--2020 se reserva deliberadamente, sin tocarlo durante el ajuste, para la validación posterior.
 
 Con los pesos calculados, surge una cuarta decisión: cómo combinarlos. No todas las variables aportan lo mismo. El peso total por celda (ecuación~\ref{eq:woe_total}) no se obtiene como una suma simple, sino ponderando cada variable por su \textit{Information Value} normalizado, de modo que las variables con mayor poder discriminativo pesen más en la decisión final. En el caso de la Zona Metropolitana de Querétaro, esto hace que la distancia al frente urbano domine la combinación, concentra cerca del $28\%$ del peso total, el \textit{Information Value} más alto de las siete variables, seguida de la densidad de vecinos inmediatos. La suma ponderada se transforma con la función sigmoide (ecuación~\ref{eq:woe_sigmoid}) para obtener una probabilidad de transición acotada en $[0,1]$.
 
+\begin{wrapfigure}{r}{0.50\linewidth}
+  \vspace{-4pt}
+  \centering
+  \includegraphics[width=\linewidth]{F3_moore_ai}
+  \caption{\small Vecindad de Moore ($8$ celdas) frente a Von~Neumann ($4$ ortogonales). Moore captura frentes diagonales de crecimiento.}
+  \label{fig:vecindad-moore}
+  \vspace{-6pt}
+\end{wrapfigure}
 Llegados a este punto aparece la decisión central del modelo, la que lo distingue de una simple regresión espacial: por qué un autómata celular y no usar directamente el mapa de probabilidad WoE como predicción. La razón es que el mapa WoE es estático; describe la idoneidad de cada celda dada la configuración del año inicial, pero no simula cómo el crecimiento se propaga en el tiempo. Una celda muy apta puede no urbanizarse si ningún frente urbano la alcanza dentro del período, y una celda de idoneidad media puede hacerlo si el crecimiento llega a su vecindad. El autómata celular (Sección~\ref{sec:automatas-celulares} del Capítulo~\ref{ch:marco-teorico}) resuelve esto aplicando la regla de transición de forma iterativa: en cada paso anual se recalculan las siete variables espaciales sobre el estado actualizado del mapa. Así, cuando una celda se urbaniza, incrementa de inmediato la densidad de vecinos de sus celdas contiguas y eleva su probabilidad de transición en el paso siguiente. Este mecanismo de contagio borde a borde es el que genera los patrones de mancha compacta, relleno de huecos y extensión de corredores que se observan empíricamente en la ZMQ; que las dos variables más predictivas sean de proximidad local confirma que el crecimiento de la zona es de tipo contagio y no difusión aleatoria, y por tanto que un autómata celular es su representación natural.
 
+\begin{wrapfigure}{l}{0.50\linewidth}
+  \vspace{-4pt}
+  \centering
+  \includegraphics[width=\linewidth]{F6_paso_ac_ai}
+  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$.}
+  \label{fig:paso-ac}
+  \vspace{-6pt}
+\end{wrapfigure}
 La regla de transición integra, finalmente, tres componentes. A la probabilidad WoE de cada celda se le añade la influencia del vecindario de Moore (ocho celdas adyacentes, ecuación~\ref{eq:neighborhood}), ponderada por un peso vecinal; se elige la vecindad de Moore por ser la mínima que captura tanto adyacencias ortogonales como diagonales del frente urbano. La probabilidad combinada se compara contra un umbral de transición: solo las celdas que lo superan pueden urbanizarse. Este umbral se fijó en $0{,}75$ mediante exploración sistemática, tras observar que valores menores producían sobre-predicción masiva; su calibración y la del peso vecinal se detallan en el Capítulo~\ref{ch:resultados-analisis}. Por último, la transición no es determinista: una celda apta se urbaniza solo si un sorteo aleatorio lo confirma. Esta componente estocástica refleja que, incluso bajo condiciones favorables, la urbanización de una parcela depende de factores no modelados (decisiones de propietarios, permisos, mercado), y es lo que hace que distintas corridas del modelo generen escenarios ligeramente distintos en lugar de una única predicción rígida.
 
 Los tres componentes se condensan en una sola expresión, que constituye el núcleo formal del modelo y coincide con la implementación validada (Sección~\ref{sec:calibracion-narrativa}). Para una celda no urbana $(i,j)$, la probabilidad de transición es
@@ -43,18 +93,33 @@ P_{i,j} = \min\!\left(1,\; \sigma\!\Big( \sum_{k} \omega_k\, \mathrm{WoE}_k(i,j)
 \label{eq:transicion}
 \end{equation}
 
-donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia ---la de mayor \textit{Information Value}--- dentro del campo WoE. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija $\theta = 0{,}75$ y $\alpha = 0{,}50$ (Capítulo~\ref{ch:resultados-analisis}).
+donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija $\theta = 0{,}75$ y $\alpha = 0{,}50$ (Capítulo~\ref{ch:resultados-analisis}).
 
-Conviene precisar en qué se aparta esta formulación del esquema WoE-AC más habitual. En buena parte de la literatura el WoE entra al autómata como un mapa de idoneidad estático que apenas se recalcula durante la simulación. Aquí, en cambio, el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC ---que la literatura ya documenta ampliamente---, sino en el protocolo de evaluación: la calibración y la validación reproducibles sobre cinco ventanas quinquenales independientes, con código y datos abiertos, que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suman el contexto poco estudiado ---una ciudad intermedia mexicana--- y la serie larga de 37 años.
+Conviene precisar en qué se aparta esta formulación del esquema WoE-AC más habitual. En buena parte de la literatura el WoE entra al autómata como un mapa de idoneidad estático que apenas se recalcula durante la simulación. Aquí, en cambio, el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC, que la literatura ya documenta ampliamente, sino en el protocolo de evaluación: la calibración y la validación reproducibles sobre cinco ventanas quinquenales independientes, con código y datos abiertos, que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suman el contexto poco estudiado, una ciudad intermedia mexicana, y la serie larga de 37 años.
 
 \section{Validación.}
 
 Definido el modelo, queda la pregunta de si sus predicciones son confiables. La primera decisión de la validación ya se tomó al entrenar: el WoE se ajustó únicamente con las transiciones de 1984--2010, dejando intacto el período 2011--2020. Esta separación temporal es lo que hace honesta a la evaluación, pues el modelo se prueba sobre años que nunca vio durante el ajuste, de la misma forma en que tendría que operar al proyectar el futuro. Validar sobre los mismos datos de entrenamiento solo mediría la capacidad de memorizar, no la de predecir.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.90\linewidth]{F7_ventanas_validacion_ai}
+  \caption{Protocolo de validación: separación temporal entre entrenamiento (WoE, 1984--2010) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en el ajuste del modelo.}
+  \label{fig:ventanas-validacion}
+\end{figure}
+
 La segunda decisión, y la que define el aporte metodológico de este trabajo, es no validar sobre una única ventana sino sobre cinco ventanas quinquenales independientes: 2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020. La razón es que una sola ventana puede resultar engañosamente favorable o desfavorable según las particularidades de ese lustro; cinco ventanas que se desplazan año con año permiten distinguir entre un acierto puntual y un comportamiento estable del modelo. Gran parte de la literatura revisada en el Capítulo~\ref{ch:estado-del-arte} valida sobre un solo período, lo que impide saber si el desempeño reportado se sostiene en el tiempo.
 
 El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año inicial como estado de partida, se ejecuta el autómata celular durante cinco pasos anuales recalculando las variables espaciales en cada uno, y el mapa predicho para el año final se compara, celda a celda, contra el mapa observado de ese año. De esa comparación se construye la matriz de confusión (ecuación~\ref{eq:confusion_matrix}) y, a partir de ella, todas las métricas.
 
+\begin{wrapfigure}{r}{0.48\linewidth}
+  \vspace{-4pt}
+  \centering
+  \includegraphics[width=\linewidth]{F8_fom_ai}
+  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Solo las celdas en transición entran al cálculo.}
+  \label{fig:fom-componentes}
+  \vspace{-6pt}
+\end{wrapfigure}
 Aquí aparece una decisión sobre cómo medir el acierto. Las métricas globales como la exactitud o el coeficiente Kappa (ecuación~\ref{eq:kappa}) son engañosas en este problema: como la mayoría del territorio no cambia de un año a otro, un modelo que se limitara a copiar el mapa inicial obtendría una exactitud altísima sin predecir crecimiento alguno. Por eso la métrica central de la validación es el \textit{Figure of Merit} (ecuación~\ref{eq:fom_formula}), que evalúa exclusivamente las celdas en transición e ignora la clase mayoritaria de permanencia. Se reportan, no obstante, las métricas complementarias (IoU, Precision, Recall, F1 y Kappa) y la descomposición del error en sus componentes de cantidad y de asignación, porque cada una ilumina un aspecto distinto del desempeño.
 
 El resultado sostiene la hipótesis de estabilidad. A lo largo de las cinco ventanas, el \textit{Figure of Merit} se mantiene en el intervalo $[0{,}222,\,0{,}378]$, con un valor medio cercano a $0{,}317$, un Kappa medio de $0{,}445$ y un IoU medio de $0{,}633$. Ninguna ventana se desploma ni dispara su desempeño respecto de las demás, lo que indica que el modelo captura una dinámica estructural del crecimiento de la Zona Metropolitana de Querétaro y no un patrón sobreajustado a un período concreto. La presentación detallada de estas métricas, ventana por ventana, junto con la discusión de la calibración, se desarrolla en el Capítulo~\ref{ch:resultados-analisis}.
