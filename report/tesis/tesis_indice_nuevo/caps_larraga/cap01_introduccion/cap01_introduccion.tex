@@ -22,6 +22,12 @@ reproducible y multi-período para una ciudad intermedia mexicana.
 
 \section{Contexto y problema}
 
+La urbanización es uno de los procesos que más transforma el territorio en este siglo. Una fracción creciente de la población mundial vive en ciudades, y la superficie urbana suele expandirse más rápido que la población que la habita. Cuando esa expansión ocurre de forma dispersa y sin planeación, tensiona la infraestructura, los servicios y el entorno, y obliga a anticipar dónde y a qué velocidad crecerá la ciudad.
+
+Anticipar ese crecimiento es, en el fondo, un problema de simulación espacial. Para abordarlo se han desarrollado modelos de cambio de uso y cobertura de suelo (LUCC), entre los que los autómatas celulares ocupan un lugar central por representar la ciudad celda a celda. Su utilidad práctica, sin embargo, depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
+
+Estas tensiones se agudizan en las ciudades intermedias, y en particular en las mexicanas, poco representadas en la literatura de modelado urbano pese a concentrar buena parte del crecimiento reciente del país. La Zona Metropolitana de Querétaro sirve en este trabajo como caso de uso para ejercitar y validar el modelo: una ciudad intermedia con una dinámica de expansión representativa y una serie de imágenes de archivo lo bastante larga para evaluarlo en varios períodos.
+
 México cuenta con instrumentos de ordenamiento territorial (la Ley General de Asentamientos
 Humanos, los Programas Municipales de Ordenamiento Territorial y Desarrollo Urbano [PMOTDU],
 la SEDATU y acuerdos con ONU-Hábitat), pero su cobertura efectiva es limitada: solo el
@@ -62,10 +68,10 @@ urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, con una t
 crecimiento que la posiciona entre las ciudades intermedias de mayor dinamismo en México
 durante ese período. Este patrón, documentado pero no suficientemente modelado para la ZMQ,
 impide anticipar dónde y a qué velocidad se producirá la siguiente oleada de expansión:
-información necesaria para el diseño de infraestructura y política territorial. Querétaro
-fue seleccionada como caso de estudio por combinar una serie histórica larga (37 años),
-datos de acceso libre y una dinámica de crecimiento representativa de las ciudades
-intermedias del centro del país. Para que un modelo de simulación sea útil como herramienta
+información necesaria para el diseño de infraestructura y política territorial. Como instancia
+concreta de ese problema, el trabajo ejercita el modelo sobre la ZMQ, que reúne una serie
+histórica larga (37 años), datos de acceso libre y una dinámica de crecimiento propia de las
+ciudades intermedias del centro del país. Para que un modelo de simulación sea útil como herramienta
 de apoyo a la planeación, debe satisfacer los cuatro requerimientos de la
 Tabla~\ref{tab:requerimientos_modelo_1}.
 
@@ -100,8 +106,11 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 
 \section{Literatura existente y brecha metodológica}
 
-Se revisaron trece trabajos representativos del campo, tanto de escala global como de
-ciudades mexicanas, para determinar cuáles satisfacen R1–R4 de forma simultánea. R4,
+El modelado del crecimiento urbano cuenta con numerosos estudios, que pueden agruparse
+según el tipo de función de transición que emplean: modelos de caja negra basados en
+aprendizaje automático, híbridos metaheurísticos y modelos de caja blanca. Sobre ese cuerpo
+de literatura, de escala tanto global como mexicana, se contrastó una muestra representativa
+para determinar cuáles satisfacen R1–R4 de forma simultánea. R4,
 la interpretabilidad de la función de transición, resultó ser la condición más restrictiva:
 los modelos con mejor desempeño cuantitativo en el espacio de aprendizaje
 automático aplicado a problemas espaciales (\textcite{almeida2008stochastic};
@@ -112,8 +121,8 @@ la misma consecuencia para la interpretabilidad. Los modelos de caja blanca más
 \textcite{Sante2010}; \textcite{Aburas2016}) atienden R1 pero no validan sobre más de
 un período quinquenal independiente, por lo que no es posible determinar si su desempeño
 refleja mecanismos espaciales estables o sobreajuste a una fase particular del crecimiento.
-Los tres trabajos para ciudades mexicanas revisados (\textcite{SuarezDelgado2007};
-\textcite{RamirezHernandez2021}; \textcite{Chihuahua2023}) se alinean parcialmente con R1 y R2, pero no con R3 ni con R4. En el Cap.~\ref{ch:estado-del-arte} se documentan dichas evaluaciones.
+Los trabajos revisados para ciudades mexicanas (\textcite{SuarezDelgado2007};
+\textcite{RamirezHernandez2021}; \textcite{Chihuahua2023}) se alinean parcialmente con R1 y R2, pero no con R3 ni con R4. A esto se añade que las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado sobre todo para contextos ajenos al mexicano, con dinámicas de crecimiento y fuentes de datos distintas, de modo que sus parámetros y conclusiones no se trasladan sin más a las ciudades intermedias del país. En el Cap.~\ref{ch:estado-del-arte} se documentan dichas evaluaciones.
 
 Leídas en conjunto, estas limitaciones no son cuatro vacíos independientes sino
 una sola brecha científica: para las ciudades intermedias mexicanas no se dispone
@@ -126,7 +135,7 @@ sobreajuste de corto plazo a una fase concreta del crecimiento. Los requerimient
 R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} son la forma operativa de
 comprobar si un modelo cierra esa brecha: descomponen esa única pregunta
 (¿es el modelo, a la vez, interpretable, temporalmente robusto y reproducible?)
-en criterios verificables. Esa es la brecha que el presente trabajo atiende.
+en criterios verificables. Esa es la brecha que el presente trabajo atiende. Su aportación es de alcance general: un protocolo de evaluación reproducible y multi-período que combina la validación sobre cinco ventanas temporales independientes, un conjunto de métricas espaciales complementarias (Figure of Merit, Kappa e Intersection over Union) y la descomposición del error de Pontius entre desacuerdo de cantidad y de asignación, con el desempeño situado en el espectro empírico multi-sitio de referencia. Ese protocolo, junto con el pipeline abierto (Python, datos libres, sin hardware especializado) y la función de transición WoE auditable por su Information Value, es transferible a otras ciudades intermedias, y no la mera aplicación de una técnica a un caso concreto. Querétaro es el caso de uso donde se ejercita y se valida.
 
 El presente trabajo desarrolló y validó un modelo WoE-AC que satisface R1–R4 de forma conjunta:
 WoE como función de transición produce pesos de evidencia (IV) cuantificables por
@@ -271,29 +280,33 @@ precisión asociada a la interpretabilidad no es prohibitiva para el caso de uso
 
 La combinación de Pesos de Evidencia y autómatas celulares no es, en sí misma, una novedad
 metodológica: existe una literatura consolidada que la emplea. Lo que distingue a este
-trabajo no es la técnica, sino el conjunto de condiciones bajo las cuales se aplicó y evaluó.
+trabajo no es la técnica, sino la metodología con que se evaluó y las condiciones de
+reproducibilidad bajo las que se aplicó.
 
-En primer lugar, el caso de estudio aborda un contexto poco representado en la literatura de
+La aportación central es de carácter metodológico: un protocolo de evaluación reproducible y
+multi-período. En lugar de validar sobre un único horizonte, el modelo se evaluó sobre cinco
+ventanas quinquenales independientes (2011--2016 a 2015--2020) con un conjunto de métricas
+espaciales complementarias (Figure of Merit, Kappa e Intersection over Union) y la
+descomposición del error de Pontius entre desacuerdo de cantidad y de asignación, situando
+el desempeño en el espectro empírico multi-sitio de referencia. Ese protocolo permite
+distinguir un desempeño estable de un ajuste a una fase concreta del crecimiento, y arrojó
+métricas dentro del rango reportado en la literatura (FoM promedio $0{,}317$, Kappa promedio
+$0{,}445$), sostenidas a lo largo de los cinco horizontes y no concentradas en uno solo.
+
+Sobre ese núcleo se apoyan las demás aportaciones. El flujo completo, desde la adquisición de
+imágenes hasta la validación quinquenal, se implementó con herramientas de código abierto y
+quedó documentado paso a paso, de modo que otros investigadores puedan reproducirlo,
+adaptarlo o extenderlo a otras ciudades intermedias. La función de transición WoE aporta,
+además, pesos de evidencia (IV) legibles por variable, lo que mantiene auditable cada
+decisión del modelo y facilita interpretar los resultados en términos de los mecanismos
+espaciales que los sustentan.
+
+El protocolo se ejercita, por último, sobre un contexto poco representado en la literatura de
 modelado urbano: las ciudades intermedias mexicanas, habitualmente analizadas con
-calibraciones heurísticas y sobre un solo horizonte temporal. Frente a esa práctica, el
-modelo se evaluó con un protocolo de validación multi-período sobre cinco ventanas
-quinquenales independientes (2011--2016 a 2015--2020), lo que permitió examinar la
-estabilidad temporal del desempeño y no únicamente el ajuste a un período final. Sobre esas
-ventanas el modelo simuló el crecimiento de la ZMQ con métricas dentro del rango reportado en
-la literatura (FoM promedio $0{,}317$, Kappa promedio $0{,}445$), un resultado sostenido a lo
-largo de los cinco horizontes y no concentrado en uno solo.
-
-En segundo lugar, el estudio se apoya en una serie histórica larga, 37 años continuos
-(1984--2020), construida a partir de imágenes de archivo de acceso libre, lo que ofrece una
-base temporal más extensa que la habitual en trabajos comparables para el país.
-
-Por último, el flujo completo, desde la adquisición de imágenes hasta la validación
-quinquenal, se implementó con herramientas de código abierto y quedó documentado paso a
-paso, de modo que otros investigadores puedan reproducirlo, adaptarlo o extenderlo a otras
-ciudades intermedias. En este enfoque, la función de transición WoE aporta además pesos de
-evidencia (IV) legibles por variable, lo que mantiene auditable cada decisión del modelo y
-facilita interpretar los resultados en términos de los mecanismos espaciales que los
-sustentan.
+calibraciones heurísticas y sobre un solo horizonte temporal. Para ello se construyó una
+serie histórica larga, 37 años continuos (1984--2020), a partir de imágenes de archivo de
+acceso libre, una base temporal más extensa que la habitual en trabajos comparables para el
+país. Querétaro es el caso de uso donde el protocolo se ejercita y se valida.
 
 \section{Organización del documento}
 
