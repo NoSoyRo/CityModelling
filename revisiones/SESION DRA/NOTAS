@@ -1,0 +1,88 @@
+ago 5, 2026
+Reunión del 4 ago 2026 a las 18:04 CST
+Registros de la reunión Transcripción 
+
+
+Resumen
+La reunión estructuró las correcciones de la tesis, optimizó el marco teórico y alineó objetivos académicos.
+
+Estructura y contenido inicial
+Se definió la estructura de la introducción y la justificación para mejorar la coherencia argumentativa. Se determinó que los antecedentes deben categorizar modelos en lugar de listar estudios individuales.
+
+Refinamiento de marco teórico
+Se eliminaron detalles metodológicos del marco teórico para asegurar un enfoque puramente conceptual. Se acordó cambiar el estilo de citación a formato IEEE para optimizar la lectura.
+
+Ajustes de metodología y modelo
+Se recomendó fusionar capítulos breves para evitar fragmentación y simplificar la estructura del trabajo. Se priorizó el desarrollo de diagramas de arquitectura para facilitar la comprensión del modelo.
+
+
+Próximos pasos
+[NoSoyRo] Cambiar título de tesis: Modificar el título de la tesis para que coincida exactamente con el acordado y sea congruente con la carta del jurado.
+[NoSoyRo] Incluir agradecimientos: Agregar una sección de agradecimientos que mencione específicamente el apoyo de la CECI a través de la beca recibida.
+[NoSoyRo] Reescribir resumen: Ajustar el resumen para proporcionar una mejor contextualización y resaltar las contribuciones originales de la investigación.
+[NoSoyRo] Reestructurar introducción: Reorganizar la estructura de la introducción para integrar el planteamiento del problema, la justificación, los antecedentes y la organización de la tesis.
+[NoSoyRo] Añadir referencias: Incorporar referencias bibliográficas para todos los datos cuantitativos mencionados en la introducción.
+[NoSoyRo] Redactar conclusiones: Redactar la sección de conclusiones en pretérito, incluyendo el resumen del trabajo, alcances, limitaciones y propuestas para trabajo futuro.
+[NoSoyRo] Actualizar resumen en inglés: Reescribir el resumen en inglés una vez finalizada la versión en español para asegurar la consistencia del texto.
+[NoSoyRo] Corregir introducción: Corregir la estructura de la introducción del documento para garantizar una lectura coherente y una transición lógica entre apartados.
+[NoSoyRo] Reorganizar literatura: Reorganizar la literatura existente y la brecha metodológica separándolas en antecedentes y justificación del trabajo.
+[NoSoyRo] Adaptar protocolo: Adaptar el contenido del protocolo de tesis a la introducción del documento para reflejar un trabajo ya realizado.
+[NoSoyRo] Validar objetivos: Asegurar la coherencia de los objetivos con los resultados presentados en el documento.
+[NoSoyRo] Revisar hipótesis: Revisar el planteamiento de las hipótesis, considerando reducirlas a una sola o desglosarlas de forma lógica a partir de una hipótesis general.
+[NoSoyRo] Mover metodología: Trasladar las descripciones del procedimiento técnico y metodológico (como el preprocesamiento de datos) del marco teórico hacia la sección de metodología del trabajo.
+[NoSoyRo] Enriquecer marco teórico: Enriquecer el marco teórico con referencias bibliográficas, imágenes ilustrativas y conceptos detallados, evitando que se convierta en un glosario sin conexiones.
+[NoSoyRo] Reorganizar estructura tesis: Reorganizar los capítulos de la tesis para asegurar una estructura lógica, separando claramente los conceptos teóricos del estado del arte y asegurando que las secciones se introduzcan y justifiquen adecuadamente.
+[NoSoyRo] Usar modo impersonal: Redactar el texto de toda la tesis utilizando exclusivamente el modo impersonal.
+[NoSoyRo] Cambiar estilo citas: Cambiar el estilo de las citas bibliográficas de formato APA a formato numérico, ordenadas según su aparición en el texto.
+[NoSoyRo] Etiquetar imágenes IA: Añadir la leyenda Imagen elaborada con IA a todas las figuras generadas mediante inteligencia artificial.
+[NoSoyRo] Verificar fuentes IA: Solicitar las fuentes originales a la herramienta de IA para toda imagen generada por esta que contenga datos específicos.
+[NoSoyRo] Unir capítulos: Unir los capítulos cortos de metodología y área de estudio en una sola sección más completa para evitar fragmentación excesiva.
+[NoSoyRo] Reescribir resumen: Modificar el resumen de la tesis para presentar el nuevo modelo hibrido y sus objetivos principales.
+[NoSoyRo] Unificar capitulos: Fusionar los apartados de area de estudio, marco teorico sobre preprocesamiento de datos y el modelo.
+[NoSoyRo] Renombrar capitulo: Cambiar el nombre del capitulo del modelo a Modelo de crecimiento urbano hibrido.
+[NoSoyRo] Redactar consideraciones: Escribir la seccion de consideraciones del modelo para ponerla al inicio de la descripcion tecnica.
+[NoSoyRo] Crear diagrama arquitectura: Disenar un esquema grafico de la arquitectura del modelo que muestre el flujo y las relaciones entre los componentes.
+[Maria Elena Larraga Ramirez] Compartir tesis referencia: Enviar la tesis de Fernando a NoSoyRo como ejemplo de estructura y graficos.
+[Maria Elena Larraga Ramirez] Enviar comentarios: Enviar las observaciones y comentarios finales sobre la tesis a NoSoyRo.
+
+
+Detalles
+Cambio de título de la tesis: Maria Elena Larraga Ramirez y NoSoyRo discuten la necesidad de regresar al título acordado previamente. Maria Elena Larraga Ramirez enfatiza que es fundamental verificar si ya se entregó la carta de jurado, ya que cualquier cambio, incluso en una preposición, puede causar problemas administrativos durante la aceptación del documento.
+Requisito de agradecimientos: Se establece que es obligatorio incluir una sección de agradecimientos para mencionar el apoyo de la CCTI mediante la beca otorgada, ya que esto es un requisito necesario para la liberación de la beca en futuros trámites académicos (00:01:22).
+Enfoque y realce del resumen (Abstract): Maria Elena Larraga Ramirez sugiere realizar cambios en el resumen para elevar el nivel del trabajo. El objetivo es enfatizar la contribución científica y la originalidad de la investigación, más allá de la aplicación local, para que el trabajo sea atractivo para concursos académicos y lectores externos (00:02:25) (00:08:04).
+Contextualización del problema (Enfoque de embudo): La introducción debe estructurarse de lo general a lo particular. Se debe comenzar contextualizando el problema global de la falta de análisis en imágenes (como las de Google Earth) y cómo los diferentes países enfrentan retos distintos, para luego aterrizar en la propuesta específica de la tesis (00:04:00).
+Redacción de la contribución central: Se recomienda reescribir la contribución del trabajo para darle mayor peso académico. En lugar de centrarse solo en el acoplamiento de herramientas, la tesis debe resaltar el protocolo de validación multitemporal independiente y la propuesta original de integración y calibración de modelos (00:06:23).
+Estructura de la Introducción: Maria Elena Larraga Ramirez aclara que la introducción no lleva resumen, sino que debe componerse de secciones específicas: planteamiento del problema, justificación, antecedentes, objetivos particulares y generales, contribución principal y la organización de la tesis (00:13:41).
+Anecdotario sobre la escritura de tesis: Maria Elena Larraga Ramirez comparte su experiencia personal sobre la dificultad de redactar una introducción y la importancia de la meticulosidad en la revisión académica, resaltando que el aprendizaje de estas habilidades es un proceso de mejora continua (00:09:29).
+Uso de referencias y figuras en la introducción: Se reitera que cualquier dato cuantitativo debe estar respaldado por referencias. Asimismo, si se incluyen figuras, estas deben estar correctamente citadas, aunque se advierte que no es común tener figuras en esta sección (00:16:10).
+Estructura de la justificación y antecedentes: La sección anteriormente titulada "literatura existente y brecha metodológica" debe reformularse. La parte de literatura debe presentarse como "Antecedentes" y la brecha identificada debe servir como la "Justificación" del trabajo (00:17:29) (00:25:49).
+Verificación de versiones del documento: Los participantes dedican tiempo a identificar la versión correcta del archivo de la tesis (comparando las fechas del 18 de julio y el 3 de agosto) para asegurar que los comentarios y la reestructuración realizada por Maria Elena Larraga Ramirez sean aplicados en la versión actual (00:18:20).
+Diferencia entre introducción y conclusiones: Se aclara que la introducción presenta el trabajo en tiempo presente, mientras que las conclusiones deben resumir los resultados en tiempo pretérito, incluyendo los alcances y las limitaciones del estudio (00:21:49).
+Estructura de las conclusiones: Se indica que el orden adecuado para el cierre de la tesis es presentar los alcances, seguidos de las limitaciones (lo que no se hizo) y finalmente el trabajo futuro, el cual debe derivar lógicamente de las limitaciones expuestas (00:22:45).
+Estrategia para la revisión de literatura: Se aconseja no listar estudios individuales (por ejemplo, mencionar "13 trabajos"), sino categorizar los modelos en la literatura (redes neuronales, autómatas celulares, modelos híbridos) para discutir sus ventajas y brechas de forma fluida (00:26:41).
+Coherencia entre objetivos y resultados: Es indispensable verificar que el objetivo general y los objetivos particulares sean coherentes con lo que efectivamente se presentó en los resultados, para evitar observaciones durante la evaluación (00:33:01).
+Manejo de hipótesis: Se sugiere considerar el uso de una sola hipótesis general en lugar de múltiples hipótesis, planteándola siempre como una afirmación que será validada o refutada a través de la investigación (00:34:44).
+Separación de Marco Teórico y Metodología: Maria Elena Larraga Ramirez enfatiza que el Marco Teórico no debe mezclar conceptos con la metodología propia del trabajo. Las decisiones metodológicas y el flujo de trabajo deben ir en el capítulo de metodología (00:36:30) (00:39:23).
+Propósito del Marco Teórico: Esta sección debe proporcionar definiciones y teorías necesarias para que un lector externo entienda el trabajo sin distraerse. No deben incluirse opiniones personales ni descripciones del flujo de trabajo específico (00:38:25) (00:41:08).
+Organización del Marco Teórico: Se debe evitar que el marco teórico parezca un glosario. Los conceptos (como SBM, LBP, algoritmos de clustering) deben estar vinculados narrativamente y organizados en secciones o subsecciones (00:42:44) (00:45:04).
+Referencias en conceptos: Al ser una sección conceptual basada en conocimientos previos, el marco teórico debe estar altamente referenciado, citando las fuentes de cada definición utilizada (00:48:23).
+Definiciones formales en Autómatas Celulares: Se requiere una definición más formal y completa de los autómatas celulares en el marco teórico, incluyendo sus dimensiones, vecindades y tipos de fronteras, en lugar de centrarse solo en la aplicación específica del proyecto (00:49:11).
+Ubicación de la descripción del modelo: Cualquier mención a "el presente modelo" o las decisiones de implementación propias de la tesis debe ser eliminada del Marco Teórico y trasladada al capítulo de Metodología (00:50:46).
+Estructura del capítulo de conceptos: Maria Elena Larraga Ramirez aconseja a NoSoyRo eliminar los detalles específicos del modelo del capítulo de "Conceptos", enfocándose únicamente en los temas necesarios para que el lector comprenda el trabajo (00:51:23). Discuten la mejora de las transiciones entre temas como los autómatas celulares y el método de pesos de evidencia, sugiriendo añadir texto introductorio para justificar la inclusión de variables y métodos específicos .
+Referenciación de contenido generado por IA: Respecto a una figura creada con inteligencia artificial, Maria Elena Larraga Ramirez aclara que debe ser referenciada adecuadamente, incluso si fue generada automáticamente (00:55:02). Sugieren añadir el texto "imagen elaborada con IA" y verificar el historial del chat para identificar las fuentes originales si la IA se basó en literatura existente .
+Mejora de la sección de pesos de evidencia: Maria Elena Larraga Ramirez recomienda incluir una subsección que explique el método de pesos de evidencia (W), abordando sus ventajas y limitaciones en el contexto de los modelos de crecimiento urbano . Esta sección debe justificar la combinación del método W con los autómatas celulares para la calibración de las reglas de transición .
+Formato de la sección de métricas de desempeño: Maria Elena Larraga Ramirez aconseja utilizar un estilo de escritura impersonal para toda la tesis (00:58:48). Sugieren reestructurar el capítulo de métricas introduciendo la necesidad de una evaluación cuantitativa antes de presentar las métricas específicas, y utilizando subsecciones individuales para conceptos como la matriz de confusión, exactitud y precisión, con el fin de proporcionar mayor claridad .
+Conexión entre capítulos y resumen del Estado del Arte: Para mantener la fluidez, Maria Elena Larraga Ramirez enfatiza la importancia de conectar el final de un capítulo con el inicio del siguiente (01:02:53). Sobre el capítulo del Estado del Arte, recomiendan evitar el uso de tablas o figuras en el resumen y asegurarse de separar claramente los conceptos teóricos de la revisión histórica de trabajos previos .
+Estructuración de la revisión de literatura: Maria Elena Larraga Ramirez sugiere estructurar el capítulo de antecedentes yendo de lo general a lo particular, empleando clasificaciones en lugar de simplemente listar autores (01:05:55) (01:08:22). El objetivo es ofrecer un análisis crítico que identifique las brechas existentes en la investigación, justificando así la relevancia del trabajo actual .
+Estilo de citación: Sobre el estilo de citación, Maria Elena Larraga Ramirez señala que, aunque NoSoyRo utiliza APA, el estilo numérico (IEEE) es frecuentemente preferido en ingeniería por ahorrar espacio y facilitar la identificación de referencias según su orden de aparición en el texto . NoSoyRo acuerda realizar el cambio a este formato .
+Ubicación de la calibración y validación: Discuten la colocación de temas específicos como la calibración de SLOTH y las métricas de validación. Maria Elena Larraga Ramirez recomienda definir estos conceptos en el marco teórico y centrarse en las brechas en la sección de antecedentes para conducir de manera natural hacia la propuesta de investigación .
+Unificación de capítulos de metodología y modelo: Maria Elena Larraga Ramirez sugiere fusionar capítulos breves, como "Área de estudio" y "Metodología", para evitar fragmentación . Proponen que el capítulo del modelo comience con "Consideraciones del modelo", definiendo claramente los alcances y las limitaciones de la propuesta .
+Diseño de la arquitectura del modelo: Maria Elena Larraga Ramirez aconseja a NoSoyRo incluir un diagrama que represente la arquitectura general del modelo, entendida como una abstracción y no como una implementación técnica . Utilizando la tesis de Fernando como ejemplo, ilustran cómo un resumen gráfico ayuda a explicar el flujo desde los datos de entrada hasta la predicción, situando al lector antes de entrar en detalles .
+Consejos generales sobre la escritura de tesis: Maria Elena Larraga Ramirez enfatiza que escribir una tesis requiere un cambio de perspectiva; NoSoyRo debe leer el texto como si fuera un evaluador externo para detectar problemas de fluidez y coherencia (01:35:55). Reconocen que la falta de estructura es un desafío común y reafirman la importancia de un enfoque analítico para valorar correctamente el esfuerzo de investigación realizado .
+Consideraciones para la aplicación al doctorado: Discuten los tiempos para la convocatoria de doctorado en octubre y la disponibilidad de becas, señalando que áreas como la computación científica y la inteligencia artificial están muy saturadas . Maria Elena Larraga Ramirez subraya que el doctorado requiere un protocolo de investigación sólido y viable con alto potencial de publicación, dado que la titulación depende de la producción de artículos (01:39:28). NoSoyRo es alentado a evaluar su preparación para presentar un protocolo competitivo .
+
+
+Revisa las notas de Gemini para asegurarte de que sean precisas. Obtén sugerencias y descubre cómo Gemini toma notas
+Cómo es la calidad de estas notas específicas? Responde una breve encuesta para darnos tu opinión; por ejemplo, cuán útiles te resultaron las notas.
+
+
