@@ -144,23 +144,21 @@
     morecomment=[s]{/*}{*/}
 }
 
-% ---- Bibliografía en APA con biblatex ----
+% ---- Bibliografía IEEE numérico con biblatex ----
 \usepackage[
     backend=biber,
-    style=apa,
-    sortcites=true,
-    sorting=nyt,
+    style=ieee,
+    sorting=none,
     doi=true,
     isbn=false,
     url=true,
     eprint=false
 ]{biblatex}
 
-\DeclareLanguageMapping{spanish}{spanish-apa}
-% Ruta al .bib original (ref 1)
+% Ruta al .bib original
 \addbibresource{../back/referencias.bib}
 
-% Alias compatibilidad con natbib (algunos capítulos usan \citep, \citet)
+% Alias compatibilidad con comandos natbib/APA usados en capítulos
 \providecommand{\citep}{\parencite}
 \providecommand{\citet}{\textcite}
 \providecommand{\citealp}{\cite}
