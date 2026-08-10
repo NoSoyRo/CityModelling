@@ -26,7 +26,7 @@ La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en cin
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.78\linewidth]{F4_pipeline_woe_ac_ai}
-  \caption{Pipeline completo del modelo WoE-AC: del dato satelital a la validación quinquenal. Las etapas~1--2 producen la serie binaria; la etapa~3 estima los pesos de evidencia sobre 26 pares históricos; la etapa~4 ejecuta el autómata celular de forma iterativa; la etapa~5 evalúa con cinco ventanas temporales independientes.}
+  \caption{Pipeline completo del modelo WoE-AC: del dato satelital a la validación quinquenal. Las etapas~1--2 producen la serie binaria; la etapa~3 estima los pesos de evidencia sobre 26 pares históricos; la etapa~4 ejecuta el autómata celular de forma iterativa; la etapa~5 evalúa con cinco ventanas temporales independientes.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:pipeline-woe-ac}
 \end{figure}
 
@@ -81,7 +81,7 @@ El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas bi
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F1_mapa_binario_ai}
-  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas.}
+  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:mapa-binario}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -307,7 +307,7 @@ La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evol
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F2_transicion_ai}
-  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$.}
+  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:transicion}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -319,7 +319,7 @@ La primera decisión del modelo es cómo cuantificar la evidencia que vincula la
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F5_variables_espaciales_ai}
-  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas.}
+  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:variables-espaciales}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -333,7 +333,7 @@ Con los pesos calculados, surge una cuarta decisión: cómo combinarlos. No toda
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F3_moore_ai}
-  \caption{\small Vecindad de Moore ($8$ celdas) frente a Von~Neumann ($4$ ortogonales). Moore captura frentes diagonales de crecimiento.}
+  \caption{\small Vecindad de Moore ($8$ celdas) frente a Von~Neumann ($4$ ortogonales). Moore captura frentes diagonales de crecimiento.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:vecindad-moore}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -343,7 +343,7 @@ Llegados a este punto aparece la decisión central del modelo, la que lo disting
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F6_paso_ac_ai}
-  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$.}
+  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:paso-ac}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -370,7 +370,7 @@ Definido el modelo, queda la pregunta de si sus predicciones son confiables. La 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.90\linewidth]{F7_ventanas_validacion_ai}
-  \caption{Protocolo de validación: separación temporal entre entrenamiento (WoE, 1984--2010) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en el ajuste del modelo.}
+  \caption{Protocolo de validación: separación temporal entre entrenamiento (WoE, 1984--2010) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en el ajuste del modelo.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:ventanas-validacion}
 \end{figure}
 
@@ -382,7 +382,7 @@ El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F8_fom_ai}
-  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Solo las celdas en transición entran al cálculo.}
+  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Solo las celdas en transición entran al cálculo.. \textit{Imagen elaborada con IA generativa.}}
   \label{fig:fom-componentes}
   \vspace{-6pt}
 \end{wrapfigure}
