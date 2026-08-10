@@ -62,10 +62,7 @@ equifinalidad en la calibración, sobreajuste en la validación, opacidad en la 
 
 \subsection{Calibración: equifinalidad y costo computacional}
 
-% TODO-REDACCION: la definición de SLEUTH se trasladó al Capítulo~\ref{ch:marco-teorico}; aquí debe
-% quedar solo el análisis de lo que se ha hecho con él y de sus problemas de calibración.
-La calibración de SLEUTH, cuyos cinco coeficientes de crecimiento se definen en el
-Capítulo~\ref{ch:marco-teorico}, se resuelve mediante búsqueda por fuerza bruta
+La calibración de SLEUTH, cuyos componentes se definen en el Capítulo~\ref{ch:marco-teorico}, se resuelve mediante búsqueda por fuerza bruta
 sobre un espacio discreto del orden de $10^9$
 combinaciones, cada una evaluada con simulaciones Monte Carlo de múltiples
 iteraciones. \textcite{Clarke1998} estructuró la búsqueda en tres fases
@@ -297,21 +294,9 @@ sistemática del FoM entre períodos, que no se observa.
 \label{sec:validacion-literatura}
 % ============================================================
 
-% TODO-REDACCION: las definiciones conceptuales de IoU y de la descomposición de Pontius se
-% trasladaron al Capítulo~\ref{ch:marco-teorico}. Lo que debe quedar aquí es la crítica a la práctica
-% de validación en la literatura, no la definición de las métricas.
-La métrica más reportada en LUCC sigue siendo el coeficiente Kappa de Cohen, a
-pesar de las críticas explícitas a su uso en mapas de cambio, porque mezcla el
-desacuerdo de cantidad con el de asignación, cuya distinción se define en el
-Capítulo~\ref{ch:marco-teorico}. El FoM, definido como el índice de Jaccard
-restringido a las celdas de cambio, es sensible exactamente a ese problema, y la
-IoU sobre la clase urbana lo complementa al evaluar el estado final en lugar de
-la dinámica.
+La métrica más reportada en la literatura LUCC sigue siendo el coeficiente Kappa de Cohen, a pesar de las críticas explícitas a su uso en mapas de cambio. \textcite{pontius2008comparing} demostraron que Kappa mezcla dos fuentes de error conceptualmente distintas---el desacuerdo de cantidad y el de asignación---cuyas definiciones se recogen en el Capítulo~\ref{ch:marco-teorico}, lo que dificulta diagnosticar el tipo de fallo que el modelo comete. El FoM, al evaluar exclusivamente las celdas en transición, es sensible exactamente al problema que Kappa oscurece, y la IoU sobre la clase urbana lo complementa al evaluar el estado final en lugar de la dinámica de cambio.
 
-El presente trabajo adopta este protocolo de evaluación: FoM como métrica
-primaria para el cambio, IoU para el estado, Kappa por compatibilidad con la
-literatura previa y un análisis explícito de la descomposición quantity vs.
-allocation cuando el FoM es bajo.
+Otro patrón crítico de la literatura es la validación sobre un único período: la mayoría de los estudios compara el mapa simulado contra un solo horizonte temporal, lo que impide distinguir entre un desempeño estable y un ajuste puntual a las características de ese lustro. El presente trabajo responde a esa carencia adoptando FoM como métrica primaria, IoU y Kappa como complemento, la descomposición de Pontius como herramienta de diagnóstico, y un protocolo de cinco ventanas quinquenales independientes.
 
 % ============================================================
 \section{Vacíos específicos en el contexto mexicano}

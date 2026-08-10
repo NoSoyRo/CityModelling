@@ -7,7 +7,7 @@
 \label{ch:marco-teorico}
 
 \begin{resumen}
-Este marco teórico sigue el orden del flujo descrito en el Cap.~\ref{ch:introduccion}: primero los algoritmos de preprocesamiento de imágenes (StandardScaler, PCA, K-Means y SVM), después la definición formal del autómata celular probabilístico y el método de Pesos de Evidencia como función de transición, y al final las métricas espaciales de evaluación. Cada sección incluye únicamente los conceptos que el modelo del Cap.~\ref{ch:modelo-crecimiento-urbano} efectivamente utiliza.
+En este capítulo se presentan los conceptos necesarios para comprender la propuesta. Se define primero la cadena que permite convertir una imagen en un mapa de dos clases: la percepción remota como fuente de datos, la clasificación de cobertura del suelo, los descriptores de color y de textura, y los métodos de reducción dimensional, agrupamiento y clasificación. Se define después el autómata celular, con sus dimensiones, vecindades y condiciones de frontera, y su versión probabilística. Se expone enseguida el método de Pesos de Evidencia, con sus ventajas y sus límites, y la razón por la que resulta apropiado acoplarlo a un autómata celular. Se cierra con las métricas empleadas para evaluar modelos de cambio de cobertura. La aplicación de estos conceptos al caso estudiado corresponde al Capítulo~\ref{ch:modelo-crecimiento-urbano}.
 \end{resumen}
 
 
@@ -16,24 +16,38 @@ Este marco teórico sigue el orden del flujo descrito en el Cap.~\ref{ch:introdu
 \label{sec:preprocesamiento-datos}
 % ============================================================
 
-% TODO-REDACCION: esta sección debe contener SOLO conceptos, cada uno en su propia subsección, con
-% cita del .bib ya verificado e indicando si el método es supervisado o no supervisado. El material
-% metodológico de este trabajo (adquisición, arreglo M_{t,i,j}, las 23 características por píxel, el
-% pipeline aplicado y su figura) se trasladó a la Sección~\ref{sec:preprocesamiento} del
-% Capítulo~\ref{ch:modelo-crecimiento-urbano}.
-% Quedan por redactar aquí, como subsecciones conceptuales previas a los algoritmos:
-%   - imágenes satelitales y Google Earth como fuente de datos geoespaciales;
-%   - clasificación de cobertura del suelo y el caso binario urbano/no-urbano;
-%   - espacio de color RGB y transformaciones cromáticas (CIE L*a*b*, HSV);
-%   - patrones binarios locales (LBP) como descriptor de textura.
-% Cada subsección debe cerrar con una liga al capítulo donde se aplica.
+Un modelo de crecimiento urbano basado en celdas requiere como entrada un mapa discreto de estados. Obtener ese mapa a partir de una imagen exige una cadena de conceptos que esta sección define en el orden en que intervienen: la fuente de datos, la tarea de clasificación de cobertura, los descriptores que representan cada píxel y los métodos que agrupan y separan esos descriptores en clases. La aplicación concreta de la cadena al conjunto de imágenes de este trabajo se describe en la Sección~\ref{sec:preprocesamiento}.
+
+\subsection{Percepción remota como fuente de datos geoespaciales}
+
+La percepción remota permite observar la superficie terrestre sin contacto directo, mediante sensores que registran la radiación reflejada o emitida. Un producto de percepción remota queda caracterizado por cuatro resoluciones: la espacial, que fija el tamaño de terreno representado por cada píxel; la espectral, que determina cuántas bandas del espectro se registran y con qué anchura; la temporal, que indica cada cuánto se vuelve a observar el mismo sitio; y la radiométrica, que describe la finura con que se cuantifica la intensidad. La combinación de estas cuatro resoluciones condiciona qué fenómenos pueden estudiarse: un análisis de la forma de la mancha urbana y de su evolución exige sobre todo continuidad temporal y consistencia geométrica, más que una gran finura espectral \parencite{Herold2003}.
+
+Los programas de observación de larga duración, en particular la familia Landsat, hicieron posible construir series históricas de cobertura del suelo con décadas de profundidad y cartografiarlas a escala global \parencite{Gong2013}, y sobre ellas se apoya buena parte de los estudios de cambio de uso de suelo \parencite{Weng2002}. El acceso a estos acervos se ha facilitado con plataformas de procesamiento en la nube como Google Earth Engine \parencite{Gorelick2017}, que permiten consultar y procesar grandes volúmenes sin descargarlos. Conviene distinguir esa plataforma del visor de escritorio Google Earth, que no expone las bandas originales del sensor sino un mosaico cartográfico compuesto en color visible, con una herramienta de imagen histórica que permite recuperar la vista de un mismo sitio en distintas fechas. Esa distinción importa porque determina qué información espectral queda disponible, y con ello qué descriptores pueden calcularse.
+
+\subsection{Clasificación de cobertura del suelo}
+
+La clasificación de cobertura del suelo asigna a cada píxel una etiqueta de una lista predefinida de clases. Los métodos se dividen en dos familias según la información que necesitan. Los \textbf{supervisados} requieren un conjunto de píxeles previamente etiquetados, la llamada verdad terreno, a partir del cual se ajusta una frontera de decisión. Los \textbf{no supervisados} prescinden de esas etiquetas y agrupan los píxeles por similitud en el espacio de características, de modo que la interpretación de cada grupo queda a cargo del analista. Las arquitecturas de aprendizaje profundo, hoy frecuentes en la disciplina, pertenecen a la primera familia y su desempeño depende de la disponibilidad de grandes volúmenes anotados \parencite{Ma2019}.
+
+El caso binario, que distingue únicamente entre cubierta urbana y no urbana, es el pertinente cuando el objeto de estudio es la extensión de la mancha construida y no la composición interna de usos. Reduce el problema a una frontera de decisión y produce directamente el mapa de estados discretos que consume un autómata celular. Su contrapartida es que agrupa en una sola clase superficies heterogéneas, con lo que la etiqueta resultante debe leerse como cubierta construida en sentido amplio y no como uso de suelo urbano en sentido normativo.
+
+\subsection{Espacio de color y descriptores cromáticos}
+
+Una imagen en color se representa habitualmente en el espacio RGB, donde cada píxel es una terna de intensidades en los canales rojo, verde y azul. Ese espacio es adecuado para la representación en pantalla, pero mezcla en sus tres canales la información de iluminación y la de cromaticidad, lo que dificulta separar clases cuando la escena varía en brillo. Por eso es común transformarlo a espacios que separan ambas componentes. El espacio CIE $L^*a^*b^*$ aísla la luminancia $L^*$ de dos ejes cromáticos, y el espacio HSV descompone el color en matiz, saturación y valor. Ninguna transformación añade información: reorganizan la existente de manera que las diferencias relevantes resulten más separables.
+
+A partir de las bandas visibles pueden construirse además índices que realzan la presencia de vegetación, como el índice verde--rojo normalizado o los índices de exceso de verde y de exceso de rojo. Estos índices no equivalen al índice de vegetación de diferencia normalizada, que requiere la banda del infrarrojo cercano; funcionan como aproximaciones cromáticas y bastan cuando el contraste que interesa es el que separa superficies vegetadas de superficies construidas.
+
+\subsection{Patrones binarios locales}
+
+El color por sí solo distingue mal el tejido construido, porque una superficie de concreto y un suelo desnudo pueden compartir tonalidad. Lo que los separa es la textura: la regularidad de bordes y contrastes a escala de unos pocos píxeles. Los patrones binarios locales, propuestos por \textcite{Ojala2002}, describen esa textura comparando la intensidad de cada píxel con la de sus vecinos sobre un círculo de radio $r$ con $P$ puntos de muestreo, y codificando el resultado de las comparaciones como un número binario. El descriptor resultante es invariante a cambios monótonos de iluminación, porque depende de comparaciones relativas y no de valores absolutos, y admite versiones invariantes a la rotación. Esa robustez explica su uso en series de imágenes tomadas en fechas distintas, donde las condiciones de captura no son homogéneas.
 
 
 	
 	
 \subsection{Estandarización y análisis de componentes principales}
 
-La reducción dimensional se apoya en una proyección lineal de las variables estandarizadas sobre un subespacio de menor dimensión:
+Cuando cada píxel se describe con muchas variables, dos problemas aparecen antes de cualquier clasificación. El primero es de escala: variables medidas en unidades distintas contribuyen de forma desigual a cualquier distancia, de modo que las de mayor rango numérico dominan el resultado. La estandarización lo corrige restando la media y dividiendo entre la desviación estándar de cada variable, con lo que todas quedan centradas y con dispersión comparable. El segundo problema es de redundancia: los descriptores derivados de una misma imagen están correlacionados entre sí, y esa correlación no aporta información nueva pero sí encarece el cómputo y puede degradar la separación entre clases.
+
+El análisis de componentes principales atiende el segundo problema. Es un método no supervisado que busca las direcciones ortogonales de máxima varianza en los datos y proyecta las observaciones sobre las primeras de ellas, ordenadas de mayor a menor varianza explicada. Conservar unas pocas componentes retiene la mayor parte de la variabilidad con muchas menos dimensiones. La reducción se expresa como una proyección lineal de las variables estandarizadas sobre un subespacio de menor dimensión:
 
 \begin{equation}
 \mathbf{f}(x,y) = \mathbf{W} \mathbf{f}(x,y)
@@ -94,8 +108,8 @@ A continuación se define el algoritmo de StandardScaler y PCA.
 
 \subsection{Agrupamiento K-Means}
 
-% TODO-REDACCION: añadir la cita del método y explicitar que es no supervisado.
-El agrupamiento K-Means particiona un conjunto de observaciones en $k$ grupos minimizando la suma de distancias cuadradas de cada punto al centroide de su grupo. Su definición es la siguiente:
+% TODO-BIB: falta la referencia fundacional del método (véase .cursor/pendientes_bib.md).
+El agrupamiento K-Means es un método no supervisado que particiona un conjunto de observaciones en $k$ grupos, minimizando la suma de distancias cuadradas de cada punto al centroide de su grupo. Procede de forma iterativa: asigna cada observación al centroide más próximo, recalcula los centroides como la media de los puntos asignados y repite hasta que las asignaciones se estabilizan. El resultado depende de la inicialización, por lo que en la práctica se ejecuta varias veces y se conserva la partición de menor inercia. Su utilidad en clasificación de imágenes está en que produce una partición del espacio de características sin necesidad de etiquetas previas; su límite es que esa partición carece de significado semántico, de modo que asociar cada grupo a una clase de cobertura requiere una decisión posterior del analista. Su definición es la siguiente:
 
 \begin{algorithm}[H]
 	\caption{K-Means: agrupamiento no supervisado ($k=2$)}
@@ -123,11 +137,10 @@ El agrupamiento K-Means particiona un conjunto de observaciones en $k$ grupos mi
 	
 \subsection{Máquinas de vectores de soporte}
 
-% TODO-REDACCION: añadir la cita del método y explicitar que es supervisado, señalando que aquí se
-% entrena sobre pseudo-etiquetas y no sobre verdad terreno.
-Las pseudo-etiquetas producidas por un agrupamiento no supervisado pueden emplearse como verdad base
-para entrenar un clasificador de máquina de vectores de soporte, que después predice la etiqueta del
-resto de las observaciones.
+% TODO-BIB: falta la referencia fundacional del método (véase .cursor/pendientes_bib.md).
+La máquina de vectores de soporte es un clasificador supervisado que busca el hiperplano que separa dos clases con el mayor margen posible, es decir, maximizando la distancia a las observaciones más próximas de cada lado. En su formulación de margen blando admite errores de clasificación penalizados por un parámetro de regularización, lo que la hace tolerante al ruido en las etiquetas. Con núcleo lineal la frontera es un hiperplano en el espacio original, opción adecuada cuando las clases ya resultan casi separables tras la reducción dimensional y cuando interesa un modelo ligero y reproducible.
+
+Que el método sea supervisado no obliga a disponer de verdad terreno. Las pseudo-etiquetas producidas por un agrupamiento no supervisado pueden emplearse como conjunto de referencia para el ajuste, y el clasificador resultante predice después la etiqueta del resto de las observaciones. Conviene precisar el alcance de ese procedimiento: al entrenarse sobre pseudo-etiquetas, la exactitud que se mida indica la coherencia interna del clasificador respecto del agrupamiento, no su acierto frente a una referencia externa independiente.
 
 \begin{algorithm}[H]
 \caption{SVM lineal: clasificación sobre pseudo-etiquetas K-Means}
@@ -162,18 +175,19 @@ donde $\ell_i^* \in \{-1,+1\}$ es la pseudo-etiqueta recodificada
 
 Un \textbf{Autómata Celular} (AC), en el sentido formalizado por \textcite{Wolfram1984}, es un sistema dinámico discreto definido sobre una cuadrícula regular de $N$ celdas. Formalmente, un AC queda definido por la cuádrupla $(Q, \mathcal{N}, \delta, q_0)$. El primer elemento, $Q$, es el conjunto finito de estados posibles de cada celda; en este trabajo $Q = \{0, 1\}$ distingue lo no-urbano de lo urbano. El segundo, $\mathcal{N}$, es la vecindad: el conjunto de celdas adyacentes cuyo estado influye en la transición. El tercero, $\delta: Q^{|\mathcal{N}|} \to Q$, es la función de transición, que determina el nuevo estado de una celda a partir del estado de sus vecinos. El último, $q_0: \Omega \to Q$, fija la configuración inicial del sistema.
 
+El espacio celular puede tener cualquier dimensión. Los autómatas unidimensionales, que Wolfram empleó para clasificar los comportamientos posibles del formalismo, disponen las celdas en una línea; los bidimensionales las organizan en una superficie, y los de dimensión superior generalizan la construcción sin cambiar sus reglas. La geometría de la teselación también admite variantes: además de la rejilla cuadrada, habitual por su correspondencia directa con la estructura de una imagen digital, se emplean teselaciones hexagonales, que tienen la ventaja de que todos los vecinos equidistan del centro, y triangulares. El modelado urbano trabajaba casi siempre en dos dimensiones sobre rejilla cuadrada, porque es la forma en que se almacenan los datos de percepción remota y porque cada celda admite entonces una lectura directa como superficie de terreno.
+
 En el contexto del crecimiento urbano, el dominio espacial $\Omega \subset \mathbb{Z}^2$ es una cuadrícula discreta de celdas indexadas por pares $(i,j)$, donde $i \in \{1,\ldots,R\}$ indica la fila y $j \in \{1,\ldots,C\}$ la columna, con $N = R \times C$ celdas en total.
 
 En los AC probabilísticos, la función de transición $\delta$ asigna probabilidades a cada posible nuevo estado, en lugar de determinar el siguiente estado de forma determinista. Esta extensión, base de los modelos urbanos basados en AC desde \textcite{White1997} y de marcos calibrados como SLEUTH \parencite{Clarke1998}, resulta adecuada para el modelado urbano, en el que la transición de no-urbano a urbano no está garantizada incluso cuando las condiciones locales son favorables.
 
-% TODO-REDACCION: definición de SLEUTH traída del Capítulo~\ref{ch:estado-del-arte} por indicación de
-% la Dra. Lárraga (el concepto va en el marco teórico; el análisis de lo hecho con SLEUTH se queda en
-% el estado del arte). Verificar y citar la expansión del acrónimo.
-Entre los marcos de autómatas celulares urbanos, SLEUTH \parencite{Clarke1998} es el más difundido. Su nombre resume las capas de entrada que utiliza (\textit{slope}, \textit{land use}, \textit{exclusion}, \textit{urban}, \textit{transportation} y \textit{hillshade}) y su comportamiento queda gobernado por cinco coeficientes de crecimiento (\emph{diffusion}, \emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity}) que se ajustan mediante búsqueda sobre un espacio discreto de combinaciones, evaluando cada una con simulaciones Monte Carlo. Las dificultades prácticas de esa calibración se discuten en el Capítulo~\ref{ch:estado-del-arte}.
+Entre los marcos de autómatas celulares urbanos, SLEUTH \parencite{Clarke1998} es el más difundido. Su nombre resume las capas de entrada que utiliza: \textit{slope} (pendiente), \textit{land use} (uso de suelo), \textit{exclusion} (zonas excluidas del crecimiento), \textit{urban} (mancha urbana histórica), \textit{transportation} (vialidades) e \textit{hillshade} (sombreado del terreno). Su comportamiento queda gobernado por cinco coeficientes de crecimiento (\emph{diffusion}, \emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity}) que se ajustan mediante búsqueda sobre un espacio discreto de combinaciones, evaluando cada una con simulaciones Monte Carlo. Las dificultades prácticas de esa calibración se discuten en el Capítulo~\ref{ch:estado-del-arte}.
 
-Los dos tipos de vecindad más utilizados en modelado urbano son la vecindad de Von Neumann (cuatro celdas ortogonales) y la vecindad de Moore (ocho celdas incluyendo diagonales). En ambos casos, el radio de influencia puede extenderse más allá de la celda inmediatamente adyacente, permitiendo capturar efectos de accesibilidad y proximidad a zonas urbanas existentes.
+La vecindad determina qué celdas influyen en la transición de una celda dada, y su elección condiciona la forma de los patrones que el autómata puede generar. Los dos tipos más utilizados en modelado urbano son la vecindad de Von Neumann, formada por las cuatro celdas ortogonalmente adyacentes, y la vecindad de Moore, que añade las cuatro diagonales hasta sumar ocho. La diferencia no es menor en este dominio: la vecindad de Von Neumann propaga el crecimiento solo en las direcciones cardinales, mientras que la de Moore admite frentes diagonales, más próximos a la forma en que se expande una mancha urbana. En ambos casos el radio de influencia puede extenderse más allá de la celda inmediatamente adyacente, lo que permite representar efectos de proximidad a mayor escala a costa de un cómputo mayor.
 
-Para el presente modelo, la influencia de la vecindad se cuantifica mediante la proporción de celdas urbanas en un radio $r$ alrededor de la celda evaluada:
+Queda por resolver el tratamiento de las celdas del borde, que no tienen vecindad completa. Las tres convenciones habituales son la frontera periódica, que identifica cada borde con el opuesto y convierte el dominio en un toro; la frontera fija o absorbente, que asigna a las celdas exteriores un estado constante; y la frontera reflejante, que replica hacia fuera el estado de las celdas interiores. En aplicaciones urbanas la frontera periódica carece de sentido físico, porque uniría zonas geográficamente distantes, de modo que se prefiere una frontera fija en estado no urbano, con la consecuencia de que el crecimiento cerca del borde queda subestimado y el dominio debe elegirse con margen suficiente alrededor del área de interés.
+
+La influencia de la vecindad suele cuantificarse mediante la proporción de celdas urbanas en un radio $r$ alrededor de la celda evaluada:
 
 \begin{equation}
 \Omega_{i,j}(r) = \frac{1}{|\mathcal{N}_{i,j}(r)|} \sum_{(i',j') \in \mathcal{N}_{i,j}(r)} s_{i',j'}
@@ -196,10 +210,6 @@ donde $W_{i,j}$ es la idoneidad espacial asignada por el método WoE (definida a
 \label{sec:woe}
 % ============================================================
 
-% TODO-REDACCION: la definición conceptual de WoE ya vivía dentro de la sección de autómatas
-% celulares y aquí se promueve a sección propia, como pidió la Dra. Lárraga. Falta añadir sus
-% ventajas y limitaciones, la justificación de por qué se combina WoE con un autómata celular para
-% calibrar la regla de transición, y la interpretación explícita de la Figura~\ref{fig:concepto-woe}.
 El método de \textbf{Pesos de Evidencia} (Weight of Evidence, WoE) es una técnica estadística de origen bayesiano que cuantifica la asociación entre una variable espacial y la ocurrencia de un evento, en este caso la transición de suelo no-urbano a urbano \parencite{BonhamCarter1994}. Fue desarrollado originalmente en el contexto de la predicción de depósitos minerales y posteriormente adaptado al análisis de cambio de uso de suelo. 
 
 Para una variable espacial $X$ discretizada en categorías o intervalos, el peso de evidencia de la categoría $b$ se define como:
@@ -232,6 +242,8 @@ P_{i,j}^{\text{WoE}} = \frac{1}{1 + e^{-W_{i,j}}}
   \label{fig:concepto-woe}
 \end{figure}
 
+La Figura~\ref{fig:concepto-woe} ilustra el procedimiento sobre una variable típica. La distancia al frente urbano se discretiza en intervalos; los intervalos próximos al frente acumulan pesos positivos, porque en ellos la transición se observa con más frecuencia de la que correspondería a su superficie, y los intervalos lejanos acumulan pesos negativos. La lectura relevante de la figura es que la relación entre distancia y probabilidad no es lineal: los pesos caen con rapidez en los primeros intervalos y después se estabilizan, un comportamiento que un modelo con forma funcional impuesta reproduciría mal.
+
 Una propiedad relevante del WoE es su interpretabilidad: cada peso $W^+(b)$ puede traducirse en términos geográficos. Por ejemplo, si la variable \textit{distancia a manchas urbanas} tiene un peso negativo para distancias grandes, ello sugiere menor probabilidad de urbanización en celdas alejadas de vías de comunicación. Dicha transparencia puede apoyar la comunicación de resultados a planificadores urbanos, sin sustituir el juicio experto ni las políticas públicas aplicables en cada contexto.
 
 El cálculo de los pesos se realiza sobre datos históricos de transición, lo que hace que las probabilidades resultantes reflejen empíricamente los patrones observados en el área de estudio, en lugar de depender de supuestos teóricos sobre el comportamiento urbano.
@@ -240,9 +252,11 @@ El cálculo de los pesos se realiza sobre datos históricos de transición, lo q
 \section{Métricas de evaluación de modelos predictivos}
 % ============================================================
 
-La evaluación cuantitativa del desempeño del modelo requiere métricas que comparen el mapa predicho con el mapa observado a nivel de píxel y a nivel global. A continuación se presentan las métricas utilizadas en este trabajo, derivadas de la matriz de confusión espacial. La matriz de confusión es una tabla que muestra el número de píxeles correctamente clasificados y los errores de clasificación.
+La evaluación cuantitativa del desempeño de un modelo de cambio de cobertura exige comparar, celda a celda, el mapa predicho con el mapa observado. Esa comparación no se resume bien con una sola cifra: cada métrica alumbra una pregunta distinta y tiene sus propios puntos ciegos. Esta sección define primero el instrumento base, la matriz de confusión, y después organiza las métricas en tres grupos: las que evalúan la clasificación en su conjunto, las que se concentran en las transiciones, y la descomposición del error que separa qué tanto del desacuerdo es de cantidad y qué tanto es de asignación.
 
-Sea $\Omega \subset \mathbb{R}^2$ el dominio espacial de estudio discretizado en $N = |\Omega|$ píxeles. Para cada píxel $i \in \Omega$, sea $y_i \in \{0, 1\}$ el estado observado real (donde 0 denota no-urbano y 1 denota urbano), y sea $\hat{y}_i \in \{0, 1\}$ el estado predicho por el modelo. En esta notación, $i$ es un índice lineal sobre las $N = R \times C$ celdas de la cuadrícula; cada valor $i$ corresponde a la celda en posición $(r,c)$ con $r \in \{1,\ldots,R\}$ filas y $c \in \{1,\ldots,C\}$ columnas. Se emplea el índice lineal por claridad en la notación de conjuntos; la equivalencia con la indexación bidimensional $(i,j)$ de las secciones anteriores es $i \leftrightarrow (r,c)$.
+La notación es la siguiente. Sea $\Omega$ el conjunto de $N = R \times C$ celdas del dominio discretizado. Para cada celda $i \in \Omega$, sea $y_i \in \{0,1\}$ el estado observado y $\hat{y}_i \in \{0,1\}$ el estado predicho por el modelo, donde $1$ indica urbano y $0$ no urbano.
+
+\subsection{Matriz de confusión}
 
 La \textbf{matriz de confusión} $\mathbf{C} \in \mathbb{N}^{2 \times 2}$ cuantifica la concordancia píxel a píxel entre predicción y observación:
 
@@ -263,16 +277,18 @@ FP &= \sum_{i \in \Omega} \mathbb{1}[\hat{y}_i = 1 \land y_i = 0] \quad \text{(f
 FN &= \sum_{i \in \Omega} \mathbb{1}[\hat{y}_i = 0 \land y_i = 1] \quad \text{(falsos negativos: sub-predicción)}
 \end{align}
 
-Estos cuatro componentes satisfacen $TP + TN + FP + FN = N$. La magnitud relativa de $FP$ frente a $FN$ revela el sesgo sistemático del modelo: si $FP > FN$, el modelo sobre-predice urbanización; si $FN > FP$, el modelo es conservador.
+Los cuatro componentes satisfacen $TP + TN + FP + FN = N$. La magnitud relativa de $FP$ frente a $FN$ revela el sesgo del modelo: si $FP > FN$ hay sobre-predicción; si $FN > FP$ el modelo es conservador. La construcción de la matriz requiere correspondencia espacial exacta entre los mapas predicho y observado: misma resolución, proyección y extensión.
 
-La construcción de la matriz requiere correspondencia espacial exacta entre los mapas predicho y observado: idéntica resolución espacial, sistema de proyección cartográfica y extensión geográfica. Los píxeles se clasifican evaluando las condiciones lógicas anteriores sobre todos los píxeles del dominio. La \textbf{exactitud global} mide la fracción de píxeles correctamente clasificados:
+\subsection{Métricas de clasificación global}
+
+La \textbf{exactitud global} mide la fracción de píxeles correctamente clasificados:
 
 \begin{equation}
 \text{Accuracy} = \frac{TP + TN}{N}
 \label{eq:accuracy}
 \end{equation}
 
-Esta métrica es sensible al desbalance de clases. En contextos urbanos, donde la mayoría de píxeles no experimenta cambio, un modelo que predice ``no cambio'' en todos los píxeles obtiene Accuracy muy alta sin capturar ninguna dinámica. Por esta razón, Accuracy debe complementarse con métricas específicas para las transiciones. La \textbf{precisión} cuantifica la confiabilidad de las predicciones positivas:
+Esta métrica es sensible al desbalance de clases: en contextos urbanos, donde la mayoría de píxeles no experimenta cambio, un modelo que predice siempre ``no cambio'' obtiene exactitud alta sin capturar ninguna dinámica. Debe complementarse con métricas que evalúen específicamente la clase minoritaria de interés. La \textbf{precisión} cuantifica la confiabilidad de las predicciones positivas:
 
 \begin{equation}
 \text{Precision} = \frac{TP}{TP + FP}
@@ -295,7 +311,9 @@ F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \tex
 \label{eq:f1}
 \end{equation}
 
-La media armónica penaliza más severamente los valores bajos que la media aritmética, de modo que F1 es bajo cuando cualquiera de las dos métricas es baja, exigiendo buen desempeño en ambas dimensiones simultáneamente. El \textbf{coeficiente Kappa de Cohen}~\parencite{Cohen1960} corrige la concordancia observada por la concordancia esperada por azar:
+La media armónica penaliza más los valores bajos que la aritmética: F1 cae cuando cualquiera de las dos métricas es baja.
+
+El \textbf{coeficiente Kappa de Cohen}~\parencite{Cohen1960} corrige la concordancia observada por la concordancia esperada por azar:
 
 \begin{equation}
 \kappa = \frac{p_o - p_e}{1 - p_e}
@@ -309,11 +327,13 @@ p_e = \frac{(TP + FP)(TP + FN) + (TN + FN)(TN + FP)}{N^2}
 \label{eq:pe}
 \end{equation}
 
-El rango es $\kappa \in [-1, 1]$. Conforme a la escala de interpretación de uso común propuesta por \textcite{LandisKoch1977}, $\kappa > 0{,}81$ indica acuerdo casi perfecto; $0{,}61$--$0{,}80$, acuerdo sustancial; $0{,}41$--$0{,}60$, acuerdo moderado; $0{,}21$--$0{,}40$, acuerdo justo; y $\kappa < 0{,}20$, acuerdo pobre. La ventaja del coeficiente $\kappa$ frente a la \textit{Accuracy} es que proporciona una evaluación más realista ante desbalance de clases, al descontar el acuerdo esperado por azar.
+El rango es $\kappa \in [-1, 1]$. Conforme a la escala de interpretación de uso común propuesta por \textcite{LandisKoch1977}, $\kappa > 0{,}81$ indica acuerdo casi perfecto; $0{,}61$--$0{,}80$, acuerdo sustancial; $0{,}41$--$0{,}60$, acuerdo moderado; $0{,}21$--$0{,}40$, acuerdo justo; y $\kappa < 0{,}20$, acuerdo pobre. La ventaja del coeficiente $\kappa$ frente a la exactitud es que descuenta el acuerdo esperado por azar, haciendo la comparación más justa cuando las clases están desbalanceadas. Su limitación, identificada por \textcite{pontius2008comparing}, es que mezcla en un solo número dos fuentes de error metodológicamente distintas: el desacuerdo de cantidad y el de asignación.
 
-Las métricas anteriores evalúan la concordancia global píxel a píxel, incluyendo tanto las transiciones como las permanencias. Sin embargo, en modelación de cambio de uso de suelo interesa específicamente predecir las \textbf{transiciones}, no las permanencias. Dado que la clase mayoritaria (píxeles sin cambio) puede inflar artificialmente las métricas globales, el \textbf{Figure of Merit} (FoM), propuesto como métrica comparable entre estudios de cambio de uso de suelo por \textcite{pontius2008comparing}, aborda esta limitación evaluando exclusivamente la predicción de cambio.
+\subsection{Métricas de cambio}
 
-En un sistema urbano consolidado con $95\%$ de territorio permanente y $5\%$ con transición, un modelo trivial que predice ``no cambio'' obtiene \textit{Accuracy} $= 0{,}95$ sin capturar ninguna dinámica urbana. El FoM evalúa únicamente el subconjunto de píxeles donde ocurren transiciones, ignorando la clase mayoritaria.
+Las métricas del bloque anterior incluyen tanto las transiciones como las permanencias. En modelado de cambio de cobertura lo que interesa evaluar son las transiciones: una celda que sigue siendo urbana o no urbana no revela si el modelo captura la dinámica. Dado que la clase mayoritaria (píxeles sin cambio) infla artificialmente las métricas globales, se necesitan indicadores que la excluyan.
+
+El \textbf{Figure of Merit} (FoM), propuesto por \textcite{pontius2008comparing} precisamente para hacer comparables los resultados entre estudios, evalúa exclusivamente el subconjunto de píxeles donde ocurre o se predice un cambio. En un sistema donde el $95\,\%$ del territorio permanece constante, un modelo que nunca predice cambio obtiene exactitud del $0{,}95$ y Kappa apreciable, pero FoM igual a cero.
 
 Sea $\mathcal{T}_{obs}$ el conjunto de píxeles con cambio observado y $\mathcal{T}_{pred}$ el conjunto con cambio predicho entre $t_0$ y $t_1$. El FoM es el índice de Jaccard aplicado exclusivamente a las transiciones:
 
@@ -335,15 +355,14 @@ A &= |\mathcal{T}_{pred} \setminus \mathcal{T}_{obs}| \quad \text{(cambio predic
 \label{eq:fom_formula}
 \end{equation}
 
-El denominador contiene exactamente tres términos. No incluye el término $D$ (píxeles sin cambio) porque FoM evalúa exclusivamente las transiciones.
+El denominador incluye exactamente $A + B + C$, que son las celdas donde el cambio ocurre, se predice o ambas. Las celdas sin cambio no entran en el cálculo.
 
-% TODO-REDACCION: subseccionar esta sección como pidió la Dra. Lárraga (matriz de confusión;
-% métricas de clasificación: exactitud, precisión, sensibilidad y F1; métricas de cambio: FoM, IoU y
-% descomposición de Pontius), abriendo cada bloque con qué mide, para qué sirve y qué limitaciones
-% tiene. Los dos párrafos siguientes se trasladaron desde el Capítulo~\ref{ch:estado-del-arte},
-% donde eran definiciones conceptuales dentro de la discusión de la literatura.
-La \textbf{Intersection over Union} (IoU) sobre la clase urbana provee información complementaria al FoM: mientras el FoM evalúa la calidad de la predicción del cambio, la IoU evalúa la calidad de la predicción del estado urbano final. Reportar ambas evita el sesgo de evaluar solo la dinámica o solo el estado. Dicho de forma sencilla, el FoM penaliza la cantidad de celdas que no cambian de estado, mientras que la IoU penaliza la cantidad de celdas que se clasifican incorrectamente.
+La \textbf{Intersection over Union} (IoU) sobre la clase urbana complementa al FoM con otra perspectiva: mientras el FoM evalúa qué tan bien se predice el cambio, la IoU evalúa qué tan bien se predice el estado urbano final, incluyendo tanto las celdas que permanecen urbanas como las que transitan. Para la clase urbana, la IoU es la fracción de celdas que el modelo y la observación coinciden en clasificar como urbanas, dividida por la unión de las celdas que al menos uno de los dos clasifica como urbanas. Reportar ambas métricas evita el sesgo de medir solo la dinámica o solo el estado.
 
-El desacuerdo entre el mapa predicho y el observado puede además descomponerse en dos fuentes de significado metodológico distinto~\parencite{pontius2008comparing}. El \textbf{desacuerdo de cantidad} (\textit{quantity disagreement}) ocurre cuando el modelo predice un total de celdas de cambio distinto al observado, sin importar dónde. El \textbf{desacuerdo de asignación} (\textit{allocation disagreement}), en cambio, aparece cuando el modelo predice el total correcto de cambio pero lo asigna a celdas incorrectas. Un modelo puede ser exacto en cantidad y errado en asignación: predecir con precisión el área urbana total, pero situarla en lugares equivocados.
+\subsection{Descomposición del error}
 
-Con esto queda definido el marco teórico necesario para el desarrollo del modelo propuesto en el Cap.~\ref{ch:introduccion}. El posicionamiento de este trabajo en la literatura especializada es el tema del Cap.~\ref{ch:estado-del-arte}, donde se realiza una revisión crítica de los enfoques previos y se contrasta el modelo propuesto con ellos.
+Saber cuánto error total comete un modelo no dice si ese error proviene de predecir una extensión de cambio equivocada o de localizarlo mal. \textcite{pontius2008comparing} propusieron una descomposición que separa ambas fuentes.
+
+El \textbf{desacuerdo de cantidad} (\textit{quantity disagreement}) ocurre cuando el modelo predice un total de celdas en transición distinto al observado, sin importar dónde. El \textbf{desacuerdo de asignación} (\textit{allocation disagreement}) aparece cuando el total es correcto pero las celdas están en lugares equivocados. Un modelo puede ser preciso en cantidad y errado en asignación: acertar en cuántos píxeles se urbanizan pero situarlos en el lugar incorrecto. La separación es útil para el diagnóstico: un desacuerdo de cantidad elevado apunta a deficiencias en cómo se estima la demanda de crecimiento, mientras que un desacuerdo de asignación elevado indica que la regla de transición no capta bien la distribución espacial del fenómeno.
+
+El posicionamiento de este trabajo en la literatura especializada es el tema del Capítulo~\ref{ch:estado-del-arte}, donde se revisan de forma crítica los enfoques previos y se justifica la brecha que la propuesta atiende. La aplicación de todos los conceptos definidos en este capítulo se describe en el Capítulo~\ref{ch:modelo-crecimiento-urbano}.

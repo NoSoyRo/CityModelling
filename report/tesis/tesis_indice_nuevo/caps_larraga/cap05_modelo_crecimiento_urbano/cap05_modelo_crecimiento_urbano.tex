@@ -7,32 +7,22 @@
 \chapter{Modelo de crecimiento urbano híbrido}
 \label{ch:modelo-crecimiento-urbano}
 
-% TODO-REDACCION: reescribir el resumen del capítulo con el patrón "en este capítulo se presenta
-% un nuevo modelo híbrido que combina...", declarando el objetivo del modelo, qué toma en cuenta y
-% marcando explícitamente que aquí empieza la aportación propia. El texto siguiente es la fusión
-% provisional de los resúmenes de los antiguos capítulos 4 y 5.
 \begin{resumen}
-Este capítulo presenta el modelo híbrido que combina Pesos de Evidencia con un autómata celular, referido a lo largo de todo el trabajo como WoE-AC, junto con el área de estudio y los datos que lo alimentan. Se describe la localización geográfica de la Zona Metropolitana de Querétaro, las características técnicas del conjunto de imágenes (37 años, 1984--2020) obtenidas con \textbf{Google Earth} y su \textbf{herramienta de imagen histórica (línea de tiempo)}, los criterios de calidad y selección aplicados de forma visual al capturar cada año, y el pipeline de preprocesamiento que transforma las imágenes RGB en mapas binarios urbano/no-urbano mediante clasificación LBP+K-Means+SVM. Sobre esa serie se exponen las decisiones explícitas de cada componente del modelo y de su validación. Si bien el marco teórico da una definición a cada concepto utilizado, no hay allí una argumentación de por qué se emplea cada una de las componentes del flujo completo que a este trabajo le compete. Conviene anticipar que la novedad no es el acoplamiento WoE-AC en sí, ampliamente documentado en la literatura, sino su calibración y validación reproducibles sobre cinco ventanas quinquenales independientes, aplicadas a una ciudad intermedia mexicana con código y datos abiertos.
+Este capítulo presenta el modelo híbrido WoE-AC propuesto: un autómata celular cuya función de transición se construye a partir de Pesos de Evidencia estimados sobre series históricas de cobertura. El capítulo es donde comienza la aportación propia del trabajo. Se presentan el área de estudio y los datos que alimentan al modelo, el pipeline de preprocesamiento que transforma imágenes RGB de Google Earth en mapas binarios urbano/no urbano mediante clasificación LBP+K-Means+SVM, y se formalizan cada uno de los componentes del modelo---cuantificación de evidencia espacial, regla de transición, vecindad, calibración por búsqueda sistemática y protocolo de validación quinquenal---junto con las decisiones de diseño que los sostienen. La novedad no es el acoplamiento WoE-AC en sí, que cuenta con antecedentes en la literatura, sino su calibración reproducible y su validación sobre cinco ventanas quinquenales independientes aplicadas a una ciudad intermedia mexicana con código y datos de libre acceso.
 \end{resumen}
 
 \section{Consideraciones del modelo}
 \label{sec:consideraciones-modelo}
 
-% TODO-REDACCION: abrir el capítulo declarando qué considera el modelo y qué deja fuera:
-% el espacio y su discretización en celdas, el píxel de las capturas de Google Earth como unidad
-% espacial, el tratamiento de las fronteras del dominio, el horizonte temporal anual, la ausencia de
-% un término de decaimiento por distancia y la ausencia de capas externas (vialidades, pendiente,
-% uso de suelo oficial). El párrafo siguiente proviene del antiguo capítulo 5.
+Todo modelo de crecimiento urbano toma decisiones sobre qué incluir y qué dejar fuera. En este trabajo el espacio se representa como una rejilla discreta de celdas iguales, cuya unidad espacial es el píxel de las capturas de Google Earth, con una resolución efectiva del orden de $10$~m/píxel. El tiempo avanza en pasos anuales: cada iteración del autómata corresponde a un año de la serie histórica. El dominio tiene condiciones de frontera fijas (las celdas exteriores nunca transitan a urbano), lo que es coherente con el hecho de que la ventana de captura delimita el área de interés. El modelo no incluye capas externas de infraestructura (vialidades, pendientes, uso de suelo oficial) ni un término de decaimiento explícito por distancia a centros de empleo; la atracción ejercida por las zonas ya urbanizadas se captura implícitamente en el campo de evidencia WoE y en la vecindad local del autómata. Estas simplificaciones son deliberadas: reducen el número de parámetros que deben ser estimados y hacen al modelo más auditable, con el costo de ignorar el rol de la infraestructura en la dirección del crecimiento.
+
 Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de forma entrelazada pero que son conceptualmente distintos. El primero es el \textbf{modelo conceptual}: las reglas matemáticas generales del acoplamiento WoE-AC (la cuantificación de evidencia, la regla de transición probabilística y la actualización del estado), válidas para cualquier ciudad. El segundo es la \textbf{implementación}: el recálculo iterativo del campo de evidencia y de la vecindad sobre el estado actualizado del mapa en cada paso de simulación. El tercero es la \textbf{configuración experimental}: los valores concretos fijados para la Zona Metropolitana de Querétaro (el umbral $\theta = 0{,}75$, el peso de vecindad $\alpha = 0{,}50$, la ponderación por \textit{Information Value} y las ventanas quinquenales de validación), que son objeto del Capítulo~\ref{ch:resultados-analisis}. La narración avanza del primero al tercero.
 
 \section{Arquitectura del modelo}
 \label{sec:arquitectura-modelo}
 
-% TODO-REDACCION: esta sección debe presentar la abstracción del modelo como un "graphical abstract"
-% de cajas con el flujo datos -> predicción (datos de Querétaro -> preprocesamiento/binarización ->
-% WoE-AC -> actualización de estados -> predicción), donde cada caja anticipa una sección posterior.
-% NO es el diagrama UML de implementación del apéndice. El agente figures-tesis debe generar las
-% imágenes explicativas por paso; la figura de abajo es la que ya existía y sirve de base provisional.
+La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en cinco etapas. La primera etapa adquiere las imágenes de Google Earth y confecciona la serie temporal. La segunda etapa aplica el pipeline de preprocesamiento que convierte cada imagen RGB en un mapa binario urbano/no urbano. La tercera estima los pesos de evidencia sobre los 26 pares históricos anuales (1984--2010), produciendo un campo estático de probabilidad de transición. La cuarta ejecuta el autómata celular de forma iterativa sobre el horizonte de predicción, actualizando el estado de cada celda según la regla de transición WoE-AC. La quinta evalúa el resultado contra los mapas observados mediante cinco ventanas quinquenales independientes, cada una con sus propias métricas de desempeño. Las secciones siguientes describen cada etapa en el orden en que intervienen.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.78\linewidth]{F4_pipeline_woe_ac_ai}
@@ -85,10 +75,6 @@ Estas fuentes de error se organizan por tipo, con una estimación cualitativa de
 \section{Preprocesamiento de datos}
 \label{sec:preprocesamiento}
 
-% TODO-REDACCION: deduplicar. Los dos párrafos siguientes venían del antiguo capítulo 5 y anunciaban
-% el preprocesamiento como si estuviera en otro capítulo; ahora encabezan la sección que lo detalla.
-% TODO-REDACCION: aquí debe integrarse también el material conceptual/metodológico que se retira del
-% marco teórico (arreglo M_{t,i,j} y flujo de trabajo aplicado).
 El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas binarios urbano/no-urbano $\{U_t\}_{t=1984}^{2020}$. Su construcción (la conversión de cada captura RGB de $1{,}792 \times 3{,}024$ píxeles en un mapa $U_t(x,y) \in \{0,1\}$ mediante la cadena LBP\,+\,K-Means\,+\,SVM) se detalla en esta sección. Basta adelantar dos restricciones que ese flujo resuelve: la ausencia de banda infrarroja descarta los índices espectrales habituales (NDVI, NDBI) y obliga a apoyarse en descriptores de textura y color, y la falta de verdad terreno para los 37 años obliga a etiquetar de forma no supervisada.
 
 \begin{wrapfigure}{r}{0.42\linewidth}
@@ -103,14 +89,7 @@ De ese flujo conviene rescatar, eso sí, la decisión que condiciona todo lo que
 
 \subsection{Representación de los datos y extracción de características}
 
-% TODO-REDACCION: bloque trasladado desde el marco teórico (era la sección "Preprocesamiento de
-% datos" del Cap. 2). Deduplicar con la subsección "Extracción de características" que aparece más
-% abajo: ambas describen las 23 variables por píxel, una con definición formal y otra en prosa.
-El primer paso del flujo de trabajo fue obtener las capturas RGB de la Zona Metropolitana de Querétaro. Para ello se utilizó Google Earth en su versión de escritorio, a través de la herramienta de imagen histórica, capturando una imagen por año sobre un mismo encuadre. El procedimiento de adquisición se detalla en la Sección~\ref{sec:area-estudio}.
-
-El preprocesamiento de dichos datos consiste en la conversión de las capturas RGB en mapas binarios urbano/no-urbano mediante el pipeline LBP+K-Means+SVM. Se define pues un arreglo tridimensional $M_{t,i,j} \in \{0,1\}$ donde $t$ es el año de la captura, $i$ es la fila y $j$ es la columna de la celda en la cuadrícula. $M_{t,i,j} = 1$ si la celda $(i,j)$ es urbana en el año $t$, y $M_{t,i,j} = 0$ si la celda $(i,j)$ es no-urbana en el año $t$.
-
-Cada una de las imágenes RGB está representada por una matriz de $1{,}792 \times 3{,}024$ píxeles, en formato PNG. Cada píxel tiene tres canales de color (RGB), de modo que cada imagen es un tensor de $1{,}792 \times 3{,}024 \times 3$. Para obtener una conversión precisa, cada píxel se mapea a un vector de 23 características. Sea $f_i$ la $i$-ésima característica del píxel; el vector de características es $f = (f_1, f_2, \ldots, f_{23})_{(i,j)}$. Las definiciones rigurosas de cada característica se organizan en tres conjuntos que se describen a continuación: las características básicas de color, las de textura y las espectrales (índices y transformaciones de espacio de color).
+Cada imagen RGB de $1{,}792 \times 3{,}024$ píxeles se convierte en un mapa binario urbano/no urbano mediante el pipeline LBP\,+\,K-Means\,+\,SVM. El resultado se almacena en el arreglo tridimensional $M_{t,i,j} \in \{0,1\}$, donde $t$ identifica el año, e $i$, $j$ la posición en la cuadrícula; $M_{t,i,j} = 1$ si la celda es urbana ese año y $0$ en caso contrario. Para obtener esa etiqueta, cada píxel se mapea a un vector de 23 características. Sea $\mathbf{f}_{i,j} = (f_1, \ldots, f_{23})$ ese vector; las definiciones de cada componente se organizan en tres conjuntos que se describen a continuación.
 
 El primer conjunto reúne las ocho \textbf{características básicas de color}, derivadas directamente de los canales rojo, verde y azul.
 
@@ -319,11 +298,7 @@ La simplificación del mapa de cobertura de suelo a dos categorías (urbano/no-u
 
 \subsubsection{Síntesis del preprocesamiento}
 
-% TODO-REDACCION: este cierre venía redactado como cierre de capítulo ("este capítulo describió...");
-% debe reescribirse como cierre de sección y enlazar con la definición del modelo.
-La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evolution}) muestra transiciones graduales y continuas entre años consecutivos, con patrones de expansión congruentes con el crecimiento documentado para la ZMQ, sin artefactos sistemáticos ni discontinuidades espaciales abruptas en la serie.
-
-Las secciones anteriores describieron la zona de estudio, la obtención manual de imágenes con Google Earth (línea de tiempo histórica) y el pipeline de clasificación LBP+K-Means+SVM que transforma las imágenes RGB en mapas binarios anuales. La serie resultante de 37 mapas (1984--2020) constituye la entrada principal para el cálculo de los Pesos de Evidencia y la simulación con Autómatas Celulares que se definen a continuación.
+La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evolution}) muestra transiciones graduales y continuas entre años consecutivos, con patrones de expansión congruentes con el crecimiento documentado para la ZMQ, sin artefactos sistemáticos ni discontinuidades espaciales abruptas en la serie. Con la serie de 37 mapas binarios (1984--2020) construida y verificada, las secciones siguientes definen el modelo de crecimiento que la toma como entrada.
 
 \section{Definición del modelo}
 \label{sec:calibracion-narrativa}

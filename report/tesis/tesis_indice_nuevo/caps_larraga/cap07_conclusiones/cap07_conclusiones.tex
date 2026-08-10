@@ -129,17 +129,7 @@ El protocolo de aplicación que se desprende de este trabajo es el siguiente: (1
 \section{Alcances}
 % ============================================================
 
-% TODO-REDACCION: sección trasladada desde la introducción por indicación de la Dra. Lárraga.
-% Adaptar a pretérito y enlazar con las limitaciones que siguen.
-El modelo se aplicó a la Zona Metropolitana de Querétaro sobre una serie anual de 37 años
-(1984--2020), período que concentra la mayor expansión urbana documentada para esta ciudad
-y para el cual fue posible construir una serie histórica completa a partir de imágenes de
-archivo de Google Earth. En su dimensión temporal, el alcance abarca esa serie procesada
-hasta mapas binarios urbano/no-urbano compatibles con el autómata celular; en su dimensión
-espacial, cada año se representa como una rejilla digital de $1{,}792 \times 3{,}024$ píxeles
-por imagen, derivada del preprocesamiento de las capturas RGB. La metodología fue diseñada
-para ser replicable en otras ciudades intermedias mexicanas con datos equivalentes, previa
-recalibración de parámetros.
+El modelo se aplicó a la Zona Metropolitana de Querétaro sobre una serie anual de 37 años (1984--2020), período que concentra la mayor expansión urbana documentada para esta ciudad y para el cual fue posible construir una serie histórica completa a partir de imágenes de archivo de Google Earth. En su dimensión temporal, el alcance abarca esa serie procesada hasta mapas binarios urbano/no urbano compatibles con el autómata celular. En su dimensión espacial, cada año se representa como una rejilla de $1{,}792 \times 3{,}024$ píxeles derivada del preprocesamiento de las capturas RGB. El modelo no reemplaza los instrumentos de planeación urbana ni produce predicciones normativas; es una herramienta de análisis retrospectivo y prospectivo que permite explorar escenarios de crecimiento bajo supuestos explícitos y reproducibles. La metodología fue diseñada para ser replicable en otras ciudades intermedias mexicanas con datos equivalentes, previa recalibración de parámetros.
 
 % ============================================================
 \section{Limitaciones del modelo}
@@ -149,29 +139,11 @@ El rigor académico exige reconocer los límites del enfoque adoptado. Esta secc
 
 \subsection{Limitaciones de alcance del estudio}
 
-% TODO-REDACCION: bloque trasladado desde la introducción. Fusionar con las limitaciones
-% conceptuales, empíricas y de transferibilidad que siguen, eliminando lo que quede repetido
-% (datos RGB sin infrarrojo, representación binaria y ausencia de variables socioeconómicas
-% aparecen en ambos lados).
-El modelo opera sobre imágenes RGB de archivo sin bandas infrarrojas, lo que restringe la
-clasificación binaria a información espectral visible. Esta decisión fue deliberada: reducir
-la barrera de entrada a datos de acceso libre y procesamiento reproducible (R3), a costa de
-la precisión espectral que ofrece la teledetección multiespectral. La representación binaria
-urbano/no-urbano simplifica adicionalmente la complejidad urbana al omitir densidades
-variables y usos mixtos del suelo; como consecuencia, el modelo captura la dinámica de
-expansión de la mancha urbana, pero no su estructura interna.
+El modelo opera sobre imágenes RGB sin bandas infrarrojas, lo que restringe la clasificación binaria a información espectral visible. Esta decisión fue deliberada: reducir la barrera de entrada a datos de acceso libre y procesamiento reproducible, a costa de la precisión espectral que ofrece la teledetección multiespectral. La representación binaria urbano/no urbano simplifica la complejidad interna de la ciudad; como consecuencia, el modelo captura la dinámica de expansión de la mancha urbana, pero no su estructura interna.
 
-El enfoque es puramente espacial: factores no modelados explícitamente, como políticas
-públicas, incentivos económicos o decisiones de inversión, influyeron en el crecimiento
-real de Querétaro y no están representados en las variables de entrada. Esta limitación es
-compartida por la mayoría de los modelos CA-WoE de la literatura y acota la interpretación
-de los resultados al patrón morfológico observado, no a sus causas socioeconómicas.
+El enfoque es puramente espacial: factores como políticas públicas, incentivos económicos o decisiones de inversión influyeron en el crecimiento real de Querétaro y no están representados en las variables de entrada. Esta limitación es compartida por la mayoría de los modelos CA-WoE de la literatura y acota la interpretación de los resultados al patrón morfológico observado, no a sus causas socioeconómicas.
 
-Finalmente, la elección de caja blanca implica una concesión de desempeño frente a modelos
-de aprendizaje profundo. Los resultados del Cap.~\ref{ch:resultados-analisis} muestran que
-esta concesión es moderada: el modelo WoE-AC alcanzó FoM y Kappa comparables a los rangos
-reportados en la literatura para modelos más complejos, lo que sugiere que la pérdida de
-precisión asociada a la interpretabilidad no es prohibitiva para el caso de uso estudiado.
+La elección de caja blanca implica una concesión de desempeño frente a modelos de aprendizaje profundo. Los resultados del Capítulo~\ref{ch:resultados-analisis} muestran que esta concesión es moderada: el modelo WoE-AC alcanzó FoM y Kappa comparables a los rangos reportados en la literatura para modelos más complejos, lo que indica que la pérdida de precisión asociada a la interpretabilidad no es prohibitiva para el caso de uso estudiado.
 
 \subsection{Limitaciones conceptuales}
 

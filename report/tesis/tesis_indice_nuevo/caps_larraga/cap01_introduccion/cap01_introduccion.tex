@@ -5,21 +5,6 @@
 \chapter{Introducción}
 \label{ch:introduccion}
 
-\begin{resumen}
-El crecimiento urbano disperso de las ciudades intermedias mexicanas, y de la Zona
-Metropolitana de Querétaro en particular, ha rebasado la capacidad de los instrumentos
-de planeación, sin que exista para ese contexto un modelo de simulación que sea, a la vez,
-interpretable celda a celda, validado en varios horizontes temporales y reproducible con
-datos abiertos. Para atender ese vacío, este trabajo desarrolló y validó un modelo de
-autómata celular con función de transición basada en Pesos de Evidencia (WoE-AC),
-calibrado por búsqueda sistemática y evaluado sobre cinco ventanas quinquenales
-independientes dentro de la serie 1984--2020. El diagnóstico que abre el capítulo
-delimita esa brecha científica concreta y la traduce en los requerimientos, las preguntas
-de investigación y las hipótesis falsables que estructuran el resto de la tesis; la
-aportación del trabajo no radica en el acoplamiento WoE-AC en sí, sino en su evaluación
-reproducible y multi-período para una ciudad intermedia mexicana.
-\end{resumen}
-
 \section{Contexto y problema}
 
 La urbanización es uno de los procesos que más transforma el territorio en este siglo. Una fracción creciente de la población mundial vive en ciudades, y la superficie urbana suele expandirse más rápido que la población que la habita. Cuando esa expansión ocurre de forma dispersa y sin planeación, tensiona la infraestructura, los servicios y el entorno, y obliga a anticipar dónde y a qué velocidad crecerá la ciudad.
@@ -202,43 +187,17 @@ software propietario.
 
 \subsection{Hipótesis}
 
-El trabajo se guía por seis hipótesis falsables. La primera, \textbf{H1}, sostiene que la
-integración de WoE como función de transición empírica del AC produce simulaciones con FoM
-superior a $0{,}15$ en las cinco ventanas de validación quinquenal. El umbral no es
-arbitrario: \textcite{pontius2008comparing} documenta que una fracción importante de los
-modelos LUCC publicados no lo alcanza, de modo que superarlo de forma sostenida, y no en
-una sola ventana, indicaría que la evidencia espacial histórica contiene información
-predictiva relevante y no un acierto puntual.
+\textbf{Hipótesis general.} Un modelo híbrido que acopla Pesos de Evidencia con un autómata celular, calibrado y validado mediante un protocolo multitemporal independiente sobre datos de libre acceso, permite simular de forma interpretable y reproducible el crecimiento urbano de una ciudad intermedia mexicana con un desempeño comparable al reportado en la literatura.
 
-La segunda, \textbf{H2}, plantea que en el espacio de parámetros (umbral de transición,
-peso de vecindad) existe un óptimo no trivial: la configuración calibrada por búsqueda
-sistemática supera a una configuración por omisión sin calibrar en el FoM medio de las
-cinco ventanas, y los umbrales por debajo del calibrado degradan el desempeño por
-sobre-predicción. De no observarse esa mejora, la calibración sería un refinamiento
-marginal; que se observe implica que es necesaria para este enfoque.
+De esa hipótesis general se derivan cuatro particulares, cada una falsable con los resultados del Capítulo~\ref{ch:resultados-analisis}.
 
-La tercera, \textbf{H3}, afirma que entre las siete variables espaciales evaluadas, las que
-cuantifican la proximidad al frente urbano y la densidad de vecindad concentran el mayor
-Information Value (IV), por encima de las variables de fragmentación y de gradiente. La
-hipótesis es falsable: si el ordenamiento del IV estuviera dominado por estas últimas, el
-crecimiento de la ZMQ no respondería principalmente a la difusión por contigüidad descrita
-en la literatura \parencite{Clarke1998,BonhamCarter1994}.
+\textbf{H1 (interpretabilidad).} La regla de transición basada en WoE ponderada por Information Value produce un modelo en el que cada variable contribuye de forma auditable: la distancia al frente urbano y la densidad de vecindad concentran el mayor IV, por encima de las variables de fragmentación y de gradiente.
 
-La cuarta, \textbf{H4}, supone que el modelo mantiene FoM y Kappa estables a lo largo de
-las cinco ventanas quinquenales, con mayor variación en los períodos donde la extensión de
-nueva área urbana observada es pequeña.
+\textbf{H2 (estabilidad temporal).} El desempeño del modelo se sostiene en cinco ventanas quinquenales independientes---2011--2016 a 2015--2020---sin degradación sistemática, lo que permite distinguir un comportamiento estructural de un ajuste puntual a un período concreto. Ninguna ventana se aleja del promedio en más de lo atribuible a la variabilidad natural del crecimiento en ese lustro.
 
-La quinta, \textbf{H5}, propone que restringir la función de transición a siete variables
-auditables (un modelo de caja blanca) mantiene el FoM medio dentro de la banda intermedia
-del espectro multi-sitio de \textcite{pontius2008comparing}, por encima del subconjunto de
-aplicaciones con FoM inferior a $0{,}15$, sin recurrir a las representaciones no
-interpretables propias de los modelos de caja negra \parencite{almeida2008stochastic,Chihuahua2023}.
-La hipótesis es falsable: si la interpretabilidad tuviera un costo grande en desempeño, el
-FoM medio caería por debajo de esa banda.
+\textbf{H3 (reproducibilidad).} El flujo completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado.
 
-Por último, la sexta, \textbf{H6}, afirma que el pipeline completo, desde la adquisición de
-imágenes hasta la validación quinquenal, se ejecuta en una CPU estándar en un tiempo del
-orden de horas, sin requerir GPU, software propietario ni hardware especializado.
+\textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con métricas---FoM, Kappa e IoU---dentro del rango de la literatura LUCC, por encima del subconjunto de modelos con FoM inferior a $0{,}15$ \parencite{pontius2008comparing}, sin recurrir a representaciones de caja negra.
 
 % La sección "Alcances y limitaciones" se trasladó al capítulo de conclusiones
 % (orden exigido: Alcances -> Limitaciones -> Trabajo futuro).
@@ -277,6 +236,4 @@ país. Querétaro es el caso de uso donde el protocolo se ejercita y se valida.
 
 \section{Organización del documento}
 
-% TODO-REDACCION: reescribir para seis capítulos. Ya se fusionaron área de estudio y modelo, pero el
-% párrafo conserva el fraseo del índice de siete capítulos.
-El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo (autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial) que el modelo necesita. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación de un solo período, opacidad de la caja negra y dependencia de software propietario) siguen abiertos en la literatura LUCC, y que el caso de las ciudades intermedias mexicanas es donde más se acumulan. El Capítulo~\ref{ch:modelo-crecimiento-urbano} justifica la Zona Metropolitana de Querétaro y la fuente de datos abierta, documenta cómo se construyó la serie binaria 1984--2020 y formaliza el acoplamiento WoE-AC, su calibración por búsqueda en cuadrícula y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones y acota lo que el modelo sí y no permite afirmar.
+El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo---autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial---que el modelo necesita para ser especificado y evaluado con precisión. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación en un solo período, dependencia de software propietario y poca presencia de ciudades intermedias mexicanas en la literatura) siguen abiertos y justifican la propuesta. El Capítulo~\ref{ch:modelo-crecimiento-urbano} es el núcleo empírico: presenta el área de estudio, los datos y su preprocesamiento, y formaliza el acoplamiento WoE-AC, su calibración por búsqueda sistemática y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones, define los alcances y acota lo que el modelo sí y no permite afirmar, junto con las líneas de trabajo futuro.
