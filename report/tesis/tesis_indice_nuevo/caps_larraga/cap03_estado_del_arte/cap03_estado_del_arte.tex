@@ -62,9 +62,11 @@ equifinalidad en la calibración, sobreajuste en la validación, opacidad en la 
 
 \subsection{Calibración: equifinalidad y costo computacional}
 
-SLEUTH calibra cinco coeficientes de crecimiento (\emph{diffusion},
-\emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity})
-mediante búsqueda por fuerza bruta sobre un espacio discreto del orden de $10^9$
+% TODO-REDACCION: la definición de SLEUTH se trasladó al Capítulo~\ref{ch:marco-teorico}; aquí debe
+% quedar solo el análisis de lo que se ha hecho con él y de sus problemas de calibración.
+La calibración de SLEUTH, cuyos cinco coeficientes de crecimiento se definen en el
+Capítulo~\ref{ch:marco-teorico}, se resuelve mediante búsqueda por fuerza bruta
+sobre un espacio discreto del orden de $10^9$
 combinaciones, cada una evaluada con simulaciones Monte Carlo de múltiples
 iteraciones. \textcite{Clarke1998} estructuró la búsqueda en tres fases
 sucesivas (gruesa, fina y final) que estrechan iterativamente el rango de
@@ -295,25 +297,16 @@ sistemática del FoM entre períodos, que no se observa.
 \label{sec:validacion-literatura}
 % ============================================================
 
+% TODO-REDACCION: las definiciones conceptuales de IoU y de la descomposición de Pontius se
+% trasladaron al Capítulo~\ref{ch:marco-teorico}. Lo que debe quedar aquí es la crítica a la práctica
+% de validación en la literatura, no la definición de las métricas.
 La métrica más reportada en LUCC sigue siendo el coeficiente Kappa de Cohen, a
-pesar de las críticas explícitas a su uso en mapas de cambio. Kappa mezcla dos
-fuentes de error: desacuerdo en cantidad y desacuerdo en asignación, que
-tienen significados metodológicos distintos
-\parencite{pontius2008comparing}. Esta descomposición separa dos situaciones
-distintas. El \textbf{quantity disagreement} ocurre cuando el modelo predice un
-total de celdas de cambio distinto al observado, sin importar dónde. El
-\textbf{allocation disagreement}, en cambio, aparece cuando el modelo predice el
-total correcto de cambio pero lo asigna a celdas incorrectas.
-
-Un modelo puede ser perfecto en \textit{quantity} y catastrófico en
-\textit{allocation}: predice exactamente el área urbana total pero en lugares
-equivocados. El FoM, definido como el índice de Jaccard restringido a las
-celdas de cambio, es sensible exactamente a este problema.
-
-La Intersection over Union (IoU) sobre la clase urbana provee información
-complementaria: mientras el FoM evalúa la calidad de la predicción del cambio,
-la IoU evalúa la calidad de la predicción del estado urbano final. Reportar
-ambas evita el sesgo de evaluar solo la dinámica o solo el estado. Dicho de forma sencilla: FoM es una métrica que penaliza la cantidad de celdas que no cambian de estado, mientras que IoU es una métrica que penaliza la cantidad de celdas que se clasifican incorrectamente.
+pesar de las críticas explícitas a su uso en mapas de cambio, porque mezcla el
+desacuerdo de cantidad con el de asignación, cuya distinción se define en el
+Capítulo~\ref{ch:marco-teorico}. El FoM, definido como el índice de Jaccard
+restringido a las celdas de cambio, es sensible exactamente a ese problema, y la
+IoU sobre la clase urbana lo complementa al evaluar el estado final en lugar de
+la dinámica.
 
 El presente trabajo adopta este protocolo de evaluación: FoM como métrica
 primaria para el cambio, IoU para el estado, Kappa por compatibilidad con la
@@ -409,7 +402,7 @@ otras ciudades intermedias mexicanas. R2, la utilidad para planeación urbana,
 se cumple por construcción: los mapas resultantes son raster celda a celda
 con probabilidades de transición auditables.
 
-El Capítulo~\ref{ch:area-estudio} describe el área de estudio, la Zona
+El Capítulo~\ref{ch:modelo-crecimiento-urbano} describe el área de estudio, la Zona
 Metropolitana de Querétaro, y la construcción de la serie histórica de mapas
 urbano/no-urbano que alimenta el modelo. Ese insumo es el que permite poner a
 prueba, sobre una ciudad intermedia mexicana aún no modelada con estas

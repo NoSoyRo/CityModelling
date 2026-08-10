@@ -11,59 +11,29 @@ Este marco teórico sigue el orden del flujo descrito en el Cap.~\ref{ch:introdu
 \end{resumen}
 
 
-\section{Preprocesamiento de datos}
+% ============================================================
+\section{Fundamentos del preprocesamiento de imágenes}
 \label{sec:preprocesamiento-datos}
+% ============================================================
 
-El primer paso del flujo de trabajo fue obtener las capturas RGB de la Zona Metropolitana de Querétaro. Para ello se utilizó Google Earth en su versión de escritorio, a través de la herramienta de imagen histórica, capturando una imagen por año sobre un mismo encuadre. El procedimiento de adquisición se detalla en el Capítulo~\ref{ch:area-estudio}.
+% TODO-REDACCION: esta sección debe contener SOLO conceptos, cada uno en su propia subsección, con
+% cita del .bib ya verificado e indicando si el método es supervisado o no supervisado. El material
+% metodológico de este trabajo (adquisición, arreglo M_{t,i,j}, las 23 características por píxel, el
+% pipeline aplicado y su figura) se trasladó a la Sección~\ref{sec:preprocesamiento} del
+% Capítulo~\ref{ch:modelo-crecimiento-urbano}.
+% Quedan por redactar aquí, como subsecciones conceptuales previas a los algoritmos:
+%   - imágenes satelitales y Google Earth como fuente de datos geoespaciales;
+%   - clasificación de cobertura del suelo y el caso binario urbano/no-urbano;
+%   - espacio de color RGB y transformaciones cromáticas (CIE L*a*b*, HSV);
+%   - patrones binarios locales (LBP) como descriptor de textura.
+% Cada subsección debe cerrar con una liga al capítulo donde se aplica.
 
-El preprocesamiento de dichos datos consiste en la conversión de las capturas RGB en mapas binarios urbano/no-urbano mediante el pipeline LBP+K-Means+SVM. Se define pues un arreglo tridimensional $M_{t,i,j} \in \{0,1\}$ donde $t$ es el año de la captura, $i$ es la fila y $j$ es la columna de la celda en la cuadrícula. $M_{t,i,j} = 1$ si la celda $(i,j)$ es urbana en el año $t$, y $M_{t,i,j} = 0$ si la celda $(i,j)$ es no-urbana en el año $t$. 
 
-Cada una de las imágenes RGB está representada por una matriz de $1{,}792 \times 3{,}024$ píxeles, en formato PNG. Cada píxel tiene tres canales de color (RGB), de modo que cada imagen es un tensor de $1{,}792 \times 3{,}024 \times 3$. Para obtener una conversión precisa, cada píxel se mapea a un vector de 23 características. Sea $f_i$ la $i$-ésima característica del píxel; el vector de características es $f = (f_1, f_2, \ldots, f_{23})_{(i,j)}$. Las definiciones rigurosas de cada característica se organizan en tres conjuntos que se describen a continuación: las características básicas de color, las de textura y las espectrales (índices y transformaciones de espacio de color).
-
-El primer conjunto reúne las ocho \textbf{características básicas de color}, derivadas directamente de los canales rojo, verde y azul.
-
-\begin{multicols}{2}
-\small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
-\textbf{\texttt{red}}: $f_1(i,j) = R(i,j)$, canal rojo.\par
-\textbf{\texttt{green}}: $f_2(i,j) = G(i,j)$, canal verde.\par
-\textbf{\texttt{blue}}: $f_3(i,j) = B(i,j)$, canal azul.\par
-\textbf{\texttt{intensity}}: $f_4(i,j) = \tfrac{R+G+B}{3}$, intensidad media.\par
-\textbf{\texttt{brightness}}: $f_5(i,j) = 0{,}299\,R + 0{,}587\,G + 0{,}114\,B$, luminancia (Rec.\,601).\par
-\textbf{\texttt{red\_std}}: $f_6(i,j) = \overline{R}_{5\times5}(i,j)$, media de rango local en ventana $5\times5$.\par
-\textbf{\texttt{green\_std}}: $f_7(i,j) = \overline{G}_{5\times5}(i,j)$, equivalente para el canal verde.\par
-\textbf{\texttt{blue\_std}}: $f_8(i,j) = \overline{B}_{5\times5}(i,j)$, equivalente para el canal azul.\par
-\end{multicols}
 	
-El segundo conjunto agrupa las seis \textbf{características de textura}, calculadas sobre la imagen convertida a escala de grises.
-
-\begin{multicols}{2}
-\small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
-\textbf{\texttt{sobel\_horizontal}}: $f_9 = \partial\,\text{gray}/\partial y$, convolución con kernel Sobel horizontal.\par
-\textbf{\texttt{sobel\_vertical}}: $f_{10} = \partial\,\text{gray}/\partial x$, convolución con kernel Sobel vertical.\par
-\textbf{\texttt{gradient\_magnitude}}: $f_{11}(i,j) = \sqrt{f_9^2 + f_{10}^2}$, magnitud del gradiente.\par
-\textbf{\texttt{lbp}}: $f_{12}(i,j)=\sum_{p=0}^{P-1}s(g_p - g_c)\,2^p$, patrón binario local uniforme con $P=24$, $r=3$ y $s(x)=\mathbf{1}_{x\ge0}$.\par
-\textbf{\texttt{entropy}}: $f_{13}(i,j) = -\sum_k p_k\log_2 p_k$, entropía local en ventana $9\times9$.\par
-\textbf{\texttt{contrast}}: $f_{14}(i,j) = \overline{\text{gray}}_{5\times5}(i,j)$, media de rango local.\par
-\end{multicols}
 	
-El tercer conjunto incluye las nueve \textbf{características espectrales y de color}: índices construidos a partir de las bandas visibles y transformaciones a otros espacios de color.
+\subsection{Estandarización y análisis de componentes principales}
 
-\begin{multicols}{2}
-\small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
-\textbf{\texttt{ndvi\_approx}}: $f_{15} = \dfrac{G - R}{G + R + \varepsilon}$ con $\varepsilon=10^{-8}$; índice verde--rojo normalizado (NGRDI), proxy cromático de vegetación con bandas visibles. No es un NDVI en sentido estricto, pues este requiere la banda del infrarrojo cercano, ausente en las capturas RGB.\par
-\textbf{\texttt{excess\_green}}: $f_{16} = 2G - R - B$, índice de exceso de verde (ExG).\par
-\textbf{\texttt{excess\_red}}: $f_{17} = 1{,}4\,R - G$, índice de exceso de rojo (ExR), asociado a suelo y zona urbana.\par
-\textbf{\texttt{lab\_l}}: luminancia $L^*\in[0,100]$ en el espacio CIE $L^*a^*b^*$.\par
-\textbf{\texttt{lab\_a}}: eje verde$(-)$ a rojo$(+)$, $a^*\in[-128,127]$.\par
-\textbf{\texttt{lab\_b}}: eje azul$(-)$ a amarillo$(+)$, $b^*\in[-128,127]$.\par
-\textbf{\texttt{hsv\_h}}: matiz $H\in[0,1]$.\par
-\textbf{\texttt{hsv\_s}}: $S = \dfrac{\max(R,G,B)-\min(R,G,B)}{\max(R,G,B)}$, saturación.\par
-\textbf{\texttt{hsv\_v}}: $V = \max(R,G,B)$, valor.\par
-\end{multicols}
-
-En conjunto, estas 23 características describen cada píxel por su color, su textura y su comportamiento espectral, y constituyen la entrada del paso de reducción dimensional.
-
-Sin embargo dentro del preprocesamiento se reducen las características a 8, mediante un StandardScaler y un PCA.
+La reducción dimensional se apoya en una proyección lineal de las variables estandarizadas sobre un subespacio de menor dimensión:
 
 \begin{equation}
 \mathbf{f}(x,y) = \mathbf{W} \mathbf{f}(x,y)
@@ -122,7 +92,10 @@ A continuación se define el algoritmo de StandardScaler y PCA.
 	\end{algorithmic}
 \end{algorithm}
 
-La salida del algoritmo PCA es la entrada del algoritmo de clasificación K-Means. (matrix $Z \in \mathbb{R}^{N \times 8}$) El algoritmo de K-Means es utilizado con el fin de agrupar los píxeles en 2, 3 o 4 grupos. En este caso 2, su definición es la siguiente:
+\subsection{Agrupamiento K-Means}
+
+% TODO-REDACCION: añadir la cita del método y explicitar que es no supervisado.
+El agrupamiento K-Means particiona un conjunto de observaciones en $k$ grupos minimizando la suma de distancias cuadradas de cada punto al centroide de su grupo. Su definición es la siguiente:
 
 \begin{algorithm}[H]
 	\caption{K-Means: agrupamiento no supervisado ($k=2$)}
@@ -148,9 +121,13 @@ La salida del algoritmo PCA es la entrada del algoritmo de clasificación K-Mean
 	\end{algorithmic}
 \end{algorithm}
 	
-Las pseudo-etiquetas $\ell$ producidas por K-Means se usan como verdad base para
-entrenar un clasificador SVM sobre una muestra de hasta $10\,000$ píxeles, que luego
-predice la etiqueta de todos los $N$ píxeles.
+\subsection{Máquinas de vectores de soporte}
+
+% TODO-REDACCION: añadir la cita del método y explicitar que es supervisado, señalando que aquí se
+% entrena sobre pseudo-etiquetas y no sobre verdad terreno.
+Las pseudo-etiquetas producidas por un agrupamiento no supervisado pueden emplearse como verdad base
+para entrenar un clasificador de máquina de vectores de soporte, que después predice la etiqueta del
+resto de las observaciones.
 
 \begin{algorithm}[H]
 \caption{SVM lineal: clasificación sobre pseudo-etiquetas K-Means}
@@ -177,14 +154,6 @@ donde $\ell_i^* \in \{-1,+1\}$ es la pseudo-etiqueta recodificada
 \end{algorithmic}
 \end{algorithm}
 
-La salida del algoritmo SVM es un mapa de clasificación $\hat{y} \in \{0,1\}^{H \times W}$ donde $H$ es el número de filas y $W$ es el número de columnas de la imagen. Aquí se empleó un procediminento manual para seleccionar que clase es la mancha urbana y que es la no-urbana. La imagen \ref{fig:pipeline_preprocesamiento_rgb_binario} muestra el flujo de preprocesamiento de datos.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.8\textwidth]{figures/pipeline_rgb_features_binary_cap02.png}
-	\caption{Flujo de preprocesamiento de datos.}
-	\label{fig:pipeline_preprocesamiento_rgb_binario}
-\end{figure}
 
 % ============================================================
 \section{Autómatas Celulares}
@@ -196,6 +165,11 @@ Un \textbf{Autómata Celular} (AC), en el sentido formalizado por \textcite{Wolf
 En el contexto del crecimiento urbano, el dominio espacial $\Omega \subset \mathbb{Z}^2$ es una cuadrícula discreta de celdas indexadas por pares $(i,j)$, donde $i \in \{1,\ldots,R\}$ indica la fila y $j \in \{1,\ldots,C\}$ la columna, con $N = R \times C$ celdas en total.
 
 En los AC probabilísticos, la función de transición $\delta$ asigna probabilidades a cada posible nuevo estado, en lugar de determinar el siguiente estado de forma determinista. Esta extensión, base de los modelos urbanos basados en AC desde \textcite{White1997} y de marcos calibrados como SLEUTH \parencite{Clarke1998}, resulta adecuada para el modelado urbano, en el que la transición de no-urbano a urbano no está garantizada incluso cuando las condiciones locales son favorables.
+
+% TODO-REDACCION: definición de SLEUTH traída del Capítulo~\ref{ch:estado-del-arte} por indicación de
+% la Dra. Lárraga (el concepto va en el marco teórico; el análisis de lo hecho con SLEUTH se queda en
+% el estado del arte). Verificar y citar la expansión del acrónimo.
+Entre los marcos de autómatas celulares urbanos, SLEUTH \parencite{Clarke1998} es el más difundido. Su nombre resume las capas de entrada que utiliza (\textit{slope}, \textit{land use}, \textit{exclusion}, \textit{urban}, \textit{transportation} y \textit{hillshade}) y su comportamiento queda gobernado por cinco coeficientes de crecimiento (\emph{diffusion}, \emph{breed}, \emph{spread}, \emph{slope resistance} y \emph{road gravity}) que se ajustan mediante búsqueda sobre un espacio discreto de combinaciones, evaluando cada una con simulaciones Monte Carlo. Las dificultades prácticas de esa calibración se discuten en el Capítulo~\ref{ch:estado-del-arte}.
 
 Los dos tipos de vecindad más utilizados en modelado urbano son la vecindad de Von Neumann (cuatro celdas ortogonales) y la vecindad de Moore (ocho celdas incluyendo diagonales). En ambos casos, el radio de influencia puede extenderse más allá de la celda inmediatamente adyacente, permitiendo capturar efectos de accesibilidad y proximidad a zonas urbanas existentes.
 
@@ -217,6 +191,15 @@ P(s_{i,j}^{t+1} = 1 \mid s_{i,j}^t = 0) = f\!\left(W_{i,j},\; \Omega_{i,j}(r),\;
 
 donde $W_{i,j}$ es la idoneidad espacial asignada por el método WoE (definida a continuación), $\Omega_{i,j}(r)$ es el efecto de vecindad, y $\varepsilon_{i,j}$ es un término estocástico que introduce variabilidad aleatoria en la simulación. La función $f$ combina estos tres factores según parámetros que, en este trabajo, se ajustan mediante el procedimiento de calibración descrito en el Capítulo~\ref{ch:modelo-crecimiento-urbano} y en la Sección~\ref{sec:calibracion-narrativa}. Esta función es la que define la transición de una celda no-urbana a una urbana.
 
+% ============================================================
+\section{Pesos de Evidencia}
+\label{sec:woe}
+% ============================================================
+
+% TODO-REDACCION: la definición conceptual de WoE ya vivía dentro de la sección de autómatas
+% celulares y aquí se promueve a sección propia, como pidió la Dra. Lárraga. Falta añadir sus
+% ventajas y limitaciones, la justificación de por qué se combina WoE con un autómata celular para
+% calibrar la regla de transición, y la interpretación explícita de la Figura~\ref{fig:concepto-woe}.
 El método de \textbf{Pesos de Evidencia} (Weight of Evidence, WoE) es una técnica estadística de origen bayesiano que cuantifica la asociación entre una variable espacial y la ocurrencia de un evento, en este caso la transición de suelo no-urbano a urbano \parencite{BonhamCarter1994}. Fue desarrollado originalmente en el contexto de la predicción de depósitos minerales y posteriormente adaptado al análisis de cambio de uso de suelo. 
 
 Para una variable espacial $X$ discretizada en categorías o intervalos, el peso de evidencia de la categoría $b$ se define como:
@@ -353,5 +336,14 @@ A &= |\mathcal{T}_{pred} \setminus \mathcal{T}_{obs}| \quad \text{(cambio predic
 \end{equation}
 
 El denominador contiene exactamente tres términos. No incluye el término $D$ (píxeles sin cambio) porque FoM evalúa exclusivamente las transiciones.
+
+% TODO-REDACCION: subseccionar esta sección como pidió la Dra. Lárraga (matriz de confusión;
+% métricas de clasificación: exactitud, precisión, sensibilidad y F1; métricas de cambio: FoM, IoU y
+% descomposición de Pontius), abriendo cada bloque con qué mide, para qué sirve y qué limitaciones
+% tiene. Los dos párrafos siguientes se trasladaron desde el Capítulo~\ref{ch:estado-del-arte},
+% donde eran definiciones conceptuales dentro de la discusión de la literatura.
+La \textbf{Intersection over Union} (IoU) sobre la clase urbana provee información complementaria al FoM: mientras el FoM evalúa la calidad de la predicción del cambio, la IoU evalúa la calidad de la predicción del estado urbano final. Reportar ambas evita el sesgo de evaluar solo la dinámica o solo el estado. Dicho de forma sencilla, el FoM penaliza la cantidad de celdas que no cambian de estado, mientras que la IoU penaliza la cantidad de celdas que se clasifican incorrectamente.
+
+El desacuerdo entre el mapa predicho y el observado puede además descomponerse en dos fuentes de significado metodológico distinto~\parencite{pontius2008comparing}. El \textbf{desacuerdo de cantidad} (\textit{quantity disagreement}) ocurre cuando el modelo predice un total de celdas de cambio distinto al observado, sin importar dónde. El \textbf{desacuerdo de asignación} (\textit{allocation disagreement}), en cambio, aparece cuando el modelo predice el total correcto de cambio pero lo asigna a celdas incorrectas. Un modelo puede ser exacto en cantidad y errado en asignación: predecir con precisión el área urbana total, pero situarla en lugares equivocados.
 
 Con esto queda definido el marco teórico necesario para el desarrollo del modelo propuesto en el Cap.~\ref{ch:introduccion}. El posicionamiento de este trabajo en la literatura especializada es el tema del Cap.~\ref{ch:estado-del-arte}, donde se realiza una revisión crítica de los enfoques previos y se contrasta el modelo propuesto con ellos.

@@ -240,41 +240,8 @@ Por último, la sexta, \textbf{H6}, afirma que el pipeline completo, desde la ad
 imágenes hasta la validación quinquenal, se ejecuta en una CPU estándar en un tiempo del
 orden de horas, sin requerir GPU, software propietario ni hardware especializado.
 
-\section{Alcances y limitaciones}
-
-\subsection{Alcances}
-
-El modelo se aplicó a la Zona Metropolitana de Querétaro sobre una serie anual de 37 años
-(1984--2020), período que concentra la mayor expansión urbana documentada para esta ciudad
-y para el cual fue posible construir una serie histórica completa a partir de imágenes de
-archivo de Google Earth. En su dimensión temporal, el alcance abarca esa serie procesada
-hasta mapas binarios urbano/no-urbano compatibles con el autómata celular; en su dimensión
-espacial, cada año se representa como una rejilla digital de $1{,}792 \times 3{,}024$ píxeles
-por imagen, derivada del preprocesamiento de las capturas RGB. La metodología fue diseñada
-para ser replicable en otras ciudades intermedias mexicanas con datos equivalentes, previa
-recalibración de parámetros.
-
-\subsection{Limitaciones}
-
-El modelo opera sobre imágenes RGB de archivo sin bandas infrarrojas, lo que restringe la
-clasificación binaria a información espectral visible. Esta decisión fue deliberada: reducir
-la barrera de entrada a datos de acceso libre y procesamiento reproducible (R3), a costa de
-la precisión espectral que ofrece la teledetección multiespectral. La representación binaria
-urbano/no-urbano simplifica adicionalmente la complejidad urbana al omitir densidades
-variables y usos mixtos del suelo; como consecuencia, el modelo captura la dinámica de
-expansión de la mancha urbana, pero no su estructura interna.
-
-El enfoque es puramente espacial: factores no modelados explícitamente, como políticas
-públicas, incentivos económicos o decisiones de inversión, influyeron en el crecimiento
-real de Querétaro y no están representados en las variables de entrada. Esta limitación es
-compartida por la mayoría de los modelos CA-WoE de la literatura y acota la interpretación
-de los resultados al patrón morfológico observado, no a sus causas socioeconómicas.
-
-Finalmente, la elección de caja blanca implica una concesión de desempeño frente a modelos
-de aprendizaje profundo. Los resultados del Cap.~\ref{ch:resultados-analisis} muestran que
-esta concesión es moderada: el modelo WoE-AC alcanzó FoM y Kappa comparables a los rangos
-reportados en la literatura para modelos más complejos, lo que sugiere que la pérdida de
-precisión asociada a la interpretabilidad no es prohibitiva para el caso de uso estudiado.
+% La sección "Alcances y limitaciones" se trasladó al capítulo de conclusiones
+% (orden exigido: Alcances -> Limitaciones -> Trabajo futuro).
 
 \section{Aportaciones del trabajo}
 
@@ -310,4 +277,6 @@ país. Querétaro es el caso de uso donde el protocolo se ejercita y se valida.
 
 \section{Organización del documento}
 
-El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo (autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial) que el modelo necesita. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación de un solo período, opacidad de la caja negra y dependencia de software propietario) siguen abiertos en la literatura LUCC, y que el caso de las ciudades intermedias mexicanas es donde más se acumulan. El Capítulo~\ref{ch:area-estudio} justifica la Zona Metropolitana de Querétaro y la fuente de datos abierta, y documenta cómo se construyó la serie binaria 1984--2020. El Capítulo~\ref{ch:modelo-crecimiento-urbano} formaliza el acoplamiento WoE-AC, su calibración por búsqueda en cuadrícula y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones y acota lo que el modelo sí y no permite afirmar.
+% TODO-REDACCION: reescribir para seis capítulos. Ya se fusionaron área de estudio y modelo, pero el
+% párrafo conserva el fraseo del índice de siete capítulos.
+El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo (autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial) que el modelo necesita. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación de un solo período, opacidad de la caja negra y dependencia de software propietario) siguen abiertos en la literatura LUCC, y que el caso de las ciudades intermedias mexicanas es donde más se acumulan. El Capítulo~\ref{ch:modelo-crecimiento-urbano} justifica la Zona Metropolitana de Querétaro y la fuente de datos abierta, documenta cómo se construyó la serie binaria 1984--2020 y formaliza el acoplamiento WoE-AC, su calibración por búsqueda en cuadrícula y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones y acota lo que el modelo sí y no permite afirmar.

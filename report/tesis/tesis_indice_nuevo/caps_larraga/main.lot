@@ -5,27 +5,26 @@
 \contentsline {table}{\numberline {1.1}{\ignorespaces Requerimientos del modelo de crecimiento urbano para la ZMQ.}}{3}{table.caption.8}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Posicionamiento de la literatura mexicana frente a R1--R4.}}{30}{table.caption.11}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Posicionamiento de la literatura mexicana frente a R1--R4.}}{28}{table.caption.10}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Fracción media de píxeles clasificados como ``urbano'' por tramo de la serie 1984--2020. Las cifras provienen directamente de los mapas binarios y deben leerse como un indicador grueso de la dinámica, no como superficie construida.}}{49}{table.caption.23}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces \textit {Information Value} y pesos normalizados de las siete variables WoE, calculados sobre el período de entrenamiento (1984--2010).}}{51}{table.caption.25}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Configuración final del Autómata Celular WoE-AC.}}{52}{table.caption.27}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Configuración del experimento de validación quinquenal múltiple.}}{54}{table.caption.28}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Métricas de validación en las cinco ventanas quinquenales (WoE-AC, umbral $\theta =0{,}75$).}}{55}{table.caption.29}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Posicionamiento del modelo WoE-AC en el espectro empírico de Figure of Merit (FoM) documentado en la literatura LUCC. La comparación es cualitativa: los sitios, las definiciones temáticas de las clases y los horizontes temporales difieren entre estudios.}}{55}{table.caption.30}%
+\contentsline {table}{\numberline {5.7}{\ignorespaces Métricas de validación del período 2011$\rightarrow $2016. \textit {B} (hits del FoM) es el subconjunto de \textit {TP} que corresponde a transiciones a urbano observadas y predichas simultáneamente; los píxeles permanentes ya urbanizados quedan incluidos en \textit {TP} pero no en \textit {B} (véase Ec.~\ref {eq:fom_formula}).}}{57}{table.caption.32}%
+\contentsline {table}{\numberline {5.8}{\ignorespaces Métricas de validación del período 2012$\rightarrow $2017.}}{58}{table.caption.34}%
+\contentsline {table}{\numberline {5.9}{\ignorespaces Métricas de validación del período 2013$\rightarrow $2018.}}{59}{table.caption.36}%
+\contentsline {table}{\numberline {5.10}{\ignorespaces Métricas de validación del período 2014$\rightarrow $2019.}}{60}{table.caption.38}%
+\contentsline {table}{\numberline {5.11}{\ignorespaces Métricas de validación del período 2015$\rightarrow $2020.}}{61}{table.caption.40}%
+\contentsline {table}{\numberline {5.12}{\ignorespaces Estimación cualitativa de la contribución de fuentes de error (no cuantificada empíricamente)}}{63}{table.caption.43}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Fracción media de píxeles clasificados como ``urbano'' por tramo de la serie 1984--2020. Las cifras provienen directamente de los mapas binarios y deben leerse como un indicador grueso de la dinámica, no como superficie construida.}}{51}{table.caption.23}%
-\contentsline {table}{\numberline {6.2}{\ignorespaces \textit {Information Value} y pesos normalizados de las siete variables WoE, calculados sobre el período de entrenamiento (1984--2010).}}{53}{table.caption.25}%
-\contentsline {table}{\numberline {6.3}{\ignorespaces Configuración final del Autómata Celular WoE-AC.}}{54}{table.caption.27}%
-\contentsline {table}{\numberline {6.4}{\ignorespaces Configuración del experimento de validación quinquenal múltiple.}}{56}{table.caption.28}%
-\contentsline {table}{\numberline {6.5}{\ignorespaces Métricas de validación en las cinco ventanas quinquenales (WoE-AC, umbral $\theta =0{,}75$).}}{57}{table.caption.29}%
-\contentsline {table}{\numberline {6.6}{\ignorespaces Posicionamiento del modelo WoE-AC en el espectro empírico de Figure of Merit (FoM) documentado en la literatura LUCC. La comparación es cualitativa: los sitios, las definiciones temáticas de las clases y los horizontes temporales difieren entre estudios.}}{57}{table.caption.30}%
-\contentsline {table}{\numberline {6.7}{\ignorespaces Métricas de validación del período 2011$\rightarrow $2016. \textit {B} (hits del FoM) es el subconjunto de \textit {TP} que corresponde a transiciones a urbano observadas y predichas simultáneamente; los píxeles permanentes ya urbanizados quedan incluidos en \textit {TP} pero no en \textit {B} (véase Ec.~\ref {eq:fom_formula}).}}{59}{table.caption.32}%
-\contentsline {table}{\numberline {6.8}{\ignorespaces Métricas de validación del período 2012$\rightarrow $2017.}}{60}{table.caption.34}%
-\contentsline {table}{\numberline {6.9}{\ignorespaces Métricas de validación del período 2013$\rightarrow $2018.}}{61}{table.caption.36}%
-\contentsline {table}{\numberline {6.10}{\ignorespaces Métricas de validación del período 2014$\rightarrow $2019.}}{62}{table.caption.38}%
-\contentsline {table}{\numberline {6.11}{\ignorespaces Métricas de validación del período 2015$\rightarrow $2020.}}{63}{table.caption.40}%
-\contentsline {table}{\numberline {6.12}{\ignorespaces Estimación cualitativa de la contribución de fuentes de error (no cuantificada empíricamente)}}{65}{table.caption.43}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Resumen de validación de hipótesis}}{71}{table.6.1}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Escenarios de política pública \textit {conceptualmente} simulables con el modelo WoE-AC mediante ajuste de parámetros o máscaras de probabilidad. Las direcciones de efecto son cualitativas; \textbf {este trabajo no calibró corridas contrafactuales por política} ni cuantificó impactos en métricas de dispersión para Querétaro.}}{74}{table.caption.44}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{75}{table.caption.45}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {7.1}{\ignorespaces Resumen de validación de hipótesis}}{73}{table.7.1}%
-\contentsline {table}{\numberline {7.2}{\ignorespaces Escenarios de política pública \textit {conceptualmente} simulables con el modelo WoE-AC mediante ajuste de parámetros o máscaras de probabilidad. Las direcciones de efecto son cualitativas; \textbf {este trabajo no calibró corridas contrafactuales por política} ni cuantificó impactos en métricas de dispersión para Querétaro.}}{76}{table.caption.44}%
-\contentsline {table}{\numberline {7.3}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{77}{table.caption.45}%
-\addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{85}{table.caption.47}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}}{86}{table.caption.48}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}}{87}{table.caption.49}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{84}{table.caption.47}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}}{85}{table.caption.48}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}}{86}{table.caption.49}%
