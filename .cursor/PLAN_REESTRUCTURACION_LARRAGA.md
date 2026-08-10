@@ -8,6 +8,8 @@
 1. **Se fusionan capítulos como pidió la Dra: de 7 a 6.** *Área de estudio* + *preprocesamiento* (hoy en Marco teórico) + *Modelo* se unen en un solo capítulo **"Modelo de crecimiento urbano híbrido"**.
 2. Las **hipótesis** pasan a **una general + particulares** (paralelo a objetivo general + específicos).
 3. La **citación** cambia de APA a **IEEE numérico**, ordenado por aparición.
+4. **Hipótesis general: Opción A** (general + cuatro particulares). Redacción en la sección "Propuestas de hipótesis general" de este documento.
+5. **Ejecución por oleadas** con propiedad exclusiva de archivos (ver "Estrategia de ejecución con agentes").
 
 ## Estructura final (6 capítulos)
 1. Introducción
@@ -185,9 +187,18 @@ Secuencia recomendada, con agente responsable y entregable/checkpoint por fase:
 
 Checkpoint tras cada fase: compilar el capítulo standalone (o `main`) y confirmar 0 errores antes de avanzar.
 
-## Propuestas de hipótesis general (elegir 1 en Fase 2)
+## Estrategia de ejecución con agentes (Sonnet 4.6)
 
-**Opción A (general + particulares) — recomendada.**
+Regla base: dentro de una oleada, **cada agente es dueño exclusivo de sus archivos**. Nadie fuera de la Oleada 0 y la Oleada 2 toca `main.tex`, `standalone_preamble.tex` ni `back/referencias.bib`. Las peticiones de citas nuevas se encolan en `.cursor/pendientes_bib.md`. Rama de trabajo: `dev/reestructura-larraga`, con commit de checkpoint al cerrar cada oleada.
+
+- **Oleada 0 (1 agente, secuencial)** — cirugía estructural: fusión Cap. 4+5, `main.tex`, migración de `\label`/`\ref` y movimiento de bloques entre capítulos (preprocesamiento Cap. 2→4, WoE/SLEUTH/métricas Cap. 3→2, alcances/limitaciones Cap. 1→7). Sin reescribir prosa. Agente `implementador`.
+- **Oleada 1 (6 agentes en paralelo, un archivo cada uno)** — redacción: Cap. 1, Cap. 2, Cap. 3, Cap. 4 (modelo híbrido), Caps. 5+6, front matter, más `figures-tesis` generando el diagrama de arquitectura con nombre de archivo acordado. Cada agente compila solo su capítulo standalone.
+- **Oleada 2 (secuencial)** — globales: `bibliografia` (cola de pendientes) → `estilo-citacion` (IEEE) → `pulidor-estilo` (impersonal y tono).
+- **Oleada 3 (secuencial)** — cierre: `compilador` → `verificador` → `auditor-coherencia` → `auditor-larraga` → `acronimos` → abstract en inglés.
+
+## Propuestas de hipótesis general (**adoptada: Opción A**)
+
+**Opción A (general + particulares) — ELEGIDA.**
 > *General:* "Un modelo híbrido que acopla Pesos de Evidencia con un autómata celular, calibrado y validado mediante un protocolo multitemporal independiente sobre datos de libre acceso, permite simular de forma interpretable y reproducible el crecimiento urbano de una ciudad intermedia mexicana con un desempeño comparable al reportado en la literatura."
 >
 > *Particulares:*
@@ -203,7 +214,7 @@ Checkpoint tras cada fase: compilar el capítulo standalone (o `main`) y confirm
 > "El crecimiento urbano de una ciudad intermedia mexicana puede modelarse de forma interpretable y reproducible mediante un autómata celular cuya regla de transición se calibra con Pesos de Evidencia, alcanzando un desempeño estable a través de varias ventanas temporales independientes."
 
 ## Puntos a confirmar antes de ejecutar
-- Elegir la redacción de la hipótesis general (Opción A / B / C de arriba).
-- Que la carta de jurado (si ya se entregó) use el título actual antes de cerrar la portada.
+- [x] Redacción de la hipótesis general: **Opción A**.
+- [ ] Que la carta de jurado (si ya se entregó) use el título actual antes de cerrar la portada.
 
 *(R1 resuelto: se adopta la fusión de capítulos → cumplimiento total de lo pedido por la Dra.)*
