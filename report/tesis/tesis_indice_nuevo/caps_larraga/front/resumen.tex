@@ -3,10 +3,10 @@
 \addcontentsline{toc}{chapter}{Resumen}
 \markboth{Resumen}{Resumen}
 
-Se presenta una estrategia original de integración, calibración y validación
+Se presenta una estrategia de integración, calibración y validación
 para construir un modelo reproducible de crecimiento urbano a partir de imágenes
 históricas de libre acceso, evaluado mediante un protocolo multitemporal
-independiente. El modelo combina Pesos de Evidencia (WoE) con un autómata
+con cinco ventanas quinquenales desplazadas. El modelo combina Pesos de Evidencia (WoE) con un autómata
 celular (AC) y se aplica como caso de uso a la Zona Metropolitana de Querétaro
 sobre una serie anual de 37 años (1984--2020).
 
@@ -18,17 +18,18 @@ cuantifican, sin supuestos de linealidad, la influencia espacial de siete
 variables derivadas del mapa binario histórico, y alimentan junto con la
 vecindad de Moore una regla de transición probabilística. El modelo se calibró
 por búsqueda sistemática en el espacio de parámetros y se evaluó sobre cinco
-ventanas quinquenales independientes (2011--2016 a 2015--2020), un protocolo
-que permite distinguir un desempeño estructural de un ajuste puntual.
+ventanas quinquenales desplazadas (2011--2016 a 2015--2020), un protocolo
+que distingue un desempeño estructural de un ajuste puntual.
 
-La aportación no reside en el acoplamiento WoE-AC---documentado en la
-literatura---sino en el protocolo de evaluación multitemporal, en la
+La aportación no reside en el acoplamiento WoE-AC, documentado en la
+literatura, sino en el protocolo de evaluación multitemporal, en la
 interpretabilidad auditable variable por variable y en la reproducibilidad
 completa sobre CPU, sin GPU ni software propietario. El desempeño promedio
 alcanza un \textit{Figure of Merit} de $0{,}317$, un coeficiente Kappa de
 $0{,}445$, una exactitud de $0{,}722$ y un \textit{IoU} de $0{,}633$, valores
-dentro del rango reportado en la literatura para modelos de caja blanca
-aplicados a ciudades intermedias, sostenidos en las cinco ventanas.
+dentro de la banda intermedia del espectro empírico documentado por
+\textcite{pontius2008comparing} (seis de trece aplicaciones con FoM inferior
+a $0{,}15$ y una sola por encima de $0{,}50$), sostenidos en las cinco ventanas.
 
 \vspace{0.6cm}
 \noindent\textbf{Palabras clave:} crecimiento urbano; autómatas celulares;

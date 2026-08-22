@@ -4,30 +4,31 @@
 \addcontentsline{toc}{chapter}{Abstract}
 \markboth{Abstract}{Abstract}
 
-An original strategy for the integration, calibration and validation of a
+A strategy for the integration, calibration and validation of a
 reproducible urban growth model is presented. The model is built from freely
-accessible historical imagery and assessed through an independent multi-temporal
-validation protocol. It couples Weights of Evidence (WoE) with a cellular
+accessible historical imagery and assessed through a multi-temporal
+validation protocol with five shifted five-year windows. It couples Weights of Evidence (WoE) with a cellular
 automaton (CA) and is applied, as a case study, to the Querétaro Metropolitan
 Area over a 37-year annual series (1984--2020).
 
 RGB captures from Google Earth's historical imagery tool were converted into
-binary urban/non-urban maps through an open classification pipeline---local
+binary urban/non-urban maps through an open classification pipeline: local
 binary patterns (LBP), K-Means clustering and a linear SVM. The Weights of
 Evidence quantify, without linearity assumptions, the spatial influence of seven
 variables derived from the historical binary map, feeding alongside the Moore
 neighborhood a probabilistic transition rule. The model was calibrated via
-systematic parameter-space search and evaluated over five independent five-year
+systematic parameter-space search and evaluated over five shifted five-year
 windows (2011--2016 to 2015--2020), a protocol designed to distinguish stable
 behavior from overfitting to a single period.
 
-The contribution lies not in the WoE-CA coupling---well documented in the
-literature---but in the multi-temporal evaluation protocol, the variable-by-variable
+The contribution lies not in the WoE-CA coupling, well documented in the
+literature, but in the multi-temporal evaluation protocol, the variable-by-variable
 auditability and the full reproducibility on CPU, without GPU or proprietary
 software. Average performance reaches a Figure of Merit of $0.317$, a Kappa
 coefficient of $0.445$, an accuracy of $0.722$ and an IoU of $0.633$, values
-within the range reported in the literature for white-box models applied to
-intermediate cities, sustained across all five windows.
+within the intermediate band of the multi-site spectrum documented by
+\textcite{pontius2008comparing} (six of thirteen applications with FoM below
+$0.15$ and only one above $0.50$), sustained across all five windows.
 
 \vspace{0.6cm}
 \noindent\textbf{Keywords:} urban growth; cellular automata; Weights of
