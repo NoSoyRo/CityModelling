@@ -1,5 +1,10 @@
 % !TEX root = cap04_standalone.tex
-% Capítulo 4. Área de estudio
+% =============================================================================
+% NO COMPILAR CON main.tex. Capítulo huérfano: el área de estudio y los datos
+% se fusionaron en cap05_modelo_crecimiento_urbano/ (ahora Capítulo 4).
+% Conservado solo como archivo histórico; no \input desde main.tex.
+% =============================================================================
+% Capítulo 4. Área de estudio (versión previa a la fusión)
 % Estructura según índice de la Dra. Lárraga.
 
 \chapter{Área de estudio}
