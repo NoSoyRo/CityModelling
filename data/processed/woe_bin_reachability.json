@@ -1,0 +1,162 @@
+{
+  "descripcion": "Alcance efectivo de los bins WoE durante la simulacion. El autoamata solo evalua celdas no urbanas (src/tesis_ac/ca/rules.py, step()). Se verifica que ningun bin degenerado (sin transiciones observadas, peso fijado por el suavizado) es alcanzable por una celda candidata.",
+  "razon_estructural": {
+    "distance_urban": "El bin 0 cubre [0; 0,0385]. distance_transform_edt asigna 0 a las celdas urbanas y >=1 a cualquier celda no urbana, de modo que ninguna candidata cae en el bin 0.",
+    "neighbor_density_3x3": "El bin 9 cubre [1,0; 1,0]. uniform_filter con ventana 3x3 incluye el centro; si el centro es no urbano la densidad no puede exceder 8/9 = 0,8889, de modo que ninguna candidata cae en el bin 9. El bin 8 ([0,9231; 1,0)) tampoco es alcanzable por la misma razon."
+  },
+  "bins_degenerados": {
+    "distance_urban": 0,
+    "neighbor_density_3x3": 9
+  },
+  "tope_teorico_densidad_celda_no_urbana": 0.8888888888888888,
+  "verificacion_por_anio": {
+    "2011": {
+      "celdas_candidatas": 2719920,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888933
+    },
+    "2012": {
+      "celdas_candidatas": 3278575,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888932
+    },
+    "2013": {
+      "celdas_candidatas": 3278381,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888925
+    },
+    "2014": {
+      "celdas_candidatas": 2949377,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.888888888888893
+    },
+    "2015": {
+      "celdas_candidatas": 3273652,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888934
+    },
+    "2016": {
+      "celdas_candidatas": 2839994,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888928
+    },
+    "2017": {
+      "celdas_candidatas": 2680758,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888933
+    },
+    "2018": {
+      "celdas_candidatas": 2627886,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888924
+    },
+    "2019": {
+      "celdas_candidatas": 2713928,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888927
+    },
+    "2020": {
+      "celdas_candidatas": 2554886,
+      "candidatas_en_bin_degenerado_distancia": 0,
+      "candidatas_en_bin_degenerado_densidad": 0,
+      "distancia_minima_candidata": 1.0,
+      "densidad_maxima_candidata": 0.8888888888888928
+    }
+  },
+  "pesos_woe": {
+    "distance_urban": {
+      "bins": [
+        0.0,
+        0.038461538461538464,
+        0.32362359855281136,
+        0.821480210475856,
+        1.4486394959214928,
+        2.2371291214574383,
+        3.2866148824658756,
+        4.931099254626484,
+        8.208431638363106,
+        57.43567780444885
+      ],
+      "woe_por_bin": [
+        -14.2844859478507,
+        0.21326368172535376,
+        0.8523766151670582,
+        0.8086344432082718,
+        0.5566597608852192,
+        0.2216920623856531,
+        -0.22679570792153983,
+        -0.8549301530964812,
+        -1.9504170376375018
+      ],
+      "n_positive_por_bin": [
+        1,
+        1151057,
+        1805581,
+        1715966,
+        1370718,
+        1008487,
+        661115,
+        360655,
+        122685
+      ]
+    },
+    "neighbor_density_3x3": {
+      "bins": [
+        -2.9890619893754217e-16,
+        4.604578826490232e-16,
+        0.029914529914529905,
+        0.10256410256410319,
+        0.22222222222222252,
+        0.3717948717948725,
+        0.5512820512820513,
+        0.7435897435897441,
+        0.9230769230769234,
+        1.0,
+        1.000000000000002
+      ],
+      "woe_por_bin": [
+        -5.580067565284264,
+        -2.5999784445077583,
+        -0.40160987294908873,
+        0.363765951078282,
+        0.7668799470934445,
+        0.9293128458356911,
+        0.7843056139449607,
+        0.21258359577476893,
+        -1.4191382435426683,
+        -13.776713069284218
+      ],
+      "n_positive_por_bin": [
+        3281,
+        64356,
+        559326,
+        1149470,
+        1654047,
+        1898685,
+        1684637,
+        995827,
+        186635,
+        1
+      ]
+    }
+  },
+  "conclusion": "Los pesos de los bins degenerados (-14,284 y -13,777) no intervienen en ninguna transicion simulada. El efecto de esos bins se limita al Information Value y, por tanto, a la ponderacion relativa entre variables, que es la configuracion validada fuera de muestra en las cinco ventanas quinquenales."
+}
