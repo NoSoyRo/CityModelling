@@ -1,9 +1,9 @@
 # Cumplimiento de la sesión con la Dra. Lárraga
 
-**Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)
-**Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`
-**Estado del documento:** 120 páginas, cero errores de compilación, cero referencias y citas indefinidas
-**Fecha de este reporte:** 22 de agosto de 2026 (última verificación independiente)
+**Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
+**Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
+**Estado del documento:** 121 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Fecha de este reporte:** 23 de agosto de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
 
@@ -27,7 +27,11 @@ Dos puntos se resolvieron corrigiendo cifras, no solo añadiendo texto, y merece
 
 Se revisó el documento otra vez sin dar por buenas las conclusiones de esta tesis, comprobando cada punto contra los archivos. 
 
-Los demás puntos resistieron la revisión: cero primera persona, estilo IEEE, once figuras con IA atribuidas, ligas entre capítulos, hipótesis general con cuatro particulares, orden de alcances, limitaciones y trabajo futuro, cero citas rotas, y correspondencia párrafo por párrafo entre el resumen y el abstract. Un recuento automático confirma ahora cero figuras y cero tablas sin referencia.
+Los demás puntos resistieron la revisión: cero primera persona, estilo IEEE, doce figuras con IA atribuidas, ligas entre capítulos, hipótesis general con cuatro particulares, orden de alcances, limitaciones y trabajo futuro, cero citas rotas, y correspondencia párrafo por párrafo entre el resumen y el abstract. Un recuento automático confirma ahora cero figuras y cero tablas sin referencia.
+
+### Revisión final del 23 de agosto
+
+Una última pasada sobre el PDF, buscando restos de nombres de archivo del repositorio en la prosa, encontró uno en la discusión de fortalezas: las comparaciones visuales se remitían a `summary_XXXX_to_XXXX.png` con comodín en vez de a las figuras del documento. Ahora se citan como Figuras 5.4 a 5.8 (`cap06:500`). Era el último lugar donde el texto mandaba al lector a un archivo interno en lugar de a una referencia cruzada.
 
 ---
 
@@ -320,11 +324,11 @@ Búsqueda de primera persona (consideramos, proponemos, nuestro, nuestra, realiz
 
 ### 7.3 Etiquetar las imágenes generadas con IA (NOTAS:37, transcripción 00:72): resuelto
 
-Once figuras se generaron con IA y las once llevan la leyenda en el pie: dos en el Cap. 2, siete en el Cap. 4 y dos en el Cap. 5.
+Doce figuras se generaron con IA y las doce llevan la leyenda en el pie: dos en el Cap. 2, ocho en el Cap. 4 y dos en el Cap. 5.
 
 ### 7.4 Fuentes de las imágenes con IA (NOTAS:38, transcripción 00:72): resuelto
 
-La Dra. pidió identificar la fuente original cuando la imagen contuviera datos específicos o se basara en literatura existente. Las once leyendas declaran su origen conceptual. Unas remiten a la formulación propia de la ecuación o del algoritmo del capítulo; otras, a la fuente publicada. La figura de la matriz de confusión del FoM cita a Pontius. Las dos del Cap. 5 declaran que se construyeron con los resultados de validación propios. Una búsqueda del pie sin atribución devuelve **cero ocurrencias**.
+La Dra. pidió identificar la fuente original cuando la imagen contuviera datos específicos o se basara en literatura existente. Las doce leyendas declaran su origen conceptual. Unas remiten a la formulación propia de la ecuación o del algoritmo del capítulo; otras, a la fuente publicada. La figura de la matriz de confusión del FoM cita a Pontius. Las dos del Cap. 5 declaran que se construyeron con los resultados de validación propios. Una búsqueda del pie sin atribución devuelve **cero ocurrencias**.
 
 ### 7.5 Toda figura referenciada e interpretada: resuelto
 
@@ -345,6 +349,18 @@ La Dra. exigió referencia en todo dato cuantitativo. El requisito fuerte no es 
 Cotejada contra el artículo (*Scientific Reports* 14:21106, doi 10.1038/s41598-024-71709-4): reporta FoM de 0,4303 y 0,3764 con un autómata acoplado a búsqueda gravitacional en Urumqi. Las dos cifras, el método, la ciudad y la entrada bibliográfica son correctos.
 
 Se añadió un matiz que faltaba y que conviene al argumento: 0,430 corresponde a la fase de calibración, de 2000 a 2010, y 0,376 a la de validación, de 2010 a 2020. La tesis las daba como «2010» y «2020» sin distinguirlas. La cifra comparable con un esquema de prueba independiente es la segunda, y el promedio de 0,317 de esta tesis sale precisamente de un *hold-out* temporal.
+
+### 7.8 Figuras de arquitectura rehechas y verificadas contra los datos
+
+El diagrama de arquitectura del Cap. 4 se sustituyó por uno operativo que declara, para cada etapa, lo que recibe, lo que hace y lo que entrega, con la ruta del artefacto y un ejemplo real (`cap05:30`). Se usa la versión en blanco y negro, `framework_woe_ac_bn.png`, por ser la adecuada para impresión; la variante en color queda en el repositorio sin uso. Se añadió además un sub-pipeline de clasificación que muestra la cadena aplicada a un recorte de 8×8 celdas (`cap05:248`). Las dos llevan la leyenda de origen con IA.
+
+Como las dos figuras traen cifras y rutas dentro de la imagen, se cotejó cada dato contra el repositorio antes de integrarlas. Salieron exactos los 1792×3024 píxeles y los 5,4 millones de celdas, los 23 descriptores, el PCA a 8 dimensiones, los 26 pares consecutivos, el umbral 0,75 con vecindad 0,50, los cinco pasos anuales, el arranque de 2015 en 2 145 356 celdas urbanas que predice 3 827 553 para 2020, las métricas 0,378, 0,498 y 0,669 de la ventana 2015-2020, el promedio de 0,317 y la afirmación de que `distance_urban` concentra cerca del 28 % del peso, que medida sobre el modelo entrenado da 28,2 %.
+
+Se detectaron y corrigieron tres discrepancias en las imágenes. La primera era un error de dato: el ejemplo de la etapa E2 atribuía a `2011.npy` un conteo de 2 145 356 celdas urbanas, que en realidad es el de 2015; el valor correcto de 2011 es 2 699 088, el 49,8 % del mapa. Las otras dos contradecían al texto: la varianza retenida por el PCA figuraba como 95 % cuando el promedio de la serie es 96,1 %, y el tamaño de celda como 30 m cuando la geometría medida da 26,7 m. Las tres quedaron corregidas en el archivo de la figura.
+
+### 7.9 Convención de etiquetas, documentada
+
+La figura operativa dejó a la vista un paso del pipeline que el texto no explicaba. El agrupamiento K-Means no nombra sus clases, de modo que la etiqueta de urbano puede salir invertida en un año respecto de otro. El código lo resuelve tomando el 30 % central de la rejilla y verificando qué etiqueta domina ahí: si domina el cero, invierte el mapa. Estaba implementado en `src/tesis_ac/historical/standardize_labels.py` y no aparecía en la tesis. Se añadió su descripción en `cap05:253`, con la ruta del módulo.
 
 ---
 
@@ -371,7 +387,9 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 
 **Faltan los dos escudos**, `figures/escudo_unam.png` y `figures/logo_pcic.png`. Están protegidos con `\IfFileExists`, así que la portada compila en modo solo texto y el documento no falla, pero hay que colocarlos antes de imprimir.
 
-**Falta la hoja de restricciones de uso de la UNAM.** El front matter va de la portada directo a la dedicatoria (`main.tex:12-13`). La tesis de Israel Velázquez, del mismo posgrado y con la misma asesora, la lleva como página 2, entre la portada y la dedicatoria, con el encabezado «UNAM, Dirección General de Bibliotecas, Tesis Digitales, Restricciones de uso». Es una página de texto legal que se copia literalmente, así que el arreglo es mecánico.
+**Hoja de restricciones de uso de la UNAM: resuelta.** Se añadió `front/restricciones.tex` y se incluye en `main.tex:13`, entre la portada y la dedicatoria, de modo que queda como página 2 igual que en la tesis de Israel Velázquez, del mismo posgrado y con la misma asesora. El texto se reproduce literalmente como lo publica la Dirección General de Bibliotecas, sin corregirlo. Falta únicamente el banner institucional que la DGB coloca en el encabezado: si se consigue esa imagen y se guarda como `figures/banner_dgb.png`, la página la incluye sola.
+
+**Dos defectos de maquetación detectados y corregidos.** La portada se desbordaba por 17 pt y empujaba la línea del Instituto y la fecha a una segunda página numerada «ii»; se rehízo con espaciado elástico para que quepa siempre, incluso al agregar los escudos. Y la figura de las siete variables espaciales, montada como `wrapfigure`, arrancaba con cuatro renglones libres cuando necesitaba catorce, de modo que se salía por el borde inferior de la página y pisaba el folio; se movió dos párrafos y ahora envuelve dentro de la caja. Se verificó sobre las coordenadas del PDF que ningún texto ni imagen queda fuera de los márgenes en todo el documento.
 
 ---
 
@@ -381,7 +399,7 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 
 
 | #   | Línea    | Acuerdo                                            | Estado                 | Evidencia                       |
-| --- | -------- | -------------------------------------------------- | ---------------------- | ------------------------------- |
+| --- | ------------ | ------------------------------------------ | -------------------- | ------------------------------------- |
 | 1   | NOTAS:20 | Cambiar el título al acordado                      | Aplicado, falta cotejo | `front/portada.tex:27`          |
 | 2   | NOTAS:21 | Agradecimientos con la beca                        | Resuelto               | `front/agradecimientos.tex:6`   |
 | 3   | NOTAS:22 | Reescribir el resumen                              | Resuelto               | `front/resumen.tex`             |
@@ -399,7 +417,7 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 | 15  | NOTAS:34 | Reorganizar la estructura de capítulos             | Resuelto               | `main.tex:25-31`                |
 | 16  | NOTAS:35 | Modo impersonal                                    | Resuelto               | Cero primera persona            |
 | 17  | NOTAS:36 | Citación numérica por aparición                    | Resuelto               | `standalone_preamble.tex:165`   |
-| 18  | NOTAS:37 | Etiquetar las imágenes con IA                      | Resuelto               | 11 figuras                      |
+| 18  | NOTAS:37 | Etiquetar las imágenes con IA                      | Resuelto               | 12 figuras                      |
 | 19  | NOTAS:38 | Fuentes de las imágenes con IA                     | Resuelto               | 11 leyendas con origen          |
 | 20  | NOTAS:39 | Unir los capítulos cortos                          | Resuelto               | Seis capítulos                  |
 | 21  | NOTAS:40 | Resumen con el modelo híbrido                      | Resuelto               | `front/resumen.tex`             |
@@ -413,7 +431,7 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 
 
 | Línea | Detalle                                                       | Estado               | Evidencia                       |
-| ----- | ------------------------------------------------------------- | -------------------- | ------------------------------- |
+| ------ | ------------------------------------------------------- | -------------------- | -------------------------------------- |
 | 50    | Título y carta del jurado                                     | Pendiente de cotejo  | `front/portada.tex:27`          |
 | 51    | Beca obligatoria en agradecimientos                           | Resuelto             | `front/agradecimientos.tex:6`   |
 | 52    | Realzar la contribución en el resumen                         | Resuelto             | `front/resumen.tex`             |

@@ -1,0 +1,29 @@
+\usepackage{etoolbox}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{newunicodechar}
+
+% Palatino no trae flecha; se toma de la fuente matemática.
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+
+% Las tablas del anexo son anchas: se componen en cuerpo menor y con ajuste de línea.
+\AtBeginEnvironment{longtable}{\footnotesize\setlength{\tabcolsep}{4pt}}
+\AtBeginEnvironment{tabular}{\footnotesize\setlength{\tabcolsep}{4pt}}
+
+% Las rutas largas en las celdas se salen del margen si no se pueden partir.
+\usepackage{seqsplit}
+\let\rodtexttt\texttt
+\renewcommand{\texttt}[1]{{\ttfamily\seqsplit{#1}}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize Cumplimiento de la sesión con la Dra. Lárraga}
+\fancyhead[R]{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom

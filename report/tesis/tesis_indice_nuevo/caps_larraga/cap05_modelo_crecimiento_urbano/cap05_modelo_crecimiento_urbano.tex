@@ -21,12 +21,14 @@ Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de 
 \section{Arquitectura del modelo}
 \label{sec:arquitectura-modelo}
 
-La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en cinco etapas. La primera etapa adquiere las imágenes de Google Earth y confecciona la serie temporal. La segunda etapa aplica el pipeline de preprocesamiento que convierte cada imagen RGB en un mapa binario urbano/no urbano. La tercera estima los pesos de evidencia sobre los 26 pares históricos anuales (1984--2010): esos pesos quedan fijos. La cuarta ejecuta el autómata celular de forma iterativa sobre el horizonte de predicción; en cada paso se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican los pesos ya estimados. La quinta evalúa el resultado contra los mapas observados mediante cinco ventanas quinquenales desplazadas, cada una con sus propias métricas de desempeño. Las secciones siguientes describen cada etapa en el orden en que intervienen.
+La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en seis etapas, con lo que recibe, lo que hace y lo que entrega cada una. La primera adquiere las capturas RGB desde el visor de Google Earth y conforma la serie temporal. La segunda las clasifica: 23 descriptores por píxel, reducción por PCA, agrupamiento K-Means y consolidación con un SVM lineal. La tercera fija la convención de etiquetas, de modo que el valor 1 corresponda siempre a urbano. La cuarta estima los pesos de evidencia sobre los 26 pares históricos anuales (1984--2010): esos pesos quedan fijos. La quinta ejecuta el autómata celular de forma iterativa sobre el horizonte de predicción; en cada paso se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican los pesos ya estimados. La sexta evalúa el resultado contra los mapas observados mediante cinco ventanas quinquenales desplazadas, cada una con sus propias métricas de desempeño. Las secciones siguientes describen cada etapa en el orden en que intervienen.
+
+El diagrama indica además la ruta del artefacto que produce cada etapa y un ejemplo tomado de la corrida que se reporta en el Capítulo~\ref{ch:resultados-analisis}. La intención es que el flujo pueda contrastarse contra los archivos del repositorio y no solo leerse como un esquema.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.78\linewidth]{F4_pipeline_woe_ac_ai}
-  \caption{Pipeline completo del modelo WoE-AC: del dato satelital a la validación quinquenal. Las etapas~1--2 producen la serie binaria; la etapa~3 estima los pesos de evidencia sobre 26 pares históricos; la etapa~4 ejecuta el autómata celular de forma iterativa; la etapa~5 evalúa con cinco ventanas temporales desplazadas. \textit{Imagen elaborada con IA generativa, con base en la arquitectura propia descrita en este capítulo.}}
+  \includegraphics[width=\linewidth]{framework_woe_ac_bn}
+  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{Imagen elaborada con IA generativa, con base en la arquitectura propia descrita en este capítulo.}}
   \label{fig:pipeline-woe-ac}
 \end{figure}
 
@@ -239,6 +241,17 @@ La implementación se organiza en una arquitectura modular (rasterización/clasi
 
 En este espacio RGB enriquecido con descriptores de textura (en particular los patrones binarios locales [LBP] de \textcite{Ojala2002}, robustos a cambios de iluminación y útiles para distinguir la rugosidad del tejido construido), los primeros componentes del PCA reflejan el contraste urbano--vegetación y la variabilidad local, de modo que el SVM trabaja sobre representaciones comprimidas y poco redundantes.
 
+El efecto de la cadena sobre un fragmento concreto de la imagen se aprecia en la Figura~\ref{fig:subpipeline-celdas}. El recorte de $8\times8$ celdas muestra la fotografía original, los dos grupos que forma el agrupamiento, la decisión del SVM y la rejilla binaria resultante. Cada celda de esa rejilla es la unidad espacial sobre la que opera el autómata y mide unos $27$~m de lado.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{E1_subpipeline_celdas}
+  \caption{Sub-pipeline de clasificación aplicado a un recorte de $8\times8$ celdas: de la captura RGB al mapa binario. El agrupamiento separa dos clases pero no las nombra; la asignación urbano/no urbano se fija en un paso posterior, con la convención descrita en el texto de esta sección. \textit{Imagen elaborada con IA generativa, con base en el pipeline de clasificación propio descrito en esta sección.}}
+  \label{fig:subpipeline-celdas}
+\end{figure}
+
+La salida del SVM no determina por sí sola cuál de los dos grupos es el urbano. El agrupamiento no es supervisado y la etiqueta que asigna a cada clase es arbitraria, de modo que un año puede quedar con los valores invertidos respecto del anterior sin que nada en la clasificación lo advierta. Para resolverlo se aplica una convención sobre el resultado: se toma el $30$\% central de la rejilla, que en esta ventana corresponde al núcleo consolidado de la ciudad, y se verifica qué etiqueta domina ahí; si domina el cero, el mapa se invierte. Los 37 mapas quedan así con la misma convención, 1 para urbano y 0 para no urbano, que es la que asume el resto del modelo. El procedimiento está implementado en \texttt{src/tesis\_ac/historical/standardize\_labels.py}.
+
 % Fuente: report/tesis/book/cap03/analisis-datos.tex
 \subsection{Análisis de datos procesados y transformación binaria}
 
@@ -301,6 +314,8 @@ Con la serie de mapas binarios $\{U_t\}_{t=1984}^{2020}$ ya construida, el model
 
 La primera decisión del modelo es cómo cuantificar la evidencia que vincula la configuración espacial de una celda con su probabilidad de transición. La vía más común en la literatura es la regresión logística, pero conlleva un supuesto fuerte: que el logit de la probabilidad es una función lineal de las variables explicativas. Las relaciones espaciales del crecimiento urbano no son lineales; la probabilidad de urbanización cae de forma abrupta en los primeros cientos de metros desde el frente urbano y luego se aplana. Por eso se elige el método de Pesos de Evidencia (WoE, ecuación~\ref{eq:woe} del Capítulo~\ref{ch:marco-teorico}), que no impone ninguna forma funcional: discretiza cada variable en intervalos y estima un peso bayesiano independiente para cada uno, capturando la curvatura real de la relación. Como ventaja adicional, cada peso es interpretable en términos geográficos, lo que satisface el requisito de transparencia que motivó este trabajo y que los enfoques de caja negra no ofrecen.
 
+La segunda decisión es qué variables espaciales alimentan el WoE (Figura~\ref{fig:variables-espaciales}). Aquí opera de nuevo una restricción de los datos: no se dispone de capas externas homogéneas (vialidades, pendiente, uso de suelo oficial) para los 37 años de la serie. Por tanto, todas las variables deben derivarse de la propia configuración urbana histórica, sin insumos adicionales. Se definen siete: la distancia euclidiana a la celda urbana más cercana, la densidad de vecinos urbanos a tres escalas (ventanas $3\times3$, $5\times5$ y $7\times7$), la fragmentación local, el tamaño del cluster urbano contiguo más cercano y el gradiente de urbanización. Cada una captura un aspecto distinto del proceso: la proximidad al frente consolidado, la presión del vecindario a múltiples escalas y la morfología del borde urbano. El que las siete provengan únicamente del mapa binario reduce los insumos necesarios para aplicar el modelo en otra ciudad a la disponibilidad de esa misma serie binaria, sin bases de datos locales. La transferencia geográfica no se verificó en este trabajo y exigiría recalibrar los pesos WoE con las transiciones del sitio objetivo.
+
 \begin{wrapfigure}{r}{0.50\linewidth}
   \vspace{-4pt}
   \centering
@@ -309,8 +324,6 @@ La primera decisión del modelo es cómo cuantificar la evidencia que vincula la
   \label{fig:variables-espaciales}
   \vspace{-6pt}
 \end{wrapfigure}
-La segunda decisión es qué variables espaciales alimentan el WoE (Figura~\ref{fig:variables-espaciales}). Aquí opera de nuevo una restricción de los datos: no se dispone de capas externas homogéneas (vialidades, pendiente, uso de suelo oficial) para los 37 años de la serie. Por tanto, todas las variables deben derivarse de la propia configuración urbana histórica, sin insumos adicionales. Se definen siete: la distancia euclidiana a la celda urbana más cercana, la densidad de vecinos urbanos a tres escalas (ventanas $3\times3$, $5\times5$ y $7\times7$), la fragmentación local, el tamaño del cluster urbano contiguo más cercano y el gradiente de urbanización. Cada una captura un aspecto distinto del proceso: la proximidad al frente consolidado, la presión del vecindario a múltiples escalas y la morfología del borde urbano. El que las siete provengan únicamente del mapa binario reduce los insumos necesarios para aplicar el modelo en otra ciudad a la disponibilidad de esa misma serie binaria, sin bases de datos locales. La transferencia geográfica no se verificó en este trabajo y exigiría recalibrar los pesos WoE con las transiciones del sitio objetivo.
-
 La tercera decisión es sobre qué datos afinar. En lugar de ajustar el WoE a un único par de años, se agregan (\textit{pooling}) las transiciones de los 26 pares consecutivos del período 1984--2010, hasta reunir $8\,196\,264$ transiciones observadas. El motivo es estadístico: las transiciones de un solo año son escasas y ruidosas, y producirían pesos inestables.
 
 Conviene precisar cómo se emparejan los datos, porque la agregación no es simétrica en sus dos lados. Las siete variables espaciales se promedian sobre los 26 períodos y ese mapa promedio se contrasta con el conjunto acumulado de transiciones. Los pesos relacionan, por tanto, la configuración espacial media del período de entrenamiento con las transiciones observadas en él, no cada configuración anual con su transición correspondiente. La consecuencia es que los pesos describen un régimen espacial promedio de 1984 a 2010 y se tratan como constantes del modelo, lo cual es coherente con su uso posterior, pero también significa que el número de valores distintos de cada covariable es el de una sola rejilla, $5\,419\,008$, y no el del conjunto acumulado. Emparejar cada variable anual con su transición es una de las extensiones que se plantean en el Capítulo~\ref{ch:conclusiones}.
