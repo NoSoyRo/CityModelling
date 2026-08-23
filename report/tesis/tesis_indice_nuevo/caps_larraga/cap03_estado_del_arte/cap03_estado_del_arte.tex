@@ -21,6 +21,15 @@ vecindad podrían reproducir patrones macroscópicos realistas en ciudades. El s
 del enfoque fue introducido con SLEUTH en \parencite{Clarke1998,Silva2002}, que durante dos
 décadas fue la referencia del campo, y que se aplicó en decenas de ciudades.
 
+El marco conceptual que sostiene ese enfoque, la ciudad entendida como sistema complejo
+cuyo patrón macroscópico emerge de interacciones locales, quedó sistematizado
+en \textcite{Batty2005}, que examina en un mismo tratamiento los autómatas celulares, los
+modelos basados en agentes y las descripciones fractales. La mecánica interna de esos
+modelos, es decir de qué piezas se compone un modelo celular urbano y cómo se articulan,
+está descrita en \textcite{Torrens2000}. El enfoque conserva vigencia:
+\textcite{Arfiansyah2024} lo aplicó a Nusantara, la capital planificada de Indonesia, un
+caso de ciudad de nueva creación.
+
 Al mismo tiempo, la metodología LUCC (Land Use and Cover Change) introdujo modelos
 basados en mapas de idoneidad de uso de suelo de base estadística: sistemas como
 CLUE-S \parencite{Verburg2002}, Dinamica EGO \parencite{SoaresFilho2002},
@@ -28,9 +37,18 @@ CA-Markov y, más recientemente, FLUS \parencite{Liu2017} brindaron
 arquitecturas alternativas al autómata celular puro en las que la función de transición
 emerge de regresiones logísticas o pesos bayesianos sobre datos históricos.
 
+Una ruta distinta consistió en simular los agentes del mercado de suelo en lugar de la
+rejilla. UrbanSim \parencite{Waddell2002} es la referencia de esa vertiente y acopla usos
+de suelo, transporte y ambiente en un mismo sistema. Su exigencia de insumos es, sin
+embargo, de otro orden: requiere datos socioeconómicos desagregados de hogares, empleo y
+transporte que rara vez existen con esa resolución para ciudades intermedias, lo que acota
+su aplicabilidad en el contexto de este trabajo.
+
 Una generación posterior de trabajos sustituyó la regresión por modelos de aprendizaje
 automático e híbridos metaheurísticos. \textcite{almeida2008stochastic} acopló
-una red neuronal feedforward a un autómata celular estocástico para Piracicaba, Brasil; años
+una red neuronal feedforward a un autómata celular estocástico para Piracicaba, Brasil;
+\textcite{Gomez2020} llevó el aprendizaje automático al modelado espaciotemporal del
+crecimiento urbano a partir de percepción remota; años
 más tarde \textcite{Wang2021} combinó un autómata celular con un algoritmo
 genético para optimizar la forma urbana de Wuhan, mientras que
 \textcite{Hagenauer2022} introdujo una red neuronal geográficamente ponderada
@@ -197,7 +215,11 @@ reproducir o extender los modelos publicados. En contextos donde estos recursos
 son limitados, la única alternativa práctica es reescribir el pipeline desde
 cero o dedicar un esfuerzo considerable a descifrar requerimientos no documentados.
 Conviene, entonces, una implementación en código abierto sobre imágenes de
-archivo de acceso libre. En este caso se usan capturas de Google Earth en
+archivo de acceso libre. Hay ya componentes que apuntan en esa dirección, como el conjunto
+de herramientas en Python para análisis de aptitud del suelo
+de \textcite{Chen2022}, y la disponibilidad de datos urbanos abiertos se ha ampliado de
+forma sostenida en la última década \parencite{ArribasBel2014}. En este caso se usan
+capturas de Google Earth en
 escritorio, no Google Earth Engine. El Capítulo~\ref{ch:modelo-crecimiento-urbano}
 desarrolla esa implementación.
 

@@ -9,7 +9,7 @@
 
 Google Earth en escritorio ofrece una línea de tiempo de imagen histórica de acceso libre. Esas capturas muestran cómo ha cambiado una ciudad año con año. No son, sin embargo, un mapa de cobertura: hay que convertirlas en una serie comparable y, a partir de ella, simular dónde puede aparecer lo urbano nuevo.
 
-La urbanización es uno de los procesos que más transforma el territorio en este siglo. Una fracción creciente de la población mundial vive en ciudades, y la superficie urbana suele expandirse más rápido que la población que la habita \parencite{Seto2012,UNHabitat2020}. El mismo proceso se observa en México, con ritmos e instrumentos distintos a los de otros países.
+La urbanización es uno de los procesos que más transforma el territorio en este siglo. Una fracción creciente de la población mundial vive en ciudades, y la superficie urbana suele expandirse más rápido que la población que la habita \parencite{Seto2012,UNHabitat2020,Angel2012}. El mismo proceso se observa en México, con ritmos e instrumentos distintos a los de otros países.
 
 Anticipar ese crecimiento es, en el fondo, un problema de simulación espacial. Para abordarlo se han desarrollado modelos de cambio de uso y cobertura de suelo (LUCC), entre los que los autómatas celulares ocupan un lugar central por representar la ciudad celda a celda. Su utilidad práctica, sin embargo, depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
 
@@ -23,7 +23,14 @@ actualizado \parencite{SEDATU2024NOM005,ONUHabitat2016TendenciasMexico}. El INEG
 que la mayor parte de la población reside en localidades urbanas \parencite{INEGI2020Censo}.
 El resultado observable es un patrón de crecimiento disperso que supera la capacidad de
 planificación disponible, con impactos documentados sobre infraestructura, cobertura de
-suelo y calidad de vida.
+suelo y calidad de vida. Esos impactos están documentados en frentes distintos. La
+transformación de ecosistemas naturales en zonas urbanas contribuye a la pérdida de
+hábitat, señalada como la principal causa de pérdida de biodiversidad en el
+país \parencite{CONABIO2024Porque}. El transporte terrestre que la dispersión vuelve
+necesario tiene externalidades negativas documentadas para el caso
+mexicano \parencite{ITDP2019Externalidades}. Y los efectos del cambio de suelo urbano no
+se agotan en el área que se urbaniza: alcanzan a los territorios con los que la ciudad se
+conecta mediante flujos de recursos \parencite{Seto2012teleconnections}.
 
 \begin{figure}[htbp]
 \centering
@@ -54,8 +61,10 @@ suelo y calidad de vida.
 Como se observa en la figura~\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha
 urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona
 metropolitana que rebasó el millón y medio de habitantes tras décadas de expansión
-sostenida \parencite{CONAPO2018Delimitacion,INEGI2020Censo}. Este patrón, documentado
-pero no suficientemente modelado para la ZMQ,
+sostenida \parencite{CONAPO2018Delimitacion,INEGI2020Censo}. Este patrón, descrito para
+Querétaro en relación con la producción de
+vivienda \parencite{ObservatorioCiudades2022Queretaro} pero no suficientemente modelado
+para la ZMQ,
 impide anticipar dónde y a qué velocidad se producirá la siguiente oleada de expansión:
 información necesaria para el diseño de infraestructura y política territorial. Como instancia
 concreta de ese problema, el trabajo ejercita el modelo sobre la ZMQ, que reúne una serie
@@ -100,7 +109,7 @@ En las ciudades intermedias mexicanas es poco frecuente disponer de un modelo de
 
 \section{Antecedentes}
 
-El modelado del crecimiento urbano cuenta con numerosos estudios, agrupables según el tipo de función de transición que emplean. Los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic} alcanzan concordancia espacial alta en los casos publicados, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Los híbridos metaheurísticos \parencite{Wang2021} sustituyen los pesos por cromosomas, con la misma consecuencia para la interpretabilidad. Los modelos de caja blanca más citados \parencite{Clarke1998,Sante2010,Aburas2016} atienden la interpretabilidad, pero en la mayoría de los casos se validan sobre un único período quinquenal, sin que sea posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento. Los trabajos revisados para ciudades mexicanas \parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} satisfacen parcialmente R1 y R2, pero no R3 ni R4. Las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado principalmente en contextos internacionales, con dinámicas de crecimiento y fuentes de datos distintas a las ciudades intermedias del país. El análisis detallado de estos trabajos se desarrolla en el Capítulo~\ref{ch:estado-del-arte}.
+El modelado del crecimiento urbano cuenta con numerosos estudios, agrupables según el tipo de función de transición que emplean. Los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic,Gomez2020} alcanzan concordancia espacial alta en los casos publicados, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Los híbridos metaheurísticos \parencite{Wang2021} sustituyen los pesos por cromosomas, con la misma consecuencia para la interpretabilidad. Los modelos de caja blanca más citados \parencite{Clarke1998,Sante2010,Aburas2016} atienden la interpretabilidad, pero en la mayoría de los casos se validan sobre un único período quinquenal, sin que sea posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento. Los trabajos revisados para ciudades mexicanas \parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} satisfacen parcialmente R1 y R2, pero no R3 ni R4. Las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado principalmente en contextos internacionales, con dinámicas de crecimiento y fuentes de datos distintas a las ciudades intermedias del país. El análisis detallado de estos trabajos se desarrolla en el Capítulo~\ref{ch:estado-del-arte}.
 
 Se desarrolló y validó un modelo que acopla Pesos de Evidencia (WoE) con un autómata celular (AC) y que busca satisfacer R1--R4 de forma conjunta. El WoE produce pesos de evidencia cuantificables por variable (R4). Los parámetros se calibraron por búsqueda sistemática sobre el período de entrenamiento y el desempeño se evaluó después en cinco ventanas quinquenales desplazadas, de modo que se mide la estabilidad temporal y no solo el ajuste a un período (R1). La implementación en Python con datos de acceso libre hace reproducible el flujo sin software propietario (R3). Los mapas simulados se leen como escenarios de expansión, no como planes calibrados (R2). Querétaro es el caso de uso donde se ejercita y se valida el protocolo. La aportación es el protocolo mismo, potencialmente transferible a otras ciudades intermedias previa recalibración, aunque esa transferencia no se verificó empíricamente aquí.
 
@@ -128,10 +137,12 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 
 El tercer objetivo (OE3) diseña e implementa el autómata celular WoE-AC que simula la transición
 de no urbano a urbano en la ZMQ. La decisión de usar AC sobre enfoques basados en agentes
-(ABM) o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de
+(ABM), que exigen declarar el comportamiento de cada
+agente \parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC
+capturan la dinámica de
 difusión espacial emergente sin requerir la especificación de reglas de comportamiento
 individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial
-\parencite{Clarke1998,Sante2010}. El cuarto objetivo (OE4) calibra sistemáticamente los
+\parencite{Clarke1998,Sante2010,Batty2005}. El cuarto objetivo (OE4) calibra sistemáticamente los
 parámetros del WoE-AC (umbral de transición y peso de vecindad) mediante búsqueda en
 cuadrícula y establece un protocolo de validación multi-período con cinco ventanas
 quinquenales desplazadas (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU. La

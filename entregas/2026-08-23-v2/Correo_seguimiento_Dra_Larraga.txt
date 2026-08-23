@@ -1,0 +1,30 @@
+Asunto: Alcance al envío de hoy: bibliografía completada
+
+
+Estimada Dra. Lárraga:
+
+Le escribo como alcance al correo de esta mañana. Después de enviárselo revisé la
+bibliografía y encontré que dieciséis de las sesenta referencias no estaban citadas en
+ningún punto del texto. No eran material ajeno al tema, sino fuentes pertinentes que se
+habían quedado sin anclar a una afirmación, así que las integré donde corresponde. Ya están
+las sesenta citadas, sin entradas sueltas ni citas rotas.
+
+En dos casos la integración añadió argumento y no solo la cita. UrbanSim entra ahora en el
+estado del arte para explicar por qué no seguí la ruta de la microsimulación de mercados de
+suelo: exige microdatos de hogares, empleo y transporte que rara vez existen con esa
+resolución para una ciudad intermedia. Y la teoría de la renta del suelo de Alonso queda
+anclada a una omisión que el modelo declara, la ausencia de un término de decaimiento por
+distancia a centros de empleo, de modo que una simplificación pasa a ser una decisión
+razonada y no un descuido.
+
+El resto refuerza tres frentes: los efectos documentados de la expansión urbana en la
+introducción, el marco conceptual y las herramientas abiertas en el estado del arte, y la
+heterogeneidad del paisaje urbano de Querétaro en el capítulo del modelo.
+
+Le adjunto la versión actualizada, de 123 páginas, y el reporte con este punto añadido. Si
+prefiere revisar la que le mandé en la mañana y ver esto después, también funciona: el
+cambio es aditivo y no altera ninguna conclusión.
+
+Quedo atento a sus comentarios.
+
+Rodrigo Moreno López

@@ -2,7 +2,7 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 121 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Estado del documento:** 123 páginas, cero errores de compilación, cero referencias y citas indefinidas  
 **Fecha de este reporte:** 23 de agosto de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
@@ -32,6 +32,16 @@ Los demás puntos resistieron la revisión: cero primera persona, estilo IEEE, d
 ### Revisión final del 23 de agosto
 
 Una última pasada sobre el PDF, buscando restos de nombres de archivo del repositorio en la prosa, encontró uno en la discusión de fortalezas: las comparaciones visuales se remitían a `summary_XXXX_to_XXXX.png` con comodín en vez de a las figuras del documento. Ahora se citan como Figuras 5.4 a 5.8 (`cap06:500`). Era el último lugar donde el texto mandaba al lector a un archivo interno en lugar de a una referencia cruzada.
+
+### Bibliografía: dieciséis fuentes que estaban sin citar
+
+Este punto no salió de la sesión, pero conviene dejarlo cerrado. La bibliografía tenía 60 entradas activas y solo 44 estaban citadas en el texto. Las 16 restantes no eran material ajeno al tema: eran fuentes pertinentes que se habían quedado sin anclar a ninguna afirmación. Ya están las 60 citadas, sin entradas huérfanas ni citas rotas.
+
+En dos casos la integración añadió argumento y no solo la cita. UrbanSim (`cap03:41`) ahora explica por qué no se siguió la ruta de la microsimulación de mercados de suelo: exige microdatos socioeconómicos de hogares, empleo y transporte que rara vez existen con esa resolución para una ciudad intermedia. Y Alonso (`cap05:17`) queda anclado a una omisión declarada del modelo, la ausencia de un término de decaimiento por distancia a centros de empleo, de modo que una simplificación pasa a ser una decisión razonada frente a la teoría clásica de la renta del suelo.
+
+El resto se reparte así: la expansión urbana global y sus efectos en la introducción (Angel, Seto sobre teleconexiones, CONABIO sobre pérdida de hábitat, ITDP sobre externalidades del transporte y el Observatorio de Ciudades sobre vivienda en Querétaro); el marco conceptual y la mecánica de los modelos celulares en el estado del arte (Batty, Torrens), junto con una aplicación reciente (Arfiansyah y colegas, sobre la capital planificada de Indonesia), el aprendizaje automático aplicado al crecimiento urbano (Gómez y colegas) y las herramientas abiertas disponibles (Chen y colegas con PyLUSAT, Arribas-Bel sobre fuentes de datos urbanos); la exigencia de declarar el comportamiento de cada agente en los modelos basados en agentes (Li y Liu); y la heterogeneidad del paisaje urbano de Querétaro en el capítulo del modelo (Hernández-Guerrero 2015 y 2018).
+
+Antes de citar la página de CONABIO se verificó contra la fuente, porque era la única de las nuevas que afirmaba una causa principal.
 
 ---
 
