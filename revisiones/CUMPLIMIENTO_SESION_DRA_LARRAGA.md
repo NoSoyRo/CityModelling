@@ -2,8 +2,8 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 123 páginas, cero errores de compilación, cero referencias y citas indefinidas  
-**Fecha de este reporte:** 23 de agosto de 2026 (última verificación independiente)
+**Estado del documento:** 129 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Fecha de este reporte:** 2 de septiembre de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
 
@@ -22,6 +22,8 @@ Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **
 El único punto abierto es la verificación del título contra la carta del jurado, que depende de un documento que no está en el repositorio.
 
 Dos puntos se resolvieron corrigiendo cifras, no solo añadiendo texto, y merecen lectura aparte. La geometría de las capturas estaba mal declarada y se midió (§6.6): la ventana no son 625 km² sino 3 870, el píxel no mide de 8 a 14 m sino 26,7, y el marco no está orientado al norte. Y la única cifra de terceros que sostenía una comparación de desempeño se cotejó contra el artículo original (§7.7).
+
+Después de esos dos, el estado del arte se auditó fuente por fuente (§7.10) y apareció un antecedente que obligó a precisar el alcance de la aportación (§7.11). Son las dos secciones que conviene leer si solo hay tiempo para una parte de este reporte.
 
 ### Verificación del 22 de agosto
 
@@ -326,7 +328,7 @@ El procedimiento es reproducible: `tools/registrar_s2.py` hace el registro, `too
 
 ### 7.1 Estilo de citación numérico (NOTAS:36, transcripción 00:77): resuelto
 
-La Dra. señaló que el estilo numérico IEEE se prefiere en ingeniería por ahorrar espacio y facilitar la identificación por orden de aparición. `standalone_preamble.tex:165` declara `style=ieee`. La bibliografía impresa tiene 44 entradas, todas citadas, numeradas por aparición.
+La Dra. señaló que el estilo numérico IEEE se prefiere en ingeniería por ahorrar espacio y facilitar la identificación por orden de aparición. `standalone_preamble.tex:165` declara `style=ieee`. La bibliografía impresa tiene 79 entradas, todas citadas, numeradas por aparición.
 
 ### 7.2 Modo impersonal en todo el documento (NOTAS:35, transcripción 00:74): resuelto
 
@@ -371,6 +373,42 @@ Se detectaron y corrigieron tres discrepancias en las imágenes. La primera era 
 ### 7.9 Convención de etiquetas, documentada
 
 La figura operativa dejó a la vista un paso del pipeline que el texto no explicaba. El agrupamiento K-Means no nombra sus clases, de modo que la etiqueta de urbano puede salir invertida en un año respecto de otro. El código lo resuelve tomando el 30 % central de la rejilla y verificando qué etiqueta domina ahí: si domina el cero, invierte el mapa. Estaba implementado en `src/tesis_ac/historical/standardize_labels.py` y no aparecía en la tesis. Se añadió su descripción en `cap05:253`, con la ruta del módulo.
+
+---
+
+### 7.10 Auditoría de fuente por fuente del estado del arte
+
+La Dra. pidió que toda cifra llevara referencia. Llevado al extremo, el requisito es más exigente: que la referencia diga lo que se le atribuye. Se auditó por eso el Capítulo 3 completo, afirmación por afirmación, yendo al texto de cada fuente y no a lo que la literatura derivada dice de ella. La bibliografía pasó de 71 a 79 entradas, todas citadas, y el capítulo cambió en veinte lugares.
+
+Lo que sobrevivió intacto es la cifra que sostiene la comparación de desempeño. Pontius y colegas reportan en efecto seis de trece aplicaciones con FoM por debajo de 0,15 y una sola por encima de 0,50, con un rango de 0,01 a 0,59. Y Tang reporta 0,4303 y 0,3764, como ya se había cotejado.
+
+El hallazgo de mayor consecuencia toca al aparato conceptual del propio método. El *Information Value* no pertenece a la formulación de Pesos de Evidencia de Bonham-Carter: el capítulo 9 de su libro trabaja con los pesos, el contraste y su varianza, y no menciona el estadístico ni su escala de interpretación. La fórmula y los cinco tramos que usa la tesis son la convención de las tarjetas de puntuación de riesgo de crédito atribuida a Siddiqi (2006). El riesgo era doble, porque en la literatura geoespacial *information value* ya nombra un método bivariado distinto, el de Yin y Yan (1988), que se compara con el WoE como rival. La matemática de la tesis es correcta, pues el estadístico equivale a la divergencia de Kullback-Leibler simetrizada entre las dos distribuciones condicionales; lo que estaba mal era la atribución. Corregida en `cap02:138`, `cap02:179`, `cap02:186` y `cap03:262`.
+
+Se corrigieron además cinco atribuciones que las fuentes no sostenían. La equifinalidad se atribuía a Clarke; ahora va a Beven (2006), de donde viene el término, y la discusión sobre calibración óptima de SLEUTH a Dietzel y Clarke. La automodificación y el esquema de búsqueda en tres fases van a Clarke y Hoppen (1997), y la sensibilidad a la escala a Jantz y Goetz (2005). La crítica al coeficiente Kappa se atribuía a Pontius y colegas (2008), artículo donde la palabra «Kappa» no aparece; corresponde a Pontius y Millones (2011), que se titula precisamente *Death to Kappa*. La concentración geográfica de la literatura en China y Estados Unidos se atribuía a dos revisiones que no desglosan por región; ahora se respalda con Wahyudi y Liu (2016), que clasifica ochenta y ocho aplicaciones por región. Y la autocorrelación espacial se atribuía a Bonham-Carter, que en realidad trata la celda unitaria y llega a una conclusión casi opuesta; el respaldo correcto es la literatura de validación de modelos espaciales.
+
+Dos afirmaciones estaban desactualizadas y una invertida. Sobre el licenciamiento, Dinamica EGO es gratuito incluso para uso comercial y TerrSet se liberó sin costo en diciembre de 2024, así que el argumento de barrera económica ya no existe; reformulado como código cerrado, que es lo que en realidad exige el requerimiento R3 y no depende del precio. Sobre Wang (2021), el capítulo reprochaba que sus cromosomas carecieran de lectura geográfica, cuando cada gen es una celda del territorio; la objeción defendible, que es la que ahora aparece, es que se trata de una optimización normativa sin validación contra un mapa observado. Y el espacio de búsqueda de SLEUTH es del orden de 10¹⁰ combinaciones, no 10⁹.
+
+En la literatura mexicana el capítulo era injusto con dos trabajos. Suárez y Delgado sí calibran sobre cambio celular histórico, en 15 670 celdas de una hectárea con 82,9 % de aciertos, y publican todos sus coeficientes, de modo que su función de asignación es auditable; se les subió el requerimiento R4 de «no» a cumplido. Y el modelo de Ramírez Hernández no está inspirado en SLEUTH: es econométrico con simulación Monte Carlo, y el libro solo menciona SLEUTH al reseñar a terceros.
+
+### 7.11 Un antecedente que obligó a precisar el alcance
+
+La auditoría encontró un trabajo que el capítulo no citaba y que afecta al posicionamiento. Jiménez López, Chávez y Garrocho, de El Colegio Mexiquense, simularon con autómatas celulares la expansión de Querétaro entre 2003 y 2017, con un barrido de las 256 reglas de transición posibles, y reportan para la regla ganadora un Kappa de Cohen de 0,53 y un índice de Jaccard de 0,76. El mismo grupo generalizó el método en 2021 en *Estudios Demográficos y Urbanos* y declara código abierto. Ambos datos se verificaron contra el PDF original y contra Crossref.
+
+La tesis afirmaba que ningún trabajo mexicano cumple los cuatro requerimientos y que Querétaro es una ciudad poco estudiada. Lo primero se sostiene, porque esos trabajos validan una sola ventana temporal por ciudad y su regla de transición es binaria sobre el estado de la vecindad, sin pesos por variable. Lo segundo no. Se optó por citarlos, incorporarlos a la tabla de posicionamiento y reformular la brecha: la aportación no está en el caso de estudio sino en la combinación de validación en cinco ventanas desplazadas, implementación abierta y una función de transición con pesos individualmente auditables. Ajustado en `cap03`, y en las aportaciones de `cap05` y `cap07`, donde se retiró el calificativo de ciudad poco estudiada.
+
+Preferimos que el capítulo cite a ese grupo y acote su propia aportación, antes que sostener un «ningún trabajo» que cualquier sinodal refuta en dos minutos.
+
+### 7.12 Por qué las cifras de ese antecedente no son un punto de comparación
+
+Citar ese trabajo abrió un riesgo que conviene cerrar de forma explícita, porque sus números son, en apariencia, mejores que los de esta tesis: Kappa de 0,53 frente a un promedio de 0,445, y Jaccard de 0,76 frente a un IoU promedio de 0,633. Leídos sin más, invitarían a concluir que el antecedente supera al modelo propuesto.
+
+La diferencia no está en la métrica sino en el diseño experimental. En ese trabajo el mapa observado de 2017 cumple dos funciones a la vez: es el criterio con el que se elige la regla de transición entre las 256 posibles, y es también el mapa contra el cual se mide el ajuste de la regla elegida. Se resuelve un máximo sobre el espacio de reglas y después se publica ese máximo como desempeño, de modo que la cifra reportada no es una estimación independiente. El sesgo optimista de un procedimiento así crece con el tamaño del espacio explorado, y aquí el espacio es la totalidad de las reglas. A eso se suma que la regla seleccionada se usa para proyectar a 2031 sin ningún intervalo posterior observado que permita comprobar si conserva su desempeño, y que cada ciudad recibe su propio óptimo (192 para Querétaro, 218 para San Luis Potosí, 222 para Toluca), por lo que las tres aplicaciones demuestran capacidad de ajuste individual y no generalización entre sitios.
+
+El esquema de esta tesis es el contrario, y está documentado en `data/processed/quinquenal_best_config.json` y en `cap06:156`: los pesos WoE, su ponderación por *Information Value* y el umbral de transición se fijan con la serie de 1984 a 2010, y las cinco ventanas de 2011 a 2020 se evalúan sin reajustar nada. Los parámetros quedan congelados antes de observar el período de evaluación, y se reporta el rango completo de las cinco ventanas en lugar del valor más favorable. Esa es la razón por la que las dos familias de cifras no son comparables, y quedó declarada en `cap03`, en la tabla comparativa de `cap06:243` y en las aportaciones de `cap07`.
+
+Para que el contraste sea verificable conviene dejar por escrito cuántas constantes tiene la regla de transición, porque son dos y sólo dos. La línea que combina evidencias es una sola en cada script de validación (`run_all_quinquenal_validations.py:197` y `validate_quinquenal_2011_2016.py:232`) y en ella entran el umbral $\theta = 0{,}75$ y el peso de vecindad $\alpha = 0{,}50$. Nada más. El umbral está justificado en `cap06:156` por la sobre-predicción que producían los valores del rango 0,40 a 0,60. El peso de vecindad es un valor redondo fijado a priori, que da a la vecindad la mitad del peso de la probabilidad WoE, y es el mismo para los cinco períodos: no se reeligió por ventana ni se ajustó contra los mapas de evaluación. Frente a una regla distinta por ciudad elegida contra el mapa que después se usa para medir, la diferencia de diseño se sostiene.
+
+Un detalle del repositorio, por si alguien consulta los archivos de configuración. `data/processed/ga_calibrated_params.json` conserva tres campos del experimento exploratorio con algoritmos genéticos, y la validación publicada usa uno. El umbral de 0,596 queda sustituido por 0,75 en el propio script (`run_all_quinquenal_validations.py:58`). El campo `distance_weight` con valor 1,963 se lee y se escribe en la bitácora, pero no interviene en ningún cálculo: su única aparición es la copia al diccionario de parámetros (`run_all_quinquenal_validations.py:306`). Por eso no figura en el documento. El modelo de esta tesis no tiene peso de distancia, y el peso de vecindad de 0,50 es el único valor que hereda de ese experimento.
 
 ---
 

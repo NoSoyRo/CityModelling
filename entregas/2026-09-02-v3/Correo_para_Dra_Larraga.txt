@@ -1,0 +1,83 @@
+Asunto: Tesis — auditoría de fuentes del estado del arte y correcciones derivadas
+
+Estimada Dra. Lárraga:
+
+Le envío una nueva versión de la tesis. En la sesión me pidió que toda cifra
+llevara su referencia. Llevé el requisito un paso más allá y auditué el
+Capítulo 3 completo afirmación por afirmación, revisando el texto de cada
+fuente en lugar de lo que la literatura derivada dice de ella. Encontré cosas
+que conviene que sepa antes de leer, porque cambiaron el capítulo en veinte
+lugares y afectaron también a los capítulos 1, 2, 5, 6 y 7.
+
+La corrección más importante toca el aparato conceptual del método. El
+Information Value, que el modelo usa para ponderar las variables, no pertenece
+a la formulación de Pesos de Evidencia de Bonham-Carter, como afirmaba el
+marco teórico. Es la convención de las tarjetas de puntuación de riesgo de
+crédito, y el detalle no es menor porque en la literatura geoespacial ese
+mismo nombre designa otro método distinto, con el que se lo compara como
+rival. La matemática del modelo es correcta: el estadístico equivale a la
+divergencia de Kullback-Leibler simetrizada entre las dos distribuciones
+condicionales. Lo que estaba mal era la atribución, y ya quedó declarada con
+precisión, junto con la advertencia sobre la ambigüedad del término.
+
+Corregí además cinco atribuciones que las fuentes citadas no sostenían. Entre
+ellas, la crítica al coeficiente Kappa, que estaba asignada a un artículo
+donde esa palabra no aparece, y la concentración geográfica de la literatura,
+atribuida a dos revisiones que no desglosan por región. También reformulé el
+argumento sobre software: Dinamica EGO es gratuito y TerrSet se liberó sin
+costo en diciembre de 2024, de modo que la barrera ya no es económica sino de
+código cerrado, que es en realidad lo que exige el requerimiento de apertura.
+
+Hay un punto que quiero someter a su criterio, porque toca el posicionamiento
+del trabajo. La auditoría encontró un antecedente que no citaba: Jiménez
+López, Chávez y Garrocho, de El Colegio Mexiquense, simularon con autómatas
+celulares la expansión de Querétaro entre 2003 y 2017 y reportan un Kappa de
+Cohen de 0,53 y un índice de Jaccard de 0,76. La tesis afirmaba que Querétaro
+era una ciudad poco estudiada, y eso no se sostiene. Opté por citarlos,
+incorporarlos a la tabla de posicionamiento y precisar la aportación: no está
+en el caso de estudio sino en el protocolo, es decir en la validación sobre
+cinco ventanas quinquenales desplazadas y en una función de transición cuyos
+pesos por variable son auditables uno por uno. Me parece preferible que el
+capítulo cite a ese grupo y acote su propio alcance, antes que sostener una
+afirmación de vacío que resulta fácil de refutar en el examen. Si usted
+considera que conviene otro tratamiento, lo ajusto.
+
+Sus cifras son, en apariencia, mejores que las mías, y por eso dejé explícito
+en el texto por qué no son comparables. En ese trabajo el mapa observado de
+2017 sirve a la vez para elegir la regla de transición entre las 256 posibles
+y para medir el ajuste de la regla elegida, de modo que el número publicado es
+el máximo de una búsqueda y no una prueba independiente; además la regla se
+usa para proyectar a 2031 sin ningún período posterior que la confirme, y cada
+ciudad recibe su propio óptimo. En esta tesis los pesos, su ponderación y el
+umbral se fijan con la serie de 1984 a 2010 y las cinco ventanas de 2011 a
+2020 se evalúan sin reajustar nada, reportando el rango completo y no el valor
+más favorable. Lo señalo en el capítulo 3, en la tabla comparativa del
+capítulo 5 y en las aportaciones del capítulo 6, en los tres casos sin
+descalificar el trabajo ajeno, que es explícito sobre su propio procedimiento.
+
+Aproveché para corregir en la literatura mexicana dos descripciones que eran
+injustas con los autores originales. Suárez y Delgado sí calibran sobre cambio
+celular histórico, en 15 670 celdas con 82,9 % de aciertos, y publican todos
+sus coeficientes. Y el modelo de Ramírez Hernández no está inspirado en
+SLEUTH: es econométrico con simulación Monte Carlo.
+
+Adjunto dos archivos:
+
+1. Tesis_Moreno_Lopez_2026-09-02.pdf — 129 páginas, texto buscable, sin
+   errores de compilación ni referencias indefinidas. La bibliografía tiene
+   79 entradas, todas citadas.
+
+2. Reporte_cumplimiento_2026-09-02.pdf — el recorrido de los 25 acuerdos y los
+   33 detalles de la sesión, con la evidencia en archivo y línea. Si solo
+   tuviera tiempo para una parte, las secciones 7.10 a 7.12 son las que
+   documentan esta auditoría, el antecedente de Querétaro y por qué sus cifras
+   no constituyen un punto de comparación.
+
+Queda pendiente cotejar el título contra la carta del jurado, y el escudo
+institucional de la portada, que son los dos insumos que no tengo.
+
+Agradezco su tiempo y quedo atento a sus comentarios.
+
+Un saludo cordial,
+
+José Rodrigo Moreno López

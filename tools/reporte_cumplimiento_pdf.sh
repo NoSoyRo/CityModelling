@@ -18,7 +18,7 @@ pandoc "$cuerpo" -o "$salida" \
   --toc --toc-depth=2 \
   --metadata title="Cumplimiento de la sesión con la Dra. Lárraga" \
   --metadata author="José Rodrigo Moreno López" \
-  --metadata date="23 de agosto de 2026" \
+  --metadata date="2 de septiembre de 2026" \
   --include-in-header="$cabecera" \
   -V lang=es \
   -V geometry:margin=2.3cm \

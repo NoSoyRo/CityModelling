@@ -68,7 +68,10 @@ urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una
 metropolitana que rebasó el millón y medio de habitantes tras décadas de expansión
 sostenida \parencite{CONAPO2018Delimitacion,INEGI2020Censo}. 
 
-Este patrón obervado, que por cierto no ha sido suficientemente modelado para la ZMQ, impide claramente anticipar donde y a qué velocidad se producirá la siguiente oleada de expansión: información que es sumamente importancia si se desean planear usos de recursos para la creación de la infraestructura necesaria para el crecimiento urbano.
+Ese patrón se ha documentado para Querétaro en relación con la producción de vivienda
+\parencite{ObservatorioCiudades2022Queretaro}, e impide anticipar dónde y a qué velocidad se
+producirá la siguiente oleada de expansión: información necesaria para planear el uso de
+recursos y la infraestructura que el crecimiento urbano demanda.
 
 Como instancia
 concreta de este problema, la predicción del crecimiento urbano, el trabajo implementa la solución usando el modelo que integra automatas celulares con pesos de evidencia y con validaciones multitemporales sobre un conjunto de datos enriquecidossobre la ZMQ. Para que un modelo de simulación sea útil como herramienta
@@ -111,7 +114,7 @@ En cualquier ciudad es poco frecuente disponer de un modelo que simule y haga pr
 
 \section{Antecedentes}
 
-El modelado del crecimeinto o las soluciones al problema del crecimiento urbano cuenta con muchos estudios que se pueden agrupar segun el tipo de fucnion de transición que implementan. Desde los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic,Gomez2020} alcanzan concordancia espacial alta en los casos publicados, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Por otro lado los metaheurísticos \parencite{Wang2021} sustituyen los pesos por cromosomas, con la misma consecuencia para la interpretabilidad asi como su convergencia a una solución óptiuma toma mucho tiempo y recursos computacionales. Los modelos de caja blanca más citados \parencite{Clarke1998,Sante2010,Aburas2016} atienden la interpretabilidad, pero en la mayoría de los casos se validan sobre un único período quinquenal, sin que sea posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento.
+El modelado del crecimeinto o las soluciones al problema del crecimiento urbano cuenta con muchos estudios que se pueden agrupar segun el tipo de fucnion de transición que implementan. Desde los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic,Gomez2020} alcanzan concordancia espacial alta en los casos publicados, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Por otro lado los metaheurísticos \parencite{Wang2021} persiguen la configuración urbana que optimiza una función objetivo definida por el analista, de modo que responden a una pregunta normativa y no predictiva, y su convergencia demanda tiempo y recursos computacionales considerables. Los modelos de caja blanca más citados \parencite{Clarke1998,Sante2010,Aburas2016} atienden la interpretabilidad, pero en la mayoría de los casos se validan sobre un único período quinquenal, sin que sea posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento.
 
 Los trabajos representativos para ciudades mexicanas \parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} satisfacen parcialmente R1 y R2, pero no R3 ni R4 de la tabla de requerimeintos. Las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado principalmente en contextos internacionales, con dinámicas de crecimiento y fuentes de datos distintas a las ciudades intermedias del país. El análisis detallado de estos trabajos se desarrolla en el Capítulo~\ref{ch:estado-del-arte}.
 

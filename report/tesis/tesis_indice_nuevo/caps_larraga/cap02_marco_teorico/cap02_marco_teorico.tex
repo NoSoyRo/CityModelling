@@ -135,7 +135,7 @@ donde $W_{i,j}$ es la idoneidad espacial asignada por el método WoE (definida a
 \label{sec:woe}
 % ============================================================
 
-El método de \textbf{Pesos de Evidencia} (Weight of Evidence, WoE) es una técnica estadística de origen bayesiano que cuantifica la asociación entre una variable espacial y la ocurrencia de un evento, en este caso la transición de suelo no-urbano a urbano \parencite{BonhamCarter1994}. Fue desarrollado originalmente en el contexto de la predicción de depósitos minerales y posteriormente adaptado al análisis de cambio de uso de suelo.
+El método de \textbf{Pesos de Evidencia} (Weight of Evidence, WoE) es una técnica estadística de origen bayesiano que cuantifica la asociación entre una variable espacial y la ocurrencia de un evento, en este caso la transición de suelo no-urbano a urbano \parencite{BonhamCarter1994}. Fue formulado originalmente para el diagnóstico médico, adaptado a finales de los años ochenta al mapeo de potencial mineral con sistemas de información geográfica \parencite{BonhamCarter1989} y posteriormente al análisis de cambio de uso de suelo.
 
 \subsection{Formulación del método}
 
@@ -176,14 +176,14 @@ El cálculo de los pesos se realiza sobre datos históricos de transición, lo q
 \subsection{Information Value y ponderación de variables}
 \label{ssec:information-value}
 
-La ecuación~\ref{eq:woe_total} trata a todas las variables por igual. Eso rara vez es deseable, porque unas discriminan la transición mejor que otras. El \textbf{Information Value} (IV) mide esa capacidad discriminante por variable, agregando sobre todos sus bins la diferencia entre la distribución de los casos con transición y la de los casos sin transición, ponderada por el peso de cada bin \parencite{BonhamCarter1994}:
+La ecuación~\ref{eq:woe_total} trata a todas las variables por igual. Eso rara vez es deseable, porque unas discriminan la transición mejor que otras. El \textbf{Information Value} (IV) mide esa capacidad discriminante por variable, agregando sobre todos sus bins la diferencia entre la distribución de los casos con transición y la de los casos sin transición, ponderada por el peso de cada bin. Conviene precisar su procedencia, porque el estadístico no forma parte de la formulación del WoE de \textcite{BonhamCarter1994}, sino de la práctica de construcción de tarjetas de puntuación en riesgo de crédito \parencite{Siddiqi2006}, donde acompaña de forma habitual al mismo peso $W^+$; formalmente equivale a la divergencia de Kullback-Leibler simetrizada entre las dos distribuciones condicionales. Debe señalarse también que en la literatura de susceptibilidad geoespacial el término \textit{information value} designa un método bivariado distinto \parencite{YinYan1988}, que aquí no se emplea:
 
 \begin{equation}
 IV = \sum_{b} \left[ P(X = b \mid \text{transición}) - P(X = b \mid \text{no transición}) \right] \, W^+(b)
 \label{eq:information_value}
 \end{equation}
 
-El IV es no negativo y crece cuando las dos distribuciones se separan. La escala convencional de interpretación lo divide en cinco tramos: por debajo de $0{,}02$ la variable no tiene valor predictivo; entre $0{,}02$ y $0{,}10$ es débil; entre $0{,}10$ y $0{,}30$, medio; entre $0{,}30$ y $0{,}50$, fuerte; y por encima de $0{,}50$ se considera muy fuerte, con la advertencia de que valores muy altos suelen indicar sobreajuste o un bin que separa el resultado de forma trivial.
+El IV es no negativo y crece cuando las dos distribuciones se separan. La escala convencional de interpretación, tomada de esa misma práctica \parencite{Siddiqi2006}, lo divide en cinco tramos: por debajo de $0{,}02$ la variable no tiene valor predictivo; entre $0{,}02$ y $0{,}10$ es débil; entre $0{,}10$ y $0{,}30$, medio; entre $0{,}30$ y $0{,}50$, fuerte; y por encima de $0{,}50$ se considera muy fuerte, con la advertencia de que valores muy altos suelen indicar sobreajuste o un bin que separa el resultado de forma trivial.
 
 Con el IV se puede sustituir la suma simple por una suma ponderada, en la que cada variable contribuye en proporción a su capacidad discriminante:
 
@@ -346,7 +346,7 @@ La \textbf{Intersection over Union} (IoU) sobre la clase urbana complementa al F
 
 \subsection{Descomposición del error}
 
-Saber cuánto error total comete un modelo no dice si ese error proviene de predecir una extensión de cambio equivocada o de localizarlo mal. \textcite{pontius2008comparing} propone una descomposición que separa ambas fuentes, formalizada después por \textcite{PontiusMillones2011}.
+Saber cuánto error total comete un modelo no dice si ese error proviene de predecir una extensión de cambio equivocada o de localizarlo mal. \textcite{PontiusMillones2011} formalizan una descomposición que separa ambas fuentes, el desacuerdo de cantidad y el de asignación, y recomiendan reportarlas por separado en lugar de resumirlas en un índice de la familia Kappa.
 
 El \textbf{desacuerdo de cantidad} (\textit{quantity disagreement}) ocurre cuando el modelo predice un total de celdas en transición distinto al observado, sin importar dónde. El \textbf{desacuerdo de asignación} (\textit{allocation disagreement}) aparece cuando el total es correcto pero las celdas están en lugares equivocados. Para dos clases, ambos se obtienen de la matriz de confusión:
 

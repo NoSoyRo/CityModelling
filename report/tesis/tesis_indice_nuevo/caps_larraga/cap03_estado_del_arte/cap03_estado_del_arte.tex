@@ -7,7 +7,7 @@
 \label{ch:estado-del-arte}
 
 \begin{resumen}
-El modelado computacional del crecimiento urbano ha producido en treinta años una literatura rica pero metodológicamente heterogénea. Este capítulo no ordena trabajos por autor sino que identifica los cuatro problemas metodológicos que siguen abiertos en el campo: calibración por fuerza bruta, validación sobreajustada a una sola ventana temporal, opacidad de la función de transición en los modelos de aprendizaje profundo, y dependencia de software propietario. Se muestra cómo cada uno justifica una decisión concreta del diseño del modelo propuesto. La discusión concluye con un mapa de la literatura para ciudades mexicanas, donde ningún trabajo publicado satisface simultáneamente los cuatro requerimientos (R1--R4) de simulación histórica con precisión, soporte a planeación estratégica, replicabilidad y apertura, e interpretabilidad de la función de transición que motivaron esta investigación.
+El modelado computacional del crecimiento urbano ha producido en treinta años una literatura rica pero metodológicamente heterogénea. Este capítulo no ordena trabajos por autor sino que identifica los cuatro problemas metodológicos que siguen abiertos en el campo: calibración por fuerza bruta, validación sobreajustada a una sola ventana temporal, opacidad de la función de transición en los modelos de aprendizaje profundo y dependencia de software de código cerrado. Se demuestra y deduce cómo cada uno justifica una decisión concreta del diseño del modelo propuesto. La discusión concluye con un mapa de la literatura para ciudades mexicanas, que incluye antecedentes de autómatas celulares aplicados a Querétaro, y donde ninguno de los trabajos revisados satisface simultáneamente los cuatro requerimientos (R1-R4) de simulación histórica con precisión, soporte a planeación estratégica, replicabilidad y apertura, e interpretabilidad de la función de transición que motivaron esta investigación.
 \end{resumen}
 
 % ============================================================
@@ -15,18 +15,25 @@ El modelado computacional del crecimiento urbano ha producido en treinta años u
 \label{sec:evolucion}
 % ============================================================
 
-El modelado de la dinámica urbana mediante autómatas celulares empezó con
-\textcite{White1997}, cuyo trabajo mostró que reglas locales basadas en distancia y
-vecindad podrían reproducir patrones macroscópicos realistas en ciudades. El siguiente nivel
-del enfoque fue introducido con SLEUTH en \parencite{Clarke1998,Silva2002}, que durante dos
-décadas fue la referencia del campo, y que se aplicó en decenas de ciudades.
+El uso de autómatas celulares para representar fenómenos geográficos fue propuesto por
+\textcite{Tobler1979} y formalizado en términos teóricos por \textcite{Couclelis1985}. Su
+aplicación al crecimiento urbano se consolidó con \textcite{White1993}, cuyo modelo mostró que
+reglas locales basadas en distancia y vecindad reproducen estructuras de uso de suelo con
+propiedades fractales comparables a las medidas en ciudades reales; \textcite{White1997} extendió
+después ese esquema acoplando el autómata a un sistema de información geográfica y a modelos
+regionales. El siguiente nivel del enfoque llegó con el modelo que hoy se conoce como SLEUTH,
+aplicado primero a la bahía de San Francisco y al corredor Washington-Baltimore
+\parencite{Clarke1998}; el acrónimo se consolidó con la aplicación a Lisboa y Oporto
+\parencite{Silva2002}. Una década más tarde \textcite{Clarke2008} contabilizaba más de cien
+aplicaciones documentadas, lo que lo mantuvo durante dos décadas como la referencia del campo.
 
 El marco conceptual que sostiene ese enfoque, la ciudad entendida como sistema complejo
 cuyo patrón macroscópico emerge de interacciones locales, quedó sistematizado
 en \textcite{Batty2005}, que examina en un mismo tratamiento los autómatas celulares, los
 modelos basados en agentes y las descripciones fractales. La mecánica interna de esos
-modelos, es decir de qué piezas se compone un modelo celular urbano y cómo se articulan,
-está descrita en \textcite{Torrens2000}. El enfoque conserva vigencia:
+modelos, es decir de qué piezas se compone un modelo celular urbano y cómo debe modificarse
+el formalismo del autómata para representar una ciudad, está descrita en el plano teórico
+por \textcite{Torrens2000}. El enfoque conserva vigencia: puesto que 
 \textcite{Arfiansyah2024} lo aplicó a Nusantara, la capital planificada de Indonesia, un
 caso de ciudad de nueva creación.
 
@@ -55,7 +62,8 @@ genético para optimizar la forma urbana de Wuhan, mientras que
 para relaciones espaciales no lineales en vivienda y calidad del aire, no
 como modelo de crecimiento urbano. Estos enfoques reportan
 ganancias cuantitativas en sus métricas, pero sustituyen parámetros legibles por activaciones
-internas o cromosomas que no admiten una lectura geográfica directa; en esa medida, no son auditables respecto de lo que aprenden.
+internas que no admiten una descomposición por variable; en esa medida, no son auditables
+respecto de lo que aprenden.
 
 La disyuntiva de fondo no es autómatas celulares frente a aprendizaje
 automático. Es una tensión entre dos objetivos que a priori parecen
@@ -74,29 +82,35 @@ equifinalidad en la calibración, sobreajuste en la validación, opacidad en la 
 \subsection{Calibración: equifinalidad y costo computacional}
 
 La calibración de SLEUTH, cuyos componentes se definen en el Capítulo~\ref{ch:marco-teorico}, se resuelve mediante búsqueda por fuerza bruta
-sobre un espacio discreto del orden de $10^9$
-combinaciones \parencite{Silva2002,Clarke2008}, cada una evaluada con simulaciones
-Monte Carlo de múltiples iteraciones. \textcite{Silva2002} y \textcite{Clarke2008} estructuraron la
-búsqueda en tres fases sucesivas (gruesa, fina y final) que estrechan
-iterativamente el rango de cada coeficiente; aun así, una calibración
+sobre el espacio de sus cinco coeficientes de crecimiento, cada uno acotado al intervalo
+entero $[0,100]$, lo que da del orden de $10^{10}$
+combinaciones posibles \parencite{Silva2002,Clarke2008}, cada una evaluada con simulaciones
+Monte Carlo de múltiples iteraciones. El procedimiento habitual estrecha la
+búsqueda en tres fases sucesivas (gruesa, fina y final), esquema planteado ya en la
+formulación original del autómata auto-modificable \parencite{ClarkeHoppen1997} y discutido
+después de forma sistemática por \textcite{Dietzel2007}; aun así, una calibración
 completa puede tomar más de una semana en un clúster de la época
 \parencite{Jantz2003}. A esa carga se añaden dos rasgos que
 agravan la dificultad. Primero, SLEUTH es un autómata \emph{auto-modificable}:
-los coeficientes de \emph{spread} se reescriben durante la propia corrida en
-respuesta a la tasa de crecimiento, de modo que el resultado depende de la
-trayectoria seguida y no solo de los valores iniciales \parencite{Clarke1998}.
+los coeficientes de crecimiento se reescriben durante la propia corrida en
+respuesta a la tasa de crecimiento agregada, de modo que el resultado depende de la
+trayectoria seguida y no solo de los valores iniciales \parencite{ClarkeHoppen1997}.
 Segundo, los coeficientes calibrados son sensibles a la resolución espacial de
-los datos, por lo que un conjunto ajustado a una escala no se transfiere
-directamente a otra. Sobre esa base aparece el problema metodológico de fondo,
+los datos: \textcite{JantzGoetz2005} muestran que un conjunto ajustado a una escala no se
+transfiere directamente a otra. Sobre esa base aparece el problema metodológico de fondo,
 que no es solo el costo: es la \textbf{equifinalidad}, esto es, la existencia de
 múltiples combinaciones de coeficientes que producen patrones indistinguibles
-para la métrica de calibración pero divergen en las proyecciones de largo plazo
-\parencite{Clarke2008}. Sin un criterio adicional, la elección entre
-combinaciones equifinales termina dependiendo de quien realiza la calibración.
-A ello se suma un riesgo de \textbf{sobreajuste de calibración}: como el ajuste se
+para la métrica de calibración pero divergen en las proyecciones de largo plazo. El
+término proviene del modelado ambiental, donde \textcite{Beven2006} argumenta que aceptar la
+existencia de múltiples parametrizaciones aceptables debe llevar a reportar el conjunto de
+soluciones y no un óptimo único. En el caso de SLEUTH, la discusión sobre qué constituye una
+calibración óptima permanece abierta \parencite{Dietzel2007}, y sin un criterio adicional la
+elección entre combinaciones equifinales termina dependiendo de quien realiza la calibración.
+De ahí se sigue, como inferencia de este trabajo y no como resultado reportado en esa
+literatura, un riesgo de \textbf{sobreajuste de calibración}: como el ajuste se
 optimiza contra un único intervalo histórico, los coeficientes pueden reproducir muy
 bien esa ventana y, sin embargo, degradarse al proyectar otro horizonte, sin que la
-propia métrica de calibración lo advierta \parencite{Jantz2003,Silva2002}.
+propia métrica de calibración lo advierta.
 Esta combinación de costo, dependencia de trayectoria y equifinalidad es,
 precisamente, lo que motiva la estrategia de validación multi-ventana que se
 adopta más adelante: una sola ventana temporal no basta para distinguir un
@@ -112,15 +126,21 @@ parámetros distintos con el mismo ajuste.
 
 \subsection{Validación: sobreajuste temporal y métricas no comparables}
 
-\textcite{pontius2008comparing} analizó trece simulaciones independientes de
-nueve modelos de cambio de uso de suelo y propuso el Figure of Merit (FoM) como
-métrica estándar comparable entre estudios. Su resultado es poco alentador para el campo: seis de
+\textcite{pontius2008comparing} reunieron trece aplicaciones de nueve modelos de
+cambio de uso de suelo sobre doce sitios y las compararon con un mismo
+procedimiento estadístico. El Figure of Merit (FoM), que el propio artículo toma de la
+literatura previa sobre comparación de campos espaciales, quedó ahí consolidado como la
+medida de referencia para comparar desempeño entre estudios. Su resultado es poco
+alentador para el campo: los valores se reparten entre $0{,}01$ y $0{,}59$, seis de
 las trece aplicaciones obtienen FoM inferior a $0{,}15$ y solo una supera
-$0{,}50$. La dispersión o variabilidad no se explica por la complejidad del modelo sino por la
-magnitud del cambio neto observado: el FoM tiende a ser mayor cuando el
-porcentaje de celdas que efectivamente cambian de estado es mayor
-\parencite{pontius2008comparing}. Dicho de otra forma, el FoM \emph{excluye}
-las celdas que no cambian; no las penaliza.
+$0{,}50$. La dispersión no se explica por las características del modelo sino por la
+magnitud del cambio neto observado: en esa muestra el FoM crece con el
+porcentaje de celdas que efectivamente cambian de estado, con un $R^2$ de $0{,}40$ que
+asciende a $0{,}88$ al excluir dos aplicaciones de formato heterogéneo
+\parencite{pontius2008comparing}. Conviene precisar qué mide: el FoM \emph{excluye} del
+cálculo las celdas donde se observó permanencia y el modelo predijo permanencia, de modo
+que la estabilidad correctamente reproducida no infla la medida; en cambio sí penaliza las
+celdas estables que el modelo predice como cambio, porque entran en el denominador.
 
 Esto tiene dos implicaciones que la literatura rara vez confronta. La primera,
 \textbf{validar en una sola ventana temporal es estadísticamente insuficiente}:
@@ -140,8 +160,8 @@ El protocolo concreto se describe en el Capítulo~\ref{ch:modelo-crecimiento-urb
 
 Vale la pena confrontar una contradicción que la literatura rara vez coloca lado
 a lado. Por un lado, los trabajos de aprendizaje automático y profundo reportan
-mejoras de concordancia espacial frente a los autómatas celulares clásicos
-\parencite{almeida2008stochastic}; por otro, la comparación multi-sitio de
+mejoras de concordancia espacial en sus propios casos de estudio
+\parencite{almeida2008stochastic,Gomez2020}; por otro, la comparación multi-sitio de
 \textcite{pontius2008comparing} muestra que la dispersión del FoM entre trece
 aplicaciones no se explica por la sofisticación del modelo, sino por la magnitud
 del cambio neto del periodo evaluado. Las dos observaciones no se contradicen en
@@ -151,7 +171,7 @@ $0{,}20$ obtenido en una con $5\%$, y aun así ambos se citan como evidencia
 directa de que un modelo supera a otro. La consecuencia es incómoda pero
 ineludible: buena parte de los \textit{rankings} de desempeño publicados
 confunden la dificultad del caso con la calidad del modelo. Algo análogo ocurre
-con la calibración de SLEUTH \parencite{Clarke2008,Silva2002}: dos conjuntos de
+con la calibración por fuerza bruta \parencite{Beven2006,Dietzel2007}: dos conjuntos de
 coeficientes que empatan en la métrica de ajuste pueden divergir en la
 proyección a largo plazo, de modo que reportar un único conjunto de
 coeficientes sin declarar los demás que alcanzan el mismo ajuste transmite una
@@ -165,21 +185,26 @@ rango completo en lugar de un único valor favorable.
 \textcite{almeida2008stochastic} entrenó una red neuronal feedforward con
 backpropagation sobre variables biofísicas e infraestructurales de Piracicaba
 (Brasil, 1985--1999); la red aprende pesos sinápticos que alimentan a un CA
-estocástico. El modelo reporta concordancia espacial superior a los AC clásicos
-de la época, pero los pesos no son transformables o explicables a una pregunta geográfica, es decir, no se
+estocástico. El trabajo reporta un ajuste satisfactorio para ese caso, pero los pesos
+no son transformables o explicables a una pregunta geográfica, es decir, no se
 puede afirmar que ``la distancia a vialidades contribuyó un $X\%$ a la
 transición de esta celda''. La activación de cada neurona es una combinación no
 lineal de todas las variables de entrada, sin descomposición legible: no es
 auditable respecto de lo que aprende.
 
-Trabajos posteriores intensifican esta opacidad por dos vías. La primera es la
-optimización metaheurística: \textcite{Wang2021} integra un autómata celular a
+A esa dificultad se añaden dos limitaciones de naturaleza distinta. La primera
+concierne al propósito del modelo: \textcite{Wang2021} integra un autómata celular a
 un algoritmo genético para generar formas urbanas que maximizan un índice de
-vitalidad en Wuhan, donde cada generación produce cromosomas que carecen de
-lectura geográfica directa. La segunda es el aprendizaje profundo aplicado a
-teledetección \parencite{Ma2019}, que suele requerir conjuntos anotados grandes
-y, en la práctica, hardware gráfico para entrenar redes cuyas
-representaciones internas no son auditables. La ganancia en exactitud es
+vitalidad en Wuhan. Su codificación sí es legible, pues cada gen corresponde a una celda
+del territorio, pero el ejercicio es normativo antes que predictivo: busca la
+configuración urbana deseable bajo una función objetivo definida por el analista y no
+contrasta su resultado contra un mapa observado posterior, de modo que no ofrece
+evidencia sobre la capacidad de reproducir el crecimiento histórico que exige R1. La
+segunda es el aprendizaje profundo aplicado a teledetección, cuya revisión sistemática
+\parencite{Ma2019} documenta que la disponibilidad de datos de entrenamiento
+etiquetados es una de las dificultades recurrentes del área; las representaciones
+internas de esas redes, por su parte, no admiten la descomposición por variable que aquí
+interesa. La ganancia en exactitud es
 real, pero el costo epistémico es alto: el modelo clasifica sin justificar,
 y la justificación es exactamente lo que un instrumento de planeación urbana
 requiere. Un plan municipal sustentado en ``el modelo lo predijo'' es
@@ -193,32 +218,35 @@ transparencia: responde al requerimiento R4 de la
 Tabla~\ref{tab:requerimientos_modelo_1}, que define la auditabilidad como
 condición de uso del modelo, no como propiedad accesoria.
 
-\subsection{Reproducibilidad: software propietario y barreras de acceso}
+\subsection{Reproducibilidad: código cerrado y barreras de acceso}
 
 Una fracción significativa de los modelos LUCC más citados depende de software
-propietario, lo que limita en la práctica la reproducibilidad y la
-transferibilidad de los resultados publicados. Los tres marcos más empleados ilustran el rango de condiciones de acceso, según
-los términos de distribución que declara cada uno: Dinamica EGO
-\parencite{SoaresFilho2002} se obtiene bajo registro con licencia de uso
-académico; IDRISI y su sucesor TerrSet se distribuyen de forma comercial por
-Clark Labs; y SLEUTH \parencite{Clarke1998} publica su código fuente en C, de
-modo que es el único de los tres sin barrera de licencia, aunque su compilación
-en sistemas actuales exige ajustes que la documentación original no cubre. La
-consecuencia práctica es que la reproducibilidad de los resultados publicados
-es, en el mejor de los casos, parcial: el lector puede leer el método pero no
-ejecutarlo sin acceso a infraestructura específica.
+de código cerrado, lo que limita en la práctica la reproducibilidad y la
+transferibilidad de los resultados publicados. Conviene distinguir dos cosas que suelen
+confundirse: la gratuidad del acceso y la apertura del código. En términos de precio, la
+barrera prácticamente ha desaparecido. Dinamica EGO \parencite{SoaresFilho2002} se
+distribuye de forma gratuita para uso académico y comercial, e IDRISI y su sucesor TerrSet,
+comercializados durante tres décadas por Clark Labs, se liberaron sin costo en diciembre de
+2024 bajo el nombre TerrSet liberaGIS. Ninguno de los dos, sin embargo, publica su código
+fuente: el usuario puede ejecutar el modelo pero no inspeccionar cómo calcula lo que
+calcula, ni modificarlo, ni verificar que la implementación corresponda al método descrito
+en el artículo. SLEUTH \parencite{Clarke1998} es la excepción, pues publica su código
+fuente en C, aunque su compilación en sistemas actuales exige ajustes que la documentación
+original no cubre. La consecuencia práctica es que la reproducibilidad de los resultados
+publicados es, en el mejor de los casos, parcial: el lector puede leer el método y correr
+el programa, pero no auditar la correspondencia entre ambos.
 
-Esta dependencia tiene una consecuencia material poco discutida en la
-literatura metodológica: el acceso a licencias y a hardware especializado
-introduce una barrera de entrada que condiciona qué grupos académicos pueden
-reproducir o extender los modelos publicados. En contextos donde estos recursos
-son limitados, la única alternativa práctica es reescribir el pipeline desde
-cero o dedicar un esfuerzo considerable a descifrar requerimientos no documentados.
+Esa distinción importa para el requerimiento R3, que exige apertura y no solo gratuidad.
+Con un ejecutable cerrado, cualquier discrepancia entre lo publicado y lo obtenido es
+indecidible, y extender el método obliga a reescribir el flujo de trabajo desde cero o a
+dedicar un esfuerzo considerable a descifrar requerimientos no documentados.
 Conviene, entonces, una implementación en código abierto sobre imágenes de
 archivo de acceso libre. Hay ya componentes que apuntan en esa dirección, como el conjunto
 de herramientas en Python para análisis de aptitud del suelo
-de \textcite{Chen2022}, y la disponibilidad de datos urbanos abiertos se ha ampliado de
-forma sostenida en la última década \parencite{ArribasBel2014}. En este caso se usan
+de \textcite{Chen2022}. La tendencia es anterior: ya en la década pasada
+\textcite{ArribasBel2014} documentaba la emergencia de datos gubernamentales en formato
+abierto, junto con datos de sensores móviles y de actividad empresarial en línea, como
+fuentes nuevas para el estudio de las ciudades. En este caso se usan
 capturas de Google Earth en
 escritorio, no Google Earth Engine. El Capítulo~\ref{ch:modelo-crecimiento-urbano}
 desarrolla esa implementación.
@@ -228,21 +256,32 @@ desarrolla esa implementación.
 \label{sec:woe-literatura}
 % ============================================================
 
-El método de Pesos de Evidencia, desarrollado por \textcite{BonhamCarter1994}
-en el contexto de la prospección mineral, se formaliza en el Capítulo~\ref{ch:marco-teorico}
+El método de Pesos de Evidencia, formulado originalmente para el diagnóstico médico y
+adaptado al mapeo de potencial mineral en cartografía asistida por computadora
+\parencite{BonhamCarter1989}, se consolidó como procedimiento estándar en el capítulo 9 de
+\textcite{BonhamCarter1994} y se formaliza en el Capítulo~\ref{ch:marco-teorico}
 (ecuación~\ref{eq:woe}): para cada clase de una variable espacial discretizada
 se calcula un peso bayesiano que cuantifica la asociación entre dicha clase y
 la ocurrencia del evento de interés, en este trabajo, la transición de suelo
 no urbano a urbano. El peso total por celda es la suma de los pesos de las
 variables evaluadas en ella, transformada por la función logística para
-obtener una probabilidad acotada (ecuación~\ref{eq:woe_sigmoid}); el
-Information Value sintetiza el poder discriminatorio de cada variable. La
+obtener una probabilidad acotada (ecuación~\ref{eq:woe_sigmoid}). Para ponderar la
+contribución de cada variable se emplea además el Information Value, un estadístico ajeno a
+la formulación original del WoE y tomado de la práctica de construcción de tarjetas de
+puntuación \parencite{Siddiqi2006}, que agrega sobre los bins la separación entre las
+distribuciones condicionales del evento. La
 presente sección no repite la derivación matemática, sino que la sitúa en la
 literatura LUCC.
 
-La adaptación del WoE al modelado de cambio de uso de suelo se consolidó con
-\textcite{SoaresFilho2002} y la familia de modelos \textit{Dinamica EGO}, que
-separan dos preguntas que el campo suele tratar de forma confusa: \emph{cuánto}
+La adaptación del WoE al modelado de cambio de uso de suelo ocurrió dentro de la familia de
+modelos \textit{Dinamica EGO}. Conviene precisar la genealogía, porque a menudo se resume
+mal: la formulación original de \textcite{SoaresFilho2002} calcula las probabilidades de
+transición mediante regresión logística, y la arquitectura admite indistintamente ese
+método o el de Pesos de Evidencia; fue en las aplicaciones urbanas de
+\textcite{Almeida2003} donde la ruta WoE se desarrolló y estimó empíricamente, y en
+\textcite{SoaresFilho2004} donde quedó incorporada al uso corriente del marco para
+escenarios de cambio de cobertura. Lo que ese linaje aporta es una separación que el campo
+suele tratar de forma confusa: \emph{cuánto}
 suelo cambia y \emph{dónde} lo hace. La cantidad de transición se fija con una
 matriz de transición markoviana estimada del cambio histórico, mientras que la
 asignación espacial la resuelve un autómata celular de dos operadores
@@ -260,8 +299,8 @@ por la probabilidad de una red neuronal y la asigna mediante un autómata celula
 con inercia auto-adaptativa y competencia por ruleta. Conviene tomar postura
 sobre la diferencia con el presente trabajo, porque es deliberada: estos marcos
 descomponen el problema en un módulo de cantidad (Markov o demanda exógena) y un
-módulo de localización (CA), y la mayoría se distribuye como software con
-interfaz gráfica o licencia restringida. El esquema de dos módulos ajusta muy
+módulo de localización (CA), y la mayoría se distribuye como software de
+interfaz gráfica y código cerrado. El esquema de dos módulos ajusta muy
 bien la cantidad de cambio, y esa es su fortaleza documentada. Paga el ajuste,
 sin embargo, con una dependencia mayor de software especializado y con una
 frontera difusa entre lo que decide el modelo de demanda y lo que decide el CA.
@@ -277,18 +316,27 @@ explicitar para evitar atribuirle propiedades que no posee:
 \paragraph{Independencia condicional.} La suma de pesos asume que las variables
 son condicionalmente independientes dada la ocurrencia del evento. Ese
 supuesto rara vez se cumple en variables espaciales urbanas: la proximidad a
-vialidades y la proximidad al frente urbano están correlacionadas. El
-presente trabajo no introduce una corrección formal para esta dependencia;
-sigue la práctica estándar de la literatura LUCC, que reporta el sesgo derivado
-mediante el contraste empírico con el cambio observado. Una validación en varios
-períodos añade un diagnóstico: si el sesgo fuera dominante, el FoM degradaría
-sistemáticamente entre ventanas.
+vialidades y la proximidad al frente urbano están correlacionadas, y su violación tiende a
+sobreestimar las probabilidades posteriores más altas. La literatura ofrece pruebas
+formales para diagnosticarlo, entre ellas las pruebas por pares de
+\textcite{BonhamCarter1989}, la prueba ómnibus del capítulo 9 de
+\textcite{BonhamCarter1994}, que considera aceptable un exceso de la suma de
+probabilidades posteriores sobre el número de eventos no mayor al $15$\%, y la prueba
+exacta de \textcite{AgterbergCheng2002}. El
+presente trabajo no las aplica ni introduce una corrección formal para esta dependencia;
+opta por el contraste empírico con el cambio observado, y una validación en varios
+períodos añade un diagnóstico indirecto: si el sesgo fuera dominante, el FoM degradaría
+sistemáticamente entre ventanas. Aplicar la prueba ómnibus sobre las siete variables de
+evidencia queda como línea de trabajo pendiente.
 
 \paragraph{Sensibilidad a la discretización.} Los pesos dependen de cómo se
-categorice cada variable continua. Una opción reproducible es discretizar
-por cuantiles uniformes. No es necesariamente la óptima en términos de IV
-(Information Value), pero evita que el recorte de clases dependa de un
-umbral ad hoc.
+categorice cada variable continua. \textcite{BonhamCarter1994} documenta esa dependencia y
+propone elegir los cortes maximizando el contraste estudentizado, criterio que optimiza la
+asociación medida sobre el propio conjunto de entrenamiento. Este trabajo opta por
+discretizar en cuantiles uniformes: no es la partición óptima en términos de IV ni de
+contraste, pero fija los cortes por la distribución de la variable y no por el ajuste al
+período de calibración, lo que evita un umbral dependiente de la ventana y mantiene la
+partición idéntica entre las cinco ventanas de validación.
 
 \paragraph{Multicolinealidad entre drivers.} Variables correlacionadas
 producen pesos redundantes que inflan la magnitud aparente de la evidencia.
@@ -303,7 +351,12 @@ variable sigue siendo legible y una componente no.
 aplicaciones urbanas del WoE es la autocorrelación espacial: las celdas vecinas no
 son observaciones independientes, de modo que el tamaño muestral efectivo es menor
 que el número de píxeles y los pesos pueden estimarse con una precisión aparente
-mayor que la real \parencite{BonhamCarter1994}. El efecto se acentúa cuando las
+mayor que la real. La formulación original estima la varianza de los pesos a partir del
+conteo de eventos de entrenamiento y no incorpora esta estructura espacial
+\parencite{BonhamCarter1994}; la sobreestimación del desempeño que resulta de tratar
+observaciones espacialmente dependientes como independientes está documentada en la
+literatura de validación de modelos espaciales
+\parencite{Legendre1993,Brenning2012}. El efecto se acentúa cuando las
 variables se derivan de la propia configuración urbana, porque la señal de
 proximidad y densidad está espacialmente estructurada por construcción. La
 literatura no ofrece una corrección estándar para este caso, pero sí dos
@@ -317,7 +370,7 @@ degradación sistemática del FoM entre períodos.
 \label{sec:validacion-literatura}
 % ============================================================
 
-La métrica más reportada en la literatura LUCC sigue siendo el coeficiente Kappa de Cohen, a pesar de las críticas explícitas a su uso en mapas de cambio. \textcite{pontius2008comparing} muestra que Kappa mezcla dos fuentes de error conceptualmente distintas, el desacuerdo de cantidad y el de asignación, cuyas definiciones se recogen en el Capítulo~\ref{ch:marco-teorico}, lo que dificulta diagnosticar el tipo de fallo que el modelo comete. El FoM, al evaluar exclusivamente las celdas en transición, es sensible exactamente al problema que Kappa oscurece, y la IoU sobre la clase urbana lo complementa al evaluar el estado final en lugar de la dinámica de cambio.
+El coeficiente Kappa de Cohen sigue siendo de uso muy extendido en la literatura LUCC, a pesar de las críticas explícitas a su empleo en mapas de cambio. \textcite{PontiusMillones2011} muestran que los índices de la familia Kappa confunden dos fuentes de error conceptualmente distintas, el desacuerdo de cantidad y el de asignación, cuyas definiciones se recogen en el Capítulo~\ref{ch:marco-teorico}, lo que dificulta diagnosticar el tipo de fallo que el modelo comete, y recomiendan abandonarlos en favor de reportar ambos componentes por separado. El FoM, al restringir el cálculo a las celdas involucradas en el cambio observado o predicho, es sensible exactamente al problema que Kappa oscurece, y la IoU sobre la clase urbana lo complementa al evaluar el estado final en lugar de la dinámica de cambio.
 
 Entre los trabajos recientes que sí reportan FoM conviene destacar uno, porque
 sirve de referencia cuantitativa en el Capítulo~\ref{ch:resultados-analisis}.
@@ -327,53 +380,99 @@ reportan FoM de $0{,}430$ en la calibración (2000--2010) y de $0{,}376$ en la
 validación (2010--2020). La cifra comparable con un esquema de prueba
 independiente es la segunda. El contexto explica
 en parte esos valores: se trata de una ciudad en medio árido, donde el relieve y
-la disponibilidad de agua restringen la expansión de forma nítida, y el modelo
-incorpora esos \textit{drivers} físicos como capas explícitas. Es el punto de
+los cuerpos de agua restringen la expansión de forma nítida, y el modelo
+los incorpora como capas de exclusión explícitas. Es el punto de
 comparación más cercano disponible para un acoplamiento AC con calibración
 automática, con la salvedad de que el sitio, las clases y el horizonte temporal
 difieren de los de esta tesis.
 
-Otro patrón crítico de la literatura es la validación sobre un único período: la mayoría de los estudios compara el mapa simulado contra un solo horizonte temporal, lo que impide distinguir entre un desempeño estable y un ajuste puntual a las características de ese lustro. Conviene, entonces, un protocolo con FoM como métrica primaria, IoU y Kappa como complemento, la descomposición de Pontius como diagnóstico y varias ventanas quinquenales desplazadas del mismo sistema urbano. El Capítulo~\ref{ch:modelo-crecimiento-urbano} desarrolla esa vía.
+Otro patrón crítico de la literatura es la validación sobre un único período. En la revisión de prácticas de calibración y validación de \textcite{vanVliet2016}, el $31$\% de las aplicaciones examinadas no reporta validación alguna y, cuando la reporta, se limita en general a una sola comparación de ajuste, con frecuencia sobre los mismos datos usados para calibrar. \textcite{pontius2008comparing} describen ese mismo problema en su muestra: la mayoría de las aplicaciones empleó información posterior al tiempo inicial, de modo que sus resultados mezclan bondad de ajuste y validación. Comparar el mapa simulado contra un solo horizonte temporal impide distinguir entre un desempeño estable y un ajuste puntual a las características de ese lustro. Conviene, entonces, un protocolo con FoM como métrica primaria, IoU y Kappa como complemento, la descomposición de Pontius como diagnóstico y varias ventanas quinquenales desplazadas del mismo sistema urbano. El Capítulo~\ref{ch:modelo-crecimiento-urbano} desarrolla esa vía.
 
 % ============================================================
 \section{Vacíos específicos en el contexto mexicano}
 \label{sec:vacios-mexico}
 % ============================================================
 
-La literatura mexicana sobre modelado de crecimiento urbano es escasa, pero
-útil como referencia. \textcite{SuarezDelgado2007} construyó el primer estudio de
-predicción espacial sistemática para la Zona Metropolitana de la Ciudad de
-México: a partir de proyecciones demográficas de CONAPO al 2020, distribuyó
-hectáreas adicionales en contornos metropolitanos bajo tres escenarios de
-densidad. El trabajo es relevante por su carácter pionero, pero no es un autómata celular: no
-hay reglas de vecindad, no hay calibración sobre datos históricos de cambio
-celular y la validación se hace a nivel de totales de hectáreas, no a nivel de
-celda, pues se usan agregados y no datos a nivel grano. R1, R4 y la replicabilidad pública no aplican; la única dimensión
-satisfecha es R2.
+La literatura mexicana sobre modelado de crecimiento urbano es acotada pero no
+inexistente, y conviene revisarla con cuidado antes de afirmar cualquier vacío.
+\textcite{SuarezDelgado2007} constituyen uno de los primeros ejercicios de pronóstico
+espacialmente explícito para la Zona Metropolitana de la Ciudad de México, con antecedentes
+en los escenarios de poblamiento de CONAPO y una metodología adaptada de la literatura
+estadounidense sobre asignación de suelo. El modelo calibra una regresión logística
+binomial sobre una rejilla de una hectárea, tomando como variable dependiente el cambio de
+no urbano a urbano entre 1990 y 2000 en una muestra de $15\,670$ celdas, y distribuye
+después las hectáreas proyectadas por CONAPO al 2020 entre los contornos metropolitanos
+bajo tres escenarios de densidad. Reporta ajuste dentro de muestra, con $82{,}9$\% de
+celdas clasificadas correctamente, y publica los coeficientes de todas las variables, de
+modo que la función de asignación es auditable. No es, sin embargo, un autómata celular: no
+hay regla de vecindad ni iteración temporal, la asignación se ordena por probabilidad
+descendente dentro de cada municipio y varias covariables están agregadas a escala
+municipal. Tampoco hay validación fuera de muestra contra un mapa observado posterior, que
+es lo que exige R1.
 
-\textcite{RamirezHernandez2021}, en un libro institucional de IIEc-UNAM, aplica
-un AC inspirado en SLEUTH a la ZMCM con datos de 1990--2010 y proyecta al
-2040. Los parámetros se describen en el texto pero el código no está
-disponible y la validación no reporta FoM ni Kappa de forma sistemática. La
-obra es valiosa como referencia conceptual pero no como benchmark cuantitativo, es decir,
-no es posible comparar su desempeño con el rango de métricas reportadas en
-\textcite{pontius2008comparing}.
+\textcite{RamirezHernandez2021}, en un libro del Instituto de Investigaciones Económicas de
+la UNAM, construye para la ZMCM lo que él mismo clasifica como un modelo econométrico con
+simulación espacial: un autómata celular sobre celdas territoriales con vecindad de Moore,
+cuyas probabilidades de transición se estiman con regresiones logísticas binomial y
+multinomial y se resuelven mediante una rutina de Monte Carlo. Usa datos históricos de 1990
+a 2010 y proyecta al 2040. Los coeficientes estimados de sus dos mecanismos se publican
+íntegros, de modo que la función de transición es auditable, aunque la capa de Monte Carlo
+introduce una aleatoriedad que no queda trazada; la implementación depende de SPSS y SAS y
+solo se anexa un fragmento del programa. La obra no reporta ninguna métrica de concordancia
+entre el mapa simulado y un mapa observado, ni Kappa ni FoM ni matriz de confusión, por lo
+que es valiosa como referencia conceptual pero no admite comparación cuantitativa con el
+rango de desempeño documentado en \textcite{pontius2008comparing}.
 
-Así pues, \textcite{Chihuahua2023} aplica una cadena SVM + regresión logística +
-CA-Markov en TerrSet/IDRISI a núcleos urbanos asentados en cinco cuencas
+Así pues, \textcite{Chihuahua2023} aplican una cadena SVM más regresión logística más
+CA-Markov a diez núcleos urbanos asentados en cinco cuencas
 hidrológicas del estado de Chihuahua (Laguna Bustillos y de los Mexicanos;
 río Conchos--Ojinaga; río Conchos--Presa de la Colina; río Conchos--Presa el
 Granero; y río San Pedro), con proyecciones a 2030, 2040 y 2050. La
-clasificación SVM sobre mapas de uso de suelo 2010--2020 es reproducible y la
-regresión logística aporta interpretabilidad parcial: el resumen reporta
-pseudo $R^2$ de McFadden superior a $0{,}2$ y ROC aceptable, aunque el detalle
-deja tres núcleos por debajo de ese umbral. La asignación CA-Markov
-ocurre dentro del módulo Land Change Modeler de TerrSet, software
-no libre, y la validación cuantitativa se reporta sobre la regresión
-logística, no sobre la simulación CA en sí. R4 se cumple parcialmente; R3 no
+clasificación se realiza con SVM sobre imágenes de 2010, 2015 y 2020 y se evalúa con
+matriz de confusión sobre 385 puntos de verificación, precisión global y coeficiente Kappa.
+La regresión logística aporta interpretabilidad: se publican las ecuaciones de los diez
+núcleos con sus coeficientes, y el ajuste se reporta mediante
+pseudo $R^2$ de McFadden y ROC, con siete núcleos por encima del umbral de $0{,}2$ y tres
+por debajo. La asignación CA-Markov
+ocurre dentro del módulo Land Change Modeler de IDRISI Selva, software
+de código cerrado, y no se reporta métrica alguna de concordancia entre la simulación y un
+mapa observado: la validación cuantitativa recae sobre la clasificación y sobre la
+regresión logística, no sobre el autómata. R4 se cumple parcialmente; R3 no
 se cumple.
 
-El cuadrante metodológico que estos trabajos definen es claro, y se resume en la Tabla~\ref{tab:cuadrante-mexico}:
+El antecedente más cercano a este trabajo proviene de la Estación de Inteligencia
+Territorial de El Colegio Mexiquense. \textcite{JimenezLopez2018} instrumentan autómatas
+celulares deterministas sobre rejilla raster y, mediante un barrido exhaustivo de las 256
+reglas de transición posibles, identifican la que mejor replica la expansión observada de
+Querétaro, San Luis Potosí y Toluca entre 2003 y 2017; para Querétaro la regla 192 alcanza
+un Kappa de Cohen de $0{,}53$ y un índice de Jaccard de $0{,}76$. El mismo grupo generalizó
+después el método bajo el nombre de autómatas celulares en cascada, incorporando áreas
+restringidas a la expansión y un filtro de bondad de ajuste con cuatro indicadores
+(entropía de Shannon, dimensión fractal, Kappa de Cohen y Jaccard), con prueba empírica en
+Tijuana, Acapulco y Toluca, y declarando la disponibilidad de los modelos en código abierto
+\parencite{JimenezLopez2021}.
+
+Esas cifras, sin embargo, no pueden leerse como medidas de capacidad predictiva
+fuera de muestra, y la razón es de diseño experimental antes que de métrica. El mapa
+observado de 2017 cumple dos funciones a la vez: es el criterio con que se elige la regla
+ganadora entre las 256 candidatas y es también el mapa contra el cual se reporta el ajuste
+de esa regla. Formalmente, se resuelve
+$\delta^{*} = \arg\max_{\delta} M(\widehat{2017}_{\delta},\, 2017_{\text{obs}})$ y a
+continuación se publica $M(\widehat{2017}_{\delta^{*}},\, 2017_{\text{obs}})$ como
+desempeño, de modo que el valor reportado es el máximo de una búsqueda y no una estimación
+independiente. El sesgo optimista que introduce este procedimiento crece con el tamaño del
+espacio explorado, y aquí ese espacio abarca la totalidad de las reglas posibles. A ello se
+añade que la regla seleccionada se emplea después para proyectar a 2031 sin que medie
+ningún intervalo posterior observado que permita comprobar si conserva su desempeño, y que
+cada ciudad recibe su propia regla óptima (192, 218 y 222), por lo que las tres
+aplicaciones documentan capacidad de ajuste individual y no generalización entre sitios.
+El diagnóstico no invalida el trabajo, que es metodológicamente explícito en cuanto a su
+procedimiento, pero sí impide comparar sus valores de Kappa y Jaccard con los obtenidos
+bajo un esquema en que los parámetros se fijan antes de observar el período de evaluación.
+Ese antecedente obliga a precisar el alcance de la presente tesis y se comenta en la
+síntesis de esta sección.
+
+El cuadrante metodológico que estos trabajos definen se resume en la Tabla~\ref{tab:cuadrante-mexico}:
 
 \begin{table}[H]
 \centering
@@ -383,19 +482,31 @@ El cuadrante metodológico que estos trabajos definen es claro, y se resume en l
 \toprule
 \textbf{Trabajo} & \textbf{R1} & \textbf{R2} & \textbf{R3} & \textbf{R4} \\
 \midrule
-\textcite{SuarezDelgado2007}    & no      & \checkmark & no         & no        \\
+\textcite{SuarezDelgado2007}    & no      & \checkmark & no         & \checkmark \\
 \textcite{RamirezHernandez2021} & no      & \checkmark & no         & parcial   \\
 \textcite{Chihuahua2023}        & parcial & \checkmark & no         & parcial   \\
+\textcite{JimenezLopez2018}     & parcial & \checkmark & parcial    & parcial   \\
+\textcite{JimenezLopez2021}     & parcial & \checkmark & \checkmark & parcial   \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-En la literatura mexicana revisada, hasta donde alcanza esta revisión, ningún trabajo
-publicado cumple simultáneamente con validación multi-período cuantitativa,
-reproducibilidad abierta e interpretabilidad auditable a nivel de celda. Esa
-es la brecha que el capítulo siguiente atiende. Querétaro entra como caso de
-uso de una ciudad intermedia poco estudiada, no como sustituto de una
-comparación directa con modelos de caja negra entrenados en otras ciudades.
+El panorama mexicano, entonces, no está vacío, y la brecha que este trabajo atiende es más
+específica de lo que sugeriría una lectura rápida. Querétaro ya ha sido modelada con
+autómatas celulares \parencite{JimenezLopez2018}, de modo que la aportación no reside en el
+caso de estudio sino en el protocolo. En los trabajos revisados coinciden dos rasgos.
+Primero, la validación cuantitativa se realiza sobre una sola ventana temporal por ciudad y,
+en el caso del barrido exhaustivo de reglas, sobre el mismo intervalo que sirvió para
+seleccionar el modelo, lo que no permite distinguir un desempeño estable de un ajuste
+puntual a las
+características de ese lustro. Segundo, allí donde la función de transición es abierta y
+transparente, se define mediante reglas binarias sobre el estado de la vecindad, sin
+ponderación explícita de variables explicativas; y allí donde sí hay variables ponderadas,
+la implementación es de código cerrado o no se valida contra un mapa observado. La
+combinación de las tres condiciones, validación en cinco ventanas quinquenales desplazadas
+del mismo sistema urbano, implementación abierta y una función de transición cuyos pesos
+por variable son individualmente auditables, no aparece, hasta donde alcanza esta revisión,
+en la literatura mexicana consultada. Esa es la brecha que el capítulo siguiente atiende.
 
 % ============================================================
 \section{Síntesis: posicionamiento del presente trabajo}
@@ -404,19 +515,24 @@ comparación directa con modelos de caja negra entrenados en otras ciudades.
 
 Los cuatro problemas metodológicos analizados (equifinalidad en la
 calibración, sobreajuste en la validación, opacidad en la función de
-transición y dependencia de software propietario) se cruzan con la topología espacial
+transición y dependencia de software de código cerrado) se cruzan con la topología espacial
 del campo. Las revisiones sistemáticas de \textcite{Sante2010} y
-\textcite{Aburas2016} muestran que las aplicaciones documentadas se concentran
-en China, Europa y Estados Unidos, mientras que la literatura mexicana
-revisada en la sección anterior avanza con modelos heredados o con
-herramientas propietarias que limitan la auditoría.
+\textcite{Aburas2016} documentan la heterogeneidad de los métodos de calibración y
+validación entre las decenas de modelos que examinan. A esa heterogeneidad se suma un
+desequilibrio geográfico: la revisión de \textcite{Wahyudi2016}, que clasifica por región
+ochenta y ocho aplicaciones de autómatas celulares urbanos publicadas entre 1993 y 2012,
+encuentra que al menos la mitad se concentra en ciudades de Estados Unidos y China,
+mientras que las aplicaciones en América Latina, África y el resto de Asia son escasas. La
+literatura mexicana
+revisada en la sección anterior avanza, por su parte, o con herramientas de código cerrado
+que limitan la auditoría, o con reglas abiertas pero validadas en una sola ventana temporal.
 
 El capítulo siguiente toma tres decisiones que esta revisión deja abiertas.
 Primera: usar WoE como función de transición, de modo que cada peso sea
 auditable (R4). Segunda: validar en cinco ventanas quinquenales desplazadas
 con FoM, Kappa e IoU, para distinguir un comportamiento que se sostiene de un
 ajuste a un solo lustro (R1). Tercera: implementar el flujo en código abierto
-sobre imágenes de archivo, sin software propietario (R3). La lectura de los
+sobre imágenes de archivo, sin depender de ejecutables cerrados (R3). La lectura de los
 mapas como escenarios de expansión, no como planes calibrados (R2), se
 discute en las conclusiones.
 
@@ -426,4 +542,4 @@ definición de la regla de transición y protocolo de validación. Ahí se ponen
 a prueba, sobre una ciudad intermedia mexicana, las decisiones de diseño que
 este capítulo justificó: una calibración acotada e interpretable, una
 validación multi-ventana frente al sobreajuste temporal y una implementación
-abierta frente a la dependencia de software propietario.
+abierta frente a la dependencia de software de código cerrado.
