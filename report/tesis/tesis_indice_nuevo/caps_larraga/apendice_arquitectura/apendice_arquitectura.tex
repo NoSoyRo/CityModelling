@@ -1,7 +1,7 @@
 \chapter{Arquitectura e implementación del software}
 \label{ap:arquitectura}
 
-Este apéndice reúne los detalles de implementación del \textit{framework} WoE--AC ---el diagrama de clases y las rutas de los módulos en el repositorio--- que complementan la descripción metodológica del Capítulo~\ref{ch:area-estudio} sin recargar su narrativa. El repositorio organiza el trabajo en una arquitectura modular que integra la rasterización/clasificación de las capturas, el cálculo de Pesos de Evidencia y la simulación con autómatas celulares; la Figura~\ref{fig:system_architecture} muestra el diagrama de clases UML (generado con PlantUML; véase \texttt{diagramas/architecture.puml}).
+Este apéndice reúne los detalles de implementación del \textit{framework} WoE--AC: el diagrama de clases y las rutas de los módulos en el repositorio. Complementan la descripción metodológica del Capítulo~\ref{ch:modelo-crecimiento-urbano} sin recargar su narrativa. El repositorio organiza el trabajo en una arquitectura modular que integra la rasterización/clasificación de las capturas, el cálculo de Pesos de Evidencia y la simulación con autómatas celulares; la Figura~\ref{fig:system_architecture} muestra el diagrama de clases UML (generado con PlantUML; véase \texttt{diagramas/architecture.puml}).
 
 \begin{figure}[H]
 \centering
@@ -10,13 +10,15 @@ Este apéndice reúne los detalles de implementación del \textit{framework} WoE
 \label{fig:system_architecture}
 \end{figure}
 
-En la rama de \textbf{imágenes}, el flujo opera sobre matrices RGB ya homogeneizadas. El módulo \texttt{FeatureExtractor} (paquete \path{tesis_ac/pipeline/feature\_extraction}) construye las 23 variables resumidas en la Tabla~\ref{tab:features}. La clase \texttt{FeaturePreprocessor} aplica \texttt{StandardScaler} y PCA (ocho componentes por defecto). El componente \texttt{SatelliteImageProcessor} (nombre heredado en el código; procesa matrices RGB de las capturas, véase \path{tesis_ac/pipeline/clustering.py}) agrupa \texttt{ImageClusterer} e \texttt{ImageClassifier}: K-means para $k \in \{2,3,4\}$ y SVM lineal entrenado con pseudoetiquetas. La varianza acumulada explicada por PCA se consulta con \texttt{get\_variance\_explained} del preprocesador. La orquestación de alto nivel está en \texttt{SatelliteImagePipeline} (\path{tesis_ac/pipeline/main\_pipeline.py}).
+En la rama de \textbf{imágenes}, el flujo opera sobre matrices RGB ya homogeneizadas. El módulo \texttt{FeatureExtractor} (paquete \path{tesis_ac/pipeline/feature_extraction}) construye las 23 variables resumidas en la Tabla~\ref{tab:features}. La clase \texttt{FeaturePreprocessor} aplica \texttt{StandardScaler} y PCA (ocho componentes por defecto). El componente \texttt{SatelliteImageProcessor} (nombre heredado en el código; procesa matrices RGB de las capturas, véase \path{tesis_ac/pipeline/clustering.py}) agrupa \texttt{ImageClusterer} e \texttt{ImageClassifier}: K-means para $k \in \{2,3,4\}$ y SVM lineal entrenado con pseudoetiquetas. La varianza acumulada explicada por PCA se consulta con \texttt{get\_variance\_explained} del preprocesador. La orquestación de alto nivel está en \texttt{SatelliteImagePipeline} (\path{tesis_ac/pipeline/main\_pipeline.py}).
 
-En la cadena \textbf{WoE--AC} usada en la validación quinquenal de la tesis intervienen \texttt{WoE\allowbreak Calculator}, \texttt{WoE\allowbreak Cellular\allowbreak Automaton} y la simulación implementada en los módulos \path{tesis_ac/woe/} y \path{tesis_ac/ca/}. La configuración efectiva ---umbral, peso de vecindad y ponderación por IV--- se encuentra registrada en \path{data/processed/quinquenal_best_config.json}. Los experimentos son reproducibles desde la raíz del repositorio con los scripts \texttt{validate\_quinquenal\_*.py}, que leen los mapas en \path{data/processed/standardized_maps/} y el modelo WoE entrenado \path{data/processed/woe_pooled_1984_2010.pkl}; el entrenamiento agregado del WoE se obtiene con \texttt{train\_woe\_pooled.py}. El repositorio conserva, además, un pipeline experimental más amplio en \path{tesis_ac/run_classify_and_grid.py}, que no forma parte de la narrativa defendida en esta tesis (la cual se centra en la búsqueda en cuadrícula y el ajuste manual del umbral descritos en el Capítulo~\ref{ch:modelo-crecimiento-urbano}).
+En la cadena \textbf{WoE--AC} usada en la validación quinquenal de la tesis intervienen \texttt{WoE\allowbreak Calculator}, \texttt{WoE\allowbreak Cellular\allowbreak Automaton} y la simulación implementada en los módulos \path{tesis_ac/woe/} y \path{tesis_ac/ca/}. La configuración efectiva, es decir, umbral, peso de vecindad y ponderación por IV, se encuentra registrada en \path{data/processed/quinquenal_best_config.json}. Los experimentos son reproducibles desde la raíz del repositorio con los scripts \texttt{validate\_quinquenal\_*.py}, que leen los mapas en \path{data/processed/standardized_maps/} y el modelo WoE entrenado \path{data/processed/woe_pooled_1984_2010.pkl}; el entrenamiento agregado del WoE se obtiene con \texttt{train\_woe\_pooled.py}. El repositorio conserva, además, un pipeline experimental más amplio en \path{tesis_ac/run_classify_and_grid.py}, que no forma parte de la narrativa defendida en esta tesis (la cual se centra en la búsqueda en cuadrícula y el ajuste manual del umbral descritos en el Capítulo~\ref{ch:modelo-crecimiento-urbano}).
 
 \section{Procedimiento de adquisición manual de imágenes}
 
-El conjunto de imágenes descrito en el Capítulo~\ref{ch:area-estudio} se construyó con el procedimiento manual reproducible que resume el Algoritmo~\ref{alg:adquisicion}, sobre Google Earth en escritorio y su herramienta de imagen histórica.
+El conjunto de imágenes descrito en la Sección~\ref{sec:area-estudio} se construyó con el procedimiento manual reproducible que resume el Algoritmo~\ref{alg:adquisicion}, sobre Google Earth en escritorio y su herramienta de imagen histórica.
+
+Como las capturas no llevan georreferencia, su extensión, tamaño de píxel y orientación se recuperaron a posteriori registrando cada imagen contra el mosaico Sentinel-2 \textit{cloudless}. El script \path{tools/registrar_s2.py} realiza el registro y \path{tools/verificar_encuadre.py} rehace la escena con los parámetros estimados para comprobarlos visualmente; los resultados por año se guardan en \path{data/processed/georreferencia_capturas.json}.
 
 \begin{algorithm}[H]
 \caption{Procedimiento de adquisición manual con Google Earth}
@@ -32,9 +34,106 @@ El conjunto de imágenes descrito en el Capítulo~\ref{ch:area-estudio} se const
 \end{algorithmic}
 \end{algorithm}
 
-\section{Cuadros complementarios del conjunto de datos}
+\section{Pseudocódigo del pipeline de clasificación}
 
-El conjunto de imágenes descrito en el Capítulo~\ref{ch:area-estudio} se complementa con tres cuadros de referencia: el detalle de las 23 características extraídas por píxel (Tabla~\ref{tab:features}), la estimación cualitativa de las principales fuentes de error y su mitigación (Tabla~\ref{tab:uncertainty}) y el resumen agregado del preprocesamiento aplicado a toda la serie (Tabla~\ref{tab:preprocessing_quality}).
+Los cuatro algoritmos que traducen una captura RGB en un mapa binario urbano/no urbano se recogen aquí, en el orden en que se ejecutan. Su fundamento conceptual está en el Capítulo~\ref{ch:marco-teorico} y su configuración efectiva en el Capítulo~\ref{ch:modelo-crecimiento-urbano}; lo que sigue es el detalle procedimental.
+\begin{algorithm}[H]
+	\caption{StandardScaler: estandarización por z-score}
+	\label{alg:standard-scaler}
+	\begin{algorithmic}[1]
+	\Require Matriz de features $X \in \mathbb{R}^{N \times F}$ ($N$ píxeles, $F$ features)
+	\Ensure  Matriz estandarizada $\tilde{X} \in \mathbb{R}^{N \times F}$
+	
+	\State \textbf{Fase de ajuste} (sobre los datos de entrenamiento)
+	\For{$j = 1$ \textbf{hasta} $F$}
+		\State $\mu_j \leftarrow \dfrac{1}{N}\sum_{i=1}^{N} X_{ij}$
+		\State $\sigma_j \leftarrow \sqrt{\dfrac{1}{N}\sum_{i=1}^{N}(X_{ij} - \mu_j)^2}$
+	\EndFor
+	
+	\State \textbf{Fase de transformación}
+	\For{$i = 1$ \textbf{hasta} $N$}
+		\For{$j = 1$ \textbf{hasta} $F$}
+			\State $\tilde{X}_{ij} \leftarrow \dfrac{X_{ij} - \mu_j}{\sigma_j + \varepsilon}$
+			\Comment{$\varepsilon$ evita división por cero}
+		\EndFor
+	\EndFor
+	\State \Return $\tilde{X}$
+	\end{algorithmic}
+	\end{algorithm}
+\begin{algorithm}[H]
+	\caption{PCA: reducción de dimensionalidad}
+	\label{alg:pca}
+	\begin{algorithmic}[1]
+	\Require Matriz estandarizada $\tilde{X} \in \mathbb{R}^{N \times F}$,
+			 número de componentes $k < F$
+	\Ensure  Representación reducida $Z \in \mathbb{R}^{N \times k}$
+	
+	\State Calcular la matriz de covarianza:
+		   $\Sigma \leftarrow \dfrac{1}{N-1}\,\tilde{X}^\top \tilde{X}$
+	\State Obtener descomposición espectral:
+		   $\Sigma\,\mathbf{w}_j = \lambda_j\,\mathbf{w}_j$,
+		   \quad $j = 1,\ldots,F$
+	\State Ordenar autovalores de forma descendente:
+		   $\lambda_1 \ge \lambda_2 \ge \cdots \ge \lambda_F$
+	\State Seleccionar los $k$ autovectores de mayor varianza:
+		   $\mathbf{W} = [\mathbf{w}_1\;\mathbf{w}_2\;\cdots\;\mathbf{w}_k]
+		   \in \mathbb{R}^{F \times k}$
+	\State Proyectar los datos:
+		   $Z \leftarrow \tilde{X}\,\mathbf{W}$
+	\State \Return $Z$
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[H]
+	\caption{K-Means: agrupamiento no supervisado}
+	\label{alg:kmeans}
+	\begin{algorithmic}[1]
+	\Require Matriz reducida $Z \in \mathbb{R}^{N \times k}$, número de clústeres $k$,
+			 número de inicializaciones $n_{\text{init}}$
+	\Ensure  Vector de etiquetas $\ell \in \{1,\ldots,k\}^N$
+	\For{cada inicialización $r = 1,\ldots,n_{\text{init}}$}
+		\State Inicializar centroides $\{\mu_1,\ldots,\mu_k\} \subset Z$ (selección aleatoria)
+		\Repeat
+			\State \textbf{Asignación:} $\ell_i \leftarrow \arg\min_{c \in \{1,\ldots,k\}}
+				   \|z_i - \mu_c\|_2^2 \quad \forall\, i$
+			\State \textbf{Actualización:}
+				   $\mu_c \leftarrow \dfrac{1}{|\mathcal{C}_c|}\sum_{i \in \mathcal{C}_c} z_i
+				   \quad \forall\, c$,
+				   donde $\mathcal{C}_c = \{i : \ell_i = c\}$
+		\Until{los centroides no cambien}
+		\State Registrar inercia $\mathcal{J}_r = \sum_{i=1}^N \|z_i - \mu_{\ell_i}\|_2^2$
+	\EndFor
+	\State Seleccionar la solución con menor $\mathcal{J}_r$
+	\State \Return $\ell$
+	\end{algorithmic}
+\end{algorithm}
+\begin{algorithm}[H]
+\caption{SVM lineal: clasificación sobre pseudo-etiquetas K-Means}
+\label{alg:svm}
+\begin{algorithmic}[1]
+\Require Matriz reducida $Z \in \mathbb{R}^{N \times k}$,
+         pseudo-etiquetas $\ell \in \{0,1\}^N$,
+         tamaño de muestra $n_s \le N$
+\Ensure  Mapa de clasificación $\hat{y} \in \{0,1\}^{H \times W}$
+\State Seleccionar submuestra aleatoria $\mathcal{S} \subset \{1,\ldots,N\}$,
+       $|\mathcal{S}| = n_s$
+\State Entrenar SVM lineal minimizando:
+\[
+\min_{\mathbf{w},\,b}\; \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_{i \in \mathcal{S}}
+\max\!\left(0,\;1 - \ell_i^*\bigl(\mathbf{w}^\top z_i + b\bigr)\right)
+\]
+donde $\ell_i^* \in \{-1,+1\}$ es la pseudo-etiqueta recodificada
+\State \textbf{Predicción sobre todos los píxeles:}
+       $\hat{y}_i \leftarrow \text{sign}\!\left(\mathbf{w}^\top z_i + b\right)
+       \quad \forall\, i \in \{1,\ldots,N\}$
+\State Recodificar a binario: $\hat{y}_i \leftarrow \mathbf{1}[\hat{y}_i > 0]$
+\State Reorganizar en mapa $H \times W$
+\State \Return $\hat{y}$
+\end{algorithmic}
+\end{algorithm}
+
+\section{Tablas complementarias del conjunto de datos}
+
+El conjunto de imágenes descrito en la Sección~\ref{sec:area-estudio} se complementa con tres cuadros de referencia: el detalle de las 23 características extraídas por píxel (Tabla~\ref{tab:features}), la estimación cualitativa de las principales fuentes de error y su mitigación (Tabla~\ref{tab:uncertainty}) y el resumen agregado del preprocesamiento aplicado a toda la serie (Tabla~\ref{tab:preprocessing_quality}).
 
 \begin{table}[h]
 \centering
@@ -43,9 +142,9 @@ El conjunto de imágenes descrito en el Capítulo~\ref{ch:area-estudio} se compl
 \hline
 	\textbf{Categoría} & \textbf{Cantidad} & \textbf{Características específicas} \\
 \hline
-Básicas & 8 & Canales R, G, B; intensidad; brillo; desviación estándar de R, G y B. \\
+Básicas & 8 & Canales R, G, B; intensidad; brillo; media local en ventana $5\times5$ de R, G y B (los nombres \texttt{red\_std}, \texttt{green\_std} y \texttt{blue\_std} del código son heredados y no describen la operación). \\
 \hline
-Texturales & 6 & Sobel horizontal y vertical; magnitud del gradiente; LBP uniforme ($R = 3$, $P = 24$) sobre escala de grises; entropía local; contraste local. \\
+Texturales & 6 & Sobel horizontal y vertical; magnitud del gradiente; LBP uniforme ($R = 3$, $P = 24$) sobre escala de grises; entropía local; media local en escala de grises (nombrada \texttt{contrast} en el código). \\
 \hline
 Espectrales / color & 9 & Índice verde--rojo normalizado $(G-R)/(G+R)$; exceso de verde y exceso de rojo; componentes L, a, b (LAB); H, S, V (HSV). \\
 \hline
@@ -62,7 +161,7 @@ Espectrales / color & 9 & Índice verde--rojo normalizado $(G-R)/(G+R)$; exceso 
 \hline
 	\textbf{Tipo de error} & \textbf{Nivel} & \textbf{Efecto sobre los mapas} & \textbf{Mitigación aplicada} \\
 \hline
-Georreferenciación / encuadre & Bajo--medio & Pequeños desplazamientos entre capturas por reposicionamiento manual del visor; desalineación píxel a píxel entre años. & Mismo zoom, orientación y región; ajuste a la cuadrícula de referencia en el preprocesamiento. \\
+Georreferenciación / encuadre & Bajo & Pequeños desplazamientos entre capturas por reposicionamiento manual del visor; desalineación píxel a píxel entre años. & Mismo zoom, orientación y región; ajuste a la cuadrícula de referencia en el preprocesamiento. Verificado a posteriori por registro contra Sentinel-2: el tamaño de píxel varía un $0{,}4$\% y el centro se mantiene dentro de $230$~m (Sección~\ref{sec:area-estudio}). \\
 \hline
 Temporal (fecha intra-anual) & Medio & La fecha exacta varía dentro de cada año; cambios fenológicos y estacionales alteran la respuesta de la vegetación. & Captura preferente en temporada seca (nov.--abr.) y revisión de continuidad de la serie. \\
 \hline
@@ -85,10 +184,10 @@ Clasificación (LBP+K-Means+SVM) & Medio & Pseudoetiquetas no supervisadas, sin 
 \hline
 	\textbf{Métrica} & \textbf{Valor} \\
 \hline
-Varianza retenida por PCA (promedio de la serie) & Cerca del $96$\,\%. \\
+Varianza retenida por PCA (promedio de la serie) & $96{,}1$\% (rango $95{,}3$--$96{,}8$\%). \\
 Componentes finales por píxel & 8 (a partir de los 23 descriptores originales). \\
 Características válidas por imagen & 23 de 23 (ningún descriptor se descarta). \\
-Píxeles procesados por imagen & $5{,}419{,}008$ ($1{,}792 \times 3{,}024$). \\
+Píxeles procesados por imagen & $5\,419\,008$ ($1\,792 \times 3\,024$). \\
 \hline
 \end{tabularx}
 \label{tab:preprocessing_quality}

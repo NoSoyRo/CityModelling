@@ -5,37 +5,37 @@
 \chapter{Introducción}
 \label{ch:introduccion}
 
-\begin{resumen}
-El crecimiento urbano disperso de las ciudades intermedias mexicanas, y de la Zona
-Metropolitana de Querétaro en particular, ha rebasado la capacidad de los instrumentos
-de planeación, sin que exista para ese contexto un modelo de simulación que sea, a la vez,
-interpretable celda a celda, validado en varios horizontes temporales y reproducible con
-datos abiertos. Para atender ese vacío, este trabajo desarrolló y validó un modelo de
-autómata celular con función de transición basada en Pesos de Evidencia (WoE-AC),
-calibrado por búsqueda sistemática y evaluado sobre cinco ventanas quinquenales
-independientes dentro de la serie 1984--2020. El diagnóstico que abre el capítulo
-delimita esa brecha científica concreta y la traduce en los requerimientos, las preguntas
-de investigación y las hipótesis falsables que estructuran el resto de la tesis; la
-aportación del trabajo no radica en el acoplamiento WoE-AC en sí, sino en su evaluación
-reproducible y multi-período para una ciudad intermedia mexicana.
-\end{resumen}
+\section{Planteamiento del problema}
 
-\section{Contexto y problema}
+En el mundo la sobrepoblación representa un problema severo en términos de recursos, competencia y calidad de vida. La ciencia ha intentado abordar el problema con diferentes estrategias por ejemplo el uso de modelos de inteligencia artificial para predecir el volumen de población en el futuro, sin embargo, estos modelos son muy costosos y no auditables, jamás sabes que estan aprendiendo realmente. Se han intentado vias de modelado por medio de ecuaciones diferenciales, pero hacerlos requiere de una capacidad muy grande de poder abstraer matemáticamente relaciones y entidades, lo cual no es del todo trivial. De modo que la ciencia ha estado buscando estrategias que permitan modelar el crecimiento urbano de manera más eficiente y precisa, dentro de ellas existe el sub campo de las ciencias de la computación que adoptan estrategias de autómatas celulares que permiten mantener una precisión estable así como la capacidad de auditar cada decision tomada al hacer una prediccón. 
 
-La urbanización es uno de los procesos que más transforma el territorio en este siglo. Una fracción creciente de la población mundial vive en ciudades, y la superficie urbana suele expandirse más rápido que la población que la habita. Cuando esa expansión ocurre de forma dispersa y sin planeación, tensiona la infraestructura, los servicios y el entorno, y obliga a anticipar dónde y a qué velocidad crecerá la ciudad.
+Los medios existen y han sido parte del desarrollo de la misma ciencia del urbanismo, sin embargo obtener datos (hasta hace unos años) ha sido uno de los mas grandes retos asi como tambien la capacidad de cómputo para procesarlos. Si se desea realizar predicciones precisas y sostenibles que sean auditables se tiene que asegurar que los datos sean suficientes y alcanzables.
 
-Anticipar ese crecimiento es, en el fondo, un problema de simulación espacial. Para abordarlo se han desarrollado modelos de cambio de uso y cobertura de suelo (LUCC), entre los que los autómatas celulares ocupan un lugar central por representar la ciudad celda a celda. Su utilidad práctica, sin embargo, depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
+Google Earth en su aplicación de escritorio ofrece tiene una herramienta que permite viajar en tiempo para observar una vista satelital de una zona geográfica. Esas capturas muestran cómo ha cambiado una ciudad año con año. Estas capturas no son mapas de algun tipo, son imagenes tipo jpg que requieren ser traducidas a zona urbana/no urbana.
 
-Estas tensiones se agudizan en las ciudades intermedias, y en particular en las mexicanas, poco representadas en la literatura de modelado urbano pese a concentrar buena parte del crecimiento reciente del país. La Zona Metropolitana de Querétaro sirve en este trabajo como caso de uso para ejercitar y validar el modelo: una ciudad intermedia con una dinámica de expansión representativa y una serie de imágenes de archivo lo bastante larga para evaluarlo en varios períodos.
+La urbanizacipon en un proceso social que per se, transforma el territorio donde el ser humano social habita, una fracción significativa y que aparte es creciente de el total de población mundial vive en ciudades dicha superficie urbana se ha encontrado se expande más rápido que la población que la habita, en particular esto se observa en México.\parencite{Seto2012,UNHabitat2020,Angel2012}
 
-México cuenta con instrumentos de ordenamiento territorial (la Ley General de Asentamientos
-Humanos, los Programas Municipales de Ordenamiento Territorial y Desarrollo Urbano [PMOTDU],
-la SEDATU y acuerdos con ONU-Hábitat), pero su cobertura efectiva es limitada: solo el
-20{,}5\,\% de los municipios dispone de un instrumento vigente, casi dos tercios de los planes
-publicados no han sido actualizados y, según el INEGI, entre el 43\,\% y el 80\,\% de la
-población mexicana reside en zonas urbanas. El resultado observable es un patrón de
-crecimiento disperso que supera la capacidad de planificación disponible, con impactos
-documentados sobre infraestructura, cobertura de suelo y calidad de vida.
+Predecir el crecimeinto urbado es necesario pues impacta al poder asegurar que el ser humano viva en condiciones adecuadas a la vivienda y con respectivos servicios necesarios para su existencia. Como ya se ha mencionado se han creado diferentes tipos de modelos para predecir este cambio de uso de suelo, entre ellos se encuentran los autómatas celulares como uno de los principales vanguardistas en este terreno.  
+
+Su utilidad práctica, sin embargo, depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
+
+Estas tensiones se agudizan en las ciudades intermedias, y en particular en las mexicanas, poco representadas en la literatura de modelado urbano pese a concentrar buena parte del crecimiento reciente del país \parencite{aguilar2003urbanization}. La Zona Metropolitana de Querétaro sirve en este trabajo como caso de uso particular para ejercitar y validar el siguiente protocolo o algoritmo: una ciudad intermedia con una dinámica de expansión representativa y una serie de imágenes de archivo lo bastante larga para evaluarlo en varios períodos, esot ultimo tomará una gran relevancia al momento de definir por que el diseño de la solución es correcto en terminos de reproducibilidad y validacion.
+
+México tiene instrumentos de ordenamiento territorial, por ejemplo: la Ley General de Asentamientos
+Humanos, los Programas Municipales de Ordenamiento Territorial y Desarrollo Urbano (PMOTDU),
+la Secretaría de Desarrollo Agrario, Territorial y Urbano (SEDATU) y acuerdos con ONU-Hábitat.
+Su cobertura efectiva es incompleta, y una parte de los planes publicados no se ha
+actualizado \parencite{SEDATU2024NOM005,ONUHabitat2016TendenciasMexico}. El INEGI documenta
+que la mayor parte de la población reside en localidades urbanas \parencite{INEGI2020Censo}.
+El resultado observable es un patrón de crecimiento disperso que supera la capacidad de
+planificación disponible, con impactos documentados sobre infraestructura, cobertura de
+suelo y calidad de vida. Esos impactos están documentados en frentes distintos, qu epor menciona runos ejemplos se reporta la siguiente lista: La
+transformación de ecosistemas naturales en zonas urbanas contribuye a la pérdida de
+hábitat, señalada como la principal causa de pérdida de biodiversidad en el
+país \parencite{CONABIO2024Porque}. El transporte terrestre que la dispersión convierte en necesario tiene externalidades negativas documentadas para el caso
+mexicano \parencite{ITDP2019Externalidades}. Y los efectos del cambio de suelo urbano no
+se agotan en el área que se urbaniza: alcanzan a los territorios con los que la ciudad se
+conecta mediante flujos de recursos \parencite{Seto2012teleconnections}, por ejemplo rios que desembocan en lagos, por ejemlplo el rio Mixcoac que desemboca en lagos cercanos a la ciudad de México que son parte de un ecosistema natural y que al ser aguas residuales impactan en los biomas de otras ciudades.
 
 \begin{figure}[htbp]
 \centering
@@ -64,14 +64,17 @@ documentados sobre infraestructura, cobertura de suelo y calidad de vida.
 \end{figure}
 
 Como se observa en la figura~\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha
-urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, con una tasa de
-crecimiento que la posiciona entre las ciudades intermedias de mayor dinamismo en México
-durante ese período. Este patrón, documentado pero no suficientemente modelado para la ZMQ,
-impide anticipar dónde y a qué velocidad se producirá la siguiente oleada de expansión:
-información necesaria para el diseño de infraestructura y política territorial. Como instancia
-concreta de ese problema, el trabajo ejercita el modelo sobre la ZMQ, que reúne una serie
-histórica larga (37 años), datos de acceso libre y una dinámica de crecimiento propia de las
-ciudades intermedias del centro del país. Para que un modelo de simulación sea útil como herramienta
+urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona
+metropolitana que rebasó el millón y medio de habitantes tras décadas de expansión
+sostenida \parencite{CONAPO2018Delimitacion,INEGI2020Censo}. 
+
+Ese patrón se ha documentado para Querétaro en relación con la producción de vivienda
+\parencite{ObservatorioCiudades2022Queretaro}, e impide anticipar dónde y a qué velocidad se
+producirá la siguiente oleada de expansión: información necesaria para planear el uso de
+recursos y la infraestructura que el crecimiento urbano demanda.
+
+Como instancia
+concreta de este problema, la predicción del crecimiento urbano, el trabajo implementa la solución usando el modelo que integra automatas celulares con pesos de evidencia y con validaciones multitemporales sobre un conjunto de datos enriquecidossobre la ZMQ. Para que un modelo de simulación sea útil como herramienta
 de apoyo a la planeación, debe satisfacer los cuatro requerimientos de la
 Tabla~\ref{tab:requerimientos_modelo_1}.
 
@@ -85,12 +88,13 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 	\midrule
 	R1 & Simulación histórica con precisión &
 	Reproducir el patrón de cambio urbano/no-urbano a partir del historial de uso de suelo.
-	El desempeño se evalúa cuantitativamente con FoM, Kappa e IoU en ventanas de validación
-	independientes. \\
+	El desempeño se evalúa cuantitativamente con \textit{Figure of Merit} (FoM), Kappa e
+	\textit{Intersection over Union} (IoU) en ventanas de validación
+	desplazadas respecto del entrenamiento. \\
 	\addlinespace
 	R2 & Soporte a planeación estratégica &
-	Generar mapas y escenarios espacialmente explícitos que permitan comparar patrones de
-	expansión y evaluar alternativas de ocupación del suelo. \\
+	Generar mapas espacialmente explícitos que sirvan para comparar patrones de expansión
+	bajo supuestos declarados, leídos como escenarios y no como planes calibrados. \\
 	\addlinespace
 	R3 & Replicabilidad y apertura &
 	El flujo completo debe ser documentado, reproducible y ejecutable sin software propietario
@@ -104,85 +108,54 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 	\end{tabularx}
 \end{table}
 
-\section{Literatura existente y brecha metodológica}
+\section{Justificación}
 
-El modelado del crecimiento urbano cuenta con numerosos estudios, que pueden agruparse
-según el tipo de función de transición que emplean: modelos de caja negra basados en
-aprendizaje automático, híbridos metaheurísticos y modelos de caja blanca. Sobre ese cuerpo
-de literatura, de escala tanto global como mexicana, se contrastó una muestra representativa
-para determinar cuáles satisfacen R1–R4 de forma simultánea. R4,
-la interpretabilidad de la función de transición, resultó ser la condición más restrictiva:
-los modelos con mejor desempeño cuantitativo en el espacio de aprendizaje
-automático aplicado a problemas espaciales (\textcite{almeida2008stochastic};
-\textcite{Hagenauer2022}; \textcite{Ma2019}) emplean redes neuronales cuyas
-activaciones internas no son legibles como evidencia espacial; el híbrido
-metaheurístico de \textcite{Wang2021} sustituye los pesos por cromosomas, con
-la misma consecuencia para la interpretabilidad. Los modelos de caja blanca más citados (\textcite{Clarke1998};
-\textcite{Sante2010}; \textcite{Aburas2016}) atienden R1 pero no validan sobre más de
-un período quinquenal independiente, por lo que no es posible determinar si su desempeño
-refleja mecanismos espaciales estables o sobreajuste a una fase particular del crecimiento.
-Los trabajos revisados para ciudades mexicanas (\textcite{SuarezDelgado2007};
-\textcite{RamirezHernandez2021}; \textcite{Chihuahua2023}) se alinean parcialmente con R1 y R2, pero no con R3 ni con R4. A esto se añade que las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado sobre todo para contextos ajenos al mexicano, con dinámicas de crecimiento y fuentes de datos distintas, de modo que sus parámetros y conclusiones no se trasladan sin más a las ciudades intermedias del país. En el Cap.~\ref{ch:estado-del-arte} se documentan dichas evaluaciones.
+En cualquier ciudad es poco frecuente disponer de un modelo que simule y haga predicción sobre el crecimiento de dicha ciudad en el tiempo, que aparte sea validado en varios horizontes de tiempo, que sea transparente en la forma en la que modela así como que sea reproducible con datos abiertos. Mientras esta brecha persista, no es posible distinguir si los modelos existentes responden a mecanismos espaciales estables o un sobreajuste. Los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} son la forma operativa de comprobar si un modelo cierra esa brecha.
 
-Leídas en conjunto, estas limitaciones no son cuatro vacíos independientes sino
-una sola brecha científica: para las ciudades intermedias mexicanas no se dispone
-de un modelo de simulación del crecimiento urbano cuya función de transición sea
-auditable celda a celda y cuya capacidad predictiva haya sido evaluada en varias
-ventanas temporales independientes con código y datos abiertos. Mientras esa
-brecha persista, no es posible distinguir si el desempeño que reportan los modelos
-disponibles para el país corresponde a mecanismos espaciales estables o a un
-sobreajuste de corto plazo a una fase concreta del crecimiento. Los requerimientos
-R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} son la forma operativa de
-comprobar si un modelo cierra esa brecha: descomponen esa única pregunta
-(¿es el modelo, a la vez, interpretable, temporalmente robusto y reproducible?)
-en criterios verificables. Esa es la brecha que el presente trabajo atiende. Su aportación es de alcance general: un protocolo de evaluación reproducible y multi-período que combina la validación sobre cinco ventanas temporales independientes, un conjunto de métricas espaciales complementarias (Figure of Merit, Kappa e Intersection over Union) y la descomposición del error de Pontius entre desacuerdo de cantidad y de asignación, con el desempeño situado en el espectro empírico multi-sitio de referencia. Ese protocolo, junto con el pipeline abierto (Python, datos libres, sin hardware especializado) y la función de transición WoE auditable por su Information Value, es transferible a otras ciudades intermedias, y no la mera aplicación de una técnica a un caso concreto. Querétaro es el caso de uso donde se ejercita y se valida.
+\section{Antecedentes}
 
-El presente trabajo desarrolló y validó un modelo WoE-AC que satisface R1–R4 de forma conjunta:
-WoE como función de transición produce pesos de evidencia (IV) cuantificables por
-variable y clase espacial (R4); la calibración mediante búsqueda sistemática en cuadrícula
-sobre cinco ventanas quinquenales independientes evalúa robustez temporal y no solo
-ajuste a un único período (R1); la implementación íntegra en Python con datos de acceso
-libre garantiza reproducibilidad sin software propietario (R3); y los mapas simulados son
-directamente interpretables como escenarios de expansión para planeación territorial (R2).
-El análisis detallado de los trabajos revisados y su posicionamiento respecto a estos
-requerimientos se desarrolla en el Cap.~\ref{ch:estado-del-arte}.
+El modelado del crecimeinto o las soluciones al problema del crecimiento urbano cuenta con muchos estudios que se pueden agrupar segun el tipo de fucnion de transición que implementan. Desde los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic,Gomez2020} alcanzan concordancia espacial alta en los casos publicados, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Por otro lado los metaheurísticos \parencite{Wang2021} persiguen la configuración urbana que optimiza una función objetivo definida por el analista, de modo que responden a una pregunta normativa y no predictiva, y su convergencia demanda tiempo y recursos computacionales considerables. Los modelos de caja blanca más citados \parencite{Clarke1998,Sante2010,Aburas2016} atienden la interpretabilidad, pero en la mayoría de los casos se validan sobre un único período quinquenal, sin que sea posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Los trabajos representativos para ciudades mexicanas \parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} satisfacen parcialmente R1 y R2, pero no R3 ni R4 de la tabla de requerimeintos. Las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado principalmente en contextos internacionales, con dinámicas de crecimiento y fuentes de datos distintas a las ciudades intermedias del país. El análisis detallado de estos trabajos se desarrolla en el Capítulo~\ref{ch:estado-del-arte}.
+
+El proyecto presente diseñó e implementó la validación de un modelo que acopla Pesos de Evidencia con Autómatas Celulares para simular el crecimiento urbano para un caso particular de la Zona Metropolitana de Querétaro en el período 1984-2020, evaluar su desempeño mediante métricas espaciales cuantitativas a lo largo de cinco ventanas quinquenales desplazadas y comparar los resultados con valores de referencia reportados en la literatura.
 
 \section{Objetivos}
 
 \subsection{Objetivo general}
 
-Desarrollar un modelo basado en autómatas celulares que integre el método Weight of Evidence para simular el crecimiento urbano de la Zona Metropolitana de Querétaro en el período 1984--2020, evaluar su desempeño mediante métricas espaciales cuantitativas y comparar los resultados con valores de referencia reportados en la literatura. Esto es, desarrollar un modelo que cumpla con los requerimientos básicos planteados en la Tabla~\ref{tab:requerimientos_modelo_1} y que sea capaz de simular el crecimiento urbano de la ciudad de Querétaro en el período 1984--2020.
+Diseñar e implementar un modelo utilizando automatas celulares con pesos de evidencia y con validaciones multitemporales sobre un conjunto de datos. En particular se validó el modelo con el caso de uso de la Zona Metropolitana de Querétaro en el período 1984-2020. Este modelo debe cumplir con los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} y debe ser capaz de simular auditablemente el crecimiento urbano de la ciudad de Querétaro en el período 1984--2020.
 
 \subsection{Objetivos específicos}
 
-El primer objetivo específico consiste en construir una serie histórica anual
+El primer objetivo específico (OE1) consiste en construir una serie histórica anual
 (1984--2020) de mapas binarios urbano/no-urbano para la ZMQ a partir de imágenes de
 archivo de Google Earth, empleando clasificación no supervisada para prescindir de
-etiquetas manuales y garantizar que el flujo de adquisición y preprocesamiento sea
-replicable sin software propietario. Sobre esa serie, el segundo objetivo selecciona y
+etiquetas manuales, de modo que el flujo de adquisición y preprocesamiento sea
+replicable sin software propietario. Sobre esa serie, el segundo objetivo (OE2) selecciona y
 calcula las variables espaciales derivadas de los mapas binarios, que sirven de evidencia
 empírica al modelo WoE. La elección de WoE como función de transición, frente a
 alternativas como la regresión logística o las redes neuronales, responde a su capacidad
-de descomponer la contribución de cada variable mediante el Valor de Información (IV),
+de descomponer la contribución de cada variable mediante el \textit{Information Value} (IV),
 propiedad que hace auditable la decisión celda a celda y cumple el requerimiento R4 de la
 Tabla~\ref{tab:requerimientos_modelo_1}.
 
-El tercer objetivo diseña e implementa el autómata celular WoE-AC que simula la transición
+El tercer objetivo (OE3) diseña e implementa el autómata celular WoE-AC que simula la transición
 de no urbano a urbano en la ZMQ. La decisión de usar AC sobre enfoques basados en agentes
-(ABM) o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de
+(ABM), que exigen declarar el comportamiento de cada
+agente \parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC
+capturan la dinámica de
 difusión espacial emergente sin requerir la especificación de reglas de comportamiento
 individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial
-\parencite{Clarke1998,Sante2010}. El cuarto objetivo calibra sistemáticamente los
+\parencite{Clarke1998,Sante2010,Batty2005}. El cuarto objetivo (OE4) calibra sistemáticamente los
 parámetros del WoE-AC (umbral de transición y peso de vecindad) mediante búsqueda en
 cuadrícula y establece un protocolo de validación multi-período con cinco ventanas
-quinquenales independientes (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU. La
+quinquenales desplazadas (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU. La
 validación en ventanas desplazadas, en lugar de un único período final, hace posible
 detectar el sobreajuste a una fase específica del crecimiento urbano
 \parencite{pontius2008comparing}.
 
-Por último, el quinto objetivo analiza la estabilidad temporal del desempeño del modelo a
+Por último, el quinto objetivo (OE5) analiza la estabilidad temporal del desempeño del modelo a
 lo largo de los cinco períodos y compara los valores de FoM e IoU obtenidos con los rangos
 reportados en la literatura para modelos de caja blanca y de caja negra, con el fin de
 posicionar la contribución del trabajo en el contexto del estado del arte.
@@ -191,90 +164,34 @@ posicionar la contribución del trabajo en el contexto del estado del arte.
 
 \subsection{Preguntas de investigación}
 
-La investigación se articula en torno a cuatro preguntas. La primera indaga si un modelo
-WoE-AC calibrado puede reproducir el patrón de crecimiento urbano observado en Querétaro
-con métricas espaciales comparables a las de la literatura. La segunda interroga qué
+La investigación se articula en torno a cuatro preguntas, que se identifican como P1 a P4
+para poder rastrear su respuesta en las conclusiones. \textbf{P1} indaga si un modelo
+WoE-AC calibrado puede reproducir el patrón de crecimiento urbano observado en la Zona
+Metropolitana de Querétaro (ZMQ) con métricas espaciales (Figure of Merit, Kappa e
+Intersection over Union) comparables a las de la literatura. \textbf{P2} interroga qué
 variables espaciales tienen mayor poder discriminatorio para predecir la transición urbana
-en la ZMQ. La tercera examina si el modelo mantiene la estabilidad de su desempeño al
-evaluarse en cinco ventanas quinquenales independientes. La cuarta plantea si es posible
-replicar el pipeline completo en otra ciudad intermedia con datos equivalentes y sin
-software propietario.
+en la ZMQ. \textbf{P3} examina si el modelo mantiene la estabilidad de su desempeño al
+evaluarse en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020). Cada
+ventana queda fuera del entrenamiento; entre sí se solapan. \textbf{P4} plantea si el flujo
+completo, desde la adquisición de imágenes hasta la validación, se ejecuta con herramientas
+de código abierto en una CPU estándar, sin GPU ni software propietario.
 
 \subsection{Hipótesis}
 
-El trabajo se guía por seis hipótesis falsables. La primera, \textbf{H1}, sostiene que la
-integración de WoE como función de transición empírica del AC produce simulaciones con FoM
-superior a $0{,}15$ en las cinco ventanas de validación quinquenal. El umbral no es
-arbitrario: \textcite{pontius2008comparing} documenta que una fracción importante de los
-modelos LUCC publicados no lo alcanza, de modo que superarlo de forma sostenida, y no en
-una sola ventana, indicaría que la evidencia espacial histórica contiene información
-predictiva relevante y no un acierto puntual.
+\textbf{Hipótesis general.} Un modelo híbrido WoE-AC, calibrado y validado mediante un protocolo multitemporal sobre datos de libre acceso, permite simular de forma interpretable y reproducible el crecimiento urbano de una ciudad intermedia mexicana con un desempeño comparable al reportado en la literatura.
 
-La segunda, \textbf{H2}, plantea que en el espacio de parámetros (umbral de transición,
-peso de vecindad) existe un óptimo no trivial: la configuración calibrada por búsqueda
-sistemática supera a una configuración por omisión sin calibrar en el FoM medio de las
-cinco ventanas, y los umbrales por debajo del calibrado degradan el desempeño por
-sobre-predicción. De no observarse esa mejora, la calibración sería un refinamiento
-marginal; que se observe implica que es necesaria para este enfoque.
+De esa hipótesis general se derivan cuatro particulares, cada una falsable con los resultados del Capítulo~\ref{ch:resultados-analisis}.
 
-La tercera, \textbf{H3}, afirma que entre las siete variables espaciales evaluadas, las que
-cuantifican la proximidad al frente urbano y la densidad de vecindad concentran el mayor
-Information Value (IV), por encima de las variables de fragmentación y de gradiente. La
-hipótesis es falsable: si el ordenamiento del IV estuviera dominado por estas últimas, el
-crecimiento de la ZMQ no respondería principalmente a la difusión por contigüidad descrita
-en la literatura \parencite{Clarke1998,BonhamCarter1994}.
+\textbf{H1 (interpretabilidad).} La regla de transición basada en WoE ponderada por Information Value produce un modelo en el que cada variable contribuye de forma auditable: la distancia al frente urbano y la densidad de vecindad concentran el mayor IV, por encima de las variables de fragmentación y de gradiente.
 
-La cuarta, \textbf{H4}, supone que el modelo mantiene FoM y Kappa estables a lo largo de
-las cinco ventanas quinquenales, con mayor variación en los períodos donde la extensión de
-nueva área urbana observada es pequeña.
+\textbf{H2 (estabilidad temporal).} El desempeño del modelo se sostiene en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020), sin degradación sistemática atribuible al modelo. El valor más bajo se asocia a la ventana de menor crecimiento neto observado, no a un fallo de calibración.
 
-La quinta, \textbf{H5}, propone que restringir la función de transición a siete variables
-auditables (un modelo de caja blanca) mantiene el FoM medio dentro de la banda intermedia
-del espectro multi-sitio de \textcite{pontius2008comparing}, por encima del subconjunto de
-aplicaciones con FoM inferior a $0{,}15$, sin recurrir a las representaciones no
-interpretables propias de los modelos de caja negra \parencite{almeida2008stochastic,Chihuahua2023}.
-La hipótesis es falsable: si la interpretabilidad tuviera un costo grande en desempeño, el
-FoM medio caería por debajo de esa banda.
+\textbf{H3 (reproducibilidad).} El flujo completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado.
 
-Por último, la sexta, \textbf{H6}, afirma que el pipeline completo, desde la adquisición de
-imágenes hasta la validación quinquenal, se ejecuta en una CPU estándar en un tiempo del
-orden de horas, sin requerir GPU, software propietario ni hardware especializado.
+\textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con métricas (FoM, Kappa e IoU) dentro del rango de la literatura LUCC, por encima del subconjunto de modelos con FoM inferior a $0{,}15$ \parencite{pontius2008comparing}, sin recurrir a representaciones de caja negra.
 
-\section{Alcances y limitaciones}
-
-\subsection{Alcances}
-
-El modelo se aplicó a la Zona Metropolitana de Querétaro sobre una serie anual de 37 años
-(1984--2020), período que concentra la mayor expansión urbana documentada para esta ciudad
-y para el cual fue posible construir una serie histórica completa a partir de imágenes de
-archivo de Google Earth. En su dimensión temporal, el alcance abarca esa serie procesada
-hasta mapas binarios urbano/no-urbano compatibles con el autómata celular; en su dimensión
-espacial, cada año se representa como una rejilla digital de $1{,}792 \times 3{,}024$ píxeles
-por imagen, derivada del preprocesamiento de las capturas RGB. La metodología fue diseñada
-para ser replicable en otras ciudades intermedias mexicanas con datos equivalentes, previa
-recalibración de parámetros.
-
-\subsection{Limitaciones}
-
-El modelo opera sobre imágenes RGB de archivo sin bandas infrarrojas, lo que restringe la
-clasificación binaria a información espectral visible. Esta decisión fue deliberada: reducir
-la barrera de entrada a datos de acceso libre y procesamiento reproducible (R3), a costa de
-la precisión espectral que ofrece la teledetección multiespectral. La representación binaria
-urbano/no-urbano simplifica adicionalmente la complejidad urbana al omitir densidades
-variables y usos mixtos del suelo; como consecuencia, el modelo captura la dinámica de
-expansión de la mancha urbana, pero no su estructura interna.
-
-El enfoque es puramente espacial: factores no modelados explícitamente, como políticas
-públicas, incentivos económicos o decisiones de inversión, influyeron en el crecimiento
-real de Querétaro y no están representados en las variables de entrada. Esta limitación es
-compartida por la mayoría de los modelos CA-WoE de la literatura y acota la interpretación
-de los resultados al patrón morfológico observado, no a sus causas socioeconómicas.
-
-Finalmente, la elección de caja blanca implica una concesión de desempeño frente a modelos
-de aprendizaje profundo. Los resultados del Cap.~\ref{ch:resultados-analisis} muestran que
-esta concesión es moderada: el modelo WoE-AC alcanzó FoM y Kappa comparables a los rangos
-reportados en la literatura para modelos más complejos, lo que sugiere que la pérdida de
-precisión asociada a la interpretabilidad no es prohibitiva para el caso de uso estudiado.
+% La sección "Alcances y limitaciones" se trasladó al capítulo de conclusiones
+% (orden exigido: Alcances -> Limitaciones -> Trabajo futuro).
 
 \section{Aportaciones del trabajo}
 
@@ -283,11 +200,7 @@ metodológica: existe una literatura consolidada que la emplea. Lo que distingue
 trabajo no es la técnica, sino la metodología con que se evaluó y las condiciones de
 reproducibilidad bajo las que se aplicó.
 
-La aportación central es de carácter metodológico: un protocolo de evaluación reproducible y
-multi-período. En lugar de validar sobre un único horizonte, el modelo se evaluó sobre cinco
-ventanas quinquenales independientes (2011--2016 a 2015--2020) con un conjunto de métricas
-espaciales complementarias (Figure of Merit, Kappa e Intersection over Union) y la
-descomposición del error de Pontius entre desacuerdo de cantidad y de asignación, situando
+La principal aportación es de caracter metodológico con un proceso de evaluación reproducible y multi periodo. En vez de solo validar sobre un solo horizonte temporal, el modelo se evaluó sobre cinco ventanas quinquenales con un conjunto de métricas espaciales que entre sí se complementan por ejemplo Figure of Merit, Kappa e Intersection over Union así como la descomposición del error de Pontius entre desacuerdo de cantidad y de asignación, situando
 el desempeño en el espectro empírico multi-sitio de referencia. Ese protocolo permite
 distinguir un desempeño estable de un ajuste a una fase concreta del crecimiento, y arrojó
 métricas dentro del rango reportado en la literatura (FoM promedio $0{,}317$, Kappa promedio
@@ -297,7 +210,7 @@ Sobre ese núcleo se apoyan las demás aportaciones. El flujo completo, desde la
 imágenes hasta la validación quinquenal, se implementó con herramientas de código abierto y
 quedó documentado paso a paso, de modo que otros investigadores puedan reproducirlo,
 adaptarlo o extenderlo a otras ciudades intermedias. La función de transición WoE aporta,
-además, pesos de evidencia (IV) legibles por variable, lo que mantiene auditable cada
+además, pesos de evidencia y valores de información (IV) legibles por variable, lo que mantiene auditable cada
 decisión del modelo y facilita interpretar los resultados en términos de los mecanismos
 espaciales que los sustentan.
 
@@ -310,4 +223,4 @@ país. Querétaro es el caso de uso donde el protocolo se ejercita y se valida.
 
 \section{Organización del documento}
 
-El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo (autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial) que el modelo necesita. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación de un solo período, opacidad de la caja negra y dependencia de software propietario) siguen abiertos en la literatura LUCC, y que el caso de las ciudades intermedias mexicanas es donde más se acumulan. El Capítulo~\ref{ch:area-estudio} justifica la Zona Metropolitana de Querétaro y la fuente de datos abierta, y documenta cómo se construyó la serie binaria 1984--2020. El Capítulo~\ref{ch:modelo-crecimiento-urbano} formaliza el acoplamiento WoE-AC, su calibración por búsqueda en cuadrícula y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones y acota lo que el modelo sí y no permite afirmar.
+El resto de la tesis sigue el hilo que abre este diagnóstico. El Capítulo~\ref{ch:marco-teorico} fija el andamiaje formal mínimo (fundamentos del preprocesamiento de imágenes, autómatas celulares probabilísticos, Pesos de Evidencia y métricas de evaluación espacial) que el modelo necesita para ser especificado y evaluado con precisión. El Capítulo~\ref{ch:estado-del-arte} muestra que los problemas metodológicos que motivan el trabajo (calibración heurística, validación en un solo período, dependencia de plataformas de código cerrado y poca presencia de ciudades intermedias mexicanas en la literatura) siguen abiertos y justifican la propuesta. El Capítulo~\ref{ch:modelo-crecimiento-urbano} es el núcleo empírico: presenta el área de estudio, los datos y su preprocesamiento, y formaliza el acoplamiento WoE-AC, su calibración por búsqueda sistemática y el protocolo de validación quinquenal múltiple. El Capítulo~\ref{ch:resultados-analisis} muestra que el modelo se sostiene en las cinco ventanas (FoM medio $0{,}317$) y lo sitúa frente a la literatura. Por último, el Capítulo~\ref{ch:conclusiones} contrasta las hipótesis con la evidencia, precisa las aportaciones, define los alcances y acota lo que el modelo sí y no permite afirmar, junto con las líneas de trabajo futuro. El Apéndice~\ref{ap:arquitectura} reúne el material de soporte: la arquitectura de software, el pseudocódigo del pipeline de clasificación y las tablas de detalle de las características y del preprocesamiento.

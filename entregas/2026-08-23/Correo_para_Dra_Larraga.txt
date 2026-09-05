@@ -1,0 +1,32 @@
+Asunto: Tesis actualizada y reporte de cumplimiento de la sesión del 4 de agosto
+
+
+Estimada Dra. Lárraga:
+
+Le adjunto la tesis con los cambios que acordamos en la sesión del 4 de agosto y un
+reporte breve de cómo quedó cada punto.
+
+El documento tiene ahora seis capítulos. El área de estudio y el preprocesamiento
+quedaron dentro del capítulo del modelo, que abre con las consideraciones y sigue con
+la arquitectura, como usted lo pidió. La citación es numérica por orden de aparición.
+Las figuras hechas con apoyo de IA están etiquetadas y llevan su fuente conceptual en
+el pie. La redacción es impersonal en todo el documento. También agregué la hoja de
+restricciones de uso de la Dirección General de Bibliotecas.
+
+Dos puntos los resolví corrigiendo cifras, no solo texto. La geometría de las capturas
+estaba mal declarada, así que la medí registrando cada imagen contra el mosaico
+Sentinel-2: la ventana es de 3 870 km² y el píxel mide 26,7 m de lado. Y la única cifra
+de terceros que sostenía una comparación de desempeño la cotejé contra el artículo
+original.
+
+El reporte recorre los 25 acuerdos de la lista de próximos pasos y los 33 detalles de
+la transcripción. Cada punto lleva el archivo y la línea donde quedó, para que pueda
+verificarlo sin abrir el PDF.
+
+Queda un pendiente que depende de un documento que no tengo: cotejar el título contra
+la carta del jurado. Si me la comparte, la reviso carácter por carácter. Me faltan
+también los escudos institucionales de la portada.
+
+Quedo atento a sus comentarios.
+
+Rodrigo Moreno López

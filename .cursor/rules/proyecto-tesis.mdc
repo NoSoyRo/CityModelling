@@ -76,23 +76,51 @@ pdflatex -interaction=nonstopmode main.tex
 
 **PDF por capítulo** (incluir `biber` con el mismo `-jobname` que `pdflatex`).
 
-### Estructura de capítulos (7)
+### Estructura de capítulos (6 + apéndice)
 
-| Archivo | Contenido |
-|---------|-----------|
-| `cap01_introduccion/cap01_introduccion.tex` | Problema, objetivos, hipótesis, alcance |
-| `cap02_marco_teorico/cap02_marco_teorico.tex` | AC, WoE, métricas (marco teórico) |
-| `cap03_estado_del_arte/cap03_estado_del_arte.tex` | Literatura y análisis crítico |
-| `cap04_area_estudio/cap04_area_estudio.tex` | Área de estudio y datos |
-| `cap05_modelo_crecimiento_urbano/cap05_modelo_crecimiento_urbano.tex` | Pipeline clasificación + WoE-AC |
-| `cap06_resultados_analisis/cap06_resultados_analisis.tex` | Resultados y métricas (JSON) |
-| `cap07_conclusiones/cap07_conclusiones.tex` | Conclusiones y trabajo futuro |
+**Atención: los nombres de archivo NO coinciden con el número de capítulo.** La fusión que pidió la Dra. Lárraga dejó fuera a `cap04_area_estudio` (su contenido vive dentro de `cap05_...`) y los archivos conservaron su nombre original. `main.tex` no lo incluye.
+
+| Archivo | Capítulo real | Contenido |
+|---------|---------------|-----------|
+| `cap01_introduccion/cap01_introduccion.tex` | Cap. 1 Introducción | Problema, objetivos, hipótesis, alcance |
+| `cap02_marco_teorico/cap02_marco_teorico.tex` | Cap. 2 Marco teórico | AC, WoE, IV, métricas |
+| `cap03_estado_del_arte/cap03_estado_del_arte.tex` | Cap. 3 Estado del arte | Literatura y análisis crítico |
+| `cap05_modelo_crecimiento_urbano/cap05_modelo_crecimiento_urbano.tex` | **Cap. 4** Modelo de crecimiento urbano híbrido | Área de estudio + datos + clasificación + WoE-AC |
+| `cap06_resultados_analisis/cap06_resultados_analisis.tex` | **Cap. 5** Resultados y análisis | Resultados y métricas (JSON) |
+| `cap07_conclusiones/cap07_conclusiones.tex` | **Cap. 6** Conclusiones | Conclusiones y trabajo futuro |
+| `apendice_arquitectura/apendice_arquitectura.tex` | Apéndice | UML, rutas, algoritmos, tabla de incertidumbre |
+
+---
+
+## Geometría de las capturas (medida, no supuesta)
+
+Las 37 imágenes de `data/raw/imagen_{año}.png` son **capturas de pantalla** del visor de Google Earth: 3024 × 1792 px, sin georreferencia ni barra de escala. Su geometría se recuperó registrando cada captura contra el mosaico **Sentinel-2 cloudless** de EOX, que es la misma familia de imagen que el visor despliega a ese zoom, según la atribución «Image Landsat / Copernicus» impresa en las propias capturas.
+
+Fuente: `data/processed/georreferencia_capturas.json`
+
+| Parámetro | Valor medido |
+|-----------|--------------|
+| Tamaño de píxel | **26,7 m** de lado (713 m² por píxel) |
+| Ventana | **80,8 × 47,9 km ≈ 3 870 km²** |
+| Centro | 20,6144° N, 100,3843° W |
+| Orientación | **El marco NO está al norte**: el norte queda ~22° en sentido horario respecto de la vertical de la imagen |
+| Consistencia entre años | píxel ±0,4 %, giro σ = 0,37°, centro dentro de 230 m |
+| Registros sólidos | 17 de 37 (fallan las anteriores a 2005, sin rasgos suficientes) |
+
+Reproducir con `tools/registrar_s2.py`; verificar visualmente con `tools/verificar_encuadre.py`.
+
+**Cifras obsoletas que NO deben reaparecer:** 625 km², 25 × 25 km, 8–14 m/píxel, 11 m/píxel, 115 m² por píxel, píxel anisotrópico. Todas venían de una estimación nunca verificada.
+
+Consecuencias a tener presentes:
+- Las vecindades de 3×3, 5×5 y 7×7 píxeles equivalen a lados de **80, 134 y 187 m**.
+- Los 26,7 m coinciden con la resolución nativa de Landsat (30 m), así que **no describir la fuente como «imagen de alta resolución»**.
+- El giro del marco no afecta al modelo (las variables espaciales y la vecindad se calculan sobre la rejilla), pero sí a la lectura de cualquier mapa.
 
 ---
 
 ## Archivos críticos (no borrar)
 
-`src/tesis_ac/**`, `data/processed/standardized_maps/**`, `data/processed/woe_pooled_1984_2010.pkl`, `data/processed/quinquenal_best_config.json`, `validate_quinquenal_2011_2016.py`, `train_woe_pooled.py`, y los cinco `validation_results.json` bajo `validation_quinquenal_*_v3_weighted/`.
+`src/tesis_ac/**`, `data/raw/imagen_*.png`, `data/processed/standardized_maps/**`, `data/processed/woe_pooled_1984_2010.pkl`, `data/processed/quinquenal_best_config.json`, `data/processed/georreferencia_capturas.json`, `data/processed/woe_bin_reachability.json`, `tools/registrar_s2.py`, `tools/verificar_encuadre.py`, `validate_quinquenal_2011_2016.py`, `train_woe_pooled.py`, y los cinco `validation_results.json` bajo `validation_quinquenal_*_v3_weighted/`.
 
 ---
 

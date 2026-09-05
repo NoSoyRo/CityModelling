@@ -31,7 +31,7 @@ La tesis se lee como un único argumento, capítulo a capítulo:
 
 3. **Cap. 3 — Estado del arte.** Ya **no es un catálogo** "autor→método→limitación": está reestructurado por **problemas metodológicos persistentes** (calibración/equifinalidad, validación/sobreajuste temporal, interpretabilidad/caja negra, transferibilidad/software propietario), con una sección propia de WoE bayesiano y Dinamica EGO, otra de validación espacial LUCC (Pontius, quantity/allocation disagreement) y cierra con el vacío mexicano. Construye la **necesidad** del trabajo.
 
-4. **Cap. 4 — Área de estudio y datos.** Justifica la ZMQ (población INEGI/CONAPO, polo industrial) y la fuente Google Earth con **argumento positivo** (consistencia espacial/temporal del encuadre sobre calibración radiométrica), documenta resolución efectiva (8–14 m/píxel), una **tabla de incertidumbre por tipo de error** y **justifica el pipeline LBP+K-Means+SVM** (ausencia de verdad terreno → pseudoetiquetas). La ingeniería de software (UML/clases) está en el apéndice.
+4. **Cap. 4 — Área de estudio y datos.** Justifica la ZMQ (población INEGI/CONAPO, polo industrial) y la fuente Google Earth con **argumento positivo** (consistencia espacial/temporal del encuadre sobre calibración radiométrica), documenta la resolución efectiva medida por registro contra Sentinel-2 (26,7 m/píxel sobre una ventana de 80,8 × 47,9 km), una **tabla de incertidumbre por tipo de error** y **justifica el pipeline LBP+K-Means+SVM** (ausencia de verdad terreno → pseudoetiquetas). La ingeniería de software (UML/clases) está en el apéndice.
 
 5. **Cap. 5 — Modelo.** Presenta el núcleo matemático: campo WoE ponderado por *Information Value* → sigmoide → suma de vecindad de Moore → umbral estocástico. **Coincide exactamente con el código validado** (sin decaimiento por distancia). Declara la novedad: protocolo reproducible, no el acoplamiento WoE-AC.
 
@@ -92,7 +92,7 @@ Leyenda: ✅ RESUELTO · 🟡 PARCIAL (afinación) · 🔵 decisión de autor.
 | Circularidad accuracy 88–94 % → coherencia interna | ✅ |
 | Justificar pipeline LBP+K-Means+SVM | ✅ |
 | Google Earth con justificación positiva | ✅ |
-| Resolución en m/píxel + variación temporal | ✅ (rango 8–14 m/píxel) |
+| Resolución en m/píxel + variación temporal | ✅ 26,7 m/píxel medidos; variación entre años de 0,4 % |
 | Tabla de incertidumbre (+ fila de compresión) | ✅ **fila de compresión añadida esta sesión** |
 | Nombres de clases Python fuera del cuerpo | ✅ **movidos al apéndice esta sesión** |
 | Citas (INEGI, CONAPO, Gorelick, Ojala, Herold) | ✅ (falta SEDATU, opcional) |

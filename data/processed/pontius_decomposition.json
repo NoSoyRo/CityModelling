@@ -1,0 +1,44 @@
+{
+  "descripcion": "Descomposicion del desacuerdo segun Pontius y Millones (2011), caso binario.",
+  "formulas": {
+    "desacuerdo_cantidad": "abs(FP - FN) / N",
+    "desacuerdo_asignacion": "2 * min(FP, FN) / N"
+  },
+  "ventanas": {
+    "2011→2016": {
+      "fom": 0.2219,
+      "desacuerdo_cantidad": 0.311,
+      "desacuerdo_asignacion": 0.0237,
+      "desacuerdo_total": 0.3347
+    },
+    "2012→2017": {
+      "fom": 0.3454,
+      "desacuerdo_cantidad": 0.1739,
+      "desacuerdo_asignacion": 0.0758,
+      "desacuerdo_total": 0.2497
+    },
+    "2013→2018": {
+      "fom": 0.3547,
+      "desacuerdo_cantidad": 0.1708,
+      "desacuerdo_asignacion": 0.0854,
+      "desacuerdo_total": 0.2562
+    },
+    "2014→2019": {
+      "fom": 0.2871,
+      "desacuerdo_cantidad": 0.268,
+      "desacuerdo_asignacion": 0.0345,
+      "desacuerdo_total": 0.3025
+    },
+    "2015→2020": {
+      "fom": 0.3782,
+      "desacuerdo_cantidad": 0.1778,
+      "desacuerdo_asignacion": 0.0671,
+      "desacuerdo_total": 0.2449
+    }
+  },
+  "promedios": {
+    "desacuerdo_cantidad": 0.2203,
+    "desacuerdo_asignacion": 0.0573,
+    "desacuerdo_total": 0.2776
+  }
+}

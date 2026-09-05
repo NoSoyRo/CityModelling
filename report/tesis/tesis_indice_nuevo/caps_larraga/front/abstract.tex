@@ -4,26 +4,31 @@
 \addcontentsline{toc}{chapter}{Abstract}
 \markboth{Abstract}{Abstract}
 
-This thesis presents a reproducible urban growth model for the Querétaro
-Metropolitan Area, built from a 37-year annual image series (1984--2020) and
-the coupling of Weights of Evidence (WoE) with cellular automata (CA). RGB
-captures obtained through Google Earth's historical imagery tool were turned
-into binary urban/non-urban maps via a classification pipeline based on local
-binary patterns, K-Means clustering and a linear SVM classifier. On these maps,
-the Weights of Evidence quantify the spatial influence of a small set of
-auditable variables and feed, together with the Moore neighborhood, a
-probabilistic transition rule that the cellular automaton applies cell by cell.
+A strategy for the integration, calibration and validation of a
+reproducible urban growth model is presented. The model is built from freely
+accessible historical imagery and assessed through a multi-temporal
+validation protocol with five shifted five-year windows. It couples Weights of Evidence (WoE) with a cellular
+automaton (CA) and is applied, as a case study, to the Querétaro Metropolitan
+Area over a 37-year annual series (1984--2020).
 
-The model was calibrated through a systematic search over the transition
-threshold, the neighborhood weight and the \textit{Information Value} weighting,
-and was assessed with a validation protocol across five independent five-year
-windows (2011--2016 to 2015--2020). Average performance reaches a Figure of
-Merit of $0.317$, a Kappa coefficient of $0.445$, an accuracy of $0.722$ and an
-IoU of $0.633$, using the Pontius error decomposition as the interpretation
-framework. The central contribution is not the WoE-CA coupling itself, but a
-reproducible multi-temporal validation protocol, applied to a scarcely
-documented Mexican context, with a white-box implementation that runs entirely
-on CPU, without GPU or proprietary software, from openly accessible data.
+RGB captures from Google Earth's historical imagery tool were converted into
+binary urban/non-urban maps through an open classification pipeline: local
+binary patterns (LBP), K-Means clustering and a linear SVM. The Weights of
+Evidence quantify, without linearity assumptions, the spatial influence of seven
+variables derived from the historical binary map, feeding alongside the Moore
+neighborhood a probabilistic transition rule. The model was calibrated via
+systematic parameter-space search and evaluated over five shifted five-year
+windows (2011--2016 to 2015--2020), a protocol designed to distinguish stable
+behavior from overfitting to a single period.
+
+The contribution lies not in the WoE-CA coupling, well documented in the
+literature, but in the multi-temporal evaluation protocol, the variable-by-variable
+auditability and the full reproducibility on CPU, without GPU or proprietary
+software. Average performance reaches a Figure of Merit of $0.317$, a Kappa
+coefficient of $0.445$, an accuracy of $0.722$ and an IoU of $0.633$, values
+within the intermediate band of the multi-site spectrum documented by
+\textcite{pontius2008comparing} (six of thirteen applications with FoM below
+$0.15$ and only one above $0.50$), sustained across all five windows.
 
 \vspace{0.6cm}
 \noindent\textbf{Keywords:} urban growth; cellular automata; Weights of

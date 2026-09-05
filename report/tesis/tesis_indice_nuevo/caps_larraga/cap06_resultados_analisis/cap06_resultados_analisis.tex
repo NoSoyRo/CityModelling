@@ -1,5 +1,5 @@
 % !TEX root = cap06_standalone.tex
-% Capítulo 6. Resultados y análisis
+% Capítulo 5 del documento (archivo cap06). Resultados y análisis
 % Estructura según índice de la Dra. Lárraga.
 \graphicspath{{figures/}{../figures/}}
 
@@ -7,7 +7,7 @@
 \label{ch:resultados-analisis}
 
 \begin{resumen}
-Este capítulo presenta los resultados obtenidos de la aplicación del modelo WoE-AC para simular el crecimiento urbano de Querétaro. Se analiza la dinámica histórica observada (1984--2020), los resultados del análisis Weight of Evidence, la calibración del modelo, las simulaciones en cinco ventanas quinquenales independientes (2011--2016 a 2015--2020) y la evaluación cuantitativa mediante métricas espaciales (Accuracy, Precision, Recall, F1, Kappa, FoM). Finalmente, se realiza un análisis espacial del error para identificar las fuentes de discrepancia entre predicción y observación.
+Este capítulo presenta los resultados obtenidos de la aplicación del modelo WoE-AC para simular el crecimiento urbano de Querétaro. Se analiza la dinámica histórica observada (1984--2020), los resultados del análisis Weight of Evidence, la calibración del modelo, las simulaciones en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020) y la evaluación cuantitativa mediante métricas espaciales (Accuracy, Precision, Recall, F1, Kappa, FoM). Finalmente, se realiza un análisis espacial del error para identificar las fuentes de discrepancia entre predicción y observación.
 \end{resumen}
 
 % ============================================================
@@ -28,15 +28,15 @@ Antes de presentar los resultados de la simulación conviene situarlos en el con
 \toprule
 \textbf{Período} & \textbf{Fracción media clasificada} & \textbf{Característica principal} \\
 \midrule
-1984--1995 & $\sim$43\,\% & Consolidación del centro urbano \\
-1996--2005 & $\sim$44\,\% & Expansión hacia zonas industriales \\
-2006--2015 & $\sim$45\,\% & Expansión dispersa (norte y este) \\
-2016--2020 & $\sim$51\,\% & Consolidación periférica \\
+1984--1995 & $\sim$43\% & Consolidación del centro urbano \\
+1996--2005 & $\sim$44\% & Expansión hacia zonas industriales \\
+2006--2015 & $\sim$45\% & Expansión dispersa (norte y este) \\
+2016--2020 & $\sim$50\% & Consolidación periférica \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Sobre el conjunto de la serie, la fracción clasificada pasa de $44{,}4$\,\% en 1984 a $52{,}9$\,\% en 2020, un incremento neto de $8{,}4$ puntos porcentuales. La variabilidad interanual es alta: hay mínimos como $33{,}6$\,\% en 1992 y una desviación estándar cercana a $4$ puntos a lo largo del período. Un ajuste lineal de la fracción frente al año arroja una pendiente de apenas $0{,}15$ puntos por año, con $R^2 \approx 0{,}15$; es decir, la tendencia ascendente existe pero es débil y queda dominada por el ruido del clasificador. El único tramo que se separa con nitidez del resto es 2016--2020. Por eso no se reporta una tasa anual compuesta: la serie no la sostiene.
+Sobre el conjunto de la serie, la fracción clasificada pasa de $44{,}42$\% en 1984 a $52{,}85$\% en 2020, un incremento neto de $8{,}4$ puntos porcentuales. La variabilidad interanual es alta: hay mínimos como $33{,}6$\% en 1992 y una desviación estándar cercana a $4$ puntos a lo largo del período. Un ajuste lineal de la fracción frente al año arroja una pendiente de apenas $0{,}15$ puntos por año, con $R^2 \approx 0{,}15$; es decir, la tendencia ascendente existe pero es débil y queda dominada por el ruido del clasificador. El único tramo que se separa con nitidez del resto es 2016--2020. Por eso no se reporta una tasa anual compuesta: la serie no la sostiene.
 
 \begin{figure}[htbp]
 \centering
@@ -45,11 +45,13 @@ Sobre el conjunto de la serie, la fracción clasificada pasa de $44{,}4$\,\% en 
 \label{fig:urban_growth_timeline}
 \end{figure}
 
+La Figura~\ref{fig:urban_growth_timeline} resume esa serie.
+
 \subsection{Patrones espaciales de expansión}
 
 Los mapas binarios generados para cada año revelan tres patrones principales de expansión. El primero es el crecimiento contiguo por difusión, donde la expansión se produce principalmente desde los bordes de áreas urbanas existentes, siguiendo el mecanismo de contagio espacial que los autómatas celulares capturan de manera natural. El segundo corresponde al desarrollo periurbano a lo largo de corredores de transporte, visible en los ejes norte (autopista a San Luis Potosí) y oeste (autopista a Celaya). El tercero es el desarrollo industrial puntual: la instalación de parques industriales (Aeropuerto Industrial, Querétaro Aerospace) genera núcleos discontinuos en la periferia.
 
-Los mapas binarios muestran crecimiento sostenido de la huella urbana a lo largo del período. Para los años de inicio de los experimentos de validación, los recuentos de píxeles urbanos extraídos directamente de los mapas clasificados son los siguientes: 2011: 2{,}699{,}088 px; 2012: 2{,}140{,}433 px; 2013: 2{,}140{,}627 px; 2014: 2{,}469{,}631 px; 2015: 2{,}145{,}356 px; 2020 (observado): 2{,}864{,}122 px. Estas cifras corresponden directamente a los valores \texttt{urban\_start} y \texttt{urban\_end\_observed} de los archivos de resultados de validación (\texttt{validation\_results.json}) y son los insumos directos del Autómata Celular.
+Los mapas binarios muestran crecimiento sostenido de la huella urbana a lo largo del período. Para los años de inicio de los experimentos de validación, los recuentos de píxeles urbanos extraídos directamente de los mapas clasificados son los siguientes: 2011: 2\,699\,088 px; 2012: 2\,140\,433 px; 2013: 2\,140\,627 px; 2014: 2\,469\,631 px; 2015: 2\,145\,356 px; 2020 (observado): 2\,864\,122 px. Estas cifras corresponden directamente a los valores \texttt{urban\_start} y \texttt{urban\_end\_observed} de los archivos de resultados de validación (\texttt{validation\_results.json}) y son los insumos directos del Autómata Celular.
 
 \textbf{Nota metodológica sobre la clase ``urbano'':} El clasificador K-Means+SVM opera sobre características espectrales y de textura extraídas de las \textbf{capturas RGB} de la serie (Google Earth, imagen histórica). En la práctica, el clasificador aprende a separar dos agrupaciones espectrales: \textit{zonas con cubierta vegetal verde y densa} versus \textit{zonas sin cubierta vegetal verde}. Esta segunda clase agrupa el tejido urbano real (edificaciones, vialidades, concreto), pero también suelo desnudo agrícola en temporada seca y superficies áridas periféricas espectralmente similares a las urbanas. Por ello, los recuentos de píxeles de la clase ``urbano'' son considerablemente mayores que la mancha urbana real de Querétaro.
 
@@ -63,11 +65,11 @@ Esta sección presenta los resultados del cálculo de Weight of Evidence sobre l
 
 \subsection{Transiciones históricas identificadas}
 
-El cálculo de Weight of Evidence se basó en el análisis de 26 períodos anuales consecutivos (1984--2010), identificando los píxeles que cambiaron de estado entre cada par de años. El modelo WoE consolidado está almacenado en \texttt{data/processed/woe\_pooled\_1984\_2010.pkl} y utiliza un total de 8{,}196{,}264 píxeles de transición observados a lo largo de los 26 períodos.
+El cálculo de Weight of Evidence se basó en el análisis de 26 períodos anuales consecutivos (1984--2010), identificando los píxeles que cambiaron de estado entre cada par de años, hasta acumular $8\,196\,264$ transiciones observadas. Las siete variables espaciales se promediaron sobre esos 26 períodos y el mapa promedio se contrastó con el conjunto acumulado de transiciones, según el procedimiento descrito en el Capítulo~\ref{ch:modelo-crecimiento-urbano}. Los pesos resultantes describen, por tanto, el régimen espacial medio del período de entrenamiento.
 
 \subsection{Pesos por variable (Information Value)}
 
-El modelo utiliza 7 variables espaciales cuya importancia predictiva se cuantifica mediante el Information Value (IV). La Tabla~\ref{tab:iv_weights} presenta los IV calculados sobre el conjunto de entrenamiento 1984--2010, que determinan directamente la ponderación de cada variable en la probabilidad de transición.
+El modelo utiliza 7 variables espaciales cuya importancia predictiva se cuantifica mediante el Information Value (IV). La Tabla~\ref{tab:iv_weights} presenta los IV calculados sobre el conjunto de entrenamiento 1984--2010 y el peso normalizado que se deriva de ellos, que es el que pondera a cada variable en la probabilidad de transición.
 
 \begin{table}[htbp]
 \centering
@@ -77,29 +79,44 @@ El modelo utiliza 7 variables espaciales cuya importancia predictiva se cuantifi
 \toprule
 \textbf{Variable} & \textbf{IV} & \textbf{Peso normalizado} \\
 \midrule
-Distancia al área urbana (\texttt{distance\_urban}) & $0{,}2817$ & $0{,}2817$ \\
-Densidad de vecindad $3\times3$ (\texttt{neighbor\_density\_3x3}) & $0{,}2495$ & $0{,}2495$ \\
-Densidad de vecindad $5\times5$ (\texttt{neighbor\_density\_5x5}) & $0{,}1445$ & $0{,}1445$ \\
-Densidad de vecindad $7\times7$ (\texttt{neighbor\_density\_7x7}) & $0{,}1068$ & $0{,}1068$ \\
-Fragmentación local (\texttt{local\_fragmentation}) & $0{,}1062$ & $0{,}1062$ \\
-Gradiente urbano (\texttt{urban\_gradient}) & $0{,}0996$ & $0{,}0996$ \\
-Tamaño del \textit{cluster} más cercano (\texttt{nearest\_cluster\_size}) & $0{,}0120$ & $0{,}0120$ \\
+Distancia al área urbana (\texttt{distance\_urban}) & $3{,}2697$ & $0{,}2815$ \\
+Densidad de vecindad $3\times3$ (\texttt{neighbor\_density\_3x3}) & $2{,}8973$ & $0{,}2495$ \\
+Densidad de vecindad $5\times5$ (\texttt{neighbor\_density\_5x5}) & $1{,}6782$ & $0{,}1445$ \\
+Densidad de vecindad $7\times7$ (\texttt{neighbor\_density\_7x7}) & $1{,}2396$ & $0{,}1067$ \\
+Fragmentación local (\texttt{local\_fragmentation}) & $1{,}2331$ & $0{,}1062$ \\
+Gradiente urbano (\texttt{urban\_gradient}) & $1{,}1568$ & $0{,}0996$ \\
+Tamaño del \textit{cluster} más cercano (\texttt{nearest\_cluster\_size}) & $0{,}1388$ & $0{,}0120$ \\
 \midrule
-\textbf{Total} & $\mathbf{1{,}0003}$ & $\mathbf{1{,}000}$ \\
+\textbf{Total} & $\mathbf{11{,}6135}$ & $\mathbf{1{,}000}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Estos valores provienen directamente de \path{data/processed/quinquenal_best_config.json}. El patrón muestra que la distancia al área urbana y las tres variables de densidad concentran cerca del 75\,\% del poder predictivo, lo que es \textbf{coherente} con un mecanismo de difusión espacial desde las áreas ya urbanizadas, ampliamente documentado en la literatura de expansión urbana. La variable \texttt{nearest\_cluster\_size} presenta un IV muy bajo ($0{,}012$), lo que sugiere que el tamaño del \textit{cluster} urbano más cercano aporta información marginal una vez controlada la distancia.
+El peso normalizado de cada variable es su IV dividido entre el IV total de las siete. El patrón muestra que la distancia al área urbana y las tres variables de densidad concentran $0{,}782$ del peso ($78{,}2$\%), lo que es coherente con un mecanismo de difusión espacial desde las áreas ya urbanizadas. La variable \texttt{nearest\_cluster\_size} recibe un peso muy bajo ($0{,}012$, con un IV de $0{,}139$), lo que sugiere que el tamaño del \textit{cluster} urbano más cercano aporta información marginal una vez controlada la distancia.
 
 \subsection{Interpretación de los pesos WoE}
 
-El patrón observado en los pesos es \textbf{coherente} con la teoría de difusión urbana: la probabilidad de urbanización de una celda crece con la fracción de vecinos ya urbanizados. Los valores de WoE negativos (\textit{bins} 1--2) corresponden a celdas con vecindad escasamente urbanizada y, en consecuencia, con menor probabilidad de transición que el promedio. Los valores positivos (\textit{bins} 4--8) corresponden a celdas rodeadas por áreas urbanas y, por tanto, con probabilidad de transición varias veces mayor al promedio. El punto de equilibrio (WoE $\approx 0$) se alcanza en $\rho \approx 0{,}35$--$0{,}40$.
+El patrón observado en los pesos es \textbf{coherente} con la teoría de difusión urbana, aunque no de forma monótona. Para las tres variables de densidad de vecindad, los pesos de los \textit{bins} 1--3 son negativos ($-5{,}58$ a $-0{,}40$ en el radio $3\times3$): corresponden a celdas con vecindad escasamente urbanizada y, en consecuencia, con menor probabilidad de transición que el promedio. Los \textit{bins} 4--8 son positivos y contienen la evidencia favorable a la transición, con un máximo de $+0{,}93$ ($3\times3$), $+0{,}87$ ($5\times5$) y $+0{,}80$ ($7\times7$) en $\rho \approx 0{,}37$--$0{,}55$. El punto de equilibrio (WoE $\approx 0$) se alcanza en $\rho \approx 0{,}10$--$0{,}15$, según el radio.
+
+La relación es, por tanto, unimodal y no monótona. Pasado el máximo, la evidencia decae: el peso del radio $3\times3$ baja de $+0{,}93$ en $\rho \approx 0{,}37$--$0{,}55$ a $+0{,}21$ en el intervalo $\rho \approx 0{,}74$--$0{,}92$, que es el más alto que una celda candidata puede alcanzar. La lectura es directa y refuerza el mecanismo de difusión: la evidencia favorable se concentra en vecindades parcialmente urbanizadas, no en las que ya están próximas a la saturación, donde queda poco suelo disponible alrededor. El crecimiento ocurre en el frente urbano, no dentro de la mancha consolidada. La Figura~\ref{fig:woe_weights} resume la contribución de cada variable y la amplitud de sus pesos.
+
+\subsubsection{Alcance de los bins extremos y de la jerarquía entre variables}
+\label{ssec:alcance-iv}
+
+Los pesos anteriores se estimaron sobre todas las celdas de la rejilla, sin restringir el muestreo a las celdas elegibles, es decir, a las que eran no urbanas en el año inicial. Conviene precisar el alcance de esa decisión, porque afecta a dos bins y a la lectura del \textit{Information Value}.
+
+El efecto se concentra en dos intervalos. El \textit{bin} de distancia nula de \texttt{distance\_urban} agrupa las celdas que ya eran urbanas, y el \textit{bin} de densidad unitaria del radio $3\times3$ agrupa las de vecindad completamente urbanizada. Ninguno de los dos registra transiciones observadas, de modo que su peso ($-14{,}28$ y $-13{,}78$) queda determinado por el suavizado que evita la división por cero, no por los datos. Lo que ambos codifican es la restricción estructural de que una celda urbana no vuelve a urbanizarse, no un gradiente de evidencia espacial.
+
+Ninguno de los dos pesos interviene en la simulación, y no por una precaución añadida sino por la propia construcción de las variables. El autómata evalúa como candidatas únicamente las celdas no urbanas. Una celda no urbana tiene distancia al frente urbano mayor o igual que uno, mientras que el \textit{bin} degenerado de \texttt{distance\_urban} cubre el intervalo $[0;\ 0{,}0385]$: es inalcanzable. Y la densidad de vecindad se calcula con una ventana $3\times3$ que incluye la celda central, de modo que si el centro es no urbano la densidad no puede exceder $8/9 \approx 0{,}889$, mientras que el \textit{bin} degenerado exige densidad exactamente unitaria: también es inalcanzable. La comprobación sobre las diez rejillas del período de validación confirma el argumento sin excepciones: de $28\,917\,357$ celdas candidatas, ninguna cae en ninguno de los dos \textit{bins}. El detalle está en \texttt{data/processed/woe\_bin\_reachability.json}.
+
+Queda entonces acotado dónde sí influyen. Los IV de la Tabla~\ref{tab:iv_weights} superan con holgura el umbral de $0{,}50$ que la escala convencional de la Sección~\ref{ssec:information-value} marca como muy fuerte, y esa magnitud no debe leerse como capacidad predictiva excepcional, porque proviene en buena parte de esos dos \textit{bins}: en \texttt{distance\_urban} el degenerado aporta $2{,}786$ de sus $3{,}270$ de IV, un $85{,}2$\%, y en el radio $3\times3$, $1{,}617$ de $2{,}897$, un $55{,}8$\%. Las otras cinco variables no tienen \textit{bins} degenerados. Como el IV determina la ponderación $\omega_k$ de la ecuación~\ref{eq:woe_ponderado}, el efecto real es sobre el peso relativo entre variables: descontando esos \textit{bins}, la densidad de vecindad $5\times5$ pasaría al primer lugar ($1{,}678$) y \texttt{distance\_urban} caería al sexto ($0{,}484$).
+
+De ahí se sigue qué afirmar y qué no. La ponderación de la Tabla~\ref{tab:iv_weights} concede a la distancia más influencia que la que le correspondería con los \textit{bins} descontados, y es la ponderación con la que se obtuvieron todos los resultados de este capítulo: se validó fuera de muestra en cinco ventanas que no intervinieron en su estimación, con los valores de FoM, Kappa e IoU ya reportados. Lo que se sostiene en cualquiera de las dos lecturas es que la señal que gobierna la simulación es la difusión por contigüidad, porque las cuatro variables de densidad y fragmentación conservan su posición relativa. Lo que no se sostiene sin esta salvedad es la primacía de la distancia sobre la densidad como jerarquía de capacidad discriminante. Restringir el muestreo a celdas elegibles depuraría la interpretación de los IV sin alterar la mecánica de la simulación, y por eso figura entre las extensiones del Capítulo~\ref{ch:conclusiones} y no entre las correcciones pendientes.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/woe_weights.png}
-\caption{Pesos WoE por bin de densidad de vecindad urbana. La relación monotónica creciente es coherente con un mecanismo de difusión espacial y sitúa a la densidad de vecindad como el predictor de mayor peso entre las variables del modelo, sin que ello implique que sea la única causa del crecimiento.}
+\caption{\textit{Information Value} por variable (izquierda) y rango de pesos WoE por variable (derecha), calculados sobre el período de entrenamiento 1984--2010. La distancia al área urbana concentra el IV más alto ($3{,}270$, un $28{,}2$\% del total), por encima de la densidad de vecindad $3\times3$ ($2{,}897$, un $24{,}9$\%). El panel derecho muestra que ambas variables son también las de mayor amplitud entre evidencia negativa y positiva.}
 \label{fig:woe_weights}
 \end{figure}
 
@@ -107,7 +124,7 @@ El patrón observado en los pesos es \textbf{coherente} con la teoría de difusi
 \section{Calibración del modelo}
 % ============================================================
 
-A partir de los pesos WoE derivados de los datos históricos, esta sección describe la configuración final del Autómata Celular y el proceso de calibración sistemática de sus parámetros mediante búsqueda en cuadrícula (\textit{grid search}). El marco metodológico que justifica esta elección se discute en el Capítulo~\ref{ch:modelo-crecimiento-urbano} (Sección~\ref{sec:calibracion-narrativa}).
+A partir de los pesos WoE derivados de los datos históricos, esta sección describe la configuración final del Autómata Celular y el proceso de calibración sistemática de sus parámetros mediante búsqueda en cuadrícula (\textit{grid search}). El marco metodológico que justifica esta elección se discute en el Capítulo~\ref{ch:modelo-crecimiento-urbano} (Sección~\ref{sec:definicion-modelo}).
 
 \subsection{Configuración del autómata celular}
 
@@ -121,7 +138,7 @@ El Autómata Celular se configuró con los parámetros especificados en la Tabla
 \toprule
 Parámetro & Valor \\
 \midrule
-Espacio celular & $1{,}792 \times 3{,}024$ píxeles. \\
+Espacio celular & $1\,792 \times 3\,024$ píxeles. \\
 Estados & $\{0:\text{no-urbano},\ 1:\text{urbano}\}$. \\
 Vecindario & Moore (8 vecinos, radio $=1$). \\
 Variables WoE & Siete variables espaciales: distancia al área urbana, densidades de vecindad $3\times3$, $5\times5$ y $7\times7$, fragmentación local, gradiente urbano y tamaño del \textit{cluster} más cercano. \\
@@ -136,7 +153,7 @@ Períodos de simulación & 5 iteraciones por experimento. \\
 
 \subsection{Proceso de calibración}
 
-La calibración se centró en el umbral de urbanización ($\theta$) y en la ponderación de las siete variables WoE. El umbral final $\theta = 0{,}75$ se adoptó porque los valores ensayados en la exploración inicial ($\approx 0{,}40$--$0{,}60$) producían una sobre-predicción excesiva del crecimiento urbano; al fijar $\theta = 0{,}75$, la sobre-predicción se reduce de manera notable y el Recall se mantiene por encima de $0{,}91$ en las cinco ventanas evaluadas. La ponderación de las siete variables WoE se hizo proporcional al \textit{Information Value} (IV) de cada variable, calculado sobre el conjunto de entrenamiento (1984--2010). La configuración resultante de esta búsqueda (umbral, peso de vecindad y ponderación por IV) queda registrada de forma verificable en el archivo \path{data/processed/quinquenal_best_config.json} del repositorio, junto con los scripts de calibración que reproducen el barrido.
+La calibración se centró en el umbral de urbanización ($\theta$) y en la ponderación de las siete variables WoE, y se realizó sobre el período de entrenamiento (1984--2010). El umbral final $\theta = 0{,}75$ se adoptó porque los valores ensayados en la exploración inicial ($\approx 0{,}40$--$0{,}60$) producían una sobre-predicción excesiva del crecimiento urbano: la mejor configuración de ese rango, con $\theta = 0{,}400$, simuló $2\,203\,593$ transiciones frente a las $391\,095$ observadas y alcanzó un FoM de $0{,}172$, muy por debajo del que se obtiene con el umbral adoptado. Ya en la fase de validación, y como resultado y no como criterio de ajuste, esa configuración reduce la sobre-predicción y mantiene el Recall por encima de $0{,}91$ en las cinco ventanas evaluadas. La ponderación de las siete variables WoE se hizo proporcional al \textit{Information Value} (IV) de cada variable, calculado sobre el conjunto de entrenamiento (1984--2010). La configuración resultante (umbral, peso de vecindad y ponderación por IV) queda documentada en el repositorio, junto con los scripts que reproducen el barrido. El detalle de rutas se recoge en el Apéndice~\ref{ap:arquitectura}.
 
 La probabilidad de urbanización para la celda $(i,j)$ en el paso $t$ es la misma regla de transición definida en el Capítulo~\ref{ch:modelo-crecimiento-urbano} (ecuación~\ref{eq:transicion}): el campo WoE, suma de las siete evidencias ponderadas por su \textit{Information Value} normalizado, se transforma con la sigmoide y se le suma después la influencia del vecindario, acotando el resultado a $[0,1]$:
 \begin{equation}
@@ -148,11 +165,11 @@ donde $\sigma(\cdot)$ es la función sigmoide; $IV_k$, el \textit{Information Va
 \section{Simulación del crecimiento urbano}
 % ============================================================
 
-Esta sección describe el protocolo de validación quinquenal múltiple implementado para evaluar el desempeño del modelo de forma independiente al entrenamiento, y presenta los resultados individuales de las simulaciones en cada uno de los cinco períodos evaluados.
+Esta sección describe el protocolo de validación quinquenal múltiple implementado para evaluar el desempeño del modelo en régimen de \textit{hold-out} respecto del período de entrenamiento, y presenta los resultados individuales de las simulaciones en cada uno de los cinco períodos evaluados.
 
 \subsection{Protocolo de validación quinquenal múltiple}
 
-Para evaluar el modelo de forma independiente del entrenamiento, se adoptó un esquema de \textbf{validación quinquenal múltiple}: el WoE se entrenó exclusivamente con datos del período 1984--2010 y, con esos pesos, el Autómata Celular se simuló en cinco ventanas temporales solapadas de cinco años, con años de inicio sucesivos (2011, 2012, 2013, 2014 y 2015). El diseño garantiza que ningún dato del período de validación interviene en el entrenamiento (\textit{hold-out} temporal) y permite evaluar la estabilidad del modelo bajo distintas condiciones de partida.
+Para evaluar el modelo de forma independiente del entrenamiento, se adoptó un esquema de \textbf{validación quinquenal múltiple}: el WoE se entrenó exclusivamente con datos del período 1984--2010 y, con esos pesos, el Autómata Celular se simuló en cinco ventanas temporales solapadas de cinco años, con años de inicio sucesivos (2011, 2012, 2013, 2014 y 2015). El diseño separa entrenamiento y prueba: ningún dato del período de validación interviene en el entrenamiento (\textit{hold-out} temporal) y permite evaluar la estabilidad del modelo bajo distintas condiciones de partida. La Tabla~\ref{tab:simulation_config} reúne la configuración con la que se ejecutaron las cinco simulaciones.
 
 \begin{table}[htbp]
 \centering
@@ -180,7 +197,7 @@ A continuación se presentan las métricas de evaluación cuantitativa del model
 
 \subsection{Resumen comparativo -- cinco períodos quinquenales}
 
-La Tabla~\ref{tab:metrics_all_periods} resume las métricas obtenidas en los cinco períodos evaluados, con los valores tomados directamente de cada archivo \path{validation_results.json} en las carpetas \path{data/processed/validation_quinquenal_*_v3_weighted/}. El \textbf{FoM promedio es de $0{,}317$} (equivalente a $31{,}7\%$ en escala porcentual), calculado conforme a la Ecuación~\ref{eq:fom_formula} del marco teórico. Esta magnitud se sitúa en una \textbf{banda intermedia} del espectro empírico documentado por \textcite{pontius2008comparing}: por encima del subconjunto de aplicaciones con FoM inferior al $15\%$ y muy por debajo del único caso que supera el $50\%$ en esa muestra multi-sitio (Capítulo~\ref{ch:estado-del-arte}). El Kappa promedio de $0{,}445$ corresponde a un acuerdo moderado según la escala de Landis y Koch (cercano al límite superior de ese rango). El Recall alto ($>0{,}91$ en todos los períodos) indica que el modelo captura la mayor parte de la urbanización observada, bajo la misma definición operativa de la clase urbana, aunque con sobre-predicción sistemática de la magnitud del crecimiento.
+La Tabla~\ref{tab:metrics_all_periods} resume las métricas obtenidas en los cinco períodos evaluados. El \textbf{FoM promedio es de $0{,}317$} (equivalente a $31{,}7\%$ en escala porcentual), calculado conforme a la Ecuación~\ref{eq:fom_formula} del marco teórico. Esta magnitud se sitúa en una \textbf{banda intermedia} del espectro empírico documentado por \textcite{pontius2008comparing}: por encima del subconjunto de aplicaciones con FoM inferior a $0{,}15$ y muy por debajo del único caso que supera $0{,}50$ en esa muestra multi-sitio (Capítulo~\ref{ch:estado-del-arte}). El Kappa promedio de $0{,}445$ corresponde a un acuerdo moderado según la escala de \textcite{LandisKoch1977}, en la parte baja de ese rango ($0{,}41$--$0{,}60$). El Recall alto ($>0{,}91$ en todos los períodos) indica que el modelo captura la mayor parte de la urbanización observada, bajo la misma definición operativa de la clase urbana, aunque con sobre-predicción sistemática de la magnitud del crecimiento.
 
 \begin{table}[htbp]
 \centering
@@ -205,7 +222,7 @@ La Tabla~\ref{tab:metrics_all_periods} resume las métricas obtenidas en los cin
 }
 \end{table}
 
-La variación entre períodos refleja diferencias en la dinámica observada. El período 2011--2016 muestra el FoM más bajo ($0{,}222$): el área urbana clasificada en 2016 \textit{decreció} levemente respecto a 2011, una anomalía atribuible a la variabilidad de la clasificación binaria RGB año a año, más que a una contracción urbana real. Los períodos 2012--2017, 2013--2018 y 2015--2020, en los que el crecimiento neto observado es positivo, exhiben FoM entre $0{,}35$ y $0{,}38$, con mayor concordancia entre el modelo y los mapas observados.
+La variación entre períodos refleja diferencias en la dinámica observada. El período 2011--2016 muestra el FoM más bajo ($0{,}222$): el área urbana clasificada en 2016 \textit{decreció} levemente respecto a 2011, una anomalía atribuible a la variabilidad de la clasificación binaria RGB año a año, más que a una contracción urbana real. Los períodos 2012--2017, 2013--2018 y 2015--2020, en los que el crecimiento neto observado es positivo, exhiben FoM entre $0{,}345$ y $0{,}378$, con mayor concordancia entre el modelo y los mapas observados. La Tabla~\ref{tab:literature_comparison} sitúa estos valores frente al espectro documentado en la literatura.
 
 \begin{table}[htbp]
 \centering
@@ -215,21 +232,26 @@ La variación entre períodos refleja diferencias en la dinámica observada. El 
 \toprule
 \textbf{Referencia} & \textbf{Método} & \textbf{FoM reportado / observado} \\
 \midrule
-Estudio comparativo multi-sitio \parencite{pontius2008comparing} & Trece aplicaciones de nueve modelos & Espectro empírico amplio: seis aplicaciones con FoM $<15\%$ y una sola ($>50\%$); el FoM puede variar entre $0\%$ y $100\%$. \\
-GSA-CA en Urumqi \parencite{Tang2024} & AC con búsqueda gravitacional & FoM = $43{,}03\%$ (2010) y $37{,}64\%$ (2020); contexto árido con \textit{drivers} físicos explícitos. \\
+Estudio comparativo multi-sitio \parencite{pontius2008comparing} & Trece aplicaciones de nueve modelos & Espectro empírico amplio: seis aplicaciones con FoM inferior a $0{,}15$ y una sola por encima de $0{,}50$; el FoM puede variar entre $0$ y $1$. \\
+GSA-CA en Urumqi \parencite{Tang2024} & AC con búsqueda gravitacional & FoM = $0{,}430$ en calibración y $0{,}376$ en validación; contexto árido con \textit{drivers} físicos explícitos. \\
 \textbf{Este trabajo (ZMQ, promedio cinco ventanas)} & \textbf{WoE-AC con \textit{grid search}} & \textbf{FoM promedio} = $\mathbf{0{,}317}$ (i.e., $\mathbf{31{,}7\%}$); \textbf{Kappa promedio} = $\mathbf{0{,}445}$. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-El FoM promedio obtenido se ubica en una banda intermedia del espectro empírico documentado por \textcite{pontius2008comparing}: por encima del subconjunto de aplicaciones con FoM inferior al $15\%$ y por debajo del único caso que supera el $50\%$ en esa muestra. Comparado con el estudio reciente de \textcite{Tang2024} sobre Urumqi, donde el aprovechamiento explícito de \textit{drivers} físicos asociados a la aridez eleva el FoM por encima del $35\%$, el modelo WoE-AC propuesto queda por debajo, lo que es coherente con el hecho de que en este trabajo se emplean exclusivamente variables derivadas del propio mapa binario, sin incorporar restricciones topográficas, socioeconómicas ni de infraestructura.
+Comparado con el estudio de \textcite{Tang2024} sobre Urumqi, presentado en el Capítulo~\ref{ch:estado-del-arte}, que reporta un FoM de $0{,}376$ en validación independiente, el modelo WoE-AC propuesto queda por debajo. La comparación debe leerse con cautela, porque el sitio, las clases y el horizonte difieren, y porque ese trabajo incorpora capas topográficas, de infraestructura y de exclusión por cuerpos de agua que aquí no se emplean: en este trabajo se usan exclusivamente variables derivadas del propio mapa binario, sin restricciones topográficas, socioeconómicas ni de infraestructura. La diferencia de insumos es una explicación plausible de la brecha, no una relación causal medida en este trabajo.
+
+El antecedente de autómatas celulares para Querétaro reseñado en el Capítulo~\ref{ch:estado-del-arte} \parencite{JimenezLopez2018} no figura en la Tabla~\ref{tab:literature_comparison} por dos razones que conviene declarar, ya que sus cifras podrían parecer directamente comparables con las de este trabajo. La primera es que no reporta FoM, sino Kappa de Cohen, índice de Jaccard y dimensión fractal, de modo que no hay una magnitud común sobre la métrica que aquí se privilegia; sus valores de Kappa ($0{,}53$) y Jaccard ($0{,}76$) para Querétaro se calculan además sobre un horizonte de catorce años y sobre la clase urbana completa, que incorpora la mancha ya consolidada en el año inicial. La segunda, y más determinante, es que en ese trabajo el mapa observado de 2017 se emplea simultáneamente para seleccionar la regla de transición entre las 256 posibles y para medir el ajuste de la regla seleccionada, por lo que las cifras publicadas son el máximo de una búsqueda sobre el propio período de evaluación. Las métricas de este capítulo provienen de un esquema distinto: los pesos WoE, su ponderación por \textit{Information Value} y el umbral de transición se fijaron con la serie 1984--2010 y no se reajustaron en ninguna de las cinco ventanas de 2011 a 2020, que operan por tanto como prueba fuera de muestra. Comparar ambos conjuntos de números sin señalar esa diferencia de diseño llevaría a conclusiones equivocadas en cualquiera de los dos sentidos.
+
+La Figura~\ref{fig:metricas-quinquenales} presenta esas mismas cifras en forma gráfica y admite dos lecturas que la tabla no hace evidentes. La primera es que las tres métricas coinciden en señalar las dos ventanas de menor desempeño, $2011$--$2016$ y $2014$--$2019$, que son también las de menor crecimiento neto observado; entre las tres restantes el orden cambia según la métrica que se privilegie, de modo que la jerarquía fina entre ellas no es robusta. La segunda es que la dispersión entre ventanas depende de la métrica: el FoM varía en un factor de $1{,}70$ entre el valor mínimo y el máximo, el Kappa en $1{,}43$ y el IoU en $1{,}15$. La razón está en el alcance de cada una. El IoU se calcula sobre la clase urbana completa e incorpora las celdas que ya eran urbanas al inicio del período, mientras que el FoM excluye por construcción el acierto sobre la permanencia y contabiliza solo las celdas involucradas en el cambio observado o predicho, incluidas las falsas alarmas (ecuación~\ref{eq:fom_formula}). El FoM es, por tanto, la métrica que discrimina con mayor amplitud entre ventanas, y es la que se privilegia al situar el modelo frente a la literatura.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.92\linewidth]{F11_metricas_quinquenales_ai}
-  \caption{Desempeño comparado del modelo WoE-AC en las cinco ventanas quinquenales. Las líneas verticales punteadas señalan el promedio de cada métrica: FoM $=0{,}317$, Kappa $=0{,}445$, IoU $=0{,}633$. La estabilidad entre ventanas indica que el modelo captura una dinámica estructural del crecimiento y no un patrón sobreajustado.}
+  \caption{Desempeño comparado del modelo WoE-AC en las cinco ventanas quinquenales. Las líneas verticales punteadas señalan el promedio de cada métrica: FoM $=0{,}317$, Kappa $=0{,}445$, IoU $=0{,}633$. El FoM más bajo coincide con la única ventana cuyo crecimiento neto observado es negativo. \textit{Figura elaborada con IA generativa a partir de los resultados de validación propios de la Tabla~\ref{tab:metrics_all_periods}.}}
   \label{fig:metricas-quinquenales}
 \end{figure}
+
 
 % ---- Períodos individuales ----
 \clearpage
@@ -247,10 +269,10 @@ La Tabla~\ref{tab:metrics_2011_2016} reúne las métricas de esta ventana y la F
 \multicolumn{2}{c}{\textbf{Métricas de píxel}} & \multicolumn{2}{c}{\textbf{Figure of Merit}} \\
 \midrule
 Accuracy  & $0{,}665$ & FoM                  & \textbf{$0{,}222$} \\
-IoU       & $0{,}581$ & Hits ($B$)           & $361{,}614$ \\
-Precision & $0{,}590$ & Falsas alarmas ($A$) & $1{,}203{,}567$ \\
-Recall    & $0{,}975$ & Omisiones ($C$)      & $64{,}208$ \\
-F1        & $0{,}735$ & TP / FP / FN         & $2{,}514{,}806$ / $1{,}749{,}463$ / $64{,}208$ \\
+IoU       & $0{,}581$ & Hits ($B$)           & $361\,614$ \\
+Precision & $0{,}590$ & Falsas alarmas ($A$) & $1\,203\,567$ \\
+Recall    & $0{,}975$ & Omisiones ($C$)      & $64\,208$ \\
+F1        & $0{,}735$ & TP / FP / FN         & $2\,514\,806$ / $1\,749\,463$ / $64\,208$ \\
 $\kappa$  & $0{,}349$ & Crec.\ obs.\ / pred.\ & $-4{,}4\%$ / $+58{,}0\%$ \\
 \bottomrule
 \end{tabular}
@@ -278,11 +300,11 @@ En esta ventana el desempeño mejora respecto a la anterior. La Tabla~\ref{tab:m
 \multicolumn{2}{c}{\textbf{Métricas de píxel}} & \multicolumn{2}{c}{\textbf{Figure of Merit}} \\
 \midrule
 Accuracy  & $0{,}750$ & FoM                  & \textbf{$0{,}345$} \\
-IoU       & $0{,}652$ & Hits ($B$)           & $602{,}889$ \\
-Precision & $0{,}688$ & Falsas alarmas ($A$) & $937{,}345$ \\
-Recall    & $0{,}925$ & Omisiones ($C$)      & $205{,}308$ \\
-F1        & $0{,}789$ & TP / FP / FN         & $2{,}532{,}942$ / $1{,}147{,}725$ / $205{,}308$ \\
-$\kappa$  & $0{,}499$ & Crec.\ obs.\ / pred.\ & $+27{,}9\%$ / $+71{,}9\%$ \\
+IoU       & $0{,}652$ & Hits ($B$)           & $602\,889$ \\
+Precision & $0{,}688$ & Falsas alarmas ($A$) & $937\,345$ \\
+Recall    & $0{,}925$ & Omisiones ($C$)      & $205\,308$ \\
+F1        & $0{,}789$ & TP / FP / FN         & $2\,532\,942$ / $1\,147\,725$ / $205\,308$ \\
+$\kappa$  & $0{,}499$ & Crec.\ obs.\ / pred.\ & $+27{,}9\%$ / $+72{,}0\%$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -290,7 +312,7 @@ $\kappa$  & $0{,}499$ & Crec.\ obs.\ / pred.\ & $+27{,}9\%$ / $+71{,}9\%$ \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/summary_2012_to_2017.png}
-\caption{Validación quinquenal 2012--2017. FoM $=0{,}345$; período con crecimiento observado positivo ($+27{,}9\%$) y FoM numéricamente superior al de la ventana 2011--2016 bajo el mismo protocolo. Los $602{,}889$ hits ($B$) corresponden a píxeles donde tanto el modelo como la observación registran transición a urbano en el período, asociados a la expansión perimetral visible en el mapa binario.}
+\caption{Validación quinquenal 2012--2017. FoM $=0{,}345$; período con crecimiento observado positivo ($+27{,}9\%$) y FoM superior al de la ventana 2011--2016 bajo el mismo protocolo. Los $602\,889$ hits ($B$) corresponden a píxeles donde tanto el modelo como la observación registran transición a urbano en el período, asociados a la expansión perimetral visible en el mapa binario.}
 \label{fig:summary_2012_2017}
 \end{figure}
 
@@ -309,10 +331,10 @@ La Tabla~\ref{tab:metrics_2013_2018} y la Figura~\ref{fig:summary_2013_2018} res
 \multicolumn{2}{c}{\textbf{Métricas de píxel}} & \multicolumn{2}{c}{\textbf{Figure of Merit}} \\
 \midrule
 Accuracy  & $0{,}744$ & FoM                  & \textbf{$0{,}355$} \\
-IoU       & $0{,}648$ & Hits ($B$)           & $641{,}089$ \\
-Precision & $0{,}689$ & Falsas alarmas ($A$) & $934{,}924$ \\
-Recall    & $0{,}917$ & Omisiones ($C$)      & $231{,}317$ \\
-F1        & $0{,}787$ & TP / FP / FN         & $2{,}559{,}805$ / $1{,}156{,}835$ / $231{,}317$ \\
+IoU       & $0{,}648$ & Hits ($B$)           & $641\,089$ \\
+Precision & $0{,}689$ & Falsas alarmas ($A$) & $934\,924$ \\
+Recall    & $0{,}917$ & Omisiones ($C$)      & $231\,317$ \\
+F1        & $0{,}787$ & TP / FP / FN         & $2\,559\,805$ / $1\,156\,835$ / $231\,317$ \\
 $\kappa$  & $0{,}482$ & Crec.\ obs.\ / pred.\ & $+30{,}4\%$ / $+73{,}6\%$ \\
 \bottomrule
 \end{tabular}
@@ -321,7 +343,7 @@ $\kappa$  & $0{,}482$ & Crec.\ obs.\ / pred.\ & $+30{,}4\%$ / $+73{,}6\%$ \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/summary_2013_to_2018.png}
-\caption{Validación quinquenal 2013--2018. FoM $=0{,}355$; valor numéricamente cercano al del período 2012--2017 en un contexto análogo de crecimiento observado positivo. El número de omisiones ($231{,}317$ píxeles) sugiere que parte de la expansión hacia el norte y el este no queda recogida en la predicción bajo este experimento.}
+\caption{Validación quinquenal 2013--2018. FoM $=0{,}355$; valor cercano al del período 2012--2017 en un contexto análogo de crecimiento observado positivo. El número de omisiones ($231\,317$ píxeles) sugiere que parte de la expansión hacia el norte y el este no queda recogida en la predicción bajo este experimento.}
 \label{fig:summary_2013_2018}
 \end{figure}
 
@@ -340,10 +362,10 @@ Este período se aparta de la tendencia: la Tabla~\ref{tab:metrics_2014_2019} re
 \multicolumn{2}{c}{\textbf{Métricas de píxel}} & \multicolumn{2}{c}{\textbf{Figure of Merit}} \\
 \midrule
 Accuracy  & $0{,}697$ & FoM                  & \textbf{$0{,}287$} \\
-IoU       & $0{,}614$ & Hits ($B$)           & $511{,}475$ \\
-Precision & $0{,}628$ & Falsas alarmas ($A$) & $1{,}176{,}288$ \\
-Recall    & $0{,}965$ & Omisiones ($C$)      & $93{,}486$ \\
-F1        & $0{,}761$ & TP / FP / FN         & $2{,}611{,}594$ / $1{,}545{,}800$ / $93{,}486$ \\
+IoU       & $0{,}614$ & Hits ($B$)           & $511\,475$ \\
+Precision & $0{,}628$ & Falsas alarmas ($A$) & $1\,176\,288$ \\
+Recall    & $0{,}965$ & Omisiones ($C$)      & $93\,486$ \\
+F1        & $0{,}761$ & TP / FP / FN         & $2\,611\,594$ / $1\,545\,800$ / $93\,486$ \\
 $\kappa$  & $0{,}396$ & Crec.\ obs.\ / pred.\ & $+9{,}5\%$ / $+68{,}3\%$ \\
 \bottomrule
 \end{tabular}
@@ -352,14 +374,14 @@ $\kappa$  & $0{,}396$ & Crec.\ obs.\ / pred.\ & $+9{,}5\%$ / $+68{,}3\%$ \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/summary_2014_to_2019.png}
-\caption{Validación quinquenal 2014--2019. FoM $=0{,}287$; el crecimiento real modesto ($+9{,}5\%$) contrasta con una predicción de expansión más elevada ($+68{,}3\%$), lo que se refleja en la proporción de falsas alarmas ($1{,}176{,}288$ píxeles). El Recall alto ($0{,}965$) indica que el modelo asigna clase urbana de forma amplia respecto al mapa observado en 2019.}
+\caption{Validación quinquenal 2014--2019. FoM $=0{,}287$; el crecimiento real modesto ($+9{,}5\%$) contrasta con una predicción de expansión más elevada ($+68{,}3\%$), lo que se refleja en la proporción de falsas alarmas ($1\,176\,288$ píxeles). El Recall alto ($0{,}965$) indica que el modelo asigna clase urbana de forma amplia respecto al mapa observado en 2019.}
 \label{fig:summary_2014_2019}
 \end{figure}
 
 \clearpage
 \subsection{Período 2015--2020}
 
-La última ventana es la de mejor desempeño. La Tabla~\ref{tab:metrics_2015_2020} consigna un FoM de $0{,}378$ y la Figura~\ref{fig:summary_2015_2020} muestra el mayor número de aciertos de toda la serie, en un año de fuerte crecimiento observado.
+La última ventana es la de FoM más alto de las cinco. La Tabla~\ref{tab:metrics_2015_2020} consigna un FoM de $0{,}378$ y la Figura~\ref{fig:summary_2015_2020} muestra el mayor número de aciertos de toda la serie, en un año de fuerte crecimiento observado.
 
 \begin{table}[H]
 \centering
@@ -371,10 +393,10 @@ La última ventana es la de mejor desempeño. La Tabla~\ref{tab:metrics_2015_202
 \multicolumn{2}{c}{\textbf{Métricas de píxel}} & \multicolumn{2}{c}{\textbf{Figure of Merit}} \\
 \midrule
 Accuracy  & $0{,}755$ & FoM                  & \textbf{$0{,}378$} \\
-IoU       & $0{,}669$ & Hits ($B$)           & $704{,}983$ \\
-Precision & $0{,}701$ & Falsas alarmas ($A$) & $977{,}214$ \\
-Recall    & $0{,}936$ & Omisiones ($C$)      & $181{,}887$ \\
-F1        & $0{,}802$ & TP / FP / FN         & $2{,}682{,}235$ / $1{,}145{,}318$ / $181{,}887$ \\
+IoU       & $0{,}669$ & Hits ($B$)           & $704\,983$ \\
+Precision & $0{,}701$ & Falsas alarmas ($A$) & $977\,214$ \\
+Recall    & $0{,}936$ & Omisiones ($C$)      & $181\,887$ \\
+F1        & $0{,}802$ & TP / FP / FN         & $2\,682\,235$ / $1\,145\,318$ / $181\,887$ \\
 $\kappa$  & $0{,}498$ & Crec.\ obs.\ / pred.\ & $+33{,}5\%$ / $+78{,}4\%$ \\
 \bottomrule
 \end{tabular}
@@ -383,11 +405,40 @@ $\kappa$  & $0{,}498$ & Crec.\ obs.\ / pred.\ & $+33{,}5\%$ / $+78{,}4\%$ \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/summary_2015_to_2020.png}
-\caption{Validación quinquenal 2015--2020. FoM $=0{,}378$; entre las cinco ventanas es el valor de FoM numéricamente más alto, en un contexto de fuerte crecimiento observado ($+33{,}5\%$). Se registran 704{,}983 hits y, en términos relativos a este conjunto de corridas, una menor proporción de falsas alarmas que en otras ventanas.}
+\caption{Validación quinquenal 2015--2020. FoM $=0{,}378$; entre las cinco ventanas es el FoM más alto, en un contexto de fuerte crecimiento observado ($+33{,}5\%$). Se registran 704\,983 hits y, en términos relativos a este conjunto de corridas, una menor proporción de falsas alarmas que en otras ventanas.}
 \label{fig:summary_2015_2020}
 \end{figure}
 
 \clearpage
+% ============================================================
+\subsection{Descomposición del desacuerdo en cantidad y asignación}
+\label{sec:descomposicion-error}
+
+Las métricas anteriores dicen cuánto se equivoca el modelo, no de qué se equivoca. La descomposición de \textcite{PontiusMillones2011}, definida en las ecuaciones~\ref{eq:desacuerdo_cantidad} y~\ref{eq:desacuerdo_asignacion} del marco teórico, separa las dos fuentes: predecir una extensión de cambio equivocada es desacuerdo de cantidad, y localizar mal un total correcto es desacuerdo de asignación. La Tabla~\ref{tab:pontius_decomposition} recoge ambos componentes en las cinco ventanas.
+
+\begin{table}[htbp]
+\centering
+\caption{Descomposición del desacuerdo total en sus componentes de cantidad y de asignación \parencite{PontiusMillones2011}, sobre las $5\,419\,008$ celdas de cada ventana. El desacuerdo total es el complemento de la exactitud global de la Tabla~\ref{tab:metrics_all_periods}. La última columna es la fracción del desacuerdo atribuible a la cantidad.}
+\label{tab:pontius_decomposition}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Período} & \textbf{FoM} & \textbf{Cantidad} & \textbf{Asignación} & \textbf{Cantidad / total} \\
+\midrule
+2011--2016 & $0{,}222$ & $31{,}1\%$ & $2{,}4\%$  & $92{,}9\%$ \\
+2012--2017 & $0{,}345$ & $17{,}4\%$ & $7{,}6\%$  & $69{,}7\%$ \\
+2013--2018 & $0{,}355$ & $17{,}1\%$ & $8{,}5\%$  & $66{,}7\%$ \\
+2014--2019 & $0{,}287$ & $26{,}8\%$ & $3{,}5\%$  & $88{,}6\%$ \\
+2015--2020 & $0{,}378$ & $17{,}8\%$ & $6{,}7\%$  & $72{,}6\%$ \\
+\midrule
+\textbf{Promedio} & $\mathbf{0{,}317}$ & $\mathbf{22{,}0\%}$ & $\mathbf{5{,}7\%}$ & $\mathbf{79{,}4\%}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El desacuerdo de cantidad domina en las cinco ventanas y concentra el $79{,}4\%$ del desacuerdo total en promedio. El modelo urbaniza demasiadas celdas, pero las coloca en su mayoría donde corresponde. Ese diagnóstico es consistente con el Recall alto frente a la Precision moderada de la Tabla~\ref{tab:metrics_all_periods}, y con el factor de sobre-predicción que se documenta más adelante.
+
+La lectura por ventana afina el resultado. Las dos ventanas de peor FoM son las de mayor desacuerdo de cantidad: 2011--2016 concentra en cantidad el $92{,}9\%$ de su desacuerdo, algo esperable porque es la única ventana con crecimiento neto observado negativo, de modo que cualquier crecimiento simulado es exceso por definición; en 2014--2019 la proporción llega al $88{,}6\%$. Las tres ventanas de mejor FoM descienden al rango $66{,}7$--$72{,}6\%$, y es ahí donde el desacuerdo de asignación alcanza su nivel más alto. La implicación metodológica es directa: el margen de mejora está en la estimación de la magnitud del crecimiento, no en la regla que decide dónde ocurre.
+
 % ============================================================
 \section{Análisis espacial del error del modelo}
 % ============================================================
@@ -395,11 +446,11 @@ $\kappa$  & $0{,}498$ & Crec.\ obs.\ / pred.\ & $+33{,}5\%$ / $+78{,}4\%$ \\
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.90\linewidth]{F12_predicho_vs_observado_ai}
-  \caption{Mapa de error para la ventana 2015$\rightarrow$2020 (mejor desempeño, FoM $=0{,}378$). Las celdas verdes (B) son aciertos —transiciones correctamente predichas—; las ámbar (A) son falsas alarmas; las rojas (C) son omisiones. Solo las celdas en transición entran al cálculo del FoM; las permanencias urbanas y no urbanas aparecen en gris.}
+  \caption{Mapa de error para la ventana 2015$\rightarrow$2020 (FoM $=0{,}378$). Las celdas verdes (B) son aciertos, es decir, transiciones correctamente predichas; las ámbar (A) son falsas alarmas; las rojas (C) son omisiones. Solo las celdas en transición entran al cálculo del FoM; las permanencias urbanas y no urbanas aparecen en gris. \textit{Figura elaborada con IA generativa a partir de los mapas predicho y observado propios de la ventana 2015--2020.}}
   \label{fig:mapa-error}
 \end{figure}
 
-Complementando la evaluación cuantitativa, esta sección examina las fuentes de error identificadas en el proceso de simulación y analiza cualitativamente los patrones morfológicos de las predicciones, con el fin de orientar las extensiones metodológicas propuestas en las conclusiones.
+La Figura~\ref{fig:mapa-error} localiza esos componentes para la ventana 2015--2020. Complementando la evaluación cuantitativa, esta sección examina las fuentes de error identificadas en el proceso de simulación y analiza cualitativamente los patrones morfológicos de las predicciones, con el fin de orientar las extensiones metodológicas propuestas en las conclusiones.
 
 \subsection{Fuentes de error identificadas}
 
@@ -407,7 +458,7 @@ El análisis conjunto de los cinco períodos revela tres fuentes principales de 
 
 \subsubsection{Error de clasificación de imágenes}
 
-El pipeline de clasificación no supervisada (K-Means + SVM) reporta una concordancia interna de $88$--$94\%$ con las pseudoetiquetas en el conjunto de prueba holdout ($20\%$ de los píxeles), según se describe en el Capítulo~\ref{ch:modelo-crecimiento-urbano}. Con una imagen de $5{,}4$ millones de píxeles, incluso un $5$--$10\%$ de error equivale a $270{,}000$--$540{,}000$ píxeles mal clasificados por imagen. Estos errores se manifiestan como confusión espectral (suelo desnudo o techos claros clasificados como urbano) e inconsistencias temporales que introducen ``transiciones'' espurias en el historial WoE.
+El pipeline de clasificación no supervisada (K-Means + SVM) reporta una concordancia interna de $88$--$94\%$ con las pseudoetiquetas en el conjunto de prueba holdout ($20\%$ de los píxeles), según se describe en el Capítulo~\ref{ch:modelo-crecimiento-urbano}. Con una imagen de $5{,}4$ millones de píxeles, un error nominal del $6$ al $12\%$ equivale a unos $325\,000$--$650\,000$ píxeles mal clasificados por imagen. Estos errores se manifiestan como confusión espectral (suelo desnudo o techos claros clasificados como urbano) e inconsistencias temporales que introducen ``transiciones'' espurias en el historial WoE.
 
 \subsubsection{Propagación en transiciones históricas}
 
@@ -415,7 +466,7 @@ El cálculo de WoE se basa en las transiciones históricas observadas. Los error
 
 \subsubsection{Amplificación en el autómata celular}
 
-El AC amplifica errores iniciales: una celda mal clasificada como urbana actúa como ``semilla'' de crecimiento y genera falsas alarmas en cascada mediante el efecto de vecindad.
+El AC amplifica errores iniciales: una celda mal clasificada como urbana actúa como ``semilla'' de crecimiento y genera falsas alarmas en cascada mediante el efecto de vecindad. La Tabla~\ref{tab:error_contribution} ordena estas tres fuentes por su contribución estimada, con la advertencia de que se trata de una estimación cualitativa y no de una descomposición medida.
 
 \begin{table}[htbp]
 \centering
@@ -440,39 +491,41 @@ El análisis morfológico cualitativo de los mapas generados muestra que el mode
 
 El cálculo formal de métricas de paisaje (FRAGSTATS, Moran's I) requeriría la ejecución de análisis específicos sobre los mapas predicho y observado. Los archivos de mapa predicho están disponibles, por ejemplo, en \path{data/processed/validation_quinquenal_2015_2020_v3_weighted/predicted_2020.npy}, para verificación independiente.
 
-Para la planificación urbana a escala metropolitana, la reproducción cualitativa de los patrones de difusión contigua puede ser tan relevante como la concordancia píxel a píxel en las transiciones, que es lo que el FoM evalúa específicamente y que en este trabajo alcanza un promedio de $0{,}317$.
+Conviene señalar el límite de esta lectura: la evaluación de este trabajo es píxel a píxel sobre las transiciones, que es lo que mide el FoM y donde el promedio alcanzado es $0{,}317$. La similitud morfológica se aprecia de forma visual, sin una métrica de configuración espacial que la cuantifique, de modo que no compensa ni sustituye la concordancia píxel a píxel. Incorporar métricas de patrón de paisaje para medirla es una de las extensiones que se plantean en las conclusiones.
 
-\subsection{Fortalezas y debilidades del modelo}
+% ============================================================
+\section{Fortalezas y debilidades del modelo}
+% ============================================================
 
-\subsubsection{Fortalezas identificadas}
+\subsection{Fortalezas identificadas}
 
-El modelo exhibe consistencia espacial: las predicciones concentran el crecimiento en los bordes de las áreas urbanas existentes, de forma coherente con el patrón de difusión observado. Su FoM promedio de $0{,}317$ (promedio de los cinco archivos \path{validation_results.json}) se interpreta frente al espectro multi-sitio documentado por \textcite{pontius2008comparing} (Capítulo~\ref{ch:estado-del-arte}). El Recall se mantiene superior a $0{,}91$ en todos los períodos, de modo que el modelo recoge la mayor parte de la urbanización real. A esa cobertura se suma su fidelidad morfológica: las comparaciones visuales entre mapas predichos y observados (figuras \texttt{summary\_XXXX\_to\_XXXX.png} de cada período) muestran que el crecimiento predicho se concentra consistentemente en los bordes del área urbana existente y reproduce el patrón de difusión contigua observado en los cinco períodos. El enfoque es, además, parsimonioso: siete variables espaciales derivadas del mapa binario --distancia a área urbana, densidades de vecindad 3$\times$3/5$\times$5/7$\times$7, fragmentación local, gradiente urbano y tamaño de \textit{cluster}-- bastan para alcanzar estas métricas sin recurrir a datos socioeconómicos externos.
+El modelo exhibe consistencia espacial: las predicciones concentran el crecimiento en los bordes de las áreas urbanas existentes, de forma coherente con el patrón de difusión observado. Su FoM promedio de $0{,}317$ se interpreta frente al espectro multi-sitio documentado por \textcite{pontius2008comparing} (Capítulo~\ref{ch:estado-del-arte}). El Recall se mantiene superior a $0{,}91$ en todos los períodos, de modo que el modelo recoge la mayor parte de las transiciones observadas bajo la definición operativa de la clase urbana. A esa cobertura se suma su fidelidad morfológica: las comparaciones visuales entre mapas predichos y observados (Figuras~\ref{fig:summary_2011_2016} a \ref{fig:summary_2015_2020}) muestran que el crecimiento predicho se concentra consistentemente en los bordes del área urbana existente y reproduce el patrón de difusión contigua observado en los cinco períodos. El enfoque es, además, parsimonioso: siete variables espaciales derivadas del mapa binario --distancia a área urbana, densidades de vecindad 3$\times$3/5$\times$5/7$\times$7, fragmentación local, gradiente urbano y tamaño de \textit{cluster}-- bastan para alcanzar estas métricas sin recurrir a datos socioeconómicos externos.
 
-\subsubsection{Debilidades identificadas}
+\subsection{Debilidades identificadas}
 
-Las debilidades parten de una sobre-predicción sistemática: en todos los períodos el crecimiento predicho supera al observado por un factor de entre $2$ y $8$ veces. Asociada a ella, la \textit{Precision} se mantiene moderada, entre $0{,}59$ y $0{,}70$, lo que indica que muchas predicciones de transición son falsas alarmas. El crecimiento disperso queda sin modelar: el mecanismo de vecindad no captura el desarrollo tipo \textit{leapfrog}. A ello se añade el peso de las variables externas, pues la omisión de factores socioeconómicos o de infraestructura (p.\ ej.\ distancia a empleo, precio del suelo) limita la precisión más allá de las siete variables derivadas del mapa binario.
+Las debilidades parten de una sobre-predicción sistemática: en las cuatro ventanas con crecimiento neto positivo el crecimiento predicho supera al observado por un factor de entre $2{,}3$ y $7{,}2$ veces, y en 2011--2016 el crecimiento observado es negativo, de modo que el cociente no está definido. Asociada a ella, la \textit{Precision} se mantiene moderada, entre $0{,}59$ y $0{,}70$, lo que indica que muchas predicciones de transición son falsas alarmas. El crecimiento disperso queda sin modelar: el mecanismo de vecindad no captura el desarrollo tipo \textit{leapfrog}. A ello se añade el peso de las variables externas, pues la omisión de factores socioeconómicos o de infraestructura (p.\ ej.\ distancia a empleo, precio del suelo) limita la precisión más allá de las siete variables derivadas del mapa binario.
 
-\subsection{Validación de hipótesis}
+% ============================================================
+\section{Validación de hipótesis}
+% ============================================================
 
-A continuación se contrasta cada una de las seis hipótesis enunciadas en el Capítulo~\ref{ch:introduccion} con la evidencia empírica obtenida en los cinco períodos de validación. Cada hipótesis se reproduce de forma literal (entre comillas) antes de su contraste. El cuadro resumen consolidado se presenta en el Capítulo~\ref{ch:conclusiones}.
+A continuación se contrastan la hipótesis general y las cuatro particulares enunciadas en el Capítulo~\ref{ch:introduccion} con la evidencia de las cinco ventanas. El cuadro resumen se presenta en el Capítulo~\ref{ch:conclusiones}.
 
-\textbf{H1 (apoyada por la evidencia)}. \emph{«La integración de WoE como función de transición empírica del AC produce simulaciones con FoM superior a $0{,}15$ en las cinco ventanas de validación quinquenal.»} El criterio se cumple: el FoM se mantiene en el intervalo $[0{,}222, 0{,}378]$ en los cinco períodos (Tabla~\ref{tab:metrics_all_periods}), con un promedio de $0{,}317$, Accuracy promedio de $0{,}722$ y Kappa promedio de $0{,}445$. Esa magnitud se ubica en una \textbf{banda intermedia} respecto al espectro empírico multi-sitio resumido en el Capítulo~\ref{ch:estado-del-arte} con base en \textcite{pontius2008comparing}.
+\textbf{H1 (apoyada por la evidencia, con una salvedad).} La regla de transición WoE ponderada por Information Value produce un modelo auditable: la distancia al frente urbano y la densidad de vecindad concentran el mayor IV, por encima de fragmentación y gradiente. La Tabla~\ref{tab:iv_weights} lo sostiene: distancia $0{,}282$ y las tres densidades suman $0{,}782$ del peso normalizado; fragmentación y gradiente quedan por debajo. La salvedad es la de la Sección~\ref{ssec:alcance-iv} y afecta al orden entre las dos primeras variables, no al enunciado: la primacía de la distancia sobre la densidad depende de un \textit{bin} sin transiciones observadas que, por construcción, ninguna celda candidata puede alcanzar. Lo que la hipótesis afirma queda en pie en cualquiera de las dos lecturas: la difusión por contigüidad gobierna la simulación y cada peso admite lectura geográfica, que es el sentido en que el modelo es auditable. Que la salvedad pueda enunciarse y cuantificarse con esta precisión es, de hecho, una consecuencia de esa auditabilidad.
 
-\textbf{H2 (apoyada por la evidencia)}. \emph{«En el espacio de parámetros (umbral de transición, peso de vecindad) existe un óptimo no trivial: la configuración calibrada por búsqueda sistemática supera a una configuración por omisión sin calibrar en el FoM medio de las cinco ventanas, y los umbrales por debajo del calibrado degradan el desempeño por sobre-predicción.»} La configuración calibrada (umbral $0{,}75$, peso de vecindad $0{,}50$ y ponderación por IV) produjo FoM en el intervalo $[0{,}222, 0{,}378]$ a lo largo de las cinco ventanas, sin reentrenar el WoE por período. El contraste documentado en el repositorio con configuraciones preliminares, en particular un experimento exploratorio con umbral cercano a $0{,}60$ que generaba sobre-predicción masiva (FoM del orden de $0{,}17$), sostiene la mejora atribuida a la calibración adoptada.
+\textbf{H2 (apoyada de forma parcial).} El desempeño se sostiene en las cinco ventanas desplazadas, pero el FoM varía entre $0{,}222$ y $0{,}378$ (Tabla~\ref{tab:metrics_all_periods}). El valor mínimo (2011--2016) coincide con la única ventana cuyo crecimiento neto observado es negativo. El comportamiento morfológico (expansión perimetral) se reproduce en todas las ventanas; las métricas píxel a píxel sí dependen de la señal de cambio. No hay degradación sistemática atribuible a un fallo de calibración, pero tampoco una estabilidad numérica estricta.
 
-\textbf{H3 (apoyada por la evidencia)}. \emph{«Entre las siete variables espaciales evaluadas, las que cuantifican la proximidad al frente urbano y la densidad de vecindad concentran el mayor Information Value (IV), por encima de las variables de fragmentación y de gradiente.»} Las variables de distancia al área urbana y de densidad de vecindad concentran cerca del 75\,\% del \textit{Information Value} (Tabla~\ref{tab:iv_weights}), por encima de la fragmentación local y del gradiente. La relación monotónica creciente entre el WoE y la densidad de vecindad (Figura~\ref{fig:woe_weights}) reproduce sobre los datos de Querétaro el patrón de difusión por contagio espacial descrito en la literatura.
+\textbf{H3 (apoyada por la evidencia).} El flujo completo se ejecutó en Python (NumPy, SciPy, scikit-learn) sobre capturas de Google Earth en escritorio, sin GPU ni software propietario, en un cómputo del orden de tres horas en CPU estándar.
 
-\textbf{H4 (apoyada de forma parcial)}. \emph{«El modelo mantiene FoM y Kappa estables a lo largo de las cinco ventanas quinquenales, con mayor variación en los períodos donde la extensión de nueva área urbana observada es pequeña.»} El comportamiento morfológico es estable (los patrones de expansión perimetral se reproducen en todos los períodos), pero las métricas pixel-exactas muestran sensibilidad a la dinámica observada: el FoM varía entre $0{,}222$ y $0{,}378$ según el crecimiento neto del período, y el valor más bajo (2011--2016) coincide con la ventana de menor crecimiento neto observado. La omisión del crecimiento disperso (\textit{leapfrog}), reconocida más adelante como debilidad del modelo, es la principal fuente de degradación pixel-exacta detectada.
+\textbf{H4 (apoyada por la evidencia).} El FoM promedio de $0{,}317$, el Kappa de $0{,}445$ y el IoU de $0{,}633$ se ubican en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}, en los términos precisados en la Sección~\ref{sec:evaluacion}. El contraste con modelos de caja negra es cualitativo: sitios, clases y horizontes distintos.
 
-\textbf{H5 (apoyada por la evidencia)}. \emph{«Restringir la función de transición a siete variables auditables (un modelo de caja blanca) mantiene el FoM medio dentro de la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}, por encima del subconjunto de aplicaciones con FoM inferior a $0{,}15$, sin recurrir a las representaciones no interpretables propias de los modelos de caja negra \parencite{almeida2008stochastic,Chihuahua2023}.»} El FoM promedio de $0{,}317$ y el IoU promedio de $0{,}633$ se ubican en esa banda intermedia, por encima del subconjunto con FoM inferior a $0{,}15$, manteniendo pesos auditables (vía \textit{Information Value}) con solo siete variables derivadas del mapa binario. La restricción a un modelo interpretable no hundió el desempeño por debajo de la banda, por lo que la hipótesis se considera apoyada; el contraste con los modelos de caja negra es, eso sí, cualitativo (sitios, clases y horizontes temporales distintos) y no un experimento directo sobre el mismo conjunto de datos.
-
-\textbf{H6 (apoyada por la evidencia)}. \emph{«El pipeline completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta en una CPU estándar en un tiempo del orden de horas, sin requerir GPU, software propietario ni hardware especializado.»} Todo el flujo se implementó en Python (NumPy, SciPy, scikit-learn) sobre imágenes de archivo de Google Earth, sin software propietario ni GPU, con un cómputo del orden de horas en una CPU estándar.
-
-\subsection{Síntesis del desempeño del modelo}
+% ============================================================
+\section{Síntesis del desempeño del modelo}
+% ============================================================
 \label{sec:sintesis-desempeno}
 
 Vistas en conjunto, las cinco ventanas dibujan un comportamiento consistente más que un resultado aislado. El FoM se mantiene en una banda intermedia (promedio $0{,}317$, entre $0{,}222$ y $0{,}378$) y el Recall alto en todos los períodos indica que el modelo rara vez deja fuera la urbanización que sí ocurre. El costo de esa cobertura es una sobre-predicción sistemática: el crecimiento simulado supera al observado y la \textit{Precision} se queda en un rango moderado. En otras palabras, el modelo opera en un régimen de alta cobertura predictiva y baja especificidad relativa: acierta dónde crece la ciudad, pero tiende a hacerla crecer de más. Este comportamiento es propagación conservadora en términos de omisión y expansiva en términos de falsos positivos, consecuencia de un campo de probabilidad WoE que favorece la expansión continua del estado urbano ante vecindades parcialmente urbanizadas.
 
-Ese patrón es coherente con la lectura de los pesos WoE. La distancia al área urbana y la densidad de vecindad concentran cerca del 75\,\% del \textit{Information Value}, de modo que la señal que gobierna la simulación es la difusión por contigüidad. Ahí está, a la vez, la fortaleza y el límite del enfoque: como es un modelo de caja blanca, se puede leer qué lo mueve; pero al apoyarse solo en variables derivadas del propio mapa binario, no captura el desarrollo disperso ni los factores socioeconómicos que explican parte del crecimiento real. La validación multi-período, más que un número único, es lo que da solidez a esta lectura, porque muestra que el comportamiento se sostiene bajo distintas dinámicas observadas. En términos dinámicos, el sistema no converge a un estado estacionario único, sino que sus trayectorias dependen del estado inicial y se organizan en torno a atractores espaciales locales (los núcleos urbanos consolidados y los corredores de crecimiento) que persisten a lo largo de las cinco simulaciones quinquenales.
+Ese patrón es coherente con la lectura de los pesos WoE. La distancia al área urbana y la densidad de vecindad concentran $78{,}2$\% del \textit{Information Value}, de modo que la señal que gobierna la simulación es la difusión por contigüidad. Ahí está, a la vez, la fortaleza y el límite del enfoque: como es un modelo de caja blanca, se puede leer qué lo mueve; pero al apoyarse solo en variables derivadas del propio mapa binario, no captura el desarrollo disperso ni los factores socioeconómicos que explican parte del crecimiento real. La validación multi-período, más que un número único, es lo que da solidez a esta lectura, porque muestra que el comportamiento se sostiene bajo distintas dinámicas observadas. Las cinco corridas concentran el crecimiento en los mismos núcleos urbanos consolidados y corredores, de modo que el patrón espacial predicho depende sobre todo del estado inicial de cada ventana. Conviene precisar el alcance de esa observación: es una regularidad de las cinco simulaciones, no un resultado de convergencia, porque este trabajo no analizó el comportamiento asintótico del autómata ni su sensibilidad al estado inicial.
 
 Estos resultados son el insumo del capítulo siguiente, donde se consolidan las hipótesis en un cuadro único, se precisan las contribuciones del trabajo y se discuten las líneas para corregir las debilidades aquí identificadas, en particular la sobre-predicción y el crecimiento tipo \textit{leapfrog}.

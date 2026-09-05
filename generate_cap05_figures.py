@@ -130,9 +130,11 @@ ax1.grid(True, axis='x', alpha=0.3)
 
 # Panel derecho: WoE range como barras de error
 y_pos = range(len(sorted_vars))
+# El ancho y el borde izquierdo deben venir de la misma variable: invertir solo
+# uno de los dos desalinea cada barra con su etiqueta.
 ax2.barh(list(y_pos)[::-1],
          [mx - mn for mn, mx in zip(woe_min, woe_max)],
-         left=woe_min[::-1],
+         left=woe_min,
          color='steelblue', alpha=0.65, height=0.55, edgecolor='white')
 ax2.axvline(0, color='black', lw=1.2, ls='--')
 ax2.set_yticks(list(y_pos))

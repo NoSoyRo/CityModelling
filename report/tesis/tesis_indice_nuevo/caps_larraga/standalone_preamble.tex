@@ -12,6 +12,12 @@
 
 % ---- Paquetes básicos ----
 \usepackage[english,spanish,es-nodecimaldot]{babel}
+% babel-spanish rotula los flotantes como «Cuadro»; el cuerpo del texto los
+% llama «Tabla» en los 34 reenvíos, así que se unifica el rótulo.
+\addto\captionsspanish{%
+  \renewcommand{\tablename}{Tabla}%
+  \renewcommand{\listtablename}{Índice de tablas}%
+}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{csquotes}
@@ -25,6 +31,15 @@
 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Entrada:}}
+\renewcommand{\algorithmicensure}{\textbf{Salida:}}
+\algrenewcommand\algorithmicfor{\textbf{para}}
+\algrenewcommand\algorithmicdo{\textbf{hacer}}
+\algrenewcommand\algorithmicend{\textbf{fin}}
+\algrenewcommand\algorithmicrepeat{\textbf{repetir}}
+\algrenewcommand\algorithmicuntil{\textbf{hasta que}}
+\algrenewcommand\algorithmicreturn{\textbf{devolver}}
 
 % ---- Índice analítico (makeindex) ----
 \usepackage{makeidx}
@@ -144,23 +159,21 @@
     morecomment=[s]{/*}{*/}
 }
 
-% ---- Bibliografía en APA con biblatex ----
+% ---- Bibliografía IEEE numérico con biblatex ----
 \usepackage[
     backend=biber,
-    style=apa,
-    sortcites=true,
-    sorting=nyt,
+    style=ieee,
+    sorting=none,
     doi=true,
     isbn=false,
     url=true,
     eprint=false
 ]{biblatex}
 
-\DeclareLanguageMapping{spanish}{spanish-apa}
-% Ruta al .bib original (ref 1)
+% Ruta al .bib original
 \addbibresource{../back/referencias.bib}
 
-% Alias compatibilidad con natbib (algunos capítulos usan \citep, \citet)
+% Alias compatibilidad con comandos natbib/APA usados en capítulos
 \providecommand{\citep}{\parencite}
 \providecommand{\citet}{\textcite}
 \providecommand{\citealp}{\cite}
@@ -190,10 +203,10 @@
     urlcolor=ThesisBlue,
     filecolor=ThesisBlue,
     pdfborder={0 0 0},
-    pdftitle={Modelado Evolutivo del Crecimiento Urbano},
-    pdfauthor={Rodrigo Moreno López},
-    pdfsubject={Tesis de Maestría - Autómatas Celulares.},
-	pdfkeywords={AutomatasCelulares,WeightOfEvidence,CrecimientoUrbano,Queretaro,GridSearch}
+    pdftitle={Modelado del crecimiento urbano en la Zona Metropolitana de Querétaro mediante Weight of Evidence y Autómatas Celulares},
+    pdfauthor={José Rodrigo Moreno López},
+    pdfsubject={Tesis de Maestría -- Autómatas Celulares y Pesos de Evidencia},
+	pdfkeywords={AutomatasCelulares,WeightOfEvidence,CrecimientoUrbano,Queretaro,ValidacionMultitemporal}
 }
 
 % Rutas y nombres largos en monoespaciado (saltos de línea permitidos en / y _)

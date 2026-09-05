@@ -7,20 +7,24 @@ alwaysApply: false
 # Contexto de la Tesis
 
 ## Estructura de archivos
+
+El nombre del archivo NO indica el número de capítulo: la fusión que pidió la Dra. Lárraga dejó `cap04_area_estudio` fuera de `main.tex` y los demás archivos conservaron su nombre. Son seis capítulos más un apéndice.
+
 ```
 report/tesis/tesis_indice_nuevo/caps_larraga/
   main.tex                          ← compilar desde aquí
-  cap01_introduccion/cap01_introduccion.tex
-  cap02_marco_teorico/cap02_marco_teorico.tex
-  cap03_estado_del_arte/cap03_estado_del_arte.tex
-  cap04_area_estudio/cap04_area_estudio.tex   ← Querétaro, capturas Google Earth RGB, preprocesamiento
-  cap05_modelo_crecimiento_urbano/cap05_modelo_crecimiento_urbano.tex
-  cap06_resultados_analisis/cap06_resultados_analisis.tex
-  cap07_conclusiones/cap07_conclusiones.tex
+  cap01_introduccion/…              → Cap. 1 Introducción
+  cap02_marco_teorico/…             → Cap. 2 Marco teórico
+  cap03_estado_del_arte/…           → Cap. 3 Estado del arte
+  cap05_modelo_crecimiento_urbano/… → Cap. 4 Modelo híbrido (incluye área de estudio y preprocesamiento)
+  cap06_resultados_analisis/…       → Cap. 5 Resultados y análisis
+  cap07_conclusiones/…              → Cap. 6 Conclusiones
+  apendice_arquitectura/…           → Apéndice
   cap0X_standalone.tex              ← PDF por capítulo (en raíz de caps_larraga)
   figures/                          ← Imágenes compartidas
   ../back/referencias.bib
 ```
+`cap04_area_estudio/` ya no se incluye; su respaldo vive en `_deprecated/`.
 
 ## Fuentes de datos verificables (NUNCA inventar números fuera de estas)
 | Dato | Fuente |
@@ -34,6 +38,22 @@ report/tesis/tesis_indice_nuevo/caps_larraga/
 | Kappa range real | 0.349 – 0.499 (promedio 0.445) |
 | IoU range real | 0.581 – 0.669 |
 | Accuracy range real | 66.5% – 75.5% (promedio 72.2%) |
+| Geometría de las capturas | `data/processed/georreferencia_capturas.json` |
+| Bins degenerados del WoE | `data/processed/woe_bin_reachability.json` |
+| Varianza explicada por PCA | `data/processed/pca_variance_explained.json` |
+
+## Geometría de las capturas (medida por registro, no supuesta)
+Las 37 imágenes de `data/raw/imagen_{año}.png` son capturas de pantalla del visor de Google Earth (3024 × 1792 px, sin georreferencia ni barra de escala). Su geometría se recuperó registrando cada una contra el mosaico Sentinel-2 cloudless de EOX, que es la familia de imagen que el visor despliega a ese zoom («Image Landsat / Copernicus», impreso en las capturas).
+
+- **Píxel: 26,7 m de lado** (713 m² por píxel)
+- **Ventana: 80,8 × 47,9 km ≈ 3 870 km²**
+- **Centro: 20,6144° N, 100,3843° W**
+- **El marco NO está al norte**: el norte queda ~22° en sentido horario respecto de la vertical
+- Consistencia entre años: píxel ±0,4 %, giro σ = 0,37°, centro dentro de 230 m
+- 17 de 37 registros sólidos (fallan las anteriores a 2005)
+- Vecindades 3×3 / 5×5 / 7×7 = 80 / 134 / 187 m
+
+Reproducir con `tools/registrar_s2.py`; verificar con `tools/verificar_encuadre.py`.
 
 ## Pipeline del modelo (cap05)
 - **Preprocesamiento**: LBP sobre imagen en escala de grises (R=3, P=24, variante uniforme)
@@ -46,6 +66,8 @@ report/tesis/tesis_indice_nuevo/caps_larraga/
 ## Qué NO hacer (lecciones aprendidas)
 - NO mencionar Algoritmos Genéticos (no se implementaron); usar "grid search" o "calibración sistemática"
 - NO reportar área urbana como % de Querétaro real (el clasificador detecta "no-verde", ~45-52% de imagen)
+- NO reintroducir la geometría vieja de las capturas: 625 km², 25 × 25 km, 8–14 m/píxel, 11 m/píxel, 115 m² por píxel, píxel anisotrópico. Eran estimaciones sin verificar; los valores medidos están arriba
+- NO llamar "imagen de alta resolución" a la fuente: 26,7 m/píxel es resolución Landsat
 - NO usar tablas con métricas FRAGSTATS específicas (no calculadas externamente)
 - NO atribuir limitaciones a autores citados sin que el paper lo diga explícitamente
 - NO dejar secciones vacías al eliminar contenido

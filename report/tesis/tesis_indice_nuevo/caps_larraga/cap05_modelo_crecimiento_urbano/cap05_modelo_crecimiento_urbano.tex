@@ -1,90 +1,350 @@
 % !TEX root = cap05_standalone.tex
-% Capítulo 5. Modelo de crecimiento urbano
-% Estructura según índice de la Dra. Lárraga.
+% Capítulo 4. Modelo de crecimiento urbano híbrido
+% Fusión (sesión Dra. Lárraga): área de estudio + preprocesamiento + modelo.
+% Orden exigido: Consideraciones -> Arquitectura -> Área de estudio -> Preprocesamiento -> Definición -> Validación.
 \graphicspath{{figures/}{../figures/}}
 
-\chapter{Modelo de crecimiento urbano}
+\chapter{Modelo de crecimiento urbano híbrido}
 \label{ch:modelo-crecimiento-urbano}
 
-% ---- Contenido migrado (copy/paste) desde report/tesis/book/cap04/cap04.tex ----
-
 \begin{resumen}
-Este capítulo muestra una visión exhaustiva del modelo citado a lo largo de todo este trabajo como WoE-AC, se presentan las decisiones explícitas de cada componente del modelo, preprocesamiento y validación. Si bien el segundo capítulo del presente trabajo da una definición a cada concepto utilizado, no hay una argumentación de por qué se utiliza cada una de las componentes del flujo completo que al trabajo presente le compete. Se inicia con un recordatorio breve del preprocesamiento que produce la serie binaria de entrada, cuyo detalle queda en el Capítulo~\ref{ch:area-estudio}, seguido por el modelo que consume esos mapas para calcular la matriz de transiciones históricas, la definición del autómata celular probabilístico y, finalmente, la validación del modelo. Conviene anticipar que la novedad de este trabajo no es el acoplamiento WoE-AC en sí, ampliamente documentado en la literatura, sino su calibración y validación reproducibles sobre cinco ventanas quinquenales independientes, aplicadas a una ciudad intermedia mexicana con código y datos abiertos.
+Este capítulo presenta el modelo híbrido WoE-AC propuesto: un autómata celular cuya función de transición se construye a partir de Pesos de Evidencia estimados sobre series históricas de cobertura. El capítulo es donde comienza la aportación propia del trabajo. Se presentan el área de estudio y los datos que alimentan al modelo, el pipeline de preprocesamiento que transforma imágenes RGB de Google Earth en mapas binarios urbano/no urbano mediante clasificación LBP+K-Means+SVM, y se formalizan los componentes del modelo: cuantificación de evidencia espacial, regla de transición, vecindad, calibración por búsqueda sistemática y protocolo de validación quinquenal, junto con las decisiones de diseño que los sostienen. La novedad no es el acoplamiento WoE-AC en sí, que cuenta con antecedentes en la literatura, sino su calibración reproducible y su validación sobre cinco ventanas quinquenales desplazadas aplicadas a una ciudad intermedia mexicana con código y datos de libre acceso.
 \end{resumen}
 
-\section{Del preprocesamiento a la serie binaria de entrada}
+\section{Consideraciones del modelo}
+\label{sec:consideraciones-modelo}
 
-El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas binarios urbano/no-urbano $\{U_t\}_{t=1984}^{2020}$. Su construcción (la conversión de cada captura RGB de $1{,}792 \times 3{,}024$ píxeles en un mapa $U_t(x,y) \in \{0,1\}$ mediante la cadena LBP\,+\,K-Means\,+\,SVM) se describe en detalle en el Capítulo~\ref{ch:area-estudio} y no se reproduce aquí. Basta recordar dos restricciones que ese flujo resuelve: la ausencia de banda infrarroja descarta los índices espectrales habituales (NDVI, NDBI) y obliga a apoyarse en descriptores de textura y color, y la falta de verdad terreno para los 37 años obliga a etiquetar de forma no supervisada.
+Todo modelo de crecimiento urbano toma decisiones sobre qué incluir y qué dejar fuera. En este trabajo el espacio se representa como una rejilla discreta de celdas iguales, cuya unidad espacial es el píxel de las capturas de Google Earth, con una resolución efectiva del orden de $27$~m/píxel. El tiempo avanza en pasos anuales: cada iteración del autómata corresponde a un año de la serie histórica. El dominio tiene condiciones de frontera fijas (las celdas exteriores nunca transitan a urbano), lo que es coherente con el hecho de que la ventana de captura delimita el área de interés. El modelo no incluye capas externas de infraestructura (vialidades, pendientes, uso de suelo oficial) ni un término de decaimiento explícito por distancia a centros de empleo, que es el mecanismo alrededor del cual se construye la teoría clásica de la renta del suelo urbano \parencite{alonso1964location}; la atracción ejercida por las zonas ya urbanizadas se captura implícitamente en el campo de evidencia WoE y en la vecindad local del autómata. Estas simplificaciones son deliberadas: reducen el número de parámetros que deben ser estimados y hacen al modelo más auditable, con el costo de ignorar el rol de la infraestructura en la dirección del crecimiento.
+
+Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de forma entrelazada pero que son conceptualmente distintos. El primero es el \textbf{modelo conceptual}: las reglas matemáticas generales del acoplamiento WoE-AC (la cuantificación de evidencia, la regla de transición probabilística y la actualización del estado), válidas para cualquier ciudad. El segundo es la \textbf{implementación}: el recálculo iterativo del campo de evidencia y de la vecindad sobre el estado actualizado del mapa en cada paso de simulación. El tercero es la \textbf{configuración experimental}: los valores concretos fijados para la Zona Metropolitana de Querétaro (el umbral $\theta = 0{,}75$, el peso de vecindad $\alpha = 0{,}50$, la ponderación por \textit{Information Value} y las ventanas quinquenales de validación), que son objeto del Capítulo~\ref{ch:resultados-analisis}. La narración avanza del primero al tercero.
+
+\section{Arquitectura del modelo}
+\label{sec:arquitectura-modelo}
+
+La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en seis etapas, con lo que recibe, lo que hace y lo que entrega cada una. La primera adquiere las capturas RGB desde el visor de Google Earth y conforma la serie temporal. La segunda las clasifica: 23 descriptores por píxel, reducción por PCA, agrupamiento K-Means y consolidación con un SVM lineal. La tercera fija la convención de etiquetas, de modo que el valor 1 corresponda siempre a urbano. La cuarta estima los pesos de evidencia sobre los 26 pares históricos anuales (1984--2010): esos pesos quedan fijos. La quinta ejecuta el autómata celular de forma iterativa sobre el horizonte de predicción; en cada paso se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican los pesos ya estimados. La sexta evalúa el resultado contra los mapas observados mediante cinco ventanas quinquenales desplazadas, cada una con sus propias métricas de desempeño. Las secciones siguientes describen cada etapa en el orden en que intervienen.
+
+El diagrama indica además la ruta del artefacto que produce cada etapa y un ejemplo tomado de la corrida que se reporta en el Capítulo~\ref{ch:resultados-analisis}. La intención es que el flujo pueda contrastarse contra los archivos del repositorio y no solo leerse como un esquema.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{framework_woe_ac_bn}
+  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{Imagen elaborada con IA generativa, con base en la arquitectura propia descrita en este capítulo.}}
+  \label{fig:pipeline-woe-ac}
+\end{figure}
+
+\section{Área de estudio}
+\label{sec:area-estudio}
+
+\subsection{Localización y características}
+
+La Zona Metropolitana de Querétaro se ubica en el centro de México y constituye uno de los polos industriales de mayor crecimiento reciente del país. Según la delimitación oficial de zonas metropolitanas~\parencite{CONAPO2018Delimitacion}, agrupa varios municipios en torno a la capital del estado y, de acuerdo con el Censo de Población y Vivienda 2020~\parencite{INEGI2020Censo}, rebasó el millón y medio de habitantes, tras décadas de expansión sostenida que la convierten en un caso representativo de las ciudades intermedias mexicanas. Esa expansión ha dejado un paisaje urbano heterogéneo, estudiado desde la calidad ambiental que perciben sus habitantes~\parencite{HernandezGuerrero2015} y desde las diferencias entre zonas de la propia ciudad~\parencite{HernandezGuerreroOsorno2018}, lo que da cuenta de un crecimiento desigual y no de una mancha homogénea. Su delimitación espacial precisa (centro del encuadre, extensión cubierta y sistema de referencia) se detalla más adelante, dentro de la descripción del conjunto de imágenes.
+
+\subsubsection{Descripción y fuente de datos}
+
+El estudio utiliza una serie anual de \textbf{capturas RGB} (1984--2020, 37 años) sobre la Zona Metropolitana de Querétaro. Las imágenes se obtuvieron con \textbf{Google Earth} en escritorio, usando la \textbf{imagen histórica} (línea de tiempo) para elegir, año a año, una fecha con baja nubosidad visible y buen contraste, manteniendo el mismo encuadre. El fondo cartográfico de Google Earth integra, según época, mosaicos que pueden incluir composiciones basadas en sensores tipo Landsat u otras fuentes; en este trabajo \textbf{no} se empleó Google Earth Engine~\parencite{Gorelick2017} ni descarga masiva por API. La elección de Querétaro se sustenta en su dinámica de crecimiento reciente, bien documentada para la zona metropolitana~\parencite{Huacuz2018Metropolizacion,DelgadoLopez2018}, la posibilidad de cubrir 1984--2020 con la misma ventana de visualización y su relevancia como polo industrial en el centro de México, dentro de la expansión urbana que el país arrastra desde los años setenta~\parencite{Montejano2023}. Dado que el objetivo es modelar la expansión urbana a escala macroscópica (la mancha urbana y su frente de crecimiento) y no una caracterización espectral fina, la fuente se eligió privilegiando la consistencia espacial y temporal del encuadre a lo largo de casi cuatro décadas por encima de la calibración radiométrica absoluta. Esta decisión es coherente con la naturaleza binaria (urbano/no urbano) del problema y con el carácter histórico de la serie, para la cual no existe una alternativa con calibración radiométrica homogénea y acceso libre que cubra desde 1984.
+
+Tras el preprocesamiento, cada año queda como matriz RGB de \textbf{$1\,792 \times 3\,024$} píxeles (del orden de $5{,}4 \times 10^{6}$ píxeles por imagen) en formato PNG; los metadatos de cobertura y tamaño se resumen más adelante, al conformar la serie.
+
+\subsection{Adquisición y conformación del conjunto de imágenes}
+
+La adquisición siguió un \textbf{protocolo manual replicable} (misma ventana geográfica y criterios visuales de calidad en cada año) orientado a obtener una serie temporal homogénea para estudiar la forma espaciotemporal del crecimiento urbano a partir de percepción remota, en la línea de trabajos que miden esa dinámica desde imágenes~\parencite{Herold2003}. La herramienta fue \textbf{Google Earth} en escritorio, elegida por tres razones prácticas: da acceso a la \textbf{imagen histórica} año con año sobre la misma área, ofrece una interfaz visual inmediata para evaluar nubosidad y nitidez antes de capturar, y hace viable construir la serie sin infraestructura de acceso a API ni \textit{scripts} de descarga. La contrapartida es que la repetibilidad depende de mantener la misma escala, orientación y encuadre entre capturas, y de registrar manualmente la fecha elegida en cada año; el procedimiento paso a paso se detalla en el Apéndice~\ref{ap:arquitectura} (Algoritmo~\ref{alg:adquisicion}).
+
+La serie se diseñó atendiendo a criterios temporales y de calidad: cobertura completa 1984--2020 (37 años, suficiente para abarcar varios ciclos de crecimiento), una imagen representativa por año sin años omitidos, captura preferente en temporada seca (noviembre--abril) con una meta visual de menos del $10\%$ de nubes, y consistencia geométrica entre años (mismo zoom, orientación y región de interés, con ajuste fino a la cuadrícula en el preprocesamiento) sin saturación evidente en los canales RGB.
+
+\subsubsection{Criterios de selección y parámetros espaciales}
+
+Los parámetros espaciales que guiaron la captura pueden describirse de forma compacta. El área de estudio es la Zona Metropolitana de Querétaro, registrada con Google Earth en escritorio de forma manual mediante la imagen histórica, sin recurrir a Google Earth Engine ni a descarga masiva por API. Las capturas son imágenes de pantalla del visor: no llevan georreferencia ni barra de escala, de modo que su extensión y su tamaño de píxel no se pueden leer del archivo. Para fijarlos se registró cada captura contra el mosaico Sentinel-2 \textit{cloudless}, que pertenece a la misma familia de imagen que el visor despliega a ese nivel de zoom, según la atribución «Image Landsat / Copernicus» impresa en las propias capturas. El registro estima una transformación de similitud por emparejamiento de rasgos y arrojó una solución sólida en 17 de las 37 imágenes; en el resto, todas anteriores a 2005, el mosaico histórico no aporta rasgos suficientes. El procedimiento y sus resultados por año quedan documentados en el repositorio.
+
+De ese registro se obtiene la geometría efectiva de la serie. El encuadre se centra en $20{,}6144^\circ$\,N y $100{,}3843^\circ$\,W ($20^\circ 36' 52''$\,N, $100^\circ 23' 03''$\,W) y cubre $80{,}8 \times 47{,}9$~km, unos $3\,870$~km². Cada píxel mide $26{,}7$~m de lado, es decir unos $713$~m². El marco no está orientado al norte: el norte geográfico queda a unos $22^\circ$ en sentido horario respecto de la vertical de la imagen. Esa rotación no afecta al modelo, porque todas las variables espaciales y la vecindad se calculan sobre la rejilla y son invariantes a la orientación del marco, pero sí importa al interpretar cualquier mapa de la serie. El visor opera sobre el elipsoide WGS84 (EPSG:4326). Las bandas disponibles son únicamente RGB, capturadas desde el visor.
+
+La dispersión entre capturas cuantifica la consistencia geométrica que el protocolo buscaba. El tamaño de píxel varía entre $26{,}5$ y $26{,}9$~m, con una desviación de $0{,}11$~m ($0{,}4$\%); el giro del marco tiene una desviación de $0{,}37^\circ$; y el centro se mantiene dentro de $230$~m, unas nueve celdas sobre una ventana de $80$~km. El protocolo manual conservó, por tanto, la misma ventana a lo largo de los 37 años con una tolerancia del orden de tres milésimas de la extensión.
+
+A partir de estos parámetros puede caracterizarse la resolución espacial efectiva. La ventana de $80{,}8 \times 47{,}9$~km ocupa una rejilla de $1\,792 \times 3\,024$ píxeles, de modo que la celda es cuadrada y mide $26{,}7$~m de lado. Esa cifra coincide en orden de magnitud con la resolución nativa de Landsat ($30$~m) y es consistente con la atribución del mosaico que el visor despliega a ese nivel de zoom. El muestreo de la rejilla no excede, por tanto, el detalle que la fuente contiene, que es la condición para que la resolución declarada sea interpretable. Conviene leerla como distancia de muestreo y no como poder de resolución calibrado: Google Earth remuestrea internamente las teselas y la nitidez varía entre fechas. La resolución resultante basta para discriminar la mancha urbana a escala metropolitana, el objetivo de este trabajo, pero no para distinguir estructuras individuales finas ni para comparaciones submétricas entre años. En términos del autómata, las ventanas de vecindad de $3\times3$, $5\times5$ y $7\times7$ píxeles corresponden a lados de $80$, $134$ y $187$~m.
+
+En conjunto, la serie reúne 37 imágenes, una por año entre 1984 y 2020, capturadas con una meta visual de cobertura nubosa inferior al $10$\% evaluada en el momento de la captura. Cada imagen se homogeneizó en el \textit{pipeline} a $1\,792 \times 3\,024$ píxeles, y el conjunto completo ocupa del orden de $200$~MB.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{temporal_quality_distribution.png}
+\caption{Indicadores auxiliares de calidad por década, derivados del preprocesamiento de las capturas. No equivalen a control de calidad radiométrico de productos satelitales oficiales; sirven como apoyo visual para revisar la continuidad de la serie.}
+\label{fig:quality_temporal}
+\end{figure}
+
+\subsubsection{Control de calidad, limitaciones y mitigación}
+
+En la adquisición, el control de calidad fue principalmente \textbf{visual} (nubosidad, sombras, nitidez, consistencia del encuadre). Ya conformada la carpeta de imágenes, el \textbf{pipeline de preprocesamiento} aplica comprobaciones reproducibles (dimensiones homogéneas, formato RGB, detección de archivos faltantes y reescalado cuando una captura varió en resolución de pantalla) antes de alimentar al clasificador; a ello se suman una validación geométrica (ajuste a la cuadrícula de referencia), una de intensidades (histogramas RGB para detectar anomalías evidentes) y una temporal (continuidad de la serie y sustitución puntual de años claramente anómalos). El conjunto final queda resumido en la descripción anterior del conjunto de imágenes y en la Figura~\ref{fig:quality_temporal}.
+
+El dataset tiene cuatro limitaciones principales: la resolución y nitidez efectivas dependen del nivel de zoom, del fondo cartográfico de cada fecha y de la compresión al exportar; el operador no controla la corrección atmosférica ni el origen exacto de cada tesela subyacente; la comparabilidad cromática entre años puede variar cuando el proveedor actualiza mosaicos; y el criterio de temporada seca y baja nubosidad es visual, no un filtrado por metadatos de nubes. Para acotar su impacto se fijaron los parámetros de vista (zoom, orientación, región) lo más constantes posible entre años, se homogeneizaron formato y dimensiones en el preprocesamiento, se hizo una revisión cruzada año con año para detectar saltos de contraste o nubosidad residual, y se normalizaron los valores de píxel con vistas a la clasificación binaria, sin pretender una calibración radiométrica entre sensores.
+
+Estas fuentes de error se organizan por tipo, con una estimación cualitativa de su nivel y de su efecto sobre los mapas binarios, en la Tabla~\ref{tab:uncertainty} del Apéndice~\ref{ap:arquitectura}. Los niveles (bajo, medio, alto) son juicios del autor a partir de la inspección de la serie y no mediciones formales de incertidumbre; sirven para dar prioridad a las estrategias de mitigación y para acotar honestamente el alcance de los resultados.
+
+\section{Preprocesamiento de datos}
+\label{sec:preprocesamiento}
+
+El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas binarios urbano/no-urbano $\{U_t\}_{t=1984}^{2020}$. Su construcción (la conversión de cada captura RGB de $1\,792 \times 3\,024$ píxeles en un mapa $U_t(x,y) \in \{0,1\}$ mediante la cadena LBP\,+\,K-Means\,+\,SVM) se detalla en esta sección. Basta adelantar dos restricciones que ese flujo resuelve: la ausencia de banda infrarroja descarta los índices espectrales habituales (NDVI, NDBI) y obliga a apoyarse en descriptores de textura y color, y la falta de verdad terreno para los 37 años obliga a etiquetar de forma no supervisada.
 
 \begin{wrapfigure}{r}{0.42\linewidth}
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F1_mapa_binario_ai}
-  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas.}
+  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{Imagen elaborada con IA generativa, con base en la definición propia de $U_t$ de esta sección.}}
   \label{fig:mapa-binario}
   \vspace{-6pt}
 \end{wrapfigure}
-De ese flujo conviene rescatar, eso sí, la decisión que condiciona todo lo que sigue: el criterio que separa lo urbano de lo no-urbano es \textbf{idéntico para todos los años de la serie}. Esa consistencia inter-anual, y no la exactitud cartográfica frente a una verdad terreno, es lo que vuelve comparables las transiciones entre años consecutivos y permite que alimenten el cálculo de Pesos de Evidencia sin sesgos por cambios de criterio. La representación binaria, por su parte, es la entrada natural de un autómata celular, que opera sobre estados discretos, y captura justo la variable de interés: la expansión de la mancha urbana, no la composición interna de usos. Como respaldo de su fiabilidad interna, el clasificador reprodujo entre el $88\%$ y el $94\%$ de las pseudoetiquetas en el reparto de prueba (Capítulo~\ref{ch:area-estudio}); su validación externa, de carácter indirecto, se realiza a través del desempeño temporal del propio modelo en el Capítulo~\ref{ch:resultados-analisis}.
+La Figura~\ref{fig:mapa-binario} resume esa representación. De ese flujo conviene rescatar, eso sí, la decisión que condiciona todo lo que sigue: el criterio que separa lo urbano de lo no-urbano es \textbf{idéntico para todos los años de la serie}. Esa consistencia inter-anual, y no la exactitud cartográfica frente a una verdad terreno, es lo que vuelve comparables las transiciones entre años consecutivos y permite que alimenten el cálculo de Pesos de Evidencia sin sesgos por cambios de criterio. La representación binaria, por su parte, es la entrada natural de un autómata celular, que opera sobre estados discretos, y captura justo la variable de interés: la expansión de la mancha urbana, no la composición interna de usos. Como respaldo de su fiabilidad interna, el clasificador reprodujo entre el $88\%$ y el $94\%$ de las pseudoetiquetas en el reparto de prueba (Sección~\ref{ssec:calidad-clasificacion}); su validación externa, de carácter indirecto, se realiza a través del desempeño temporal del propio modelo en el Capítulo~\ref{ch:resultados-analisis}.
 
-\section{Modelo de crecimiento urbano.}
-\label{sec:calibracion-narrativa}
+\subsection{Representación de los datos y extracción de características}
+
+Cada imagen RGB de $1\,792 \times 3\,024$ píxeles se convierte en un mapa binario urbano/no urbano mediante el pipeline LBP\,+\,K-Means\,+\,SVM. El resultado se almacena en el arreglo tridimensional $M_{t,i,j} \in \{0,1\}$, donde $t$ identifica el año, e $i$, $j$ la posición en la cuadrícula; $M_{t,i,j} = 1$ si la celda es urbana ese año y $0$ en caso contrario. Para obtener esa etiqueta, cada píxel se mapea a un vector de 23 características. Sea $\mathbf{f}_{i,j} = (f_1, \ldots, f_{23})$ ese vector; las definiciones de cada componente se organizan en tres conjuntos que se describen a continuación.
+
+El primer conjunto reúne las ocho \textbf{características básicas de color}, derivadas directamente de los canales rojo, verde y azul.
+
+\begin{multicols}{2}
+\small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\textbf{\texttt{red}}: $f_1(i,j) = R(i,j)$, canal rojo.\par
+\textbf{\texttt{green}}: $f_2(i,j) = G(i,j)$, canal verde.\par
+\textbf{\texttt{blue}}: $f_3(i,j) = B(i,j)$, canal azul.\par
+\textbf{\texttt{intensity}}: $f_4(i,j) = \tfrac{R+G+B}{3}$, intensidad media.\par
+\textbf{\texttt{brightness}}: $f_5(i,j) = 0{,}299\,R + 0{,}587\,G + 0{,}114\,B$, luminancia (Rec.\,601).\par
+\textbf{\texttt{red\_std}}: $f_6(i,j) = \overline{R}_{5\times5}(i,j)$, media local en ventana $5\times5$. El nombre \texttt{*\_std} es heredado del código y no describe la operación.\par
+\textbf{\texttt{green\_std}}: $f_7(i,j) = \overline{G}_{5\times5}(i,j)$, equivalente para el canal verde.\par
+\textbf{\texttt{blue\_std}}: $f_8(i,j) = \overline{B}_{5\times5}(i,j)$, equivalente para el canal azul.\par
+\end{multicols}
+
+El segundo conjunto agrupa las seis \textbf{características de textura}, calculadas sobre la imagen convertida a escala de grises.
+
+\begin{multicols}{2}
+\small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\textbf{\texttt{sobel\_horizontal}}: $f_9 = \partial\,\text{gray}/\partial y$, convolución con kernel Sobel horizontal.\par
+\textbf{\texttt{sobel\_vertical}}: $f_{10} = \partial\,\text{gray}/\partial x$, convolución con kernel Sobel vertical.\par
+\textbf{\texttt{gradient\_magnitude}}: $f_{11}(i,j) = \sqrt{f_9^2 + f_{10}^2}$, magnitud del gradiente.\par
+\textbf{\texttt{lbp}}: $f_{12}(i,j)=\sum_{p=0}^{P-1}s(g_p - g_c)\,2^p$, patrón binario local uniforme con $P=24$, $r=3$ y $s(x)=\mathbf{1}_{x\ge0}$.\par
+\textbf{\texttt{entropy}}: $f_{13}(i,j) = -\sum_k p_k\log_2 p_k$, entropía local en ventana $9\times9$.\par
+\textbf{\texttt{contrast}}: $f_{14}(i,j) = \overline{\text{gray}}_{5\times5}(i,j)$, media local en ventana $5\times5$ sobre la escala de grises.\par
+\end{multicols}
+
+El tercer conjunto incluye las nueve \textbf{características espectrales y de color}: índices construidos a partir de las bandas visibles y transformaciones a otros espacios de color.
+
+\begin{multicols}{2}
+\small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\textbf{\texttt{ngrdi}}: $f_{15} = \dfrac{G - R}{G + R + \varepsilon}$ con $\varepsilon=10^{-8}$; índice verde--rojo normalizado (NGRDI), proxy cromático de vegetación con bandas visibles. No es un NDVI en sentido estricto, pues este requiere la banda del infrarrojo cercano, ausente en las capturas RGB.\par
+\textbf{\texttt{excess\_green}}: $f_{16} = 2G - R - B$, índice de exceso de verde (ExG).\par
+\textbf{\texttt{excess\_red}}: $f_{17} = 1{,}4\,R - G$, índice de exceso de rojo (ExR), asociado a suelo y zona urbana.\par
+\textbf{\texttt{lab\_l}}: luminancia $L^*\in[0,100]$ en el espacio CIE $L^*a^*b^*$.\par
+\textbf{\texttt{lab\_a}}: eje verde$(-)$ a rojo$(+)$, $a^*\in[-128,127]$.\par
+\textbf{\texttt{lab\_b}}: eje azul$(-)$ a amarillo$(+)$, $b^*\in[-128,127]$.\par
+\textbf{\texttt{hsv\_h}}: matiz $H\in[0,1]$.\par
+\textbf{\texttt{hsv\_s}}: $S = \dfrac{\max(R,G,B)-\min(R,G,B)}{\max(R,G,B)}$, saturación.\par
+\textbf{\texttt{hsv\_v}}: $V = \max(R,G,B)$, valor.\par
+\end{multicols}
+
+En conjunto, estas 23 características describen cada píxel por su color, su textura y su comportamiento espectral, y constituyen la entrada del paso de reducción dimensional. La Tabla~\ref{tab:features} del Apéndice~\ref{ap:arquitectura} recoge el detalle de implementación de cada una.
+
+Dentro del preprocesamiento esas 23 características se reducen a 8, mediante un StandardScaler y un PCA, cuyo fundamento se dio en el Capítulo~\ref{ch:marco-teorico} y cuyo pseudocódigo está en el Apéndice~\ref{ap:arquitectura} (Algoritmos~\ref{alg:standard-scaler} y~\ref{alg:pca}). La proyección retiene en promedio el $96{,}1$\% de la varianza original, con un rango de $95{,}3$ a $96{,}8$\% entre los años muestreados de la serie: una compresión razonable sin pérdida apreciable de información para una clasificación binaria. El preprocesamiento aplicado a toda la serie se resume en la Tabla~\ref{tab:preprocessing_quality} del mismo apéndice.
+
+La salida del algoritmo PCA es la entrada del algoritmo de clasificación K-Means (matriz $Z \in \mathbb{R}^{N \times 8}$, Algoritmo~\ref{alg:kmeans}). El algoritmo de K-Means se emplea con el fin de agrupar los píxeles en 2, 3 o 4 grupos; en este trabajo se usaron 2.
+
+Las pseudo-etiquetas $\ell$ producidas por K-Means se usan como verdad base para
+entrenar un clasificador SVM (Algoritmo~\ref{alg:svm}) sobre una muestra de hasta $10\,000$ píxeles, que luego
+predice la etiqueta de todos los $N$ píxeles.
+
+La salida del algoritmo SVM es un mapa de clasificación $\hat{y} \in \{0,1\}^{H \times W}$ donde $H$ es el número de filas y $W$ es el número de columnas de la imagen. Aquí se empleó un procedimiento manual para seleccionar qué clase es la mancha urbana y cuál la no-urbana.
+
+\subsection{Pipeline de clasificación: de RGB a mapas binarios}
+
+El preprocesamiento homogeneiza formato y dimensiones de las capturas RGB y prepara la entrada al clasificador automático (LBP+K-Means+SVM). El \textit{pipeline}, implementado en Python, encadena las etapas que resume la Figura~\ref{fig:preprocessing}:
+
+Antes de describirlo conviene justificar por qué se eligió esta cadena y no un enfoque supervisado directo. La razón de fondo es que no se dispone de una verdad terreno etiquetada para los 37 años de la serie: un clasificador supervisado clásico o un \textit{Random Forest} exigiría etiquetar manualmente muestras representativas año por año, y una arquitectura profunda tipo U-Net necesitaría además grandes volúmenes anotados y cómputo en GPU, sin aportar interpretabilidad sobre la decisión urbano/no-urbano. Frente a ello, la cadena combina texturas y color sin verdad terreno etiquetada: los patrones binarios locales (LBP) describen la rugosidad del tejido construido y son robustos a cambios de iluminación, el agrupamiento K-Means genera pseudoetiquetas sin información previa, y un SVM lineal consolida a partir de ellas una frontera de decisión reproducible y ligera. Dado que el problema es binario y que las imágenes son RGB sin banda infrarroja, este contraste de textura y color basta para separar lo construido de lo no construido; la opción elegida es, además, computacionalmente liviana (sin GPU) y replicable, lo que prioriza la reproducibilidad sobre una exactitud marginalmente mayor que las alternativas más pesadas no garantizan en ausencia de etiquetas.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+	node distance=1.2cm,
+	box/.style={
+		rectangle,
+		rounded corners=3pt,
+		draw=black,
+		thick,
+		minimum width=6cm,
+		minimum height=1cm,
+		text width=5.5cm,
+		align=center,
+		font=\small
+	},
+	step1/.style={box, fill=orange!20},
+	step2/.style={box, fill=purple!20},
+	step3/.style={box, fill=red!20},
+	step4/.style={box, fill=green!20},
+	step5/.style={box, fill=teal!20},
+	arrow/.style={-stealth, thick},
+	label/.style={circle, fill=white, draw=black, thick, font=\bfseries, minimum size=0.8cm}
+]
+
+% Título del pipeline
+\node[font=\bfseries\large] at (0, 0) {Pipeline de Procesamiento};
+\node[font=\small\itshape, text width=6cm, align=center] at (0, -0.6) {Clasificación automática de capturas RGB};
+
+% Paso 1: Extracción de Características
+\node[step1] (step1) at (0, -3.2) {
+	\textbf{1. Extracción de Características}\\[2pt]
+	23 variables por píxel\\
+	Básicas (8) + Texturales (6) + Espectrales/color (9)
+};
+
+
+% Paso 2: Preprocesamiento Estadístico
+\node[step2] (step2) at (0, -6.0) {
+	\textbf{2. Preprocesamiento Estadístico}\\[2pt]
+	StandardScaler + PCA ($23\to 8$ dim)\\
+	96,1\% varianza retenida (promedio serie)
+};
+
+
+% Paso 3: Clustering K-means
+\node[step3] (step3) at (0, -8.5) {
+	\textbf{3. Clustering K-means}\\[2pt]
+	2, 3, 4 clusters • Rótulos naturales\\
+	Sin información previa
+};
+
+
+% Paso 4: Clasificación SVM
+\node[step4] (step4) at (0, -10.6) {
+	\textbf{4. Clasificación SVM}\\[2pt]
+	Kernel lineal • Pseudoetiquetas K-means\\
+	Validación interna (train/test)
+};
+
+
+% Paso 5: Matriz Binaria Final
+\node[step5] (step5) at (0, -13.4) {
+	\textbf{5. Matriz Binaria Final}\\[2pt]
+	1=Urbano (map) • 0=No-urbano (verde)\\
+	Lista para Autómatas Celulares
+};
+
+
+% Flechas de conexión
+\draw[arrow] (step1) -- (step2);
+\draw[arrow] (step2) -- (step3);
+\draw[arrow] (step3) -- (step4);
+\draw[arrow] (step4) -- (step5);
+
+\end{tikzpicture}
+\caption{Pipeline de preprocesamiento implementado}
+\label{fig:preprocessing}
+\end{figure}
+
+Sobre la categoría espectral conviene una aclaración, porque el nombre de los índices se confunde con facilidad. Como las capturas son RGB y no incluyen banda infrarroja, aquí no se calcula un NDVI en sentido estricto: ese índice necesita el infrarrojo cercano, del que estas imágenes carecen. Lo que se usa son índices construidos únicamente con los canales visibles. El que se reporta como índice verde--rojo normalizado responde a la forma $(G-R)/(G+R)$ y coincide con el NGRDI que la literatura de percepción remota emplea con cámaras RGB; junto con el exceso de verde y de rojo cumple el papel de un proxy cromático de vegetación, suficiente para separar superficies vegetadas de las construidas a partir del contraste de color, que es lo que requiere la clasificación binaria de este trabajo.
+
+La implementación se organiza en una arquitectura modular (rasterización/clasificación de las capturas, cálculo de Pesos de Evidencia y simulación con autómatas celulares) cuyo diagrama de clases UML y rutas de los módulos del repositorio se documentan en el Apéndice~\ref{ap:arquitectura}, para no recargar la descripción metodológica.
+
+En este espacio RGB enriquecido con descriptores de textura (en particular los patrones binarios locales [LBP] de \textcite{Ojala2002}, robustos a cambios de iluminación y útiles para distinguir la rugosidad del tejido construido), los primeros componentes del PCA reflejan el contraste urbano--vegetación y la variabilidad local, de modo que el SVM trabaja sobre representaciones comprimidas y poco redundantes.
+
+El efecto de la cadena sobre un fragmento concreto de la imagen se aprecia en la Figura~\ref{fig:subpipeline-celdas}. El recorte de $8\times8$ celdas muestra la fotografía original, los dos grupos que forma el agrupamiento, la decisión del SVM y la rejilla binaria resultante. Cada celda de esa rejilla es la unidad espacial sobre la que opera el autómata y mide unos $27$~m de lado.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.78\linewidth]{F4_pipeline_woe_ac_ai}
-  \caption{Pipeline completo del modelo WoE-AC: del dato satelital a la validación quinquenal. Las etapas~1--2 producen la serie binaria; la etapa~3 estima los pesos de evidencia sobre 26 pares históricos; la etapa~4 ejecuta el autómata celular de forma iterativa; la etapa~5 evalúa con cinco ventanas temporales independientes.}
-  \label{fig:pipeline-woe-ac}
+  \includegraphics[width=\linewidth]{E1_subpipeline_celdas}
+  \caption{Sub-pipeline de clasificación aplicado a un recorte de $8\times8$ celdas: de la captura RGB al mapa binario. El agrupamiento separa dos clases pero no las nombra; la asignación urbano/no urbano se fija en un paso posterior, con la convención descrita en el texto de esta sección. \textit{Imagen elaborada con IA generativa, con base en el pipeline de clasificación propio descrito en esta sección.}}
+  \label{fig:subpipeline-celdas}
 \end{figure}
+
+La salida del SVM no determina por sí sola cuál de los dos grupos es el urbano. El agrupamiento no es supervisado y la etiqueta que asigna a cada clase es arbitraria, de modo que un año puede quedar con los valores invertidos respecto del anterior sin que nada en la clasificación lo advierta. Para resolverlo se aplica una convención sobre el resultado: se toma el $30$\% central de la rejilla, que en esta ventana corresponde al núcleo consolidado de la ciudad, y se verifica qué etiqueta domina ahí; si domina el cero, el mapa se invierte. Los 37 mapas quedan así con la misma convención, 1 para urbano y 0 para no urbano, que es la que asume el resto del modelo. El procedimiento está implementado en \texttt{src/tesis\_ac/historical/standardize\_labels.py}.
+
+% Fuente: report/tesis/book/cap03/analisis-datos.tex
+\subsection{Análisis de datos procesados y transformación binaria}
+
+Esta subsección resume la salida del pipeline: mapas binarios anuales urbano/no-urbano listos para alimentar el modelo WoE--AC que se define más adelante en este mismo capítulo.
+
+\subsubsection{Resultados de la transformación binaria}
+
+La Figura~\ref{fig:binary_evolution} muestra la evolución temporal del crecimiento urbano de Querétaro capturada mediante la clasificación binaria.
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[b]{0.32\textwidth}
+			\includegraphics[width=\textwidth]{binary_transformation_1984.png}
+		\caption{1984 - Estado inicial}
+		\label{fig:binary_1984}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+			\includegraphics[width=\textwidth]{binary_transformation_2000.png}
+		\caption{2000 - Expansión intermedia}
+		\label{fig:binary_2000}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+			\includegraphics[width=\textwidth]{binary_transformation_2020.png}
+		\caption{2020 - Estado actual}
+		\label{fig:binary_2020}
+	\end{subfigure}
+	\caption{Evolución del crecimiento urbano de la Zona Metropolitana de Querétaro (1984--2020), representada mediante mapas binarios urbano/no-urbano obtenidos a partir de la clasificación LBP+K-Means+SVM aplicada a las capturas RGB de la serie.}
+	\label{fig:binary_evolution}
+\end{figure}
+
+\subsubsection{Calidad interna de la clasificación}
+\label{ssec:calidad-clasificacion}
+
+La calidad del clasificador LBP+K-Means+SVM se evalúa con un reparto interno \textit{train/test} ($20$\% para prueba por defecto) sobre las pseudoetiquetas generadas por K-Means, conforme a la rutina de entrenamiento documentada en el Apéndice~\ref{ap:arquitectura}. En los experimentos sobre Querétaro, la concordancia del SVM con esas pseudoetiquetas (medida como \textit{accuracy} en el reparto interno, no contra una verdad terreno) se situó en el rango $88$--$94$\%.
+
+Este porcentaje mide la coherencia interna del clasificador (es decir, qué tan bien el SVM reproduce las etiquetas generadas por K-Means) y no la exactitud respecto a una verdad terreno externa independiente. La validación externa del \textit{pipeline} se realiza, de manera indirecta, a través de la evaluación temporal del modelo AC en el Capítulo~\ref{ch:resultados-analisis}.
+
+\subsubsection{Justificación de la representación binaria}
+
+La simplificación del mapa de cobertura de suelo a dos categorías (urbano/no-urbano) responde a tres consideraciones metodológicas. La primera es la compatibilidad con el AC: los autómatas celulares utilizados operan con estados discretos, de modo que la representación binaria elimina una etapa adicional de discretización y hace que las reglas de transición sean directamente interpretables. La segunda es la disponibilidad de datos: las capturas son RGB, sin bandas térmicas ni radar, lo que acota la discriminación fina de usos intraurbanos y hace razonable condensar la salida en dos clases. La tercera es el objetivo del modelo: el interés está en modelar la \textit{expansión} del área urbana y no la composición interna de usos de suelo, y la clasificación binaria captura precisamente esa variable de salida.
+
+\subsubsection{Síntesis del preprocesamiento}
+
+La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evolution}) muestra transiciones graduales y continuas entre años consecutivos, con patrones de expansión congruentes con el crecimiento documentado para la ZMQ, sin artefactos sistemáticos ni discontinuidades espaciales abruptas en la serie. Con la serie de 37 mapas binarios (1984--2020) construida y verificada, las secciones siguientes definen el modelo de crecimiento que la toma como entrada.
+
+\section{Definición del modelo}
+\label{sec:definicion-modelo}
 
 \begin{wrapfigure}{l}{0.52\linewidth}
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F2_transicion_ai}
-  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$.}
+  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$. \textit{Imagen elaborada con IA generativa, con base en la regla de transición propia de la ecuación~\ref{eq:woe_sigmoid}.}}
   \label{fig:transicion}
   \vspace{-6pt}
 \end{wrapfigure}
-Con la serie de mapas binarios $\{U_t\}_{t=1984}^{2020}$ ya construida, el modelo de crecimiento urbano debe responder a una pregunta distinta de la del preprocesamiento: ya no se trata de decidir qué es urbano, sino de aprender dónde y por qué aparece lo urbano nuevo. El primer paso es, por tanto, definir el objeto de estudio del modelo: la transición. Una transición ocurre cuando una celda que era no-urbana en el año $t$ pasa a urbana en $t+1$, es decir, $U_t(i,j)=0$ y $U_{t+1}(i,j)=1$. Estas transiciones son los eventos que el modelo busca primero explicar a partir de la historia y, más adelante, reproducir hacia el futuro.
-
-Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de forma entrelazada pero que son conceptualmente distintos. El primero es el \textbf{modelo conceptual}: las reglas matemáticas generales del acoplamiento WoE-AC (la cuantificación de evidencia, la regla de transición probabilística y la actualización del estado), válidas para cualquier ciudad. El segundo es la \textbf{implementación}: el recálculo iterativo del campo de evidencia y de la vecindad sobre el estado actualizado del mapa en cada paso de simulación. El tercero es la \textbf{configuración experimental}: los valores concretos fijados para la Zona Metropolitana de Querétaro (el umbral $\theta = 0{,}75$, el peso de vecindad $\alpha = 0{,}50$, la ponderación por \textit{Information Value} y las ventanas quinquenales de validación), que son objeto del Capítulo~\ref{ch:resultados-analisis}. La narración avanza del primero al tercero.
+Con la serie de mapas binarios $\{U_t\}_{t=1984}^{2020}$ ya construida, el modelo de crecimiento urbano debe responder a una pregunta distinta de la del preprocesamiento: ya no se trata de decidir qué es urbano, sino de aprender dónde y por qué aparece lo urbano nuevo. El primer paso es, por tanto, definir el objeto de estudio del modelo: la transición (Figura~\ref{fig:transicion}). Una transición ocurre cuando una celda que era no-urbana en el año $t$ pasa a urbana en $t+1$, es decir, $U_t(i,j)=0$ y $U_{t+1}(i,j)=1$. Estas transiciones son los eventos que el modelo busca primero explicar a partir de la historia y, más adelante, reproducir hacia el futuro.
 
 La primera decisión del modelo es cómo cuantificar la evidencia que vincula la configuración espacial de una celda con su probabilidad de transición. La vía más común en la literatura es la regresión logística, pero conlleva un supuesto fuerte: que el logit de la probabilidad es una función lineal de las variables explicativas. Las relaciones espaciales del crecimiento urbano no son lineales; la probabilidad de urbanización cae de forma abrupta en los primeros cientos de metros desde el frente urbano y luego se aplana. Por eso se elige el método de Pesos de Evidencia (WoE, ecuación~\ref{eq:woe} del Capítulo~\ref{ch:marco-teorico}), que no impone ninguna forma funcional: discretiza cada variable en intervalos y estima un peso bayesiano independiente para cada uno, capturando la curvatura real de la relación. Como ventaja adicional, cada peso es interpretable en términos geográficos, lo que satisface el requisito de transparencia que motivó este trabajo y que los enfoques de caja negra no ofrecen.
+
+La segunda decisión es qué variables espaciales alimentan el WoE (Figura~\ref{fig:variables-espaciales}). Aquí opera de nuevo una restricción de los datos: no se dispone de capas externas homogéneas (vialidades, pendiente, uso de suelo oficial) para los 37 años de la serie. Por tanto, todas las variables deben derivarse de la propia configuración urbana histórica, sin insumos adicionales. Se definen siete: la distancia euclidiana a la celda urbana más cercana, la densidad de vecinos urbanos a tres escalas (ventanas $3\times3$, $5\times5$ y $7\times7$), la fragmentación local, el tamaño del cluster urbano contiguo más cercano y el gradiente de urbanización. Cada una captura un aspecto distinto del proceso: la proximidad al frente consolidado, la presión del vecindario a múltiples escalas y la morfología del borde urbano. El que las siete provengan únicamente del mapa binario reduce los insumos necesarios para aplicar el modelo en otra ciudad a la disponibilidad de esa misma serie binaria, sin bases de datos locales. La transferencia geográfica no se verificó en este trabajo y exigiría recalibrar los pesos WoE con las transiciones del sitio objetivo.
 
 \begin{wrapfigure}{r}{0.50\linewidth}
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F5_variables_espaciales_ai}
-  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas.}
+  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas. \textit{Imagen elaborada con IA generativa, con base en las siete variables definidas en esta sección.}}
   \label{fig:variables-espaciales}
   \vspace{-6pt}
 \end{wrapfigure}
-La segunda decisión es qué variables espaciales alimentan el WoE. Aquí opera de nuevo una restricción de los datos: no se dispone de capas externas homogéneas (vialidades, pendiente, uso de suelo oficial) para los 37 años de la serie. Por tanto, todas las variables deben derivarse de la propia configuración urbana histórica, sin insumos adicionales. Se definen siete: la distancia euclidiana a la celda urbana más cercana, la densidad de vecinos urbanos a tres escalas (ventanas $3\times3$, $5\times5$ y $7\times7$), la fragmentación local, el tamaño del cluster urbano contiguo más cercano y el gradiente de urbanización. Cada una captura un aspecto distinto del proceso: la proximidad al frente consolidado, la presión del vecindario a múltiples escalas y la morfología del borde urbano. El que las siete provengan únicamente del mapa binario es lo que hace al modelo transferible a cualquier ciudad para la que exista esa serie, sin depender de bases de datos locales.
+La tercera decisión es sobre qué datos afinar. En lugar de ajustar el WoE a un único par de años, se agregan (\textit{pooling}) las transiciones de los 26 pares consecutivos del período 1984--2010, hasta reunir $8\,196\,264$ transiciones observadas. El motivo es estadístico: las transiciones de un solo año son escasas y ruidosas, y producirían pesos inestables.
 
-La tercera decisión es sobre qué datos afinar. En lugar de ajustar el WoE a un único par de años, se agregan (\textit{pooling}) las transiciones de los 26 pares consecutivos del período 1984--2010. El motivo es estadístico: las transiciones de un solo año son escasas y ruidosas, y producirían pesos inestables. Al acumular los 26 períodos se reúnen $8{,}196{,}264$ transiciones observadas, lo que reduce el error de estimación de cada bin a un nivel en el que los pesos pueden tratarse como constantes del modelo. El período 2011--2020 se reserva deliberadamente, sin tocarlo durante el ajuste, para la validación posterior.
+Conviene precisar cómo se emparejan los datos, porque la agregación no es simétrica en sus dos lados. Las siete variables espaciales se promedian sobre los 26 períodos y ese mapa promedio se contrasta con el conjunto acumulado de transiciones. Los pesos relacionan, por tanto, la configuración espacial media del período de entrenamiento con las transiciones observadas en él, no cada configuración anual con su transición correspondiente. La consecuencia es que los pesos describen un régimen espacial promedio de 1984 a 2010 y se tratan como constantes del modelo, lo cual es coherente con su uso posterior, pero también significa que el número de valores distintos de cada covariable es el de una sola rejilla, $5\,419\,008$, y no el del conjunto acumulado. Emparejar cada variable anual con su transición es una de las extensiones que se plantean en el Capítulo~\ref{ch:conclusiones}.
 
-Con los pesos calculados, surge una cuarta decisión: cómo combinarlos. No todas las variables aportan lo mismo. El peso total por celda (ecuación~\ref{eq:woe_total}) no se obtiene como una suma simple, sino ponderando cada variable por su \textit{Information Value} normalizado, de modo que las variables con mayor poder discriminativo pesen más en la decisión final. En el caso de la Zona Metropolitana de Querétaro, esto hace que la distancia al frente urbano domine la combinación, concentra cerca del $28\%$ del peso total, el \textit{Information Value} más alto de las siete variables, seguida de la densidad de vecinos inmediatos. La suma ponderada se transforma con la función sigmoide (ecuación~\ref{eq:woe_sigmoid}) para obtener una probabilidad de transición acotada en $[0,1]$.
+El período 2011--2020 se reserva deliberadamente, sin tocarlo durante el ajuste, para la validación posterior.
 
-\begin{wrapfigure}{r}{0.50\linewidth}
-  \vspace{-4pt}
-  \centering
-  \includegraphics[width=\linewidth]{F3_moore_ai}
-  \caption{\small Vecindad de Moore ($8$ celdas) frente a Von~Neumann ($4$ ortogonales). Moore captura frentes diagonales de crecimiento.}
-  \label{fig:vecindad-moore}
-  \vspace{-6pt}
-\end{wrapfigure}
-Llegados a este punto aparece la decisión central del modelo, la que lo distingue de una simple regresión espacial: por qué un autómata celular y no usar directamente el mapa de probabilidad WoE como predicción. La razón es que el mapa WoE es estático; describe la idoneidad de cada celda dada la configuración del año inicial, pero no simula cómo el crecimiento se propaga en el tiempo. Una celda muy apta puede no urbanizarse si ningún frente urbano la alcanza dentro del período, y una celda de idoneidad media puede hacerlo si el crecimiento llega a su vecindad. El autómata celular (Sección~\ref{sec:automatas-celulares} del Capítulo~\ref{ch:marco-teorico}) resuelve esto aplicando la regla de transición de forma iterativa: en cada paso anual se recalculan las siete variables espaciales sobre el estado actualizado del mapa. Así, cuando una celda se urbaniza, incrementa de inmediato la densidad de vecinos de sus celdas contiguas y eleva su probabilidad de transición en el paso siguiente. Este mecanismo de contagio borde a borde es el que genera los patrones de mancha compacta, relleno de huecos y extensión de corredores que se observan empíricamente en la ZMQ; que las dos variables más predictivas sean de proximidad local confirma que el crecimiento de la zona es de tipo contagio y no difusión aleatoria, y por tanto que un autómata celular es su representación natural.
+Con los pesos calculados, surge una cuarta decisión: cómo combinarlos. No todas las variables aportan lo mismo. El peso total por celda no se obtiene como la suma simple de la ecuación~\ref{eq:woe_total}, sino con la suma ponderada de la ecuación~\ref{eq:woe_ponderado}, que pesa cada variable por su \textit{Information Value} (ecuación~\ref{eq:information_value}) normalizado, de modo que las variables con mayor poder discriminativo pesen más en la decisión final. En el caso de la Zona Metropolitana de Querétaro, esto hace que la distancia al frente urbano domine la combinación, concentra cerca del $28\%$ del peso total, el \textit{Information Value} más alto de las siete variables, seguida de la densidad de vecinos inmediatos. La suma ponderada se transforma con la función sigmoide (ecuación~\ref{eq:woe_sigmoid}) para obtener una probabilidad de transición acotada en $[0,1]$.
+
+Llegados a este punto aparece la decisión de acoplar el campo WoE a un autómata celular, en lugar de usar el mapa de probabilidad como predicción estática. Los \emph{pesos} WoE, estimados en 1984--2010, sí quedan fijos; lo que no es estático es el \emph{campo}: en cada paso anual se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican esos pesos. Una celda muy apta puede no urbanizarse si ningún frente urbano la alcanza dentro del período, y una celda de idoneidad media puede hacerlo si el crecimiento llega a su vecindad. Se adopta la vecindad de Moore, definida en la Figura~\ref{fig:vecindades} del Capítulo~\ref{ch:marco-teorico}, porque admite frentes diagonales y esa es la forma en que avanza una mancha urbana. El autómata celular (Sección~\ref{sec:automatas-celulares} del Capítulo~\ref{ch:marco-teorico}) aplica la regla de forma iterativa. Así, cuando una celda se urbaniza, incrementa de inmediato la densidad de vecinos de sus celdas contiguas y eleva su probabilidad de transición en el paso siguiente. Este mecanismo de contagio borde a borde es coherente con los patrones de mancha compacta, relleno de huecos y extensión de corredores observados en la ZMQ.
 
 \begin{wrapfigure}{l}{0.50\linewidth}
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F6_paso_ac_ai}
-  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$.}
+  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$. \textit{Imagen elaborada con IA generativa, con base en el algoritmo propio del autómata descrito en esta sección.}}
   \label{fig:paso-ac}
   \vspace{-6pt}
 \end{wrapfigure}
-La regla de transición integra, finalmente, tres componentes. A la probabilidad WoE de cada celda se le añade la influencia del vecindario de Moore (ocho celdas adyacentes, ecuación~\ref{eq:neighborhood}), ponderada por un peso vecinal; se elige la vecindad de Moore por ser la mínima que captura tanto adyacencias ortogonales como diagonales del frente urbano. La probabilidad combinada se compara contra un umbral de transición: solo las celdas que lo superan pueden urbanizarse. Este umbral se fijó en $0{,}75$ mediante exploración sistemática, tras observar que valores menores producían sobre-predicción masiva; su calibración y la del peso vecinal se detallan en el Capítulo~\ref{ch:resultados-analisis}. Por último, la transición no es determinista: una celda apta se urbaniza solo si un sorteo aleatorio lo confirma. Esta componente estocástica refleja que, incluso bajo condiciones favorables, la urbanización de una parcela depende de factores no modelados (decisiones de propietarios, permisos, mercado), y es lo que hace que distintas corridas del modelo generen escenarios ligeramente distintos en lugar de una única predicción rígida.
+La regla de transición (Figura~\ref{fig:paso-ac}) integra, finalmente, tres componentes. A la probabilidad WoE de cada celda se le añade la influencia del vecindario de Moore (ocho celdas adyacentes, ecuación~\ref{eq:neighborhood}), ponderada por un peso vecinal; se elige la vecindad de Moore por ser la mínima que captura tanto adyacencias ortogonales como diagonales del frente urbano. La probabilidad combinada se compara contra un umbral de transición: solo las celdas que lo superan pueden urbanizarse. Este umbral se fijó en $0{,}75$ mediante exploración sistemática, tras observar que valores menores producían sobre-predicción masiva; su calibración y la del peso vecinal se detallan en el Capítulo~\ref{ch:resultados-analisis}. Por último, la transición no es determinista: una celda apta se urbaniza solo si un sorteo aleatorio lo confirma. Esta componente estocástica refleja que, incluso bajo condiciones favorables, la urbanización de una parcela depende de factores no modelados (decisiones de propietarios, permisos, mercado), y es lo que hace que distintas corridas del modelo generen escenarios ligeramente distintos en lugar de una única predicción rígida.
 
-Los tres componentes se condensan en una sola expresión, que constituye el núcleo formal del modelo y coincide con la implementación validada (Sección~\ref{sec:calibracion-narrativa}). Para una celda no urbana $(i,j)$, la probabilidad de transición es
+Los tres componentes se condensan en una sola expresión, que constituye el núcleo formal del modelo y coincide con la implementación validada. Para una celda no urbana $(i,j)$, la probabilidad de transición es
 
 \begin{equation}
 P_{i,j} = \min\!\left(1,\; \sigma\!\Big( \sum_{k} \omega_k\, \mathrm{WoE}_k(i,j) \Big) + \alpha\, N_{i,j} \right),
@@ -95,20 +355,21 @@ P_{i,j} = \min\!\left(1,\; \sigma\!\Big( \sum_{k} \omega_k\, \mathrm{WoE}_k(i,j)
 
 donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija $\theta = 0{,}75$ y $\alpha = 0{,}50$ (Capítulo~\ref{ch:resultados-analisis}).
 
-Conviene precisar en qué se aparta esta formulación del esquema WoE-AC más habitual. En buena parte de la literatura el WoE entra al autómata como un mapa de idoneidad estático que apenas se recalcula durante la simulación. Aquí, en cambio, el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC, que la literatura ya documenta ampliamente, sino en el protocolo de evaluación: la calibración y la validación reproducibles sobre cinco ventanas quinquenales independientes, con código y datos abiertos, que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suman el contexto poco estudiado, una ciudad intermedia mexicana, y la serie larga de 37 años.
+Conviene precisar en qué se aparta esta formulación del esquema WoE-AC más habitual. Conviene precisar cómo entra el WoE al autómata, porque de ahí depende su comportamiento. Aquí el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC, que la literatura ya documenta ampliamente, sino en el protocolo de evaluación: la calibración y la validación reproducibles sobre cinco ventanas quinquenales desplazadas, con código y datos abiertos, que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suma la serie larga de 37 años. La ciudad, en cambio, no es terreno inexplorado: existe un antecedente de simulación con autómatas celulares para Querétaro entre 2003 y 2017 \parencite{JimenezLopez2018}, de manera que la diferencia con este trabajo está en el protocolo de evaluación y en la auditabilidad de los pesos, no en el caso de estudio.
 
-\section{Validación.}
+\section{Validación}
+\label{sec:validacion-protocolo}
 
 Definido el modelo, queda la pregunta de si sus predicciones son confiables. La primera decisión de la validación ya se tomó al entrenar: el WoE se ajustó únicamente con las transiciones de 1984--2010, dejando intacto el período 2011--2020. Esta separación temporal es lo que hace honesta a la evaluación, pues el modelo se prueba sobre años que nunca vio durante el ajuste, de la misma forma en que tendría que operar al proyectar el futuro. Validar sobre los mismos datos de entrenamiento solo mediría la capacidad de memorizar, no la de predecir.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.90\linewidth]{F7_ventanas_validacion_ai}
-  \caption{Protocolo de validación: separación temporal entre entrenamiento (WoE, 1984--2010) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en el ajuste del modelo.}
+  \caption{Protocolo de validación: separación temporal entre entrenamiento (WoE, 1984--2010) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en el ajuste del modelo. \textit{Imagen elaborada con IA generativa, con base en el protocolo propio de validación quinquenal múltiple.}}
   \label{fig:ventanas-validacion}
 \end{figure}
 
-La segunda decisión, y la que define el aporte metodológico de este trabajo, es no validar sobre una única ventana sino sobre cinco ventanas quinquenales independientes: 2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020. La razón es que una sola ventana puede resultar engañosamente favorable o desfavorable según las particularidades de ese lustro; cinco ventanas que se desplazan año con año permiten distinguir entre un acierto puntual y un comportamiento estable del modelo. Gran parte de la literatura revisada en el Capítulo~\ref{ch:estado-del-arte} valida sobre un solo período, lo que impide saber si el desempeño reportado se sostiene en el tiempo.
+La segunda decisión, y la que define el aporte metodológico de este trabajo, es no validar sobre una única ventana sino sobre cinco ventanas quinquenales desplazadas (Figura~\ref{fig:ventanas-validacion}): 2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020. Cada ventana es hold-out respecto del entrenamiento 1984--2010; entre sí se solapan cuatro de cinco años. Una sola ventana puede resultar engañosamente favorable o desfavorable según las particularidades de ese lustro; cinco ventanas que se desplazan año con año permiten distinguir entre un acierto puntual y un comportamiento que se sostiene. Gran parte de la literatura revisada en el Capítulo~\ref{ch:estado-del-arte} valida sobre un solo período, lo que impide saber si el desempeño reportado se sostiene en el tiempo.
 
 El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año inicial como estado de partida, se ejecuta el autómata celular durante cinco pasos anuales recalculando las variables espaciales en cada uno, y el mapa predicho para el año final se compara, celda a celda, contra el mapa observado de ese año. De esa comparación se construye la matriz de confusión (ecuación~\ref{eq:confusion_matrix}) y, a partir de ella, todas las métricas.
 
@@ -116,11 +377,10 @@ El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F8_fom_ai}
-  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Solo las celdas en transición entran al cálculo.}
+  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Solo las celdas en transición entran al cálculo. \textit{Imagen elaborada con IA generativa, con base en la definición de \textcite{pontius2008comparing}.}}
   \label{fig:fom-componentes}
   \vspace{-6pt}
 \end{wrapfigure}
-Aquí aparece una decisión sobre cómo medir el acierto. Las métricas globales como la exactitud o el coeficiente Kappa (ecuación~\ref{eq:kappa}) son engañosas en este problema: como la mayoría del territorio no cambia de un año a otro, un modelo que se limitara a copiar el mapa inicial obtendría una exactitud altísima sin predecir crecimiento alguno. Por eso la métrica central de la validación es el \textit{Figure of Merit} (ecuación~\ref{eq:fom_formula}), que evalúa exclusivamente las celdas en transición e ignora la clase mayoritaria de permanencia. Se reportan, no obstante, las métricas complementarias (IoU, Precision, Recall, F1 y Kappa) y la descomposición del error en sus componentes de cantidad y de asignación, porque cada una ilumina un aspecto distinto del desempeño.
+Aquí aparece una decisión sobre cómo medir el acierto. Las métricas globales como la exactitud o el coeficiente Kappa (ecuación~\ref{eq:kappa}) son engañosas en este problema: como la mayoría del territorio no cambia de un año a otro, un modelo que se limitara a copiar el mapa inicial obtendría una exactitud alta sin predecir crecimiento alguno. Por eso la métrica central de la validación es el \textit{Figure of Merit} (ecuación~\ref{eq:fom_formula}; Figura~\ref{fig:fom-componentes}), que evalúa exclusivamente las celdas en transición e ignora la clase mayoritaria de permanencia. Se reportan, no obstante, las métricas complementarias (IoU, Precision, Recall, F1 y Kappa) y la descomposición del error en sus componentes de cantidad y de asignación, porque cada una ilumina un aspecto distinto del desempeño.
 
-El resultado sostiene la hipótesis de estabilidad. A lo largo de las cinco ventanas, el \textit{Figure of Merit} se mantiene en el intervalo $[0{,}222,\,0{,}378]$, con un valor medio cercano a $0{,}317$, un Kappa medio de $0{,}445$ y un IoU medio de $0{,}633$. Ninguna ventana se desploma ni dispara su desempeño respecto de las demás, lo que indica que el modelo captura una dinámica estructural del crecimiento de la Zona Metropolitana de Querétaro y no un patrón sobreajustado a un período concreto. La presentación detallada de estas métricas, ventana por ventana, junto con la discusión de la calibración, se desarrolla en el Capítulo~\ref{ch:resultados-analisis}.
-
+Las cifras por ventana, la calibración y el contraste con las hipótesis se presentan en el Capítulo~\ref{ch:resultados-analisis}.
