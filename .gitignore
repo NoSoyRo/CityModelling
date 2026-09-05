@@ -186,3 +186,9 @@ Desktop.ini
 # Large archives (exceed GitHub 100MB limit)
 report/tesis/*.zip
 data-copy-tesis.zip
+
+# Salidas de compilacion de LaTeX. El PDF que se versiona es main_compressed.pdf,
+# que es la version comprimida y buscable; el main.pdf crudo pasa de los 88 MB.
+**/aux_files/
+report/tesis/tesis_indice_nuevo/caps_larraga/main.pdf
+**/cap0*_standalone.pdf
