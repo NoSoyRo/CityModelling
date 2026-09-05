@@ -93,7 +93,7 @@ después de forma sistemática por \textcite{Dietzel2007}. Aun así como ya fue 
 completa puede tomar más de una semana en un clúster de la época
 \parencite{Jantz2003}. 
 
-Aunado a ello, SLEUTH es un autómata celular que se auto modifica, es decir, los coeficientes de crecimeinto se reescriben durante la propia corrida como conclusion a la tasa de crecimeinto que se va agregando esto implica que el resultado no solo depende de los valores iniciales sino que tambien de la trayectoria que se sigue, concluyendo en un sistema muy sensible a cambios \parencite{ClarkeHoppen1997}. Más aun, los coeficientes que son calibrados son sensibles a la resolución espacial de los datos, \textcite{JantzGoetz2005} demuestran que un conjunto muy ajustado a una escala no se transfiere a otra. Esto brinda un costo mas en temrinos de complejidad: la \textbf{equifinalidad}, esto significa que existan parámetros que despues de ejecutar el modelo generen patrones indistinguibles para una metrica de calibración pero a largo plazo son altamente distintos.
+Aunado a ello, SLEUTH es un autómata celular que se automodifica: los coeficientes de crecimiento se reescriben durante la propia corrida en respuesta a la tasa de crecimiento que se va acumulando. Esto implica que el resultado no solo depende de los valores iniciales, sino también de la trayectoria que se sigue, lo que da lugar a un sistema muy sensible a cambios \parencite{ClarkeHoppen1997}. Más aún, los coeficientes calibrados son sensibles a la resolución espacial de los datos: \textcite{JantzGoetz2005} demuestran que un conjunto muy ajustado a una escala no se transfiere a otra. A ello se añade un costo más en términos de complejidad, la \textbf{equifinalidad}, que consiste en que existan parámetros que, después de ejecutar el modelo, generen patrones indistinguibles para una métrica de calibración pero altamente distintos a largo plazo.
 
 El término \textbf{equifinalidad} proviene del modelado ambiental, donde \textcite{Beven2006} argumenta que aceptar la
 existencia de múltiples parametrizaciones aceptables debe llevar a reportar el conjunto de
@@ -158,7 +158,7 @@ mejoras de concordancia espacial en sus propios casos de estudio
 \parencite{almeida2008stochastic,Gomez2020}; por otro, la comparación multi-sitio de
 \textcite{pontius2008comparing} muestra que la dispersión del FoM entre trece
 aplicaciones no se explica por la sofisticación del modelo, sino por la magnitud
-del cambio neto del periodo evaluado. Las dos observaciones no se contradicen en
+del cambio neto del período evaluado. Las dos observaciones no se contradicen en
 abstracto, pero sí en la práctica con que suelen leerse: un FoM de, por ejemplo,
 $0{,}40$ obtenido en una ciudad con $20\%$ de cambio neto no es comparable con un
 $0{,}20$ obtenido en una con $5\%$, y aun así ambos se citan como evidencia

@@ -5,26 +5,26 @@
 \contentsline {table}{\numberline {1.1}{\ignorespaces Requerimientos del modelo de crecimiento urbano para la ZMQ.}}{4}{table.caption.9}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces Posicionamiento de la literatura mexicana frente a R1--R4.}}{39}{table.caption.15}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces Posicionamiento de la literatura mexicana frente a R1--R4.}}{38}{table.caption.15}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Fracción media de píxeles clasificados como ``urbano'' por tramo de la serie 1984--2020. Las cifras provienen directamente de los mapas binarios y deben leerse como un indicador grueso de la dinámica, no como superficie construida.}}{63}{table.caption.27}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces \textit {Information Value} y pesos normalizados de las siete variables WoE, calculados sobre el período de entrenamiento (1984--2010).}}{65}{table.caption.29}%
-\contentsline {table}{\numberline {5.3}{\ignorespaces Configuración final del Autómata Celular WoE-AC.}}{68}{table.caption.31}%
-\contentsline {table}{\numberline {5.4}{\ignorespaces Configuración del experimento de validación quinquenal múltiple.}}{69}{table.caption.32}%
-\contentsline {table}{\numberline {5.5}{\ignorespaces Métricas de validación en las cinco ventanas quinquenales (WoE-AC, umbral $\theta =0{,}75$).}}{70}{table.caption.33}%
-\contentsline {table}{\numberline {5.6}{\ignorespaces Posicionamiento del modelo WoE-AC en el espectro empírico de Figure of Merit (FoM) documentado en la literatura LUCC. La comparación es cualitativa: los sitios, las definiciones temáticas de las clases y los horizontes temporales difieren entre estudios.}}{71}{table.caption.34}%
-\contentsline {table}{\numberline {5.7}{\ignorespaces Métricas de validación del período 2011$\rightarrow $2016. \textit {B} (hits del FoM) es el subconjunto de \textit {TP} que corresponde a transiciones a urbano observadas y predichas simultáneamente; los píxeles permanentes ya urbanizados quedan incluidos en \textit {TP} pero no en \textit {B} (véase Ec.~\ref {eq:fom_formula}).}}{74}{table.caption.36}%
-\contentsline {table}{\numberline {5.8}{\ignorespaces Métricas de validación del período 2012$\rightarrow $2017.}}{75}{table.caption.38}%
-\contentsline {table}{\numberline {5.9}{\ignorespaces Métricas de validación del período 2013$\rightarrow $2018.}}{76}{table.caption.40}%
-\contentsline {table}{\numberline {5.10}{\ignorespaces Métricas de validación del período 2014$\rightarrow $2019.}}{77}{table.caption.42}%
-\contentsline {table}{\numberline {5.11}{\ignorespaces Métricas de validación del período 2015$\rightarrow $2020.}}{78}{table.caption.44}%
-\contentsline {table}{\numberline {5.12}{\ignorespaces Descomposición del desacuerdo total en sus componentes de cantidad y de asignación \blx@tocontentsinit {0}\parencite {PontiusMillones2011}, sobre las $5\,419\,008$ celdas de cada ventana. El desacuerdo total es el complemento de la exactitud global de la Tabla~\ref {tab:metrics_all_periods}. La última columna es la fracción del desacuerdo atribuible a la cantidad.}}{79}{table.caption.46}%
-\contentsline {table}{\numberline {5.13}{\ignorespaces Estimación cualitativa de la contribución de fuentes de error (no cuantificada empíricamente)}}{81}{table.caption.48}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Fracción media de píxeles clasificados como ``urbano'' por tramo de la serie 1984--2020. Las cifras provienen directamente de los mapas binarios y deben leerse como un indicador grueso de la dinámica, no como superficie construida.}}{62}{table.caption.27}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces \textit {Information Value} y pesos normalizados de las siete variables WoE, calculados sobre el período de entrenamiento (1984--2010).}}{64}{table.caption.29}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Configuración final del Autómata Celular WoE-AC.}}{67}{table.caption.31}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Configuración del experimento de validación quinquenal múltiple.}}{68}{table.caption.32}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Métricas de validación en las cinco ventanas quinquenales (WoE-AC, umbral $\theta =0{,}75$).}}{69}{table.caption.33}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Posicionamiento del modelo WoE-AC en el espectro empírico de Figure of Merit (FoM) documentado en la literatura LUCC. La comparación es cualitativa: los sitios, las definiciones temáticas de las clases y los horizontes temporales difieren entre estudios.}}{70}{table.caption.34}%
+\contentsline {table}{\numberline {5.7}{\ignorespaces Métricas de validación del período 2011$\rightarrow $2016. \textit {B} (hits del FoM) es el subconjunto de \textit {TP} que corresponde a transiciones a urbano observadas y predichas simultáneamente; los píxeles permanentes ya urbanizados quedan incluidos en \textit {TP} pero no en \textit {B} (véase Ec.~\ref {eq:fom_formula}).}}{73}{table.caption.36}%
+\contentsline {table}{\numberline {5.8}{\ignorespaces Métricas de validación del período 2012$\rightarrow $2017.}}{74}{table.caption.38}%
+\contentsline {table}{\numberline {5.9}{\ignorespaces Métricas de validación del período 2013$\rightarrow $2018.}}{75}{table.caption.40}%
+\contentsline {table}{\numberline {5.10}{\ignorespaces Métricas de validación del período 2014$\rightarrow $2019.}}{76}{table.caption.42}%
+\contentsline {table}{\numberline {5.11}{\ignorespaces Métricas de validación del período 2015$\rightarrow $2020.}}{77}{table.caption.44}%
+\contentsline {table}{\numberline {5.12}{\ignorespaces Descomposición del desacuerdo total en sus componentes de cantidad y de asignación \blx@tocontentsinit {0}\parencite {PontiusMillones2011}, sobre las $5\,419\,008$ celdas de cada ventana. El desacuerdo total es el complemento de la exactitud global de la Tabla~\ref {tab:metrics_all_periods}. La última columna es la fracción del desacuerdo atribuible a la cantidad.}}{78}{table.caption.46}%
+\contentsline {table}{\numberline {5.13}{\ignorespaces Estimación cualitativa de la contribución de fuentes de error (no cuantificada empíricamente)}}{80}{table.caption.48}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Validación de hipótesis particulares}}{89}{table.6.1}%
-\contentsline {table}{\numberline {6.2}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{92}{table.caption.49}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Validación de hipótesis particulares}}{88}{table.6.1}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{91}{table.caption.49}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{102}{table.caption.51}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}}{103}{table.caption.52}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}}{104}{table.caption.53}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{101}{table.caption.51}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}}{102}{table.caption.52}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}}{103}{table.caption.53}%
