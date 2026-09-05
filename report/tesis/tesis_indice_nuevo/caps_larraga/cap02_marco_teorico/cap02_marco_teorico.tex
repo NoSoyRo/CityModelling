@@ -312,13 +312,13 @@ p_e = \frac{(TP + FP)(TP + FN) + (TN + FN)(TN + FP)}{N^2}
 \label{eq:pe}
 \end{equation}
 
-El rango es $\kappa \in [-1, 1]$. Conforme a la escala de interpretación de uso común propuesta por \textcite{LandisKoch1977}, $\kappa > 0{,}81$ indica acuerdo casi perfecto; $0{,}61$--$0{,}80$, acuerdo sustancial; $0{,}41$--$0{,}60$, acuerdo moderado; $0{,}21$--$0{,}40$, acuerdo justo; y $\kappa < 0{,}20$, acuerdo pobre. La ventaja del coeficiente $\kappa$ frente a la exactitud es que descuenta el acuerdo esperado por azar, haciendo la comparación más justa cuando las clases están desbalanceadas. Su limitación, identificada por \textcite{pontius2008comparing}, es que mezcla en un solo número dos fuentes de error metodológicamente distintas: el desacuerdo de cantidad y el de asignación.
+El rango es $\kappa \in [-1, 1]$. Conforme a la escala de interpretación de uso común propuesta por \textcite{LandisKoch1977}, $\kappa > 0{,}81$ indica acuerdo casi perfecto; $0{,}61$--$0{,}80$, acuerdo sustancial; $0{,}41$--$0{,}60$, acuerdo moderado; $0{,}21$--$0{,}40$, acuerdo justo; y $\kappa < 0{,}20$, acuerdo pobre. La ventaja del coeficiente $\kappa$ frente a la exactitud es que descuenta el acuerdo esperado por azar, haciendo la comparación más justa cuando las clases están desbalanceadas. Su limitación, identificada por \textcite{PontiusMillones2011}, es que mezcla en un solo número dos fuentes de error metodológicamente distintas: el desacuerdo de cantidad y el de asignación.
 
 \subsection{Métricas de cambio}
 
 Las métricas del bloque anterior incluyen tanto las transiciones como las permanencias. En modelado de cambio de cobertura lo que interesa evaluar son las transiciones: una celda que sigue siendo urbana o no urbana no revela si el modelo captura la dinámica. Dado que la clase mayoritaria (píxeles sin cambio) infla artificialmente las métricas globales, se necesitan indicadores que la excluyan.
 
-El \textbf{Figure of Merit} (FoM), propuesto por \textcite{pontius2008comparing} precisamente para hacer comparables los resultados entre estudios, evalúa exclusivamente el subconjunto de píxeles donde ocurre o se predice un cambio. En un sistema donde el $95$\% del territorio permanece constante, un modelo que nunca predice cambio obtiene exactitud del $0{,}95$ y Kappa apreciable, pero FoM igual a cero.
+El \textbf{Figure of Merit} (FoM), que \textcite{pontius2008comparing} consolidaron como medida de referencia para comparar resultados entre estudios, evalúa exclusivamente el subconjunto de píxeles donde ocurre o se predice un cambio. En un sistema donde el $95$\% del territorio permanece constante, un modelo que nunca predice cambio obtiene exactitud del $0{,}95$ y Kappa apreciable, pero FoM igual a cero.
 
 Sea $\mathcal{T}_{obs}$ el conjunto de píxeles con cambio observado y $\mathcal{T}_{pred}$ el conjunto con cambio predicho entre $t_0$ y $t_1$. El FoM es el índice de Jaccard aplicado exclusivamente a las transiciones:
 

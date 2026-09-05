@@ -63,7 +63,7 @@ SLEUTH: es econométrico con simulación Monte Carlo.
 
 Adjunto dos archivos:
 
-1. Tesis_Moreno_Lopez_2026-09-02.pdf — 129 páginas, texto buscable, sin
+1. Tesis_Moreno_Lopez_2026-09-02.pdf — 130 páginas, texto buscable, sin
    errores de compilación ni referencias indefinidas. La bibliografía tiene
    79 entradas, todas citadas.
 

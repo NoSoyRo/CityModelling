@@ -15,11 +15,12 @@ El modelado computacional del crecimiento urbano ha producido en treinta años u
 \label{sec:evolucion}
 % ============================================================
 
-El uso de autómatas celulares para representar fenómenos geográficos fue propuesto por
+El trabajo en torno al desarrollo del modelado urbano computaciones ha sido extenso y longevo, sin embargo
+el uso de autómatas celulares para representar fenómenos geográficos fue propuesto por
 \textcite{Tobler1979} y formalizado en términos teóricos por \textcite{Couclelis1985}. Su
 aplicación al crecimiento urbano se consolidó con \textcite{White1993}, cuyo modelo mostró que
-reglas locales basadas en distancia y vecindad reproducen estructuras de uso de suelo con
-propiedades fractales comparables a las medidas en ciudades reales; \textcite{White1997} extendió
+reglas no globales, es decir locales, basadas en distancia y vecindad reproducen estructuras de uso de suelo con
+propiedades fractales comparables a las medidas en ciudades reales, lo cual fue sorprendente para el año en el que se publica dicho trabajo. Por otro lado, \textcite{White1997} extendió
 después ese esquema acoplando el autómata a un sistema de información geográfica y a modelos
 regionales. El siguiente nivel del enfoque llegó con el modelo que hoy se conoce como SLEUTH,
 aplicado primero a la bahía de San Francisco y al corredor Washington-Baltimore
@@ -53,10 +54,10 @@ su aplicabilidad en el contexto de este trabajo.
 
 Una generación posterior de trabajos sustituyó la regresión por modelos de aprendizaje
 automático e híbridos metaheurísticos. \textcite{almeida2008stochastic} acopló
-una red neuronal feedforward a un autómata celular estocástico para Piracicaba, Brasil;
+una red neuronal feedforward a un autómata celular estocástico para Piracicaba, Brasil.
 \textcite{Gomez2020} llevó el aprendizaje automático al modelado espaciotemporal del
-crecimiento urbano a partir de percepción remota; años
-más tarde \textcite{Wang2021} combinó un autómata celular con un algoritmo
+crecimiento urbano a partir de percepción remota. Años
+más tarde, \textcite{Wang2021} combinó un autómata celular con un algoritmo
 genético para optimizar la forma urbana de Wuhan, mientras que
 \textcite{Hagenauer2022} introdujo una red neuronal geográficamente ponderada
 para relaciones espaciales no lineales en vivienda y calidad del aire, no
@@ -81,39 +82,32 @@ equifinalidad en la calibración, sobreajuste en la validación, opacidad en la 
 
 \subsection{Calibración: equifinalidad y costo computacional}
 
-La calibración de SLEUTH, cuyos componentes se definen en el Capítulo~\ref{ch:marco-teorico}, se resuelve mediante búsqueda por fuerza bruta
-sobre el espacio de sus cinco coeficientes de crecimiento, cada uno acotado al intervalo
-entero $[0,100]$, lo que da del orden de $10^{10}$
+
+Alo largo del Capítulo~\ref{ch:marco-teorico} se define el proceso de calibración SLEUTH, no obstante a grandes razgos se resuelve mediante búsqueda por fuerza bruta
+sobre un espacio de parámetros de sus cinco coeficientes de crecimiento, cada uno acotado a un intervalo fijo, lo que da del orden de $a^{b}$
 combinaciones posibles \parencite{Silva2002,Clarke2008}, cada una evaluada con simulaciones
-Monte Carlo de múltiples iteraciones. El procedimiento habitual estrecha la
+Monte Carlo de múltiples iteraciones, claramente el tiempo de sintonización es probablemente mayor a lo que el acuerdo de nivel de servicio debe exigir para que sea operacional. El procedimiento habitual estrecha la
 búsqueda en tres fases sucesivas (gruesa, fina y final), esquema planteado ya en la
 formulación original del autómata auto-modificable \parencite{ClarkeHoppen1997} y discutido
-después de forma sistemática por \textcite{Dietzel2007}; aun así, una calibración
+después de forma sistemática por \textcite{Dietzel2007}. Aun así como ya fue mencionado, una calibración
 completa puede tomar más de una semana en un clúster de la época
-\parencite{Jantz2003}. A esa carga se añaden dos rasgos que
-agravan la dificultad. Primero, SLEUTH es un autómata \emph{auto-modificable}:
-los coeficientes de crecimiento se reescriben durante la propia corrida en
-respuesta a la tasa de crecimiento agregada, de modo que el resultado depende de la
-trayectoria seguida y no solo de los valores iniciales \parencite{ClarkeHoppen1997}.
-Segundo, los coeficientes calibrados son sensibles a la resolución espacial de
-los datos: \textcite{JantzGoetz2005} muestran que un conjunto ajustado a una escala no se
-transfiere directamente a otra. Sobre esa base aparece el problema metodológico de fondo,
-que no es solo el costo: es la \textbf{equifinalidad}, esto es, la existencia de
-múltiples combinaciones de coeficientes que producen patrones indistinguibles
-para la métrica de calibración pero divergen en las proyecciones de largo plazo. El
-término proviene del modelado ambiental, donde \textcite{Beven2006} argumenta que aceptar la
+\parencite{Jantz2003}. 
+
+Aunado a ello, SLEUTH es un autómata celular que se auto modifica, es decir, los coeficientes de crecimeinto se reescriben durante la propia corrida como conclusion a la tasa de crecimeinto que se va agregando esto implica que el resultado no solo depende de los valores iniciales sino que tambien de la trayectoria que se sigue, concluyendo en un sistema muy sensible a cambios \parencite{ClarkeHoppen1997}. Más aun, los coeficientes que son calibrados son sensibles a la resolución espacial de los datos, \textcite{JantzGoetz2005} demuestran que un conjunto muy ajustado a una escala no se transfiere a otra. Esto brinda un costo mas en temrinos de complejidad: la \textbf{equifinalidad}, esto significa que existan parámetros que despues de ejecutar el modelo generen patrones indistinguibles para una metrica de calibración pero a largo plazo son altamente distintos.
+
+El término \textbf{equifinalidad} proviene del modelado ambiental, donde \textcite{Beven2006} argumenta que aceptar la
 existencia de múltiples parametrizaciones aceptables debe llevar a reportar el conjunto de
-soluciones y no un óptimo único. En el caso de SLEUTH, la discusión sobre qué constituye una
+soluciones y no un óptimo único, es decir, hay que tener precaución con el nivel de generalización que se genera. En el caso de SLEUTH, la discusión sobre qué constituye una
 calibración óptima permanece abierta \parencite{Dietzel2007}, y sin un criterio adicional la
-elección entre combinaciones equifinales termina dependiendo de quien realiza la calibración.
+elección entre combinaciones equifinales termina dependiendo de quien realiza la calibración, y este comportamiento mismo se repite en cada trabajo reportado.
 De ahí se sigue, como inferencia de este trabajo y no como resultado reportado en esa
 literatura, un riesgo de \textbf{sobreajuste de calibración}: como el ajuste se
 optimiza contra un único intervalo histórico, los coeficientes pueden reproducir muy
 bien esa ventana y, sin embargo, degradarse al proyectar otro horizonte, sin que la
-propia métrica de calibración lo advierta.
+propia métrica de calibración lo advierta, el reto es el volumen de datos con los que se cuenta para calibrar el modelo y para validar el mismo.
 Esta combinación de costo, dependencia de trayectoria y equifinalidad es,
 precisamente, lo que motiva la estrategia de validación multi-ventana que se
-adopta más adelante: una sola ventana temporal no basta para distinguir un
+adopta más adelante. Una sola ventana temporal no basta para distinguir un
 conjunto de coeficientes estable de uno meramente equifinal.
 
 Esa literatura deja abierto un recorte distinto: calibrar pocos parámetros que
@@ -126,7 +120,7 @@ parámetros distintos con el mismo ajuste.
 
 \subsection{Validación: sobreajuste temporal y métricas no comparables}
 
-\textcite{pontius2008comparing} reunieron trece aplicaciones de nueve modelos de
+Empezando por \textcite{pontius2008comparing}, ellos reunieron trece aplicaciones de nueve modelos de
 cambio de uso de suelo sobre doce sitios y las compararon con un mismo
 procedimiento estadístico. El Figure of Merit (FoM), que el propio artículo toma de la
 literatura previa sobre comparación de campos espaciales, quedó ahí consolidado como la

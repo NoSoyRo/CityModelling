@@ -2,7 +2,7 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 129 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Estado del documento:** 130 páginas, cero errores de compilación, cero referencias y citas indefinidas  
 **Fecha de este reporte:** 2 de septiembre de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
@@ -389,6 +389,8 @@ Se corrigieron además cinco atribuciones que las fuentes no sostenían. La equi
 Dos afirmaciones estaban desactualizadas y una invertida. Sobre el licenciamiento, Dinamica EGO es gratuito incluso para uso comercial y TerrSet se liberó sin costo en diciembre de 2024, así que el argumento de barrera económica ya no existe; reformulado como código cerrado, que es lo que en realidad exige el requerimiento R3 y no depende del precio. Sobre Wang (2021), el capítulo reprochaba que sus cromosomas carecieran de lectura geográfica, cuando cada gen es una celda del territorio; la objeción defendible, que es la que ahora aparece, es que se trata de una optimización normativa sin validación contra un mapa observado. Y el espacio de búsqueda de SLEUTH es del orden de 10¹⁰ combinaciones, no 10⁹.
 
 En la literatura mexicana el capítulo era injusto con dos trabajos. Suárez y Delgado sí calibran sobre cambio celular histórico, en 15 670 celdas de una hectárea con 82,9 % de aciertos, y publican todos sus coeficientes, de modo que su función de asignación es auditable; se les subió el requerimiento R4 de «no» a cumplido. Y el modelo de Ramírez Hernández no está inspirado en SLEUTH: es econométrico con simulación Monte Carlo, y el libro solo menciona SLEUTH al reseñar a terceros.
+
+Cerrada la auditoría, se hizo un barrido de consistencia sobre el resto del documento para que ninguna afirmación corregida sobreviviera en otro capítulo. Aparecieron tres. El marco teórico seguía atribuyendo a Pontius (2008) la crítica al coeficiente Kappa que el capítulo 3 ya había reasignado a Pontius y Millones (2011), y presentaba el Figure of Merit como propuesta de ese artículo cuando el propio artículo lo toma de literatura previa; las dos quedaron alineadas con la redacción del capítulo 3 (`cap02:315` y `cap02:321`). La introducción, al anunciar la organización del documento, todavía describía el problema de la literatura como «dependencia de software propietario», que es la formulación económica descartada; ahora dice dependencia de plataformas de código cerrado (`cap01:226`). Se verificó además que no queda ningún rastro de «ciudad poco estudiada», «ningún trabajo», «inspirado en SLEUTH» ni «cromosomas» en los siete archivos del cuerpo, y que la atribución del *Information Value* a la práctica de riesgo de crédito no se contradice en ningún capítulo posterior.
 
 ### 7.11 Un antecedente que obligó a precisar el alcance
 
