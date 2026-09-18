@@ -72,6 +72,19 @@ pdflatex -interaction=nonstopmode main.tex
 biber main
 pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+```
+
+**Son cuatro pasadas de `pdflatex`, no tres.** Con tres, el documento no converge: los
+`\ref` a los algoritmos del apéndice (`alg:kmeans`, `alg:pca`, `alg:adquisicion`,
+`alg:standard-scaler`) quedan indefinidos y el conteo de páginas sale corto (126 en vez de
+135), porque la lista de algoritmos y la colocación de flotantes necesitan una pasada más.
+
+**Verificar siempre la convergencia antes de entregar**, no solo la ausencia de errores:
+
+```bash
+rg -c "Rerun to get|Reference .* undefined|Citation .* undefined" main.log   # debe dar 0
+rg -o "main.pdf \(\d+ pages" main.log                                        # debe decir 135
 ```
 
 **PDF por capítulo** (incluir `biber` con el mismo `-jobname` que `pdflatex`).
