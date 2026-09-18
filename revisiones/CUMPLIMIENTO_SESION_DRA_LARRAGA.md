@@ -2,7 +2,7 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 136 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Estado del documento:** 135 páginas, cero errores de compilación, cero referencias y citas indefinidas  
 **Fecha de este reporte:** 18 de septiembre de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
@@ -564,6 +564,30 @@ con un propósito concreto: contrastar la clasificación RGB actual contra una b
 NDVI permitiría estimar qué parte del error de clasificación viene de la fuente y cuál del
 clasificador, que es la pregunta que la serie de capturas deja abierta.
 
+### El arranque del capítulo 1 no se había revisado
+
+Los tres primeros párrafos de la tesis eran los del borrador original y habían sobrevivido a
+todas las revisiones anteriores. No tenían ninguna cita, pese a que la sesión pidió
+explícitamente respaldar los datos y afirmaciones de la introducción (`NOTAS:24`,
+`TRANSCRIPTION:57`), y contenían dos errores comprobables.
+
+El primero: describían las capturas como imágenes «en formato JPG». Los 37 archivos de
+`data/raw/` son PNG de 3024 × 1792 píxeles, lo que se verifica en un comando. El segundo:
+atribuían a los autómatas celulares la capacidad de «mantener una precisión estable», que
+es lo contrario de lo que concluye el Capítulo 5, donde el FoM va de 0,222 a 0,378 y el
+propio texto señala que no hay estabilidad numérica estricta. A eso se sumaban tres
+afirmaciones sin respaldo sobre la sobrepoblación y sobre los modelos de inteligencia
+artificial, y una redundancia de estructura: el cuarto párrafo volvía a introducir la
+urbanización desde cero, de modo que el capítulo arrancaba dos veces.
+
+Los tres párrafos se reescribieron como tres con función distinta: el problema, con las
+fuentes que ya sostenían esa afirmación más abajo; la tensión entre modelos que aciertan y
+modelos que se pueden auditar, apoyada en Almeida (2008) para la opacidad de los pesos
+neuronales y en Ma (2019) para la dificultad de conseguir datos etiquetados; y la
+restricción de datos, que describe la fuente con exactitud y remite al Capítulo 4. El
+párrafo redundante se absorbió, así que el planteamiento perdió una página y ganó tres
+citas.
+
 ---
 
 ## Anexo: correspondencia punto por punto
@@ -580,7 +604,7 @@ clasificador, que es la pregunta que la serie de capturas deja abierta.
 | 5   | NOTAS:24 | Referencias en datos cuantitativos                 | Resuelto               | Cap. 1 sin cifras sin cita      |
 | 6   | NOTAS:25 | Conclusiones en pretérito                          | Resuelto               | `cap07:20,87,115,141`           |
 | 7   | NOTAS:26 | Actualizar el abstract en inglés                   | Resuelto               | `front/abstract.tex`            |
-| 8   | NOTAS:27 | Corregir la estructura de la introducción          | Resuelto               | Secciones y transiciones        |
+| 8   | NOTAS:27 | Corregir la estructura de la introducción          | Resuelto               | Secciones, transiciones y arranque reescrito (`cap01:10-14`) |
 | 9   | NOTAS:28 | Antecedentes y justificación separados             | Resuelto               | `cap01:97,101`                  |
 | 10  | NOTAS:29 | Adaptar el protocolo a la introducción             | Resuelto               | Cap. 1 en presente              |
 | 11  | NOTAS:30 | Objetivos coherentes con los resultados            | Resuelto               | `cap07:40`                      |
