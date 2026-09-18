@@ -2,7 +2,7 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 135 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Estado del documento:** 136 páginas, cero errores de compilación, cero referencias y citas indefinidas  
 **Fecha de este reporte:** 18 de septiembre de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
@@ -521,6 +521,48 @@ Las afirmaciones atribuidas a los libros de Bonham-Carter (1994) y Siddiqi (2006
 confirmadas por fuentes independientes concordantes, no por el texto de los propios libros,
 que son de acceso restringido. El riesgo es bajo, pero se declara en lugar de presentarlo
 como verificación directa.
+
+---
+
+## 11. Dos afirmaciones propias que no resistían una revisión
+
+Cerrada la validación de las fuentes externas, se hizo una última pasada sobre las
+afirmaciones que el documento hace **sobre sí mismo**. Aparecieron dos que eran
+contestables, y ninguna de las dos venía de la sesión con la Dra. Lárraga: son hallazgos
+propios que se corrigen antes de que los levante un sinodal.
+
+### La apertura del flujo estaba mal acotada
+
+El documento afirmaba en nueve lugares que el flujo corre «sin software propietario», y
+varias de esas frases lo decían en la misma oración que mencionaba las capturas de Google
+Earth. El visor de Google Earth es software propietario, así que la oración se contradecía
+sola. El problema no era menor por estar en H3 y en el requerimiento R3, y porque chocaba
+con el criterio que el capítulo 3 aplica a los demás modelos, donde el argumento es sobre
+la apertura del código y no sobre el precio de la licencia.
+
+La afirmación quedó acotada al procesamiento, que es lo que realmente corre sobre
+bibliotecas de código abierto y es verificable contra `pyproject.toml`, y la dependencia
+del visor para la adquisición se declara de forma explícita como la única externa del
+flujo. Afecta a `cap01:103,138,182,194`, `cap06:518`, `cap07:38,42,52,78`, y al resumen y
+al abstract.
+
+### El archivo Landsat sí es una alternativa
+
+El capítulo 4 cerraba la justificación de la fuente diciendo que no existe una alternativa
+con calibración radiométrica homogénea y acceso libre que cubra desde 1984. Es falso.
+Landsat 5 TM operó desde 1984, el archivo es gratuito desde 2008, está georreferenciado e
+incluye la banda infrarroja de la que las capturas carecen. La frase invitaba justamente la
+objeción que pretendía cerrar, y además no hacía falta, porque el resto de la
+justificación ya se sostenía por la consistencia del encuadre.
+
+`cap05:44` ahora reconoce la alternativa, explica lo que costaría usarla (composición de
+escenas por nubosidad, armonización entre TM, ETM+ y OLI, y las franjas sin dato que
+Landsat 7 arrastra desde la falla de su corrector de línea de barrido en 2003) y defiende
+la decisión por el argumento que sí es sólido. La reconstrucción de la serie sobre imagen
+calibrada se incorporó como cuarta línea de trabajo futuro a corto plazo en `cap07:148`,
+con un propósito concreto: contrastar la clasificación RGB actual contra una basada en
+NDVI permitiría estimar qué parte del error de clasificación viene de la fuente y cuál del
+clasificador, que es la pregunta que la serie de capturas deja abierta.
 
 ---
 
