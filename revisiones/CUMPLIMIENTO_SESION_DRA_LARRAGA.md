@@ -2,8 +2,8 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 130 páginas, cero errores de compilación, cero referencias y citas indefinidas  
-**Fecha de este reporte:** 2 de septiembre de 2026 (última verificación independiente)
+**Estado del documento:** 135 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Fecha de este reporte:** 18 de septiembre de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
 
@@ -440,6 +440,87 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 **Hoja de restricciones de uso de la UNAM: resuelta.** Se añadió `front/restricciones.tex` y se incluye en `main.tex:13`, entre la portada y la dedicatoria, de modo que queda como página 2 igual que en la tesis de Israel Velázquez, del mismo posgrado y con la misma asesora. El texto se reproduce literalmente como lo publica la Dirección General de Bibliotecas, sin corregirlo. Falta únicamente el banner institucional que la DGB coloca en el encabezado: si se consigue esa imagen y se guarda como `figures/banner_dgb.png`, la página la incluye sola.
 
 **Dos defectos de maquetación detectados y corregidos.** La portada se desbordaba por 17 pt y empujaba la línea del Instituto y la fecha a una segunda página numerada «ii»; se rehízo con espaciado elástico para que quepa siempre, incluso al agregar los escudos. Y la figura de las siete variables espaciales, montada como `wrapfigure`, arrancaba con cuatro renglones libres cuando necesitaba catorce, de modo que se salía por el borde inferior de la página y pisaba el folio; se movió dos párrafos y ahora envuelve dentro de la caja. Se verificó sobre las coordenadas del PDF que ningún texto ni imagen queda fuera de los márgenes en todo el documento.
+
+---
+
+## 10. Validación completa del aparato de citas
+
+Esta sección no corresponde a un punto de la sesión. Se añade porque, al revisar las
+fuentes una por una antes de pulir la redacción, aparecieron errores que conviene reportar
+por iniciativa propia y no esperar a que un sinodal los encuentre.
+
+Se validaron **las 82 entradas de la bibliografía y las 180 afirmaciones que el documento
+atribuye a terceros**, en dos rondas: la primera sobre el texto entregado el 2 de
+septiembre, la segunda sobre el texto ya corregido, para comprobar en lugar de repetir.
+Cada afirmación se contrastó con la oración literal del documento, no con un resumen. El
+procedimiento está en `tools/expediente_referencias.py` y el acta completa en
+`revisiones/validacion_referencias/ROUND2_ESTADO.md`.
+
+Saldo: 150 afirmaciones correctas, 22 acotadas por sobreextensión, 6 corregidas por
+incorrectas, 2 reformuladas para no depender de una fuente inaccesible, y 2 referencias que
+resultaron inexistentes.
+
+### Las dos referencias que no existían
+
+`aguilar2003urbanization` combinaba metadatos de un artículo real de Aguilar, Ward y Smith
+con un título y una autoría única fabricados; no hay artículo con ese título en ese número.
+Sostenía la afirmación sobre el crecimiento de las ciudades intermedias mexicanas, que
+ahora se apoya en `Wahyudi2016` y en el propio Capítulo 3.
+
+`DelgadoLopez2018` tampoco existe: el rango de páginas declarado se solapa con artículos
+reales del mismo número. Sostenía que la dinámica de Querétaro está documentada, y esa
+afirmación ya la respaldaba `Huacuz2018Metropolizacion`, de modo que solo se retiró la cita.
+
+### Los errores de atribución que más importan
+
+**El Information Value no proviene de Bonham-Carter.** Es el error de fondo más serio,
+porque el IV es lo que pondera las siete variables del modelo. No forma parte de la
+formulación del WoE: viene de la práctica de tarjetas de puntuación en riesgo de crédito.
+Ahora se atribuye a `Siddiqi2006`, y se advierte que en la literatura de susceptibilidad
+geoespacial el mismo término designa otro método, que aquí no se emplea.
+
+**La escala del IV estaba mal transcrita.** Decía «muy fuerte» para valores por encima de
+0,50, cuando la fuente los califica de *sospechosos*. Corregirla obligaba a rendir cuentas,
+porque seis de las siete variables están entre 1,16 y 3,27. El Capítulo 5 ya lo enfrentaba:
+confronta el umbral y diagnostica la causa real, que son los *bins* degenerados. En
+`distance_urban`, el 85,2 % de su IV proviene de uno solo.
+
+**La crítica a Kappa es de Pontius y Millones (2011)**, no del comparativo multi-sitio de
+2008, donde la palabra «Kappa» no aparece.
+
+**Se retiró un dato que no se podía sostener.** El documento citaba un rango de FoM «de 1 %
+a 59 %» de Pontius et al. (2008). Esa cifra solo se puede leer de la altura de las barras
+de su Figura 4. Se sustituyó por lo que el artículo afirma con palabras, que además es más
+favorable al argumento: en doce de trece aplicaciones el error supera al cambio
+correctamente predicho, las seis por debajo del 15 % son las de menor cambio neto
+observado, y una sola rebasa el 50 %.
+
+**Se corrigió una atribución que restaba crédito al propio trabajo.** El documento daba a
+Pontius el argumento de que validar en ventanas desplazadas detecta el sobreajuste. Pontius
+no lo dice: documenta que el FoM crece con el cambio neto observado. La inferencia es del
+autor de esta tesis y ahora aparece como tal.
+
+**Se rectificaron hechos sobre trabajos de otros autores.** Suárez y Delgado (2007) sí
+calibran sobre cambio histórico a nivel de celda, con 82,9 % de exactitud sobre 15 670
+celdas, y publican sus coeficientes; se les estaba negando algo que hacen y se corrigió su
+valoración en el cuadro comparativo. Ramírez y Hernández (2021) no está inspirado en
+SLEUTH, sino que es econométrico con simulación Monte Carlo. El estudio de Chihuahua (2023)
+emplea IDRISI Selva, no TerrSet.
+
+### Verificación de las cifras propias
+
+Se cotejaron las cifras del documento contra los datos de origen. La tabla de Information
+Value del Capítulo 5 coincide con el modelo entrenado al cuarto decimal, variable por
+variable, y su total de 11,6135 es exacto. Las cinco parejas de FoM y Kappa coinciden con
+los archivos `validation_results.json` y promedian 0,317 y 0,445, que es lo que afirma el
+texto.
+
+### Lo que no quedó cerrado
+
+Las afirmaciones atribuidas a los libros de Bonham-Carter (1994) y Siddiqi (2006) están
+confirmadas por fuentes independientes concordantes, no por el texto de los propios libros,
+que son de acceso restringido. El riesgo es bajo, pero se declara en lugar de presentarlo
+como verificación directa.
 
 ---
 

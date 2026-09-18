@@ -129,7 +129,7 @@ El tercer conjunto incluye las nueve \textbf{características espectrales y de c
 \small\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
 \textbf{\texttt{ngrdi}}: $f_{15} = \dfrac{G - R}{G + R + \varepsilon}$ con $\varepsilon=10^{-8}$; índice verde--rojo normalizado (NGRDI), proxy cromático de vegetación con bandas visibles. No es un NDVI en sentido estricto, pues este requiere la banda del infrarrojo cercano, ausente en las capturas RGB.\par
 \textbf{\texttt{excess\_green}}: $f_{16} = 2G - R - B$, índice de exceso de verde (ExG).\par
-\textbf{\texttt{excess\_red}}: $f_{17} = 1{,}4\,R - G$, índice de exceso de rojo (ExR), asociado a suelo y zona urbana.\par
+\textbf{\texttt{excess\_red}}: $f_{17} = 1{,}4\,R - G$, índice de exceso de rojo (ExR), asociado a suelo y zona urbana. Se emplea la variante con coeficiente $1{,}4$ que recoge la literatura posterior; la formulación original usa $1{,}3$.\par
 \textbf{\texttt{lab\_l}}: luminancia $L^*\in[0,100]$ en el espacio CIE $L^*a^*b^*$.\par
 \textbf{\texttt{lab\_a}}: eje verde$(-)$ a rojo$(+)$, $a^*\in[-128,127]$.\par
 \textbf{\texttt{lab\_b}}: eje azul$(-)$ a amarillo$(+)$, $b^*\in[-128,127]$.\par

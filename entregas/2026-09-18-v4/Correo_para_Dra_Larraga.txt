@@ -1,0 +1,56 @@
+Asunto: Tesis corregida — validación de las fuentes y dos referencias que retiré
+
+Estimada Dra. Lárraga:
+
+Le reenvío la tesis con una corrección de fondo que hice después del envío
+anterior y que prefiero reportarle yo antes de que la encuentre un sinodal.
+
+Antes de pulir la redacción revisé las fuentes una por una, y no solo los datos
+bibliográficos: también si cada afirmación que el documento atribuye a un autor
+es realmente lo que ese autor dice. Revisé las 82 entradas de la bibliografía y
+las 180 afirmaciones atribuidas a terceros. Encontré más de lo que esperaba.
+
+Dos referencias no existían. Una combinaba los datos de un artículo real con un
+título y una autoría inventados; la otra declaraba un rango de páginas que se
+solapa con artículos reales del mismo número. Las retiré y reasigné las
+afirmaciones que sostenían a fuentes que sí las respaldan.
+
+El error más serio era de atribución. El Information Value, que es el
+estadístico con el que pondero las siete variables del modelo, no proviene de
+Bonham-Carter como decía el documento, sino de la práctica de calificación de
+riesgo de crédito. Ya está correctamente atribuido. Al corregirlo salió a la luz
+que su escala de interpretación también estaba mal transcrita: por encima de
+0,50 la fuente califica el valor de sospechoso, no de muy fuerte. Eso me obligó
+a rendir cuentas de mis propios valores, que están entre 1,16 y 3,27, y el
+Capítulo 5 ya lo enfrenta: explica que la causa son los bins degenerados y que
+en la variable de distancia el 85 % del valor proviene de uno solo.
+
+Retiré también un dato que no podía sostener: citaba un rango de Figure of Merit
+«de 1 % a 59 %» que solo se puede leer de la altura de las barras de una figura.
+Lo sustituí por lo que el artículo afirma con palabras, que además favorece más
+al argumento.
+
+Y corregí una atribución que me restaba crédito. El documento daba a Pontius el
+argumento de que validar en ventanas desplazadas permite detectar el
+sobreajuste. Pontius no lo dice: lo que documenta es que el Figure of Merit
+crece con la magnitud del cambio observado. La inferencia es mía, y ahora
+aparece como tal, que es donde está la aportación del trabajo.
+
+Aproveché para cotejar mis propias cifras contra los datos de origen. La tabla
+de Information Value coincide con el modelo entrenado al cuarto decimal y las
+cinco parejas de Figure of Merit y Kappa coinciden con los archivos de
+resultados.
+
+Le adjunto dos archivos. La tesis, de 135 páginas, y un reporte donde documento
+cada cambio con su justificación; la sección 10 es la que cubre todo lo anterior.
+
+Queda un punto que no puedo cerrar sin usted: el cotejo del título contra la
+carta del jurado, que no tengo. Le agradecería también que me indique si prefiere
+el estilo de citación numérico que usó la tesis de Israel Velázquez, en lugar del
+formato autor-año que uso ahora. El cambio está preparado y es reversible.
+
+Quedo atento a sus comentarios.
+
+Saludos cordiales,
+
+José Rodrigo Moreno López
