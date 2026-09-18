@@ -75,7 +75,7 @@ Un \textbf{Autómata Celular} (AC) es un sistema dinámico discreto definido sob
 
 \subsection{Espacio celular y teselaciones}
 
-El espacio celular puede tener cualquier dimensión. Los autómatas unidimensionales, que Wolfram empleó para clasificar los comportamientos posibles del formalismo, disponen las celdas en una línea; los bidimensionales las organizan en una superficie, y los de dimensión superior generalizan la construcción sin cambiar sus reglas. La geometría de la teselación también admite variantes: además de la rejilla cuadrada, habitual por su correspondencia directa con la estructura de una imagen digital, se emplean teselaciones hexagonales, que tienen la ventaja de que todos los vecinos equidistan del centro, y triangulares. El modelado urbano trabaja casi siempre en dos dimensiones sobre rejilla cuadrada, porque es la forma en que se almacenan los datos de percepción remota y porque cada celda admite entonces una lectura directa como superficie de terreno. La Figura~\ref{fig:espacio-celular} contrasta las cuatro configuraciones.
+El espacio celular puede tener cualquier dimensión. Los autómatas unidimensionales, que Wolfram empleó para clasificar los comportamientos posibles del formalismo \parencite{Wolfram1984}, disponen las celdas en una línea; los bidimensionales las organizan en una superficie \parencite{PackardWolfram1985}, y los de dimensión superior generalizan la construcción sin cambiar sus reglas. La geometría de la teselación también admite variantes: además de la rejilla cuadrada, habitual por su correspondencia directa con la estructura de una imagen digital, se emplean teselaciones hexagonales, que tienen la ventaja de que todos los vecinos equidistan del centro, y triangulares. El modelado urbano trabaja casi siempre en dos dimensiones sobre rejilla cuadrada, porque es la forma en que se almacenan los datos de percepción remota y porque cada celda admite entonces una lectura directa como superficie de terreno. La Figura~\ref{fig:espacio-celular} contrasta las cuatro configuraciones.
 
 \begin{figure}[htbp]
 	\centering
@@ -220,7 +220,7 @@ La notación es la siguiente. Sea $\Omega$ el conjunto de $N = R \times C$ celda
 
 \subsection{Matriz de confusión}
 
-La \textbf{matriz de confusión} $\mathbf{C} \in \mathbb{N}^{2 \times 2}$ cuantifica la concordancia píxel a píxel entre predicción y observación:
+La \textbf{matriz de confusión} $\mathbf{C} \in \mathbb{N}^{2 \times 2}$ cuantifica la concordancia píxel a píxel entre predicción y observación, y es el instrumento base sobre el que se construye la evaluación de exactitud en los estudios de cambio de cobertura \parencite{PontiusMillones2011}:
 
 \begin{equation}
 \mathbf{C} = \begin{pmatrix}
