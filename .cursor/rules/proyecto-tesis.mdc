@@ -168,7 +168,7 @@ Israel Velázquez Gutiérrez (2023), misma asesora (Dra. Lárraga). PDF en `/Use
 
 ## Pendientes operativos antes de la entrega final
 
-1. **Sinodales, beca y fecha de defensa**: el usuario debe proporcionarlos.
+1. **Sinodales y fecha de defensa**: el usuario debe proporcionarlos. La **beca ya no está pendiente**: `front/agradecimientos.tex:6` acredita a la SECIHTI. La portada tampoco tiene huecos (título, autor, directora y «Ciudad Universitaria, Cd. Mx., 2026»); lo único que falta es la hoja de jurado, si el PCIC la exige.
 2. **Dos libros sin verificar de primera mano**: las afirmaciones que la tesis atribuye a `BonhamCarter1994` y a `Siddiqi2006` están confirmadas por fuentes independientes concordantes, no por el texto de los libros. Riesgo bajo; se cierra pidiéndolos por BIDI.
 3. **Registro de las capturas anteriores a 2005**: solo 17 de 37 imágenes se registraron con solidez contra Sentinel-2. Es el punto metodológico con más superficie para un sinodal. Está documentado en la tesis, pero no resuelto.
 
