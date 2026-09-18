@@ -13,29 +13,31 @@ Los medios existen y han sido parte del desarrollo de la misma ciencia del urban
 
 Google Earth, en su aplicación de escritorio, ofrece una herramienta que permite viajar en el tiempo para observar una vista satelital de una zona geográfica. Esas capturas muestran cómo ha cambiado una ciudad año con año. Estas capturas no son mapas de algún tipo: son imágenes en formato JPG que requieren ser traducidas a zona urbana/no urbana.
 
-La urbanizacipon en un proceso social que per se, transforma el territorio donde el ser humano social habita, una fracción significativa y que aparte es creciente de el total de población mundial vive en ciudades dicha superficie urbana se ha encontrado se expande más rápido que la población que la habita, en particular esto se observa en México.\parencite{Seto2012,UNHabitat2020,Angel2012}
+La urbanización es un proceso social que transforma el territorio donde habita el ser humano. Una fracción significativa y creciente de la población mundial vive en ciudades, y la superficie urbana se expande más rápido que la población que la alberga \parencite{Seto2012,UNHabitat2020,Angel2012}.
 
 Predecir el crecimiento urbano es necesario, pues impacta en la posibilidad de asegurar que el ser humano viva en condiciones adecuadas de vivienda y con los servicios necesarios para su existencia. Como ya se ha mencionado, se han creado diferentes tipos de modelos para predecir este cambio de uso de suelo; entre ellos se encuentran los autómatas celulares, como uno de los principales exponentes en este terreno.  
 
 Su utilidad práctica, sin embargo, depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
 
-Estas tensiones se agudizan en las ciudades intermedias, y en particular en las mexicanas, poco representadas en la literatura de modelado urbano pese a concentrar buena parte del crecimiento reciente del país \parencite{aguilar2003urbanization}. La Zona Metropolitana de Querétaro sirve en este trabajo como caso de uso particular para ejercitar y validar el siguiente protocolo o algoritmo: una ciudad intermedia con una dinámica de expansión representativa y una serie de imágenes de archivo lo bastante larga para evaluarlo en varios períodos. Esto último tomará una gran relevancia al momento de definir por qué el diseño de la solución es correcto en términos de reproducibilidad y validación.
+Estas tensiones se agudizan en las ciudades intermedias mexicanas, poco representadas en la literatura de modelado urbano: la revisión de \textcite{Wahyudi2016}, que clasifica por región ochenta y ocho aplicaciones de autómatas celulares urbanos, encuentra que al menos la mitad se concentra en ciudades de Estados Unidos y China, mientras que las de América del Sur son escasas. El Capítulo~\ref{ch:estado-del-arte} documenta ese vacío para el caso mexicano. La Zona Metropolitana de Querétaro sirve en este trabajo como caso de uso particular para ejercitar y validar el siguiente protocolo o algoritmo: una ciudad intermedia con una dinámica de expansión representativa y una serie de imágenes de archivo lo bastante larga para evaluarlo en varios períodos. Esto último tomará una gran relevancia al momento de definir por qué el diseño de la solución es correcto en términos de reproducibilidad y validación.
 
 México tiene instrumentos de ordenamiento territorial, por ejemplo: la Ley General de Asentamientos
 Humanos, los Programas Municipales de Ordenamiento Territorial y Desarrollo Urbano (PMOTDU),
 la Secretaría de Desarrollo Agrario, Territorial y Urbano (SEDATU) y acuerdos con ONU-Hábitat.
-Su cobertura efectiva es incompleta, y una parte de los planes publicados no se ha
-actualizado \parencite{SEDATU2024NOM005,ONUHabitat2016TendenciasMexico}. El INEGI documenta
+Su cobertura efectiva es incompleta: la propia norma oficial mexicana en la materia registra
+que solo $567$ municipios, el $22{,}94$\% del total, cuentan con un instrumento de
+ordenamiento territorial o de desarrollo urbano, y que casi el $45$\% de esos instrumentos se
+publicó hace más de quince años \parencite{SEDATU2024NOM005}. El INEGI documenta
 que la mayor parte de la población reside en localidades urbanas \parencite{INEGI2020Censo}.
 El resultado observable es un patrón de crecimiento disperso que supera la capacidad de
-planificación disponible, con impactos documentados sobre infraestructura, cobertura de
-suelo y calidad de vida. Esos impactos están documentados en frentes distintos, qu epor menciona runos ejemplos se reporta la siguiente lista: La
+planificación disponible \parencite{ONUHabitat2016TendenciasMexico}, con impactos documentados sobre infraestructura, cobertura de
+suelo y calidad de vida. Esos impactos están documentados en frentes distintos, de los que conviene mencionar algunos ejemplos: la
 transformación de ecosistemas naturales en zonas urbanas contribuye a la pérdida de
 hábitat, señalada como la principal causa de pérdida de biodiversidad en el
 país \parencite{CONABIO2024Porque}. El transporte terrestre que la dispersión convierte en necesario tiene externalidades negativas documentadas para el caso
 mexicano \parencite{ITDP2019Externalidades}. Y los efectos del cambio de suelo urbano no
 se agotan en el área que se urbaniza: alcanzan a los territorios con los que la ciudad se
-conecta mediante flujos de recursos \parencite{Seto2012teleconnections}, por ejemplo rios que desembocan en lagos, por ejemlplo el rio Mixcoac que desemboca en lagos cercanos a la ciudad de México que son parte de un ecosistema natural y que al ser aguas residuales impactan en los biomas de otras ciudades.
+conecta mediante flujos de personas, bienes y capital \parencite{Seto2012teleconnections}.
 
 \begin{figure}[htbp]
 \centering
@@ -65,8 +67,9 @@ conecta mediante flujos de recursos \parencite{Seto2012teleconnections}, por eje
 
 Como se observa en la figura~\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha
 urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona
-metropolitana que rebasó el millón y medio de habitantes tras décadas de expansión
-sostenida \parencite{CONAPO2018Delimitacion,INEGI2020Censo}. 
+metropolitana que rebasó el millón y medio de habitantes en el censo de 2020
+\parencite{INEGI2020Censo}, tras décadas de expansión sostenida a una tasa media anual
+del $2{,}8$\% \parencite{CONAPO2018Delimitacion}. 
 
 Ese patrón se ha documentado para Querétaro en relación con la producción de vivienda
 \parencite{ObservatorioCiudades2022Queretaro}, e impide anticipar dónde y a qué velocidad se
@@ -114,9 +117,9 @@ En cualquier ciudad es poco frecuente disponer de un modelo que simule y haga pr
 
 \section{Antecedentes}
 
-El modelado del crecimiento urbano cuenta con muchos estudios, que pueden agruparse según el tipo de función de transición que implementan. Los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic,Gomez2020} alcanzan concordancia espacial alta en los casos publicados, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Por otro lado, los metaheurísticos \parencite{Wang2021} persiguen la configuración urbana que optimiza una función objetivo definida por el analista, de modo que responden a una pregunta normativa y no predictiva, y su convergencia demanda tiempo y recursos computacionales considerables. Los modelos de caja blanca más citados \parencite{Clarke1998,Sante2010,Aburas2016} atienden la interpretabilidad, pero en la mayoría de los casos se validan sobre un único período quinquenal, sin que sea posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento.
+El modelado del crecimiento urbano cuenta con muchos estudios, que pueden agruparse según el tipo de función de transición que implementan. Los modelos de caja negra basados en aprendizaje automático \parencite{almeida2008stochastic,Gomez2020} aprenden la función de transición de los datos sin imponerle una forma previa, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica. Por otro lado, los metaheurísticos \parencite{Wang2021} persiguen la configuración urbana que optimiza una función objetivo definida por el analista, de modo que responden a una pregunta normativa y no predictiva; la calibración por búsqueda sobre el espacio de parámetros puede además resultar costosa, como documenta \textcite{Jantz2003} para SLEUTH, donde el ajuste tomó más de una semana de cómputo en un clúster de dieciséis nodos. Los modelos de caja blanca más citados \parencite{Clarke1998}, y las revisiones que los sistematizan \parencite{Sante2010,Aburas2016}, atienden la interpretabilidad, pero la práctica de validación del campo es endeble: en una revisión de aplicaciones recientes de modelos de cambio de suelo, el 31\% no reporta validación alguna y el resto se apoya predominantemente en la exactitud locacional frente a un solo mapa observado \parencite{vanVliet2016}. Con una sola comparación no es posible determinar si el desempeño refleja mecanismos espaciales estables o sobreajuste a esa fase concreta del crecimiento.
 
-Los trabajos representativos para ciudades mexicanas \parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} satisfacen parcialmente R1 y R2, pero no R3 ni R4 de la tabla de requerimientos. Las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado principalmente en contextos internacionales, con dinámicas de crecimiento y fuentes de datos distintas a las ciudades intermedias del país. El análisis detallado de estos trabajos se desarrolla en el Capítulo~\ref{ch:estado-del-arte}.
+Los trabajos representativos para ciudades mexicanas \parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} cumplen R2 y, en distinto grado, R4; ninguno cumple R3 y solo uno de ellos satisface R1 de forma parcial. Las aplicaciones basadas en Pesos de Evidencia se han calibrado y validado principalmente en contextos internacionales, con dinámicas de crecimiento y fuentes de datos distintas a las ciudades intermedias del país. El análisis detallado de estos trabajos se desarrolla en el Capítulo~\ref{ch:estado-del-arte}.
 
 El proyecto presente diseñó e implementó la validación de un modelo que acopla Pesos de Evidencia con Autómatas Celulares para simular el crecimiento urbano para un caso particular de la Zona Metropolitana de Querétaro en el período 1984-2020, evaluar su desempeño mediante métricas espaciales cuantitativas a lo largo de cinco ventanas quinquenales desplazadas y comparar los resultados con valores de referencia reportados en la literatura.
 
@@ -151,9 +154,11 @@ individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla e
 parámetros del WoE-AC (umbral de transición y peso de vecindad) mediante búsqueda en
 cuadrícula y establece un protocolo de validación multi-período con cinco ventanas
 quinquenales desplazadas (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU. La
-validación en ventanas desplazadas, en lugar de un único período final, hace posible
-detectar el sobreajuste a una fase específica del crecimiento urbano
-\parencite{pontius2008comparing}.
+\textcite{pontius2008comparing} documentan que las aplicaciones con mayor cambio neto
+observado tienden a obtener un FoM más alto, de modo que un único horizonte no permite separar
+el mérito del modelo del de la fase de crecimiento medida. La validación en ventanas
+desplazadas responde a esa dependencia: al repetir la evaluación sobre cinco períodos, un
+desempeño sostenido no puede atribuirse a una sola fase.
 
 Por último, el quinto objetivo (OE5) analiza la estabilidad temporal del desempeño del modelo a
 lo largo de los cinco períodos y compara los valores de FoM e IoU obtenidos con los rangos
@@ -188,7 +193,7 @@ De esa hipótesis general se derivan cuatro particulares, cada una falsable con 
 
 \textbf{H3 (reproducibilidad).} El flujo completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado.
 
-\textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con métricas (FoM, Kappa e IoU) dentro del rango de la literatura LUCC, por encima del subconjunto de modelos con FoM inferior a $0{,}15$ \parencite{pontius2008comparing}, sin recurrir a representaciones de caja negra.
+\textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con un FoM por encima del subconjunto de aplicaciones con FoM inferior a $0{,}15$ del espectro multi-sitio de \textcite{pontius2008comparing}, acompañado de valores de Kappa e IoU sostenidos en los cinco períodos, sin recurrir a representaciones de caja negra.
 
 % La sección "Alcances y limitaciones" se trasladó al capítulo de conclusiones
 % (orden exigido: Alcances -> Limitaciones -> Trabajo futuro).

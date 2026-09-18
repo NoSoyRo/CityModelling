@@ -23,7 +23,7 @@ Esta investigación abordó el problema de modelar el crecimiento urbano de Quer
 
 \subsubsection{P1: ¿Métricas comparables a la literatura?}
 
-El FoM promedio de $0{,}317$, el Kappa de $0{,}445$ y el IoU de $0{,}633$ (Tabla~\ref{tab:metrics_all_periods}) se sitúan en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}: por encima del subconjunto con FoM inferior a $0{,}15$ y por debajo del único caso que supera $0{,}50$. El umbral $\theta = 0{,}75$ y el peso de vecindad $\alpha = 0{,}50$ son la configuración usada en las cinco ventanas; ensayos preliminares con umbrales menores produjeron sobre-predicción masiva, con un FoM que no es directamente comparable porque se midió bajo otro protocolo de conteo (Capítulo~\ref{ch:resultados-analisis}).
+El FoM promedio de $0{,}317$ (Tabla~\ref{tab:metrics_all_periods}) se sitúa en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}: por encima del subconjunto con FoM inferior a $0{,}15$ y por debajo del único caso que supera $0{,}50$. El Kappa de $0{,}445$ corresponde a un acuerdo moderado en la escala de \textcite{LandisKoch1977}, que es su marco de lectura porque aquel estudio no reporta Kappa. El IoU de $0{,}633$ se mide sobre el estado urbano final, a diferencia del FoM, que es una intersección sobre unión restringida a las celdas de cambio. El umbral $\theta = 0{,}75$ y el peso de vecindad $\alpha = 0{,}50$ son la configuración usada en las cinco ventanas; ensayos preliminares con umbrales menores produjeron sobre-predicción masiva, con un FoM que no es directamente comparable porque se midió bajo otro protocolo de conteo (Capítulo~\ref{ch:resultados-analisis}).
 
 \subsubsection{P2: ¿Qué variables discriminan?}
 
@@ -59,7 +59,7 @@ El balance es que tres de los cuatro requerimientos se cumplen y el primero lo h
 
 La hipótesis general y sus cuatro particulares, formuladas en el Capítulo~\ref{ch:introduccion}, se contrastan a continuación con los resultados del Capítulo~\ref{ch:resultados-analisis}.
 
-\textbf{Hipótesis general.} Un modelo híbrido WoE-AC, calibrado y validado mediante un protocolo multitemporal sobre datos de libre acceso, permite simular de forma interpretable y reproducible el crecimiento urbano de una ciudad intermedia mexicana con un desempeño comparable al reportado en la literatura. \textbf{Estado: apoyada por la evidencia.} El modelo alcanzó un FoM promedio de $0{,}317$ y un Kappa promedio de $0{,}445$ en las cinco ventanas quinquenales desplazadas, valores en la banda intermedia documentada por \textcite{pontius2008comparing}, con implementación íntegra en Python y datos de acceso libre. La Tabla~\ref{tab:hypothesis_validation} recoge el veredicto de las cuatro hipótesis particulares.
+\textbf{Hipótesis general.} Un modelo híbrido WoE-AC, calibrado y validado mediante un protocolo multitemporal sobre datos de libre acceso, permite simular de forma interpretable y reproducible el crecimiento urbano de una ciudad intermedia mexicana con un desempeño comparable al reportado en la literatura. \textbf{Estado: apoyada por la evidencia.} El modelo alcanzó en las cinco ventanas quinquenales desplazadas un FoM promedio de $0{,}317$, dentro de la banda intermedia documentada por \textcite{pontius2008comparing}, y un Kappa promedio de $0{,}445$, acuerdo moderado en la escala de \textcite{LandisKoch1977}, con implementación íntegra en Python y datos de acceso libre. La Tabla~\ref{tab:hypothesis_validation} recoge el veredicto de las cuatro hipótesis particulares.
 
 \begin{xltabular}{\textwidth}{@{}l X c X@{}}
 \caption{Validación de hipótesis particulares}\label{tab:hypothesis_validation}\\
@@ -76,7 +76,7 @@ La hipótesis general y sus cuatro particulares, formuladas en el Capítulo~\ref
 H1 & \textit{Interpretabilidad.} La regla de transición WoE ponderada por IV produce un modelo auditable: la distancia al frente urbano y la densidad de vecindad concentran el mayor IV, por encima de fragmentación y gradiente. & Apoyada & IV concentrado en distancia al área urbana y densidad de vecindad ($0{,}782$ del peso normalizado), por encima de fragmentación y gradiente. El orden entre distancia y densidad depende del tratamiento de las celdas no elegibles (Cap.~\ref{ch:resultados-analisis}). \\
 H2 & \textit{Estabilidad temporal.} El desempeño se sostiene en las cinco ventanas quinquenales desplazadas; el valor más bajo se asocia a la única ventana con crecimiento neto observado negativo, no a un fallo de calibración. & Parcial & FoM entre $0{,}222$ y $0{,}378$; el mínimo (2011--2016) coincide con crecimiento neto observado negativo. El patrón morfológico se sostiene; las métricas píxel a píxel varían. \\
 H3 & \textit{Reproducibilidad.} El flujo completo se ejecuta con herramientas de código abierto en CPU estándar, sin GPU ni software propietario. & Apoyada & Implementación íntegra en Python (NumPy, SciPy, scikit-learn) con capturas de Google Earth en escritorio; cómputo del orden de tres horas en CPU (Sección~\ref{sec:accesibilidad}). \\
-H4 & \textit{Desempeño comparable.} Aplicado a la ZMQ, el modelo reproduce el patrón de crecimiento con FoM, Kappa e IoU en la banda intermedia del espectro de \textcite{pontius2008comparing}. & Apoyada & FoM promedio $0{,}317$, Kappa $0{,}445$ e IoU $0{,}633$. El contraste con caja negra es cualitativo (sitios y horizontes distintos). \\
+H4 & \textit{Desempeño comparable.} Aplicado a la ZMQ, el modelo reproduce el patrón de crecimiento con un FoM en la banda intermedia del espectro de \textcite{pontius2008comparing}, acompañado de Kappa e IoU sostenidos. & Apoyada & FoM promedio $0{,}317$, Kappa $0{,}445$ e IoU $0{,}633$. El contraste con caja negra es cualitativo (sitios y horizontes distintos). \\
 \end{xltabular}
 
 \subsection{Aportaciones del trabajo}
@@ -92,7 +92,7 @@ El modelo se aplicó a la Zona Metropolitana de Querétaro sobre una serie anual
 \subsection{Accesibilidad computacional}
 \label{sec:accesibilidad}
 
-El pipeline completo (clasificación + WoE + simulación + validación) se ejecuta en aproximadamente 3 horas en CPU estándar, sin requerir GPU. Los enfoques de aprendizaje profundo en teledetección suelen exigir conjuntos anotados grandes y, en la práctica, hardware gráfico \parencite{Ma2019}; esta tesis no midió horas de GPU de terceros. La Tabla~\ref{tab:approach_characteristics} resume las características operativas del enfoque adoptado.
+El pipeline completo (clasificación + WoE + simulación + validación) se ejecuta en aproximadamente 3 horas en CPU estándar, sin requerir GPU. Los enfoques de aprendizaje profundo en teledetección suelen exigir conjuntos anotados grandes \parencite{Ma2019} y, en la práctica, hardware gráfico; esta tesis no midió horas de GPU de terceros. La Tabla~\ref{tab:approach_characteristics} resume las características operativas del enfoque adoptado.
 
 \begin{table}[htbp]
 \centering

@@ -72,6 +72,19 @@ pdflatex -interaction=nonstopmode main.tex
 biber main
 pdflatex -interaction=nonstopmode main.tex
 pdflatex -interaction=nonstopmode main.tex
+pdflatex -interaction=nonstopmode main.tex
+```
+
+**Son cuatro pasadas de `pdflatex`, no tres.** Con tres, el documento no converge: los
+`\ref` a los algoritmos del apéndice (`alg:kmeans`, `alg:pca`, `alg:adquisicion`,
+`alg:standard-scaler`) quedan indefinidos y el conteo de páginas sale corto (126 en vez de
+135), porque la lista de algoritmos y la colocación de flotantes necesitan una pasada más.
+
+**Verificar siempre la convergencia antes de entregar**, no solo la ausencia de errores:
+
+```bash
+rg -c "Rerun to get|Reference .* undefined|Citation .* undefined" main.log   # debe dar 0
+rg -o "main.pdf \(\d+ pages" main.log                                        # debe decir 135
 ```
 
 **PDF por capítulo** (incluir `biber` con el mismo `-jobname` que `pdflatex`).
@@ -155,8 +168,13 @@ Israel Velázquez Gutiérrez (2023), misma asesora (Dra. Lárraga). PDF en `/Use
 
 ## Pendientes operativos antes de la entrega final
 
-1. **Front matter institucional**: portada con placeholders, falta hoja UNAM, dedicatoria, agradecimientos, resumen+abstract.
-2. **Lista de acrónimos** no existe en `front/`.
-3. **Bibliografía**: 24 zombies (de 39 entradas, solo 15 citadas). Densidad baja para una tesis MSC.
-4. **Estilo de citación**: la Dra. usó numérico en Israel; preguntarle si Rodrigo debe migrar de APA a numérico.
-5. **Sinodales, beca y fecha de defensa**: el usuario debe proporcionarlos.
+1. **Estilo de citación**: la Dra. usó numérico en Israel; preguntarle si Rodrigo debe migrar de APA a numérico. Usar `/estilo-citacion`, que hace el cambio atómico y reversible, y solo con confirmación explícita.
+2. **Sinodales, beca y fecha de defensa**: el usuario debe proporcionarlos.
+3. **Dos libros sin verificar de primera mano**: las afirmaciones que la tesis atribuye a `BonhamCarter1994` y a `Siddiqi2006` están confirmadas por fuentes independientes concordantes, no por el texto de los libros. Riesgo bajo; se cierra pidiéndolos por BIDI.
+4. **Registro de las capturas anteriores a 2005**: solo 17 de 37 imágenes se registraron con solidez contra Sentinel-2. Es el punto metodológico con más superficie para un sinodal. Está documentado en la tesis, pero no resuelto.
+
+### Ya resuelto (no volver a listarlo como pendiente)
+
+- **Front matter institucional**: completo. Los siete archivos existen en `front/` y `main.tex` los incluye: `portada`, `restricciones`, `dedicatoria`, `agradecimientos`, `resumen`, `abstract` y `acronimos`. Sin placeholders.
+- **Bibliografía**: saneada. 82 entradas, 82 impresas y 82 citadas; cero huérfanas, cero fantasma, cero duplicadas. Verificar con `python tools/auditar_bib.py`.
+- **Validación del aparato de citas**: dos rondas cerradas sobre 180 afirmaciones atribuidas a terceros, sin referencias inexistentes. Acta en `revisiones/validacion_referencias/ROUND2_ESTADO.md`. Al reescribir prosa, **no convertir en verbo de prioridad** («X propuso», «X demostró») lo que está redactado como cita neutra: varias lo son para no reclamar una prioridad que la fuente no sostiene.

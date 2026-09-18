@@ -1,0 +1,797 @@
+[
+  {
+    "clave": "Aburas2016",
+    "tipo": "article",
+    "bibtex": "@article{Aburas2016,\n  author    = {Aburas, Maher Milad and Ho, Yuek Ming and Ramli, Mohammad Firuz and Ash'aari, Zulfa Hanan},\n  title     = {The simulation and prediction of spatio-temporal urban growth trends using cellular automata models: A review},\n  journal   = {International Journal of Applied Earth Observation and Geoinformation},\n  year      = {2016},\n  volume    = {52},\n  pages     = {380--389},\n  doi       = {10.1016/j.jag.2016.07.007}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Los modelos de caja blanca más citados \\parencite{Clarke1998}, y las revisiones que los sistematizan \\parencite{Sante2010,Aburas2016}, atienden la interpretabilidad, pero la práctica de validación del campo es endeble: en una revisión de aplicaciones recientes de modelos de cambio de suelo, el 31\\% no reporta validación alguna y el resto se apoya predominantemente en la exactitud locacional frente a un solo mapa observado \\parencite{vanVliet2016}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "almeida2008stochastic",
+    "tipo": "article",
+    "bibtex": "@article{almeida2008stochastic,\n  title={Using neural networks and cellular automata for modelling intra-urban land-use dynamics},\n  author={Almeida, Cl{\\'a}udia Maria and Gleriani, Jos{\\'e} Marinaldo and Castejon, Emiliano Ferreira and Soares-Filho, Britaldo Silveira},\n  journal={International Journal of Geographical Information Science},\n  volume={22},\n  number={9},\n  pages={943--963},\n  year={2008},\n  publisher={Taylor \\& Francis},\n  doi={10.1080/13658810701731168}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Los modelos de caja negra basados en aprendizaje automático \\parencite{almeida2008stochastic,Gomez2020} aprenden la función de transición de los datos sin imponerle una forma previa, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Angel2012",
+    "tipo": "book",
+    "bibtex": "@book{Angel2012,\n  author    = {Shlomo Angel},\n  title     = {Planet of Cities},\n  publisher = {Lincoln Institute of Land Policy},\n  year      = {2012}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 16,
+        "afirmacion": "Una fracción significativa y creciente de la población mundial vive en ciudades, y la superficie urbana se expande más rápido que la población que la alberga \\parencite{Seto2012,UNHabitat2020,Angel2012}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Batty2005",
+    "tipo": "book",
+    "bibtex": "@book{Batty2005,\n  author    = {Michael Batty},\n  title     = {Cities and Complexity: Understanding Cities with Cellular Automata, Agent-Based Models, and Fractals},\n  publisher = {MIT Press},\n  address   = {Cambridge, MA},\n  year      = {2005},\n  isbn      = {9780262025836}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 146,
+        "afirmacion": "La decisión de usar AC sobre enfoques basados en agentes (ABM), que exigen declarar el comportamiento de cada agente \\parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de difusión espacial emergente sin requerir la especificación de reglas de comportamiento individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial \\parencite{Clarke1998,Sante2010,Batty2005}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "BonhamCarter1989",
+    "tipo": "incollection",
+    "bibtex": "@incollection{BonhamCarter1989,\n  author    = {Bonham-Carter, Graeme F. and Agterberg, Frederik P. and Wright, Donald F.},\n  title     = {Weights of evidence modelling: a new approach to mapping mineral potential},\n  booktitle = {Statistical Applications in the Earth Sciences},\n  editor    = {Agterberg, Frederik P. and Bonham-Carter, Graeme F.},\n  series    = {Geological Survey of Canada Paper 89-9},\n  publisher = {Geological Survey of Canada},\n  address   = {Ottawa},\n  year      = {1989},\n  pages     = {171--183}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 138,
+        "afirmacion": "Fue formulado originalmente para el diagnóstico médico, adaptado a finales de los años ochenta al mapeo de potencial mineral con sistemas de información geográfica \\parencite{BonhamCarter1989} y posteriormente al análisis de cambio de uso de suelo."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "BonhamCarter1994",
+    "tipo": "book",
+    "bibtex": "@book{BonhamCarter1994,\n  author    = {Bonham-Carter, Graeme F.},\n  title     = {Geographic Information Systems for Geoscientists: Modelling with GIS},\n  publisher = {Pergamon},\n  address   = {Oxford},\n  year      = {1994},\n  volume    = {13},\n  series    = {Computer Methods in the Geosciences},\n  pagetotal = {398}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 138,
+        "afirmacion": "El método de \\textbf{Pesos de Evidencia} (Weight of Evidence, WoE) es una técnica estadística de origen bayesiano que cuantifica la asociación entre una variable espacial y la ocurrencia de un evento, en este caso la transición de suelo no-urbano a urbano \\parencite{BonhamCarter1994}."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 165,
+        "afirmacion": "\\textit{Imagen elaborada con IA generativa, con base en la formulación de \\textcite{BonhamCarter1994}.}} \\label{fig:concepto-woe} \\end{figure}"
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 179,
+        "afirmacion": "Conviene precisar su procedencia, porque el estadístico no forma parte de la formulación del WoE de \\textcite{BonhamCarter1994}, sino de la práctica de construcción de tarjetas de puntuación en riesgo de crédito \\parencite{Siddiqi2006}, donde acompaña de forma habitual al mismo peso $W^+$; formalmente equivale a la divergencia de Kullback-Leibler simetrizada entre las dos distribuciones condicionales."
+      }
+    ],
+    "veces_citada": 3
+  },
+  {
+    "clave": "Brenning2012",
+    "tipo": "inproceedings",
+    "bibtex": "@inproceedings{Brenning2012,\n  author    = {Brenning, Alexander},\n  title     = {Spatial cross-validation and bootstrap for the assessment of prediction rules in remote sensing: The {R} package {sperrorest}},\n  booktitle = {2012 IEEE International Geoscience and Remote Sensing Symposium},\n  year      = {2012},\n  pages     = {5372--5375},\n  doi       = {10.1109/igarss.2012.6352393}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 201,
+        "afirmacion": "Cuarto, el método no corrige por sí solo la autocorrelación espacial, de modo que las celdas vecinas aportan información que no es independiente \\parencite{Legendre1993,Brenning2012}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Chihuahua2023",
+    "tipo": "article",
+    "bibtex": "@article{Chihuahua2023,\n  author  = {García-Ramírez, Pedro and Alatorre-Cejudo, Luis Carlos and Bravo-Peña, Luis Carlos},\n  title   = {Detección, modelización y proyección del crecimiento urbano de núcleos de población en diferentes cuencas hidrológicas de {Chihuahua}, {México}},\n  journal = {Investigación y Ciencia de la Universidad Autónoma de Aguascalientes},\n  year    = {2023},\n  volume  = {31},\n  number  = {90},\n  pages   = {e4103},\n  doi     = {10.33064/iycuaa2023904103}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 122,
+        "afirmacion": "Los trabajos representativos para ciudades mexicanas \\parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} cumplen R2 y, en distinto grado, R4; ninguno cumple R3 y solo uno de ellos satisface R1 de forma parcial."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Clarke1998",
+    "tipo": "article",
+    "bibtex": "@article{Clarke1998,\n  author    = {Keith C. Clarke and Leonard J. Gaydos},\n  title     = {Loose-coupling a Cellular Automaton Model and GIS: Long-term Urban Growth Prediction for San Francisco and Washington/Baltimore},\n  journal   = {International Journal of Geographical Information Science},\n  year      = {1998},\n  volume    = {12},\n  number    = {7},\n  pages     = {699--714},\n  doi       = {10.1080/136588198241617}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Los modelos de caja blanca más citados \\parencite{Clarke1998}, y las revisiones que los sistematizan \\parencite{Sante2010,Aburas2016}, atienden la interpretabilidad, pero la práctica de validación del campo es endeble: en una revisión de aplicaciones recientes de modelos de cambio de suelo, el 31\\% no reporta validación alguna y el resto se apoya predominantemente en la exactitud locacional frente a un solo mapa observado \\parencite{vanVliet2016}."
+      },
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 146,
+        "afirmacion": "La decisión de usar AC sobre enfoques basados en agentes (ABM), que exigen declarar el comportamiento de cada agente \\parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de difusión espacial emergente sin requerir la especificación de reglas de comportamiento individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial \\parencite{Clarke1998,Sante2010,Batty2005}."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 91,
+        "afirmacion": "Esta extensión, base de los modelos urbanos basados en AC desde \\textcite{White1993} y de marcos calibrados como SLEUTH \\parencite{Clarke1998}, resulta adecuada para el modelado urbano, en el que la transición de no-urbano a urbano no está garantizada incluso cuando las condiciones locales son favorables."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 93,
+        "afirmacion": "Entre los marcos de autómatas celulares urbanos, el más difundido es el que hoy se conoce como SLEUTH, formulado como autómata auto-modificable por \\textcite{ClarkeHoppen1997} y aplicado a la bahía de San Francisco y al corredor Washington-Baltimore por \\textcite{Clarke1998}."
+      }
+    ],
+    "veces_citada": 4
+  },
+  {
+    "clave": "ClarkeHoppen1997",
+    "tipo": "article",
+    "bibtex": "@article{ClarkeHoppen1997,\n  author  = {Clarke, Keith C. and Hoppen, Stacy and Gaydos, Leonard J.},\n  title   = {A Self-Modifying Cellular Automaton Model of Historical Urbanization in the {San Francisco} {Bay} Area},\n  journal = {Environment and Planning B: Planning and Design},\n  year    = {1997},\n  volume  = {24},\n  number  = {2},\n  pages   = {247--261},\n  doi     = {10.1068/b240247}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 93,
+        "afirmacion": "Entre los marcos de autómatas celulares urbanos, el más difundido es el que hoy se conoce como SLEUTH, formulado como autómata auto-modificable por \\textcite{ClarkeHoppen1997} y aplicado a la bahía de San Francisco y al corredor Washington-Baltimore por \\textcite{Clarke1998}."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 93,
+        "afirmacion": "Su comportamiento queda gobernado por cinco coeficientes de crecimiento (\\emph{diffusion}, \\emph{breed}, \\emph{spread}, \\emph{slope resistance} y \\emph{road gravity}) \\parencite{ClarkeHoppen1997} que se ajustan mediante búsqueda sobre un espacio discreto de combinaciones, evaluando cada una con simulaciones Monte Carlo."
+      }
+    ],
+    "veces_citada": 2
+  },
+  {
+    "clave": "Cohen1960",
+    "tipo": "article",
+    "bibtex": "@article{Cohen1960,\n  author  = {Cohen, Jacob},\n  title   = {A Coefficient of Agreement for Nominal Scales},\n  journal = {Educational and Psychological Measurement},\n  year    = {1960},\n  volume  = {20},\n  number  = {1},\n  pages   = {37--46},\n  doi     = {10.1177/001316446002000104}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 301,
+        "afirmacion": "El \\textbf{coeficiente Kappa de Cohen}~\\parencite{Cohen1960} corrige la concordancia observada por la concordancia esperada por azar:"
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "CONABIO2024Porque",
+    "tipo": "online",
+    "bibtex": "@online{CONABIO2024Porque,\n  author  = {{Comisi{\\'o}n Nacional para el Conocimiento y Uso de la Biodiversidad (CONABIO)}},\n  title   = {{\\textquestiondown}Por qu{\\'e} se pierde la biodiversidad?},\n  year    = {2022},\n  url     = {https://www.biodiversidad.gob.mx/biodiversidad/porque},\n  urldate = {2026-05-24}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 24,
+        "afirmacion": "Esos impactos están documentados en frentes distintos, de los que conviene mencionar algunos ejemplos: la transformación de ecosistemas naturales en zonas urbanas contribuye a la pérdida de hábitat, señalada como la principal causa de pérdida de biodiversidad en el país \\parencite{CONABIO2024Porque}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "CONAPO2018Delimitacion",
+    "tipo": "report",
+    "bibtex": "@report{CONAPO2018Delimitacion,\n  author  = {{Secretar{\\'i}a de Desarrollo Agrario, Territorial y Urbano (SEDATU)} and {Consejo Nacional de Poblaci{\\'o}n (CONAPO)} and {Instituto Nacional de Estad{\\'i}stica y Geograf{\\'i}a (INEGI)}},\n  title   = {Delimitaci{\\'o}n de las zonas metropolitanas de {M{\\'e}xico} 2015},\n  type    = {Informe},\n  edition = {1},\n  address = {Ciudad de M{\\'e}xico},\n  year    = {2018},\n  url     = {https://www.gob.mx/conapo/documentos/delimitacion-de-las-zonas-metropolitanas-de-mexico-2015},\n  urldate = {2026-06-07}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 68,
+        "afirmacion": "Como se observa en la figura~\\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona metropolitana que rebasó el millón y medio de habitantes en el censo de 2020 \\parencite{INEGI2020Censo}, tras décadas de expansión sostenida a una tasa media anual del $2{,}8$\\% \\parencite{CONAPO2018Delimitacion}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "CortesVapnik1995",
+    "tipo": "article",
+    "bibtex": "@article{CortesVapnik1995,\n  author  = {Cortes, Corinna and Vapnik, Vladimir},\n  title   = {Support-vector networks},\n  journal = {Machine Learning},\n  year    = {1995},\n  volume  = {20},\n  number  = {3},\n  pages   = {273--297},\n  doi     = {10.1007/BF00994018}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 65,
+        "afirmacion": "La máquina de vectores de soporte \\parencite{CortesVapnik1995} es un clasificador supervisado que busca el hiperplano que separa dos clases con el mayor margen posible, es decir, maximizando la distancia a las observaciones más próximas de cada lado."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Gomez2020",
+    "tipo": "article",
+    "bibtex": "@article{Gomez2020,\n  author    = {G{\\'o}mez, Jairo A. and Pati{\\~n}o, Jorge E. and Duque, Juan C. and Passos, Santiago},\n  title     = {Spatiotemporal Modeling of Urban Growth Using Machine Learning},\n  journal   = {Remote Sensing},\n  year      = {2020},\n  volume    = {12},\n  number    = {1},\n  pages     = {109},\n  doi       = {10.3390/rs12010109}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Los modelos de caja negra basados en aprendizaje automático \\parencite{almeida2008stochastic,Gomez2020} aprenden la función de transición de los datos sin imponerle una forma previa, pero sus pesos internos no son legibles como evidencia espacial, lo que dificulta su uso en contextos que exigen transparencia metodológica."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Gong2013",
+    "tipo": "article",
+    "bibtex": "@article{Gong2013,\n  author    = {Gong, Peng and Wang, Jie and Yu, Le and Zhao, Yongchao and Zhao, Yuanyuan and Liang, Lu and Niu, Zhenguo and Huang, Xiaomeng and Fu, Haohuan and Liu, Shuang and others},\n  title     = {Finer resolution observation and monitoring of global land cover: First mapping results with Landsat TM and ETM+ data},\n  journal   = {International Journal of Remote Sensing},\n  year      = {2013},\n  volume    = {34},\n  number    = {7},\n  pages     = {2607--2654},\n  doi       = {10.1080/01431161.2012.748992}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 24,
+        "afirmacion": "Los programas de observación de larga duración, en particular la familia Landsat, hicieron posible cartografiar la cobertura del suelo a escala global con resolución de decenas de metros \\parencite{Gong2013}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "GonzalezWoods2018",
+    "tipo": "book",
+    "bibtex": "@book{GonzalezWoods2018,\n  author    = {Gonzalez, Rafael C. and Woods, Richard E.},\n  title     = {Digital Image Processing},\n  edition   = {4},\n  publisher = {Pearson},\n  address   = {New York},\n  year      = {2018},\n  isbn      = {9780133356724}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 34,
+        "afirmacion": "Una imagen en color se representa habitualmente en el espacio RGB, donde cada píxel es una terna de intensidades en los canales rojo, verde y azul \\parencite{GonzalezWoods2018}."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 34,
+        "afirmacion": "El espacio CIE $L^*a^*b^*$ aísla la luminosidad $L^*$ de dos ejes cromáticos \\parencite{GonzalezWoods2018}, y el espacio HSV descompone el color en matiz, saturación y valor \\parencite{Smith1978}."
+      }
+    ],
+    "veces_citada": 2
+  },
+  {
+    "clave": "Gorelick2017",
+    "tipo": "article",
+    "bibtex": "@article{Gorelick2017,\n  author    = {Gorelick, Noel and Hancher, Matt and Dixon, Mike and Ilyushchenko, Simon and Thau, David and Moore, Rebecca},\n  title     = {Google Earth Engine: Planetary-scale geospatial analysis for everyone},\n  journal   = {Remote Sensing of Environment},\n  year      = {2017},\n  volume    = {202},\n  pages     = {18--27},\n  doi       = {10.1016/j.rse.2017.06.031}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 24,
+        "afirmacion": "El acceso a estos acervos se ha facilitado con plataformas de procesamiento en la nube como Google Earth Engine \\parencite{Gorelick2017}, que permiten consultar y procesar grandes volúmenes sin descargarlos."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Herold2003",
+    "tipo": "article",
+    "bibtex": "@article{Herold2003,\n  author    = {Martin Herold and Noah C. Goldstein and Keith C. Clarke},\n  title     = {The Spatiotemporal Form of Urban Growth: Measurement, Analysis and Modeling},\n  journal   = {Remote Sensing of Environment},\n  year      = {2003},\n  volume    = {86},\n  number    = {3},\n  pages     = {286--302},\n  doi       = {10.1016/S0034-4257(03)00075-0},\n  url       = {https://www.sciencedirect.com/science/article/abs/pii/S0034425703000750}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 22,
+        "afirmacion": "La combinación de estas cuatro resoluciones condiciona qué fenómenos pueden estudiarse: un análisis de la forma de la mancha urbana y de su evolución exige sobre todo continuidad temporal y consistencia geométrica, más que una gran finura espectral \\parencite{Herold2003}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "INEGI2020Censo",
+    "tipo": "online",
+    "bibtex": "@online{INEGI2020Censo,\n  author  = {{Instituto Nacional de Estad{\\'i}stica y Geograf{\\'i}a (INEGI)}},\n  title   = {Censo de Poblaci{\\'o}n y Vivienda 2020},\n  year    = {2020},\n  url     = {https://www.inegi.org.mx/programas/ccpv/2020/},\n  urldate = {2026-06-07}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 24,
+        "afirmacion": "El INEGI documenta que la mayor parte de la población reside en localidades urbanas \\parencite{INEGI2020Censo}."
+      },
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 68,
+        "afirmacion": "Como se observa en la figura~\\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona metropolitana que rebasó el millón y medio de habitantes en el censo de 2020 \\parencite{INEGI2020Censo}, tras décadas de expansión sostenida a una tasa media anual del $2{,}8$\\% \\parencite{CONAPO2018Delimitacion}."
+      }
+    ],
+    "veces_citada": 2
+  },
+  {
+    "clave": "ITDP2019Externalidades",
+    "tipo": "report",
+    "bibtex": "@report{ITDP2019Externalidades,\n  author      = {{Iniciativa Clim{\\'a}tica de M{\\'e}xico} and {Instituto de Pol{\\'i}ticas para el Transporte y el Desarrollo (ITDP M{\\'e}xico)}},\n  title       = {Externalidades negativas asociadas al transporte terrestre},\n  institution = {ITDP M{\\'e}xico},\n  year        = {2019},\n  url         = {https://mexico.itdp.org/download/externalidades-negativas-asociadas-al-transporte-terrestre-2019/},\n  urldate     = {2026-05-24}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 24,
+        "afirmacion": "El transporte terrestre que la dispersión convierte en necesario tiene externalidades negativas documentadas para el caso mexicano \\parencite{ITDP2019Externalidades}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Jantz2003",
+    "tipo": "article",
+    "bibtex": "@article{Jantz2003,\n  author    = {Claire A. Jantz and Scott J. Goetz and Mary K. Shelley},\n  title     = {Using the {SLEUTH} Urban Growth Model to Simulate the Impacts of Future Policy Scenarios on Urban Land Use in the {Baltimore-Washington} Metropolitan Area},\n  journal   = {Environment and Planning B: Planning and Design},\n  year      = {2004},\n  volume    = {31},\n  number    = {2},\n  pages     = {251--271},\n  doi       = {10.1068/b2983}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Por otro lado, los metaheurísticos \\parencite{Wang2021} persiguen la configuración urbana que optimiza una función objetivo definida por el analista, de modo que responden a una pregunta normativa y no predictiva; la calibración por búsqueda sobre el espacio de parámetros puede además resultar costosa, como documenta \\textcite{Jantz2003} para SLEUTH, donde el ajuste tomó más de una semana de cómputo en un clúster de dieciséis nodos."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Jolliffe2002",
+    "tipo": "book",
+    "bibtex": "@book{Jolliffe2002,\n  author    = {Jolliffe, Ian T.},\n  title     = {Principal Component Analysis},\n  edition   = {2},\n  publisher = {Springer},\n  address   = {New York},\n  year      = {2002},\n  doi       = {10.1007/b98835}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 48,
+        "afirmacion": "El análisis de componentes principales \\parencite{Jolliffe2002} atiende el segundo problema."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "LandisKoch1977",
+    "tipo": "article",
+    "bibtex": "@article{LandisKoch1977,\n  author  = {Landis, J. Richard and Koch, Gary G.},\n  title   = {The Measurement of Observer Agreement for Categorical Data},\n  journal = {Biometrics},\n  year    = {1977},\n  volume  = {33},\n  number  = {1},\n  pages   = {159--174},\n  doi     = {10.2307/2529310}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 315,
+        "afirmacion": "Conforme a la escala de interpretación de uso común propuesta por \\textcite{LandisKoch1977}, $\\kappa > 0{,}81$ indica acuerdo casi perfecto; $0{,}61$--$0{,}80$, acuerdo sustancial; $0{,}41$--$0{,}60$, acuerdo moderado; $0{,}21$--$0{,}40$, acuerdo justo; entre $0{,}00$ y $0{,}20$, acuerdo leve; y $\\kappa < 0$, acuerdo pobre."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Legendre1993",
+    "tipo": "article",
+    "bibtex": "@article{Legendre1993,\n  author  = {Legendre, Pierre},\n  title   = {Spatial Autocorrelation: Trouble or New Paradigm?},\n  journal = {Ecology},\n  year    = {1993},\n  volume  = {74},\n  number  = {6},\n  pages   = {1659--1673},\n  doi     = {10.2307/1939924}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 201,
+        "afirmacion": "Cuarto, el método no corrige por sí solo la autocorrelación espacial, de modo que las celdas vecinas aportan información que no es independiente \\parencite{Legendre1993,Brenning2012}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Li2007",
+    "tipo": "article",
+    "bibtex": "@article{Li2007,\n  author    = {Li, Xia and Liu, Xiaoping},\n  title     = {Defining agents' behaviors to simulate complex residential development using multicriteria evaluation},\n  journal   = {Journal of Environmental Management},\n  year      = {2007},\n  volume    = {85},\n  number    = {4},\n  pages     = {1063--1075},\n  doi       = {10.1016/j.jenvman.2006.11.006},\n  url       = {https://www.sciencedirect.com/science/article/pii/S0301479706003574}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 146,
+        "afirmacion": "La decisión de usar AC sobre enfoques basados en agentes (ABM), que exigen declarar el comportamiento de cada agente \\parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de difusión espacial emergente sin requerir la especificación de reglas de comportamiento individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial \\parencite{Clarke1998,Sante2010,Batty2005}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Lloyd1982",
+    "tipo": "article",
+    "bibtex": "@article{Lloyd1982,\n  author  = {Lloyd, Stuart P.},\n  title   = {Least squares quantization in {PCM}},\n  journal = {IEEE Transactions on Information Theory},\n  year    = {1982},\n  volume  = {28},\n  number  = {2},\n  pages   = {129--137},\n  doi     = {10.1109/TIT.1982.1056489}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 61,
+        "afirmacion": "La variante que se emplea aquí no es el procedimiento secuencial de una pasada que describe MacQueen, sino el esquema iterativo por lotes que él mismo atribuye a Forgy y Jennrich y que formalizó después \\textcite{Lloyd1982}: asigna cada observación al centroide más próximo, recalcula los centroides como la media de los puntos asignados y repite hasta que las asignaciones se estabilizan."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Ma2019",
+    "tipo": "article",
+    "bibtex": "@article{Ma2019,\n  author    = {Ma, Lei and Liu, Yu and Zhang, Xueliang and Ye, Yuanxin and Yin, Gaofei and Johnson, Brian Alan},\n  title     = {Deep learning in remote sensing applications: A meta-analysis and review},\n  journal   = {ISPRS Journal of Photogrammetry and Remote Sensing},\n  year      = {2019},\n  volume    = {152},\n  pages     = {166--177},\n  doi       = {10.1016/j.isprsjprs.2019.04.015}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 28,
+        "afirmacion": "Las arquitecturas de aprendizaje profundo, hoy frecuentes en la disciplina, pertenecen a la primera familia y su desempeño depende de la disponibilidad de grandes volúmenes anotados \\parencite{Ma2019}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "MacQueen1967",
+    "tipo": "inproceedings",
+    "bibtex": "@inproceedings{MacQueen1967,\n  author    = {MacQueen, James B.},\n  title     = {Some Methods for Classification and Analysis of Multivariate Observations},\n  booktitle = {Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability},\n  editor    = {Le Cam, Lucien M. and Neyman, Jerzy},\n  volume    = {1},\n  pages     = {281--297},\n  year      = {1967},\n  publisher = {University of California Press},\n  address   = {Berkeley, CA}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 61,
+        "afirmacion": "El agrupamiento K-Means debe su nombre y su criterio a \\textcite{MacQueen1967}: es un método no supervisado que particiona un conjunto de observaciones en $k$ grupos buscando una varianza intraclase baja, medida como la suma de distancias cuadradas de cada punto al centroide de su grupo."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Meyer1998",
+    "tipo": "article",
+    "bibtex": "@article{Meyer1998,\n  author  = {Meyer, G. E. and Mehta, T. and Kocher, M. F. and Mortensen, D. A. and Samal, A.},\n  title   = {Textural imaging and discriminant analysis for distinguishing weeds for spot spraying},\n  journal = {Transactions of the ASAE},\n  year    = {1998},\n  volume  = {41},\n  number  = {4},\n  pages   = {1189--1197},\n  doi     = {10.13031/2013.17244}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 36,
+        "afirmacion": "A partir de las bandas visibles pueden construirse índices que realzan la presencia de vegetación, como el índice verde--rojo normalizado (NGRDI, \\textit{normalized green-red difference index}) \\parencite{Tucker1979}, el exceso de verde \\parencite{Woebbecke1995} o el exceso de rojo \\parencite{Meyer1998}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "ObservatorioCiudades2022Queretaro",
+    "tipo": "online",
+    "bibtex": "@online{ObservatorioCiudades2022Queretaro,\n  author  = {{Observatorio de Ciudades}},\n  title   = {Vivienda y expansi{\\'o}n urbana: el caso de {Quer{\\'e}taro}},\n  year    = {2022},\n  url     = {https://observatoriodeciudades.mx/blog/vivienda-y-expansion-urbana-el-caso-de-queretaro/},\n  urldate = {2026-05-24},\n  note    = {An{\\'a}lisis basado en datos del {Censo de Poblaci{\\'o}n y Vivienda} 2020 ({INEGI})}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 74,
+        "afirmacion": "Ese patrón se ha documentado para Querétaro en relación con la producción de vivienda \\parencite{ObservatorioCiudades2022Queretaro}, e impide anticipar dónde y a qué velocidad se producirá la siguiente oleada de expansión: información necesaria para planear el uso de recursos y la infraestructura que el crecimiento urbano demanda."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Ojala2002",
+    "tipo": "article",
+    "bibtex": "@article{Ojala2002,\n  author    = {Ojala, Timo and Pietik{\\\"a}inen, Matti and M{\\\"a}enp{\\\"a}{\\\"a}, Topi},\n  title     = {Multiresolution Gray-Scale and Rotation Invariant Texture Classification with Local Binary Patterns},\n  journal   = {IEEE Transactions on Pattern Analysis and Machine Intelligence},\n  year      = {2002},\n  volume    = {24},\n  number    = {7},\n  pages     = {971--987},\n  doi       = {10.1109/TPAMI.2002.1017623}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 40,
+        "afirmacion": "Los patrones binarios locales, en la formulación circular generalizada de \\textcite{Ojala2002}, describen esa textura comparando la intensidad de cada píxel con la de sus vecinos sobre un círculo de radio $r$ con $P$ puntos de muestreo, y codificando el resultado de las comparaciones como un número binario."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "ONUHabitat2016TendenciasMexico",
+    "tipo": "online",
+    "bibtex": "@online{ONUHabitat2016TendenciasMexico,\n  author  = {{Programa de las Naciones Unidas para los Asentamientos Humanos (ONU-H{\\'a}bitat)}},\n  title   = {Tendencias del desarrollo urbano en {M{\\'e}xico}},\n  year    = {2017},\n  url     = {https://onu-habitat.org/index.php/tendencias-del-desarrollo-urbano-en-mexico},\n  urldate = {2026-05-24},\n  note    = {Basado en el {Programa Nacional de Desarrollo Urbano} 2013--2018 ({SEDATU}) y el {Índice de prosperidad urbana en la Rep{\\'u}blica Mexicana} (ONU-H{\\'a}bitat M{\\'e}xico, 2016)}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 24,
+        "afirmacion": "Su cobertura efectiva es incompleta: la propia norma oficial mexicana en la materia registra que solo $567$ municipios, el $22{,}94$\\% del total, cuentan con un instrumento de ordenamiento territorial o de desarrollo urbano, y que casi el $45$\\% de esos instrumentos se publicó hace más de quince años \\parencite{SEDATU2024NOM005,ONUHabitat2016TendenciasMexico}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "PackardWolfram1985",
+    "tipo": "article",
+    "bibtex": "@article{PackardWolfram1985,\n  author  = {Packard, Norman H. and Wolfram, Stephen},\n  title   = {Two-dimensional cellular automata},\n  journal = {Journal of Statistical Physics},\n  year    = {1985},\n  volume  = {38},\n  number  = {5--6},\n  pages   = {901--946},\n  doi     = {10.1007/BF01010423}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 99,
+        "afirmacion": "\\textit{Imagen elaborada con IA generativa, con base en las reglas bidimensionales de \\textcite{PackardWolfram1985}.}} \\label{fig:vecindades} \\end{figure}"
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "pontius2008comparing",
+    "tipo": "article",
+    "bibtex": "@article{pontius2008comparing,\n  title={Comparing the input, output, and validation maps for several models of land change},\n  author={Pontius Jr, Robert Gilmore and Boersma, Wideke and Castella, Jean-Christophe and Clarke, Keith and de Nijs, Ton and Dietzel, Charles and Duan, Zengqiang and Fotsing, Eric and Goldstein, Noah and Kok, Kasper and Koomen, Eric and Lippitt, Christopher D. and McConnell, William and Mohd Sood, Alias and Pijanowski, Bryan and Pithadia, Snehal and Sweeney, Sean and Trung, Tran Ngoc and Veldkamp, A. Tom and Verburg, Peter H.},\n  journal={The Annals of Regional Science},\n  volume={42},\n  number={1},\n  pages={11--37},\n  year={2008},\n  publisher={Springer},\n  doi={10.1007/s00168-007-0138-2}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 146,
+        "afirmacion": "La validación en ventanas desplazadas, en lugar de un único período final, hace posible detectar el sobreajuste a una fase específica del crecimiento urbano \\parencite{pontius2008comparing}."
+      },
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 194,
+        "afirmacion": "\\textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con un FoM por encima del subconjunto de aplicaciones con FoM inferior a $0{,}15$ del espectro multi-sitio de \\textcite{pontius2008comparing}, acompañado de valores de Kappa e IoU sostenidos en los cinco períodos, sin recurrir a representaciones de caja negra."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 321,
+        "afirmacion": "El \\textbf{Figure of Merit} (FoM), que \\textcite{pontius2008comparing} consolidaron como medida de referencia para comparar resultados entre estudios, evalúa exclusivamente el subconjunto de píxeles donde ocurre o se predice un cambio."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 343,
+        "afirmacion": "\\textcite{pontius2008comparing} reservan $A$ para la omisión y $D$ para la comisión, y añaden un término $C$ para el cambio predicho hacia la categoría de destino equivocada."
+      },
+      {
+        "archivo": "front/abstract.tex",
+        "linea": 24,
+        "afirmacion": "Average performance reaches a Figure of Merit of $0.317$, within the intermediate band of the multi-site spectrum documented by \\textcite{pontius2008comparing} (six of thirteen applications with FoM below $0.15$ and only one above $0.50$), together with a Kappa coefficient of $0.445$, an accuracy of $0.722$ and an IoU of $0.633$, sustained across all five windows."
+      },
+      {
+        "archivo": "front/resumen.tex",
+        "linea": 24,
+        "afirmacion": "El desempeño promedio alcanza un \\textit{Figure of Merit} de $0{,}317$, dentro de la banda intermedia del espectro empírico documentado por \\textcite{pontius2008comparing} (seis de trece aplicaciones con FoM inferior a $0{,}15$ y una sola por encima de $0{,}50$), junto con un coeficiente Kappa de $0{,}445$, una exactitud de $0{,}722$ y un \\textit{IoU} de $0{,}633$, sostenidos en las cinco ventanas."
+      }
+    ],
+    "veces_citada": 6
+  },
+  {
+    "clave": "PontiusMillones2011",
+    "tipo": "article",
+    "bibtex": "@article{PontiusMillones2011,\n  title={Death to Kappa: birth of quantity disagreement and allocation disagreement for accuracy assessment},\n  author={Pontius Jr, Robert Gilmore and Millones, Marco},\n  journal={International Journal of Remote Sensing},\n  volume={32},\n  number={15},\n  pages={4407--4429},\n  year={2011},\n  publisher={Taylor \\& Francis},\n  doi={10.1080/01431161.2011.552923}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 315,
+        "afirmacion": "Su limitación, identificada por \\textcite{PontiusMillones2011}, es que mezcla en un solo número dos fuentes de error metodológicamente distintas: el desacuerdo de cantidad y el de asignación."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 349,
+        "afirmacion": "\\textcite{PontiusMillones2011} formalizan una descomposición que separa ambas fuentes, el desacuerdo de cantidad y el de asignación, y recomiendan reportarlas por separado en lugar de resumirlas en un índice de la familia Kappa."
+      }
+    ],
+    "veces_citada": 2
+  },
+  {
+    "clave": "RamirezHernandez2021",
+    "tipo": "book",
+    "bibtex": "@book{RamirezHernandez2021,\n  author    = {Ramírez Hernández, Roberto},\n  title     = {Zona Metropolitana de la {Ciudad de México}: crecimiento y expansión al 2040. Prospectiva territorial usando modelos de simulación urbana},\n  publisher = {Universidad Nacional Autónoma de México, Instituto de Investigaciones Económicas},\n  year      = {2021},\n  doi       = {10.22201/iiec.9786073044349e.2021}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 122,
+        "afirmacion": "Los trabajos representativos para ciudades mexicanas \\parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} cumplen R2 y, en distinto grado, R4; ninguno cumple R3 y solo uno de ellos satisface R1 de forma parcial."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Sante2010",
+    "tipo": "article",
+    "bibtex": "@article{Sante2010,\n  author    = {Santé, Inés and García, Andrés M. and Miranda, David and Crecente, Rafael},\n  title     = {Cellular automata models for the simulation of real-world urban processes: A review and analysis},\n  journal   = {Landscape and Urban Planning},\n  year      = {2010},\n  volume    = {96},\n  number    = {2},\n  pages     = {108--122},\n  doi       = {10.1016/j.landurbplan.2010.03.001}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Los modelos de caja blanca más citados \\parencite{Clarke1998}, y las revisiones que los sistematizan \\parencite{Sante2010,Aburas2016}, atienden la interpretabilidad, pero la práctica de validación del campo es endeble: en una revisión de aplicaciones recientes de modelos de cambio de suelo, el 31\\% no reporta validación alguna y el resto se apoya predominantemente en la exactitud locacional frente a un solo mapa observado \\parencite{vanVliet2016}."
+      },
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 146,
+        "afirmacion": "La decisión de usar AC sobre enfoques basados en agentes (ABM), que exigen declarar el comportamiento de cada agente \\parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de difusión espacial emergente sin requerir la especificación de reglas de comportamiento individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial \\parencite{Clarke1998,Sante2010,Batty2005}."
+      }
+    ],
+    "veces_citada": 2
+  },
+  {
+    "clave": "SEDATU2024NOM005",
+    "tipo": "misc",
+    "bibtex": "@misc{SEDATU2024NOM005,\n  author       = {{Secretar{\\'i}a de Desarrollo Agrario, Territorial y Urbano}},\n  title        = {Norma Oficial Mexicana {NOM-005-SEDATU-2024}: Contenidos generales para planes o programas municipales de ordenamiento territorial y/o desarrollo urbano},\n  year         = {2024},\n  howpublished = {Diario Oficial de la Federaci{\\'o}n},\n  url          = {https://www.dof.gob.mx/nota_detalle.php?codigo=5732738&fecha=09/07/2024},\n  urldate      = {2026-05-24},\n  note         = {Homologaci{\\'o}n de contenidos para {PMOTDU}; inscrita en el Programa Nacional de Infraestructura de la Calidad ({DOF}, 1 de junio de 2023)}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 24,
+        "afirmacion": "Su cobertura efectiva es incompleta: la propia norma oficial mexicana en la materia registra que solo $567$ municipios, el $22{,}94$\\% del total, cuentan con un instrumento de ordenamiento territorial o de desarrollo urbano, y que casi el $45$\\% de esos instrumentos se publicó hace más de quince años \\parencite{SEDATU2024NOM005,ONUHabitat2016TendenciasMexico}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Seto2012",
+    "tipo": "article",
+    "bibtex": "@article{Seto2012,\n  author    = {Karen C. Seto and Burak Güneralp and Lucy R. Hutyra},\n  title     = {Global forecasts of urban expansion to 2030 and direct impacts on biodiversity and carbon pools},\n  journal   = {Proceedings of the National Academy of Sciences},\n  year      = {2012},\n  volume    = {109},\n  number    = {40},\n  pages     = {16083--16088},\n  doi       = {10.1073/pnas.1211658109}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 16,
+        "afirmacion": "Una fracción significativa y creciente de la población mundial vive en ciudades, y la superficie urbana se expande más rápido que la población que la alberga \\parencite{Seto2012,UNHabitat2020,Angel2012}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Seto2012teleconnections",
+    "tipo": "article",
+    "bibtex": "@article{Seto2012teleconnections,\n  author    = {Seto, Karen C. and Reenberg, Anette and Boone, Christopher G. and Fragkias, Michail and Haase, Dagmar and Langanke, Tobias and Marcotullio, Peter and Munroe, Darla K. and Olah, Branislav and Simon, David},\n  title     = {Urban land teleconnections and sustainability},\n  journal   = {Proceedings of the National Academy of Sciences},\n  year      = {2012},\n  volume    = {109},\n  number    = {20},\n  pages     = {7687--7692},\n  doi       = {10.1073/pnas.1117622109}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 24,
+        "afirmacion": "Y los efectos del cambio de suelo urbano no se agotan en el área que se urbaniza: alcanzan a los territorios con los que la ciudad se conecta mediante flujos de personas, bienes y capital \\parencite{Seto2012teleconnections}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Siddiqi2006",
+    "tipo": "book",
+    "bibtex": "@book{Siddiqi2006,\n  author    = {Siddiqi, Naeem},\n  title     = {Credit Risk Scorecards: Developing and Implementing Intelligent Credit Scoring},\n  publisher = {John Wiley \\& Sons},\n  address   = {Hoboken, NJ},\n  year      = {2006},\n  isbn      = {978-0-471-75451-0}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 179,
+        "afirmacion": "Conviene precisar su procedencia, porque el estadístico no forma parte de la formulación del WoE de \\textcite{BonhamCarter1994}, sino de la práctica de construcción de tarjetas de puntuación en riesgo de crédito \\parencite{Siddiqi2006}, donde acompaña de forma habitual al mismo peso $W^+$; formalmente equivale a la divergencia de Kullback-Leibler simetrizada entre las dos distribuciones condicionales."
+      },
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 186,
+        "afirmacion": "La escala convencional de interpretación, tomada de esa misma práctica \\parencite{Siddiqi2006}, lo divide en cinco tramos: por debajo de $0{,}02$ la variable no tiene valor predictivo; entre $0{,}02$ y $0{,}10$ es débil; entre $0{,}10$ y $0{,}30$, medio; entre $0{,}30$ y $0{,}50$, fuerte; y por encima de $0{,}50$ la propia fuente lo califica de sospechoso, porque en su ámbito de origen un valor tan alto suele delatar que la variable ya contiene la respuesta."
+      }
+    ],
+    "veces_citada": 2
+  },
+  {
+    "clave": "Silva2002",
+    "tipo": "article",
+    "bibtex": "@article{Silva2002,\n  author    = {Silva, Elisabete A. and Clarke, Keith C.},\n  title     = {Calibration of the SLEUTH urban growth model for Lisbon and Porto, Portugal},\n  journal   = {Computers, Environment and Urban Systems},\n  year      = {2002},\n  volume    = {26},\n  number    = {6},\n  pages     = {525--552},\n  doi       = {10.1016/S0198-9715(01)00014-X}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 93,
+        "afirmacion": "El acrónimo, que resume las capas de entrada, se fijó más tarde con la aplicación a Lisboa y Oporto \\parencite{Silva2002}:"
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Smith1978",
+    "tipo": "article",
+    "bibtex": "@article{Smith1978,\n  author  = {Smith, Alvy Ray},\n  title   = {Color gamut transform pairs},\n  journal = {ACM SIGGRAPH Computer Graphics},\n  year    = {1978},\n  volume  = {12},\n  number  = {3},\n  pages   = {12--19},\n  doi     = {10.1145/965139.807361}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 34,
+        "afirmacion": "El espacio CIE $L^*a^*b^*$ aísla la luminosidad $L^*$ de dos ejes cromáticos \\parencite{GonzalezWoods2018}, y el espacio HSV descompone el color en matiz, saturación y valor \\parencite{Smith1978}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "SuarezDelgado2007",
+    "tipo": "article",
+    "bibtex": "@article{SuarezDelgado2007,\n  author  = {Suárez, Manuel and Delgado, Javier},\n  title   = {La expansión urbana probable de la {Ciudad de México}. Un escenario pesimista y dos alternativos para el año 2020},\n  journal = {Estudios Demográficos y Urbanos},\n  year    = {2007},\n  volume  = {22},\n  number  = {1},\n  pages   = {101--142},\n  doi     = {10.24201/edu.v22i1.1295}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 122,
+        "afirmacion": "Los trabajos representativos para ciudades mexicanas \\parencite{SuarezDelgado2007,RamirezHernandez2021,Chihuahua2023} cumplen R2 y, en distinto grado, R4; ninguno cumple R3 y solo uno de ellos satisface R1 de forma parcial."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Tucker1979",
+    "tipo": "article",
+    "bibtex": "@article{Tucker1979,\n  author  = {Tucker, Compton J.},\n  title   = {Red and photographic infrared linear combinations for monitoring vegetation},\n  journal = {Remote Sensing of Environment},\n  year    = {1979},\n  volume  = {8},\n  number  = {2},\n  pages   = {127--150},\n  doi     = {10.1016/0034-4257(79)90013-0}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 36,
+        "afirmacion": "A partir de las bandas visibles pueden construirse índices que realzan la presencia de vegetación, como el índice verde--rojo normalizado (NGRDI, \\textit{normalized green-red difference index}) \\parencite{Tucker1979}, el exceso de verde \\parencite{Woebbecke1995} o el exceso de rojo \\parencite{Meyer1998}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "UNHabitat2020",
+    "tipo": "misc",
+    "bibtex": "@misc{UNHabitat2020,\n  author    = {{UN-Habitat}},\n  title     = {World Cities Report 2020: The Value of Sustainable Urbanization},\n  publisher = {United Nations Human Settlements Programme},\n  address   = {Nairobi},\n  isbn      = {978-92-1-132872-1},\n  year      = {2020},\n  url       = {https://unhabitat.org/sites/default/files/2020/10/wcr_2020_report.pdf},\n  note      = {Informe completo en PDF}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 16,
+        "afirmacion": "Una fracción significativa y creciente de la población mundial vive en ciudades, y la superficie urbana se expande más rápido que la población que la alberga \\parencite{Seto2012,UNHabitat2020,Angel2012}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "vanVliet2016",
+    "tipo": "article",
+    "bibtex": "@article{vanVliet2016,\n  author  = {van Vliet, Jasper and Bregt, Arnold K. and Brown, Daniel G. and van Delden, Hedwig and Heckbert, Scott and Verburg, Peter H.},\n  title   = {A review of current calibration and validation practices in land-change modeling},\n  journal = {Environmental Modelling \\& Software},\n  year    = {2016},\n  volume  = {82},\n  pages   = {174--182},\n  doi     = {10.1016/j.envsoft.2016.04.017}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Los modelos de caja blanca más citados \\parencite{Clarke1998}, y las revisiones que los sistematizan \\parencite{Sante2010,Aburas2016}, atienden la interpretabilidad, pero la práctica de validación del campo es endeble: en una revisión de aplicaciones recientes de modelos de cambio de suelo, el 31\\% no reporta validación alguna y el resto se apoya predominantemente en la exactitud locacional frente a un solo mapa observado \\parencite{vanVliet2016}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Wahyudi2016",
+    "tipo": "article",
+    "bibtex": "@article{Wahyudi2016,\n  author  = {Wahyudi, Agung and Liu, Yan},\n  title   = {Cellular Automata for Urban Growth Modelling: A Review on Factors Defining Transition Rules},\n  journal = {International Review for Spatial Planning and Sustainable Development},\n  year    = {2016},\n  volume  = {4},\n  number  = {2},\n  pages   = {60--75},\n  doi     = {10.14246/irspsd.4.2_60}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 22,
+        "afirmacion": "Estas tensiones se agudizan en las ciudades intermedias mexicanas, poco representadas en la literatura de modelado urbano: la revisión de \\textcite{Wahyudi2016}, que clasifica por región ochenta y ocho aplicaciones de autómatas celulares urbanos, encuentra que al menos la mitad se concentra en ciudades de Estados Unidos y China, mientras que las de América Latina son escasas."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Wang2021",
+    "tipo": "article",
+    "bibtex": "@article{Wang2021,\n  author    = {Wang, Renyang and He, Qingsong and Zhang, Lu and Wang, Huiying},\n  title     = {Coupling Cellular Automata and a Genetic Algorithm to Generate a Vibrant Urban Form---A Case Study of Wuhan, China},\n  journal   = {International Journal of Environmental Research and Public Health},\n  year      = {2021},\n  volume    = {18},\n  number    = {21},\n  pages     = {11013},\n  doi       = {10.3390/ijerph182111013}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap01_introduccion/cap01_introduccion.tex",
+        "linea": 120,
+        "afirmacion": "Por otro lado, los metaheurísticos \\parencite{Wang2021} persiguen la configuración urbana que optimiza una función objetivo definida por el analista, de modo que responden a una pregunta normativa y no predictiva; la calibración por búsqueda sobre el espacio de parámetros puede además resultar costosa, como documenta \\textcite{Jantz2003} para SLEUTH, donde el ajuste tomó más de una semana de cómputo en un clúster de dieciséis nodos."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Weng2002",
+    "tipo": "article",
+    "bibtex": "@article{Weng2002,\n  author    = {Qihao Weng},\n  title     = {Land Use Change Analysis in the Zhujiang Delta of China using Satellite Remote Sensing, GIS and Stochastic Modelling},\n  journal   = {Journal of Environmental Management},\n  year      = {2002},\n  volume    = {64},\n  number    = {3},\n  pages     = {273--284},\n  doi       = {10.1006/jema.2001.0509}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 24,
+        "afirmacion": "Sobre acervos satelitales de este tipo se apoya buena parte de los estudios de cambio de uso de suelo, que comparan la cobertura de un mismo sitio en fechas separadas por años \\parencite{Weng2002}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "White1993",
+    "tipo": "article",
+    "bibtex": "@article{White1993,\n  author  = {White, Roger and Engelen, Guy},\n  title   = {Cellular Automata and Fractal Urban Form: A Cellular Modelling Approach to the Evolution of Urban Land-Use Patterns},\n  journal = {Environment and Planning A: Economy and Space},\n  year    = {1993},\n  volume  = {25},\n  number  = {8},\n  pages   = {1175--1199},\n  doi     = {10.1068/a251175}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 91,
+        "afirmacion": "Esta extensión, base de los modelos urbanos basados en AC desde \\textcite{White1993} y de marcos calibrados como SLEUTH \\parencite{Clarke1998}, resulta adecuada para el modelado urbano, en el que la transición de no-urbano a urbano no está garantizada incluso cuando las condiciones locales son favorables."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Woebbecke1995",
+    "tipo": "article",
+    "bibtex": "@article{Woebbecke1995,\n  author  = {Woebbecke, D. M. and Meyer, G. E. and {Von Bargen}, K. and Mortensen, D. A.},\n  title   = {Color indices for weed identification under various soil, residue, and lighting conditions},\n  journal = {Transactions of the ASAE},\n  year    = {1995},\n  volume  = {38},\n  number  = {1},\n  pages   = {259--269},\n  doi     = {10.13031/2013.27838}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 36,
+        "afirmacion": "A partir de las bandas visibles pueden construirse índices que realzan la presencia de vegetación, como el índice verde--rojo normalizado (NGRDI, \\textit{normalized green-red difference index}) \\parencite{Tucker1979}, el exceso de verde \\parencite{Woebbecke1995} o el exceso de rojo \\parencite{Meyer1998}."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "Wolfram1984",
+    "tipo": "article",
+    "bibtex": "@article{Wolfram1984,\n  author    = {Stephen Wolfram},\n  title     = {Cellular Automata as Models of Complexity},\n  journal   = {Nature},\n  year      = {1984},\n  volume    = {311},\n  number    = {5985},\n  pages     = {419--424},\n  doi       = {10.1038/311419a0}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 74,
+        "afirmacion": "Un \\textbf{Autómata Celular} (AC), en el sentido formalizado por \\textcite{Wolfram1984}, es un sistema dinámico discreto definido sobre una cuadrícula regular de $N$ celdas."
+      }
+    ],
+    "veces_citada": 1
+  },
+  {
+    "clave": "YinYan1988",
+    "tipo": "inproceedings",
+    "bibtex": "@inproceedings{YinYan1988,\n  author    = {Yin, K. L. and Yan, T. Z.},\n  title     = {Statistical prediction model for slope instability of metamorphosed rocks},\n  booktitle = {Proceedings of the 5th International Symposium on Landslides},\n  editor    = {Bonnard, C.},\n  publisher = {Balkema},\n  address   = {Rotterdam},\n  volume    = {2},\n  pages     = {1269--1272},\n  year      = {1988}\n}",
+    "afirmaciones": [
+      {
+        "archivo": "cap02_marco_teorico/cap02_marco_teorico.tex",
+        "linea": 179,
+        "afirmacion": "Debe señalarse también que en la literatura de susceptibilidad geoespacial el término \\textit{information value} designa un método bivariado distinto \\parencite{YinYan1988}, que aquí no se emplea:"
+      }
+    ],
+    "veces_citada": 1
+  }
+]

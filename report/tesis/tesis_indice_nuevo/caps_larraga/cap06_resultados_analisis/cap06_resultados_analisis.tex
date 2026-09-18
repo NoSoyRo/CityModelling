@@ -517,7 +517,7 @@ A continuación se contrastan la hipótesis general y las cuatro particulares en
 
 \textbf{H3 (apoyada por la evidencia).} El flujo completo se ejecutó en Python (NumPy, SciPy, scikit-learn) sobre capturas de Google Earth en escritorio, sin GPU ni software propietario, en un cómputo del orden de tres horas en CPU estándar.
 
-\textbf{H4 (apoyada por la evidencia).} El FoM promedio de $0{,}317$, el Kappa de $0{,}445$ y el IoU de $0{,}633$ se ubican en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}, en los términos precisados en la Sección~\ref{sec:evaluacion}. El contraste con modelos de caja negra es cualitativo: sitios, clases y horizontes distintos.
+\textbf{H4 (apoyada por la evidencia).} El FoM promedio de $0{,}317$ se ubica en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}, en los términos precisados en la Sección~\ref{sec:evaluacion}. Ese estudio no reporta Kappa, y su FoM es ya una intersección sobre unión restringida a las celdas de cambio, distinta del IoU sobre el estado urbano final que aquí se mide. El Kappa de $0{,}445$ se interpreta entonces frente a la escala de \textcite{LandisKoch1977}, y el IoU de $0{,}633$ mide qué fracción de la unión entre lo urbano observado y lo urbano predicho en el año final coincide. El contraste con modelos de caja negra es cualitativo: sitios, clases y horizontes distintos.
 
 % ============================================================
 \section{Síntesis del desempeño del modelo}
