@@ -100,7 +100,7 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 	bajo supuestos declarados, leídos como escenarios y no como planes calibrados. \\
 	\addlinespace
 	R3 & Replicabilidad y apertura &
-	El flujo completo debe ser documentado, reproducible y ejecutable sin software propietario
+	El procesamiento debe ser documentado, reproducible y ejecutable sin software propietario
 	ni hardware especializado, con calibración sistemática y tiempos de cómputo razonables. \\
 	\addlinespace
 	R4 & Interpretabilidad de la función de transición &
@@ -135,7 +135,7 @@ El primer objetivo específico (OE1) consiste en construir una serie histórica 
 (1984--2020) de mapas binarios urbano/no-urbano para la ZMQ a partir de imágenes de
 archivo de Google Earth, empleando clasificación no supervisada para prescindir de
 etiquetas manuales, de modo que el flujo de adquisición y preprocesamiento sea
-replicable sin software propietario. Sobre esa serie, el segundo objetivo (OE2) selecciona y
+cuyo procesamiento es replicable sin software propietario. Sobre esa serie, el segundo objetivo (OE2) selecciona y
 calcula las variables espaciales derivadas de los mapas binarios, que sirven de evidencia
 empírica al modelo WoE. La elección de WoE como función de transición, frente a
 alternativas como la regresión logística o las redes neuronales, responde a su capacidad
@@ -179,7 +179,7 @@ en la ZMQ. \textbf{P3} examina si el modelo mantiene la estabilidad de su desemp
 evaluarse en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020). Cada
 ventana queda fuera del entrenamiento; entre sí se solapan. \textbf{P4} plantea si el flujo
 completo, desde la adquisición de imágenes hasta la validación, se ejecuta con herramientas
-de código abierto en una CPU estándar, sin GPU ni software propietario.
+de código abierto en una CPU estándar, sin GPU ni software propietario, una vez disponibles las capturas.
 
 \subsection{Hipótesis}
 
@@ -191,7 +191,7 @@ De esa hipótesis general se derivan cuatro particulares, cada una falsable con 
 
 \textbf{H2 (estabilidad temporal).} El desempeño del modelo se sostiene en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020), sin degradación sistemática atribuible al modelo. El valor más bajo se asocia a la ventana de menor crecimiento neto observado, no a un fallo de calibración.
 
-\textbf{H3 (reproducibilidad).} El flujo completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado.
+\textbf{H3 (reproducibilidad).} El procesamiento completo, desde las capturas hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado. La adquisición de las imágenes depende del visor de Google Earth, que no es de código abierto; esa es la única dependencia externa del flujo y se documenta como tal.
 
 \textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con un FoM por encima del subconjunto de aplicaciones con FoM inferior a $0{,}15$ del espectro multi-sitio de \textcite{pontius2008comparing}, acompañado de valores de Kappa e IoU sostenidos en los cinco períodos, sin recurrir a representaciones de caja negra.
 
