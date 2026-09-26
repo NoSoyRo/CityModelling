@@ -192,3 +192,5 @@ data-copy-tesis.zip
 **/aux_files/
 report/tesis/tesis_indice_nuevo/caps_larraga/main.pdf
 **/cap0*_standalone.pdf
+# Copia expandida para Overleaf: se regenera con tools/preparar_overleaf.py
+entregas/overleaf/
