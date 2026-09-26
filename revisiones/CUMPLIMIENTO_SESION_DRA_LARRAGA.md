@@ -2,8 +2,8 @@
 
 **Sesión:** 4 de agosto de 2026, 18:04 CST (1 h 43 min)  
 **Fuentes:** `revisiones/SESION DRA/NOTAS`, `revisiones/SESION DRA/TRANSCRIPTION.TXT`  
-**Estado del documento:** 130 páginas, cero errores de compilación, cero referencias y citas indefinidas  
-**Fecha de este reporte:** 2 de septiembre de 2026 (última verificación independiente)
+**Estado del documento:** 135 páginas, cero errores de compilación, cero referencias y citas indefinidas  
+**Fecha de este reporte:** 18 de septiembre de 2026 (última verificación independiente)
 
 Este reporte recorre los **25 acuerdos** de la lista de próximos pasos y los **33 detalles** de la transcripción. Cada punto lleva la evidencia en el archivo, con línea, para que pueda verificarse sin abrir el PDF. Las rutas son relativas a `report/tesis/tesis_indice_nuevo/caps_larraga/`.
 
@@ -443,6 +443,153 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 
 ---
 
+## 10. Validación completa del aparato de citas
+
+Esta sección no corresponde a un punto de la sesión. Se añade porque, al revisar las
+fuentes una por una antes de pulir la redacción, aparecieron errores que conviene reportar
+por iniciativa propia y no esperar a que un sinodal los encuentre.
+
+Se validaron **las 82 entradas de la bibliografía y las 180 afirmaciones que el documento
+atribuye a terceros**, en dos rondas: la primera sobre el texto entregado el 2 de
+septiembre, la segunda sobre el texto ya corregido, para comprobar en lugar de repetir.
+Cada afirmación se contrastó con la oración literal del documento, no con un resumen. El
+procedimiento está en `tools/expediente_referencias.py` y el acta completa en
+`revisiones/validacion_referencias/ROUND2_ESTADO.md`.
+
+Saldo: 150 afirmaciones correctas, 22 acotadas por sobreextensión, 6 corregidas por
+incorrectas, 2 reformuladas para no depender de una fuente inaccesible, y 2 referencias que
+resultaron inexistentes.
+
+### Las dos referencias que no existían
+
+`aguilar2003urbanization` combinaba metadatos de un artículo real de Aguilar, Ward y Smith
+con un título y una autoría única fabricados; no hay artículo con ese título en ese número.
+Sostenía la afirmación sobre el crecimiento de las ciudades intermedias mexicanas, que
+ahora se apoya en `Wahyudi2016` y en el propio Capítulo 3.
+
+`DelgadoLopez2018` tampoco existe: el rango de páginas declarado se solapa con artículos
+reales del mismo número. Sostenía que la dinámica de Querétaro está documentada, y esa
+afirmación ya la respaldaba `Huacuz2018Metropolizacion`, de modo que solo se retiró la cita.
+
+### Los errores de atribución que más importan
+
+**El Information Value no proviene de Bonham-Carter.** Es el error de fondo más serio,
+porque el IV es lo que pondera las siete variables del modelo. No forma parte de la
+formulación del WoE: viene de la práctica de tarjetas de puntuación en riesgo de crédito.
+Ahora se atribuye a `Siddiqi2006`, y se advierte que en la literatura de susceptibilidad
+geoespacial el mismo término designa otro método, que aquí no se emplea.
+
+**La escala del IV estaba mal transcrita.** Decía «muy fuerte» para valores por encima de
+0,50, cuando la fuente los califica de *sospechosos*. Corregirla obligaba a rendir cuentas,
+porque seis de las siete variables están entre 1,16 y 3,27. El Capítulo 5 ya lo enfrentaba:
+confronta el umbral y diagnostica la causa real, que son los *bins* degenerados. En
+`distance_urban`, el 85,2 % de su IV proviene de uno solo.
+
+**La crítica a Kappa es de Pontius y Millones (2011)**, no del comparativo multi-sitio de
+2008, donde la palabra «Kappa» no aparece.
+
+**Se retiró un dato que no se podía sostener.** El documento citaba un rango de FoM «de 1 %
+a 59 %» de Pontius et al. (2008). Esa cifra solo se puede leer de la altura de las barras
+de su Figura 4. Se sustituyó por lo que el artículo afirma con palabras, que además es más
+favorable al argumento: en doce de trece aplicaciones el error supera al cambio
+correctamente predicho, las seis por debajo del 15 % son las de menor cambio neto
+observado, y una sola rebasa el 50 %.
+
+**Se corrigió una atribución que restaba crédito al propio trabajo.** El documento daba a
+Pontius el argumento de que validar en ventanas desplazadas detecta el sobreajuste. Pontius
+no lo dice: documenta que el FoM crece con el cambio neto observado. La inferencia es del
+autor de esta tesis y ahora aparece como tal.
+
+**Se rectificaron hechos sobre trabajos de otros autores.** Suárez y Delgado (2007) sí
+calibran sobre cambio histórico a nivel de celda, con 82,9 % de exactitud sobre 15 670
+celdas, y publican sus coeficientes; se les estaba negando algo que hacen y se corrigió su
+valoración en el cuadro comparativo. Ramírez y Hernández (2021) no está inspirado en
+SLEUTH, sino que es econométrico con simulación Monte Carlo. El estudio de Chihuahua (2023)
+emplea IDRISI Selva, no TerrSet.
+
+### Verificación de las cifras propias
+
+Se cotejaron las cifras del documento contra los datos de origen. La tabla de Information
+Value del Capítulo 5 coincide con el modelo entrenado al cuarto decimal, variable por
+variable, y su total de 11,6135 es exacto. Las cinco parejas de FoM y Kappa coinciden con
+los archivos `validation_results.json` y promedian 0,317 y 0,445, que es lo que afirma el
+texto.
+
+### Lo que no quedó cerrado
+
+Las afirmaciones atribuidas a los libros de Bonham-Carter (1994) y Siddiqi (2006) están
+confirmadas por fuentes independientes concordantes, no por el texto de los propios libros,
+que son de acceso restringido. El riesgo es bajo, pero se declara en lugar de presentarlo
+como verificación directa.
+
+---
+
+## 11. Dos afirmaciones propias que no resistían una revisión
+
+Cerrada la validación de las fuentes externas, se hizo una última pasada sobre las
+afirmaciones que el documento hace **sobre sí mismo**. Aparecieron dos que eran
+contestables, y ninguna de las dos venía de la sesión con la Dra. Lárraga: son hallazgos
+propios que se corrigen antes de que los levante un sinodal.
+
+### La apertura del flujo estaba mal acotada
+
+El documento afirmaba en nueve lugares que el flujo corre «sin software propietario», y
+varias de esas frases lo decían en la misma oración que mencionaba las capturas de Google
+Earth. El visor de Google Earth es software propietario, así que la oración se contradecía
+sola. El problema no era menor por estar en H3 y en el requerimiento R3, y porque chocaba
+con el criterio que el capítulo 3 aplica a los demás modelos, donde el argumento es sobre
+la apertura del código y no sobre el precio de la licencia.
+
+La afirmación quedó acotada al procesamiento, que es lo que realmente corre sobre
+bibliotecas de código abierto y es verificable contra `pyproject.toml`, y la dependencia
+del visor para la adquisición se declara de forma explícita como la única externa del
+flujo. Afecta a `cap01:103,138,182,194`, `cap06:518`, `cap07:38,42,52,78`, y al resumen y
+al abstract.
+
+### El archivo Landsat sí es una alternativa
+
+El capítulo 4 cerraba la justificación de la fuente diciendo que no existe una alternativa
+con calibración radiométrica homogénea y acceso libre que cubra desde 1984. Es falso.
+Landsat 5 TM operó desde 1984, el archivo es gratuito desde 2008, está georreferenciado e
+incluye la banda infrarroja de la que las capturas carecen. La frase invitaba justamente la
+objeción que pretendía cerrar, y además no hacía falta, porque el resto de la
+justificación ya se sostenía por la consistencia del encuadre.
+
+`cap05:44` ahora reconoce la alternativa, explica lo que costaría usarla (composición de
+escenas por nubosidad, armonización entre TM, ETM+ y OLI, y las franjas sin dato que
+Landsat 7 arrastra desde la falla de su corrector de línea de barrido en 2003) y defiende
+la decisión por el argumento que sí es sólido. La reconstrucción de la serie sobre imagen
+calibrada se incorporó como cuarta línea de trabajo futuro a corto plazo en `cap07:148`,
+con un propósito concreto: contrastar la clasificación RGB actual contra una basada en
+NDVI permitiría estimar qué parte del error de clasificación viene de la fuente y cuál del
+clasificador, que es la pregunta que la serie de capturas deja abierta.
+
+### El arranque del capítulo 1 no se había revisado
+
+Los tres primeros párrafos de la tesis eran los del borrador original y habían sobrevivido a
+todas las revisiones anteriores. No tenían ninguna cita, pese a que la sesión pidió
+explícitamente respaldar los datos y afirmaciones de la introducción (`NOTAS:24`,
+`TRANSCRIPTION:57`), y contenían dos errores comprobables.
+
+El primero: describían las capturas como imágenes «en formato JPG». Los 37 archivos de
+`data/raw/` son PNG de 3024 × 1792 píxeles, lo que se verifica en un comando. El segundo:
+atribuían a los autómatas celulares la capacidad de «mantener una precisión estable», que
+es lo contrario de lo que concluye el Capítulo 5, donde el FoM va de 0,222 a 0,378 y el
+propio texto señala que no hay estabilidad numérica estricta. A eso se sumaban tres
+afirmaciones sin respaldo sobre la sobrepoblación y sobre los modelos de inteligencia
+artificial, y una redundancia de estructura: el cuarto párrafo volvía a introducir la
+urbanización desde cero, de modo que el capítulo arrancaba dos veces.
+
+Los tres párrafos se reescribieron como tres con función distinta: el problema, con las
+fuentes que ya sostenían esa afirmación más abajo; la tensión entre modelos que aciertan y
+modelos que se pueden auditar, apoyada en Almeida (2008) para la opacidad de los pesos
+neuronales y en Ma (2019) para la dificultad de conseguir datos etiquetados; y la
+restricción de datos, que describe la fuente con exactitud y remite al Capítulo 4. El
+párrafo redundante se absorbió, así que el planteamiento perdió una página y ganó tres
+citas.
+
+---
+
 ## Anexo: correspondencia punto por punto
 
 ### Acuerdos de la lista de próximos pasos
@@ -457,7 +604,7 @@ Estos tres no salieron de la reunión con la Dra., pero conviene cerrarlos antes
 | 5   | NOTAS:24 | Referencias en datos cuantitativos                 | Resuelto               | Cap. 1 sin cifras sin cita      |
 | 6   | NOTAS:25 | Conclusiones en pretérito                          | Resuelto               | `cap07:20,87,115,141`           |
 | 7   | NOTAS:26 | Actualizar el abstract en inglés                   | Resuelto               | `front/abstract.tex`            |
-| 8   | NOTAS:27 | Corregir la estructura de la introducción          | Resuelto               | Secciones y transiciones        |
+| 8   | NOTAS:27 | Corregir la estructura de la introducción          | Resuelto               | Secciones, transiciones y arranque reescrito (`cap01:10-14`) |
 | 9   | NOTAS:28 | Antecedentes y justificación separados             | Resuelto               | `cap01:97,101`                  |
 | 10  | NOTAS:29 | Adaptar el protocolo a la introducción             | Resuelto               | Cap. 1 en presente              |
 | 11  | NOTAS:30 | Objetivos coherentes con los resultados            | Resuelto               | `cap07:40`                      |

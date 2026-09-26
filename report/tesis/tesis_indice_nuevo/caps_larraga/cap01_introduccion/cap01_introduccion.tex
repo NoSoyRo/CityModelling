@@ -7,17 +7,13 @@
 
 \section{Planteamiento del problema}
 
-En el mundo, la sobrepoblación representa un problema severo en términos de recursos, competencia y calidad de vida. La ciencia ha intentado abordar el problema con diferentes estrategias, por ejemplo el uso de modelos de inteligencia artificial para predecir el volumen de población en el futuro; sin embargo, estos modelos son muy costosos y no auditables, y nunca se sabe qué están aprendiendo realmente. Se han intentado vías de modelado por medio de ecuaciones diferenciales, pero hacerlos requiere de una capacidad muy grande de poder abstraer matemáticamente relaciones y entidades, lo cual no es del todo trivial. De modo que la ciencia ha estado buscando estrategias que permitan modelar el crecimiento urbano de manera más eficiente y precisa; dentro de ellas existe el subcampo de las ciencias de la computación que adopta estrategias de autómatas celulares, que permiten mantener una precisión estable así como la capacidad de auditar cada decisión tomada al hacer una predicción. 
+La superficie urbana del planeta crece más rápido que la población que la habita, y ese crecimiento se concentra en la periferia de las ciudades \parencite{Seto2012,UNHabitat2020,Angel2012}. La urbanización es un proceso social que transforma el territorio donde habita el ser humano, y el ritmo al que avanza rebasa la capacidad de los instrumentos que deberían ordenarla. De ahí la utilidad de anticipar qué suelo no urbano se convertirá en urbano: de ello depende que la vivienda y los servicios lleguen antes que la ocupación y no después.
 
-Los medios existen y han sido parte del desarrollo de la misma ciencia del urbanismo; sin embargo, obtener datos (hasta hace unos años) ha sido uno de los más grandes retos, así como la capacidad de cómputo para procesarlos. Si se desea realizar predicciones precisas y sostenibles que sean auditables, se tiene que asegurar que los datos sean suficientes y alcanzables.
+Para responder esa pregunta se han desarrollado familias de modelos distintas. Los autómatas celulares son una de las más establecidas en el estudio del cambio de uso de suelo, porque representan el territorio como una rejilla de celdas cuyo estado evoluciona según reglas locales y explícitas. La vía que más se ha extendido en los últimos años consiste, en cambio, en aprender la regla de transición con redes neuronales. Esos modelos alcanzan ajustes satisfactorios, pero sus pesos no se dejan traducir a una pregunta geográfica, de modo que no puede afirmarse cuánto aportó cada variable a la transición de una celda concreta \parencite{almeida2008stochastic}; su aplicación en teledetección arrastra además la dificultad recurrente de conseguir datos etiquetados \parencite{Ma2019}. La distinción pesa cuando el destinatario del modelo es un instrumento de planeación, porque este necesita justificar sus decisiones y no solo acertarlas.
 
-Google Earth, en su aplicación de escritorio, ofrece una herramienta que permite viajar en el tiempo para observar una vista satelital de una zona geográfica. Esas capturas muestran cómo ha cambiado una ciudad año con año. Estas capturas no son mapas de algún tipo: son imágenes en formato JPG que requieren ser traducidas a zona urbana/no urbana.
+Al problema de la interpretabilidad se suma uno de datos. Evaluar un modelo de crecimiento urbano exige una serie de mapas comparables lo bastante larga para cubrir varios períodos, y esa serie rara vez está disponible para una ciudad concreta. La aplicación de escritorio de Google Earth ofrece una vía indirecta, pues su herramienta de imagen histórica permite recuperar la vista de una misma zona en distintos años. Lo que entrega, sin embargo, no son mapas: son capturas de pantalla en formato PNG, sin georreferencia y limitadas a las tres bandas del color visible, que hay que traducir a una clasificación urbano/no urbano antes de poder usarlas. El Capítulo~\ref{ch:modelo-crecimiento-urbano} describe esa fuente, la geometría que se recuperó de ella y los límites que impone.
 
-La urbanización es un proceso social que transforma el territorio donde habita el ser humano. Una fracción significativa y creciente de la población mundial vive en ciudades, y la superficie urbana se expande más rápido que la población que la alberga \parencite{Seto2012,UNHabitat2020,Angel2012}.
-
-Predecir el crecimiento urbano es necesario, pues impacta en la posibilidad de asegurar que el ser humano viva en condiciones adecuadas de vivienda y con los servicios necesarios para su existencia. Como ya se ha mencionado, se han creado diferentes tipos de modelos para predecir este cambio de uso de suelo; entre ellos se encuentran los autómatas celulares, como uno de los principales exponentes en este terreno.  
-
-Su utilidad práctica, sin embargo, depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
+La utilidad práctica de estos modelos depende de tres condiciones que rara vez se cumplen a la vez: que la regla de transición sea interpretable, que el desempeño se valide en más de un horizonte temporal y que el flujo completo sea reproducible con datos abiertos.
 
 Estas tensiones se agudizan en las ciudades intermedias mexicanas, poco representadas en la literatura de modelado urbano: la revisión de \textcite{Wahyudi2016}, que clasifica por región ochenta y ocho aplicaciones de autómatas celulares urbanos, encuentra que al menos la mitad se concentra en ciudades de Estados Unidos y China, mientras que las de América del Sur son escasas. El Capítulo~\ref{ch:estado-del-arte} documenta ese vacío para el caso mexicano. La Zona Metropolitana de Querétaro sirve en este trabajo como caso de uso particular para ejercitar y validar el siguiente protocolo o algoritmo: una ciudad intermedia con una dinámica de expansión representativa y una serie de imágenes de archivo lo bastante larga para evaluarlo en varios períodos. Esto último tomará una gran relevancia al momento de definir por qué el diseño de la solución es correcto en términos de reproducibilidad y validación.
 
@@ -100,7 +96,7 @@ Tabla~\ref{tab:requerimientos_modelo_1}.
 	bajo supuestos declarados, leídos como escenarios y no como planes calibrados. \\
 	\addlinespace
 	R3 & Replicabilidad y apertura &
-	El flujo completo debe ser documentado, reproducible y ejecutable sin software propietario
+	El procesamiento debe ser documentado, reproducible y ejecutable sin software propietario
 	ni hardware especializado, con calibración sistemática y tiempos de cómputo razonables. \\
 	\addlinespace
 	R4 & Interpretabilidad de la función de transición &
@@ -127,7 +123,7 @@ El proyecto presente diseñó e implementó la validación de un modelo que acop
 
 \subsection{Objetivo general}
 
-Diseñar e implementar un modelo utilizando autómatas celulares con pesos de evidencia y con validaciones multitemporales sobre un conjunto de datos. En particular se validó el modelo con el caso de uso de la Zona Metropolitana de Querétaro en el período 1984--2020. Este modelo debe cumplir con los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} y debe ser capaz de simular auditablemente el crecimiento urbano de la ciudad de Querétaro en el período 1984--2020.
+Diseñar e implementar un modelo utilizando autómatas celulares con pesos de evidencia y con validaciones multitemporales sobre un conjunto de datos. En particular, se validó el modelo con el caso de uso de la Zona Metropolitana de Querétaro en el período 1984--2020. Este modelo debe cumplir con los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} y debe ser capaz de simular auditablemente el crecimiento urbano de la ciudad de Querétaro en el período 1984--2020.
 
 \subsection{Objetivos específicos}
 
@@ -135,7 +131,7 @@ El primer objetivo específico (OE1) consiste en construir una serie histórica 
 (1984--2020) de mapas binarios urbano/no-urbano para la ZMQ a partir de imágenes de
 archivo de Google Earth, empleando clasificación no supervisada para prescindir de
 etiquetas manuales, de modo que el flujo de adquisición y preprocesamiento sea
-replicable sin software propietario. Sobre esa serie, el segundo objetivo (OE2) selecciona y
+cuyo procesamiento es replicable sin software propietario. Sobre esa serie, el segundo objetivo (OE2) selecciona y
 calcula las variables espaciales derivadas de los mapas binarios, que sirven de evidencia
 empírica al modelo WoE. La elección de WoE como función de transición, frente a
 alternativas como la regresión logística o las redes neuronales, responde a su capacidad
@@ -179,7 +175,7 @@ en la ZMQ. \textbf{P3} examina si el modelo mantiene la estabilidad de su desemp
 evaluarse en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020). Cada
 ventana queda fuera del entrenamiento; entre sí se solapan. \textbf{P4} plantea si el flujo
 completo, desde la adquisición de imágenes hasta la validación, se ejecuta con herramientas
-de código abierto en una CPU estándar, sin GPU ni software propietario.
+de código abierto en una CPU estándar, sin GPU ni software propietario, una vez disponibles las capturas.
 
 \subsection{Hipótesis}
 
@@ -191,7 +187,7 @@ De esa hipótesis general se derivan cuatro particulares, cada una falsable con 
 
 \textbf{H2 (estabilidad temporal).} El desempeño del modelo se sostiene en cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020), sin degradación sistemática atribuible al modelo. El valor más bajo se asocia a la ventana de menor crecimiento neto observado, no a un fallo de calibración.
 
-\textbf{H3 (reproducibilidad).} El flujo completo, desde la adquisición de imágenes hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado.
+\textbf{H3 (reproducibilidad).} El procesamiento completo, desde las capturas hasta la validación quinquenal, se ejecuta con herramientas de código abierto en una CPU estándar, sin requerir GPU, software propietario ni hardware especializado. La adquisición de las imágenes depende del visor de Google Earth, que no es de código abierto; esa es la única dependencia externa del flujo y se documenta como tal.
 
 \textbf{H4 (desempeño comparable).} Aplicado a la Zona Metropolitana de Querétaro, el modelo reproduce el patrón de crecimiento con un FoM por encima del subconjunto de aplicaciones con FoM inferior a $0{,}15$ del espectro multi-sitio de \textcite{pontius2008comparing}, acompañado de valores de Kappa e IoU sostenidos en los cinco períodos, sin recurrir a representaciones de caja negra.
 
@@ -219,12 +215,21 @@ además, pesos de evidencia y valores de información (IV) legibles por variable
 decisión del modelo y facilita interpretar los resultados en términos de los mecanismos
 espaciales que los sustentan.
 
+A ello se suma una propiedad del diseño que conviene hacer explícita, porque no es un efecto
+secundario de la falta de datos sino una condición de validez. Las siete variables
+explicativas se derivan del propio mapa urbano y se recalculan en cada paso sobre el estado
+del año simulado, de modo que ninguna incorpora información posterior al momento que se
+predice. El modelo no puede, por construcción, apoyarse en capas cuya versión disponible sea
+en parte consecuencia del crecimiento que se busca explicar.
+
 El protocolo se ejercita, por último, sobre un contexto poco representado en la literatura de
 modelado urbano: las ciudades intermedias mexicanas, habitualmente analizadas con
 calibraciones heurísticas y sobre un solo horizonte temporal. Para ello se construyó una
 serie histórica larga, 37 años continuos (1984--2020), a partir de imágenes de archivo de
-acceso libre, una base temporal más extensa que la habitual en trabajos comparables para el
-país. Querétaro es el caso de uso donde el protocolo se ejercita y se valida.
+acceso libre. Esa base es más extensa que la de los trabajos comparables para el país
+revisados en la Sección~\ref{sec:vacios-mexico}, que operan sobre ventanas de diez años
+\parencite{SuarezDelgado2007}, veinte \parencite{RamirezHernandez2021}, catorce
+\parencite{JimenezLopez2018} y cinco \parencite{Chihuahua2023}. Querétaro es el caso de uso donde el protocolo se ejercita y se valida.
 
 \section{Organización del documento}
 

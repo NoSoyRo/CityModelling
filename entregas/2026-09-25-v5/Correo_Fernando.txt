@@ -1,0 +1,80 @@
+Para: Dr. Fernando Reyes <fher_u2@hotmail.com>
+Asunto: Tesis de maestría para su revisión. Modelado del crecimiento urbano de Querétaro
+Adjunto: Tesis_Moreno_Lopez_2026-09-25.pdf (136 páginas, 3,2 MB)
+
+
+Estimado Dr. Reyes:
+
+Reciba usted un saludo. Le hago llegar el documento de mi tesis de maestría para su
+revisión, dirigida por la Dra. María Elena Lárraga Ramírez en el Posgrado en Ciencia e
+Ingeniería de la Computación de la UNAM.
+
+Le anticipo un resumen para orientar la lectura.
+
+QUÉ HACE EL TRABAJO
+
+La tesis acopla el método estadístico de Pesos de Evidencia con un autómata celular para
+simular la expansión de la mancha urbana de la Zona Metropolitana de Querétaro. El modelo
+aprende de la historia cuánta evidencia aporta cada configuración espacial a que una celda
+no urbana se vuelva urbana, y después deja que esa regla se aplique paso a paso sobre un
+mapa que va cambiando.
+
+ALCANCE
+
+La serie cubre 37 años continuos, de 1984 a 2020, sobre una ventana de unos 3 900 km² con
+una celda de 26,7 m de lado. Cada mapa tiene 5,4 millones de celdas, de modo que el modelo
+se estima y se evalúa sobre unos 200 millones de observaciones celda-año. Todo el
+procesamiento corre con bibliotecas de código abierto, sin datos de pago y sin verdad
+terreno etiquetada: la clasificación de celdas se resuelve con una cadena no supervisada.
+
+CÓMO SE VALIDÓ, QUE ES EL PUNTO CENTRAL
+
+Los pesos se estimaron únicamente con las transiciones de 1984 a 2010. El período de 2011 a
+2020 se reservó sin tocarlo y ahí se evaluó el modelo en cinco ventanas quinquenales
+desplazadas: 2011-2016, 2012-2017, 2013-2018, 2014-2019 y 2015-2020. Ninguna cae dentro del
+período de ajuste.
+
+El Figure of Merit promedio es 0,317, con un rango de 0,222 a 0,378 entre las cinco
+ventanas. El Kappa promedio es 0,445 y el IoU 0,633. En el documento se reporta el rango
+completo y no el valor más favorable, porque el interés está en si el desempeño se sostiene
+entre ventanas y no en qué tan alto llega en la mejor.
+
+QUÉ ES Y QUÉ NO ES LA APORTACIÓN
+
+El acoplamiento entre Pesos de Evidencia y autómatas celulares está documentado en la
+literatura y el trabajo no lo reclama como propio. Lo que se propone son cuatro decisiones.
+
+Primera, el protocolo de validación en cinco ventanas desplazadas y fuera del período de
+ajuste, que permite distinguir un desempeño estructural de un ajuste a una fase concreta
+del crecimiento. Es la aportación principal y de ella dependen las demás.
+
+Segunda, la validez temporal de los predictores. Las siete variables explicativas se
+derivan del propio mapa urbano y se recalculan en cada paso sobre el estado del año
+simulado, de modo que ninguna incorpora información posterior al momento que se predice.
+
+Tercera, una regla de transición auditable variable por variable. El método clásico suma
+los pesos de evidencia sin distinguir entre variables. Aquí cada una se pondera por su
+Information Value normalizado, de modo que las de mayor poder discriminativo pesan más en
+la decisión y la contribución de cada variable queda a la vista.
+
+Cuarta, la reproducibilidad del flujo completo con herramientas abiertas, aplicado a una
+ciudad intermedia mexicana.
+
+DÓNDE MIRAR
+
+El documento tiene seis capítulos y un apéndice. El Capítulo 4 concentra el modelo y el
+protocolo de validación, y el Capítulo 5 los resultados. Las limitaciones están declaradas
+de forma explícita en el Capítulo 6, incluida la principal, que es de origen de los datos:
+las imágenes provienen de capturas de archivo cuya geometría se recuperó por registro
+contra un mosaico de referencia, y ese registro resultó sólido en 17 de las 37 imágenes.
+
+Quedo a sus órdenes para cualquier aclaración, y con gusto le comparto el repositorio de
+código y datos si le resulta útil para la revisión.
+
+Agradezco de antemano su tiempo y su lectura.
+
+Atentamente,
+
+José Rodrigo Moreno López
+Maestría en Ciencia e Ingeniería de la Computación
+Posgrado en Ciencia e Ingeniería de la Computación, UNAM
