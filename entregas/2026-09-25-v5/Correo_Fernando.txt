@@ -21,7 +21,7 @@ mapa que va cambiando.
 
 ALCANCE
 
-La serie cubre 37 años continuos, de 1984 a 2020, sobre una ventana de unos 3 900 km² con
+La serie cubre 37 años continuos, de 1984 a 2020, sobre una ventana de unos 3 870 km² con
 una celda de 26,7 m de lado. Cada mapa tiene 5,4 millones de celdas, de modo que el modelo
 se estima y se evalúa sobre unos 200 millones de observaciones celda-año. Todo el
 procesamiento corre con bibliotecas de código abierto, sin datos de pago y sin verdad
@@ -42,20 +42,22 @@ entre ventanas y no en qué tan alto llega en la mejor.
 QUÉ ES Y QUÉ NO ES LA APORTACIÓN
 
 El acoplamiento entre Pesos de Evidencia y autómatas celulares está documentado en la
-literatura y el trabajo no lo reclama como propio. Lo que se propone son cuatro decisiones.
+literatura y el trabajo no lo reclama como propio. La aportación central es el protocolo de
+evaluación, y de él se derivan las demás.
 
 Primera, el protocolo de validación en cinco ventanas desplazadas y fuera del período de
 ajuste, que permite distinguir un desempeño estructural de un ajuste a una fase concreta
-del crecimiento. Es la aportación principal y de ella dependen las demás.
+del crecimiento.
 
 Segunda, la validez temporal de los predictores. Las siete variables explicativas se
 derivan del propio mapa urbano y se recalculan en cada paso sobre el estado del año
 simulado, de modo que ninguna incorpora información posterior al momento que se predice.
 
-Tercera, una regla de transición auditable variable por variable. El método clásico suma
-los pesos de evidencia sin distinguir entre variables. Aquí cada una se pondera por su
-Information Value normalizado, de modo que las de mayor poder discriminativo pesan más en
-la decisión y la contribución de cada variable queda a la vista.
+Tercera, una regla de transición auditable variable por variable: cada una de las siete se
+pondera por su Information Value normalizado, de modo que las de mayor poder discriminativo
+pesan más en la decisión y la contribución de cada una queda a la vista. El documento la
+presenta como una decisión instrumental y subordinada al protocolo, no como una novedad
+metodológica.
 
 Cuarta, la reproducibilidad del flujo completo con herramientas abiertas, aplicado a una
 ciudad intermedia mexicana.
