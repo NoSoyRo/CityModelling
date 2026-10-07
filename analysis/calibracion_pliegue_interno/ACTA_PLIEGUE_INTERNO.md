@@ -1,28 +1,55 @@
 # Calibración de theta y alpha con un pliegue interno a 1984-2010
 
-Rama `calibracion/pliegue-interno`. No modifica las fuentes de la tesis ni los
-resultados publicados. El pickle `woe_pooled_1984_2010.pkl` se abre solo en
-lectura y su hash sigue siendo idéntico al de `main`.
+## Qué de aquí entró a la tesis y qué no
 
-Todo el experimento vive bajo esta carpeta, igual que `analysis/ga_calibration/`:
+Conviene leer esto primero, porque el acta documenta más de lo que el documento
+contiene.
+
+**Entró a la tesis** el protocolo de dos etapas y el par que produce. Los pesos
+de evidencia y su Information Value se estiman con las 26 transiciones anuales de
+1984 a 2010; con esos pesos ya fijos, theta y alpha se eligen por búsqueda en
+cuadrícula sobre las seis ventanas internas a ese mismo período; el par
+resultante, **theta = 0,85 y alpha = 0,60**, se aplica después sin reajuste a las
+cinco ventanas de 2011-2020. Los Capítulos 4, 5 y 6, el resumen y las cinco
+figuras de resumen se actualizaron con ese par.
+
+**No entró a la tesis**, por decisión explícita, el barrido B: la repetición del
+ejercicio con un WoE reestimado únicamente con 1984-1999. Se conserva aquí como
+resultado al que volver, no como material del documento. Su función es responder
+la objeción de que las ventanas internas caen dentro del período con el que se
+estimaron los pesos, y su lugar es la defensa o el cierre de investigación. El
+WoE de 1984-1999 vive solo en memoria y nunca se escribió a disco; el pickle
+publicado `woe_pooled_1984_2010.pkl` conserva su hash original.
+
+El hallazgo sobre la inestabilidad del Information Value, más abajo, depende de
+ese barrido B y por tanto tampoco está en la tesis. Es la deuda metodológica más
+concreta que deja este ejercicio.
+
+## Dónde está cada cosa
 
 ```
 analysis/calibracion_pliegue_interno/
 ├── ACTA_PLIEGUE_INTERNO.md              este documento
+├── CORREO_LARRAGA.md                    lo que se le reportó a la asesora
 ├── calibracion_pliegue_interno.py       reproduccion y primer barrido
-├── calibracion_anidada.py               6 ventanas, con y sin fuga
-└── resultados/                          los cinco JSON de salida
+├── calibracion_anidada.py               6 ventanas, barridos A y B
+├── evaluacion_final.py                  tanda completa de metricas
+├── figuras_resumen.py                   regenera las 5 figuras summary
+├── _sustituir_cifras.py                 sustitucion de cifras en los .tex
+└── resultados/                          los seis JSON de salida
 ```
 
 Lee de `data/processed/standardized_maps/`, del pickle publicado y de
-`tools/variables_rapidas.py`, que ya existía en `main`. No escribe nada fuera de
-`resultados/`.
+`tools/variables_rapidas.py`, que ya existía en `main`. Los scripts de
+calibración no escriben nada fuera de `resultados/`.
 
 ```bash
 cd <raiz del repo>
 .venv/bin/python analysis/calibracion_pliegue_interno/calibracion_pliegue_interno.py verificar   # reproduce la tesis
 .venv/bin/python analysis/calibracion_pliegue_interno/calibracion_pliegue_interno.py calibrar    # primer barrido, 3 ventanas
-.venv/bin/python analysis/calibracion_pliegue_interno/calibracion_anidada.py                     # 6 ventanas, con y sin fuga
+.venv/bin/python analysis/calibracion_pliegue_interno/calibracion_anidada.py                     # 6 ventanas, barridos A y B
+.venv/bin/python analysis/calibracion_pliegue_interno/evaluacion_final.py                        # metricas de los capitulos
+.venv/bin/python analysis/calibracion_pliegue_interno/figuras_resumen.py                         # figuras de los capitulos
 ```
 
 ## Por qué se hizo
@@ -159,8 +186,11 @@ vecindad y no por la distancia al frente urbano.
 
 ## Qué no se ha hecho
 
-- No se han tocado los resultados publicados ni los archivos de la tesis.
-- El WoE reestimado con 1984-1999 vive solo en memoria; no se guardó a disco.
+- El barrido B no está en la tesis y no debe añadirse sin decisión expresa.
+- El WoE reestimado con 1984-1999 vive solo en memoria; no se guardó a disco. Si
+  se quisiera retomar, basta volver a correr `calibracion_anidada.py`, que tarda
+  unos 30 segundos en reentrenarlo.
+- El pickle publicado no se modificó; solo se abre en lectura.
 - El par del barrido B se eligió con un WoE distinto del publicado y después se
   aplicó al modelo con el WoE publicado. Es una prueba de robustez, no un
   protocolo anidado completo, que exigiría también evaluar con el WoE de
