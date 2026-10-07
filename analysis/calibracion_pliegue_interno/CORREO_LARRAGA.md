@@ -1,11 +1,13 @@
-Asunto: Capítulo 4 — corrí el pliegue interno que le propuse, y cambia una cosa
+Asunto: Corrí el pliegue interno que le propuse y cambié los capítulos en consecuencia
 
 Estimada Dra. Lárraga:
 
 En mi correo anterior le planteé el pliegue interno dentro de 1984–2010 como
 trabajo de culminación, fuera del alcance de titulación. Lo corrí. Resultó mucho
-más barato de lo que suponía y preferí traerle el resultado antes de reescribir
-nada del Capítulo 4.
+más barato de lo que suponía, y el resultado fue lo bastante claro como para que
+ya no tuviera sentido dejarlo fuera: actualicé con él los Capítulos 4, 5 y 6 y el
+resumen. Le detallo todo abajo, incluido lo que cambió de narrativa y no solo de
+cifra.
 
 Le adelanto la conclusión, porque es la que importa: el barrido no reproduce el
 umbral de 0,75 de la tesis. Elige 0,85. Pero el par que elige se comporta mejor
@@ -102,22 +104,34 @@ Y mejora la estabilidad temporal, que era su pregunta de fondo. El factor entre
 la mejor y la peor ventana baja de 1,70 a 1,57 en FoM y de 1,43 a 1,30 en Kappa.
 La dispersión sigue siendo real; no voy a llamarla estabilidad estricta.
 
+Hay un efecto que no es de magnitud sino de interpretación, y es el que más me
+hizo pensar. Con el par publicado, el desacuerdo de cantidad concentraba el 79,3
+por ciento del desacuerdo total y dominaba en las cinco ventanas, lo que permitía
+la lectura cómoda de que el modelo acierta dónde y falla en cuánto. Con el par
+calibrado baja al 62,4 por ciento, y el promedio deja de ser representativo: la
+cantidad sigue dominando en las dos ventanas de menor crecimiento observado, con
+86,2 y 77,5 por ciento, pero en las tres ventanas de crecimiento positivo cae al
+rango de 42,7 a 48,6 y el desacuerdo de asignación pasa a ser el mayoritario.
+
+Eso obligó a reescribir la sección de descomposición del error, no solo a
+renumerarla. La lectura que queda es más matizada y, me parece, más honesta:
+cuando la señal de cambio es débil el margen de mejora está en estimar la
+magnitud del crecimiento, y cuando es clara el límite lo pone la regla que decide
+dónde ocurre.
+
 6. Qué se puede afirmar ahora
 
-Mantengo lo que le escribí: en la tesis tal como está, el umbral no es hold-out
-de 2011–2020, y las dos frases que lo afirman de más se corrigen. Son el párrafo
-de calibración del Capítulo 5 y el pie de la figura del Capítulo 4. Eso no
-cambia.
+Le había escrito que en la tesis tal como estaba el umbral no era hold-out de
+2011–2020, y que las dos frases que lo afirmaban de más había que corregirlas. Ya
+no hay nada que corregir en ese punto, porque el umbral ahora sí se elige con
+ventanas anteriores a 2011. El protocolo que usted marcó en verde resultó
+alcanzable sin rehacer el WoE, y es el que está descrito en los capítulos.
 
-Lo que cambia es que ahora tengo evidencia de la dirección del sesgo, y va en
-contra del riesgo que usted señaló. El renglón rojo de su comparativo describe un
-desempeño que «puede verse optimista». Aquí es lo contrario: el par informado por
-2011–2016 rinde por debajo del que se obtiene sin mirar ese período. El FoM de
-0,317 no está inflado por la forma de calibrar.
-
-También queda demostrado que el protocolo verde es alcanzable sin rehacer el WoE:
-calibrar theta y alfa con ventanas anteriores a 2011 y evaluar después en las
-cinco.
+Sobre la dirección del sesgo, que era el riesgo que usted señaló: el renglón rojo
+de su comparativo describe un desempeño que «puede verse optimista». Aquí ocurre
+lo contrario. El par informado por 2011–2016 rinde por debajo del que se obtiene
+sin mirar ese período, de modo que el 0,317 que reportaba la versión anterior no
+estaba inflado por la forma de calibrar, sino al revés.
 
 7. Un hallazgo que no buscaba y que sí me preocupa
 
@@ -150,31 +164,48 @@ densidades de vecindad y no por la distancia al frente urbano. Pero la lectura
 interpretativa del IV sí queda tocada, y preferí decírselo antes de que lo
 encuentre un sinodal.
 
-8. Qué propongo
+8. Qué cambié en el documento
 
-No he modificado nada de la tesis ni de los resultados publicados. El ejercicio
-está en una rama aparte del repositorio, con su propia carpeta, su bitácora y los
-archivos de salida. El pickle de pesos de la tesis conserva su huella digital
-original y el WoE reentrenado no se guardó en disco.
+Adopté el protocolo de dos etapas y el par theta = 0,85, alfa = 0,60. Los pesos
+de evidencia y su Information Value se estiman con las 26 transiciones anuales de
+1984 a 2010; con esos pesos ya fijos, el umbral y el peso de vecindad se eligen
+por búsqueda en cuadrícula sobre las seis ventanas internas a ese mismo período;
+y el par resultante se aplica después, sin reajuste, a las cinco ventanas de
+2011–2020. Ninguna de las cinco interviene en la elección de los parámetros.
 
-Sobre qué hacer con esto, tengo una duda genuina y es suya la decisión.
+Lo que esto tocó:
 
-La primera opción es dejar la tesis como está, corregir solo las dos frases que
-afirman de más, y reservar todo este ejercicio para la defensa y para el cierre de
-investigación. Es lo que yo mismo le propuse y es lo más conservador.
+- Capítulo 4: el umbral, el peso de vecindad y el pie de la figura del protocolo
+  de validación, que ahora dice con precisión qué se estima y qué se elige con el
+  período de ajuste.
+- Capítulo 5: la tanda completa de métricas recalculada, la sección de
+  calibración reescrita para describir las dos etapas, y la sección de
+  descomposición del error reescrita por lo que le comenté en el punto 5.
+- Capítulo 6 y resumen: las cifras de síntesis.
+- Las cinco figuras de resumen por ventana, regeneradas con el mismo diseño.
 
-La segunda es incorporarlo como una sección corta de validación adicional: el
-protocolo real queda descrito con precisión, y a continuación se muestra que una
-calibración limpia habría dado un par ligeramente distinto y un desempeño
-ligeramente mejor. Tiene la ventaja de desarmar la objeción antes de que la
-hagan, y el costo de abrir una pregunta nueva sobre la estabilidad del IV, que no
-tengo resuelta.
+Las cifras de síntesis quedan así: FoM de 0,317 a 0,325, Kappa de 0,445 a 0,526,
+exactitud de 0,722 a 0,763, IoU de 0,633 a 0,661.
 
-Lo que no haría es cambiar las cifras de la tesis por las del par nuevo. Las
-cinco ventanas publicadas se corrieron con el par publicado, y sustituirlas a
-estas alturas me parece peor que explicar bien lo que hay.
+Lo que no entró en el documento es el barrido sin fuga del punto 4. No porque lo
+esconda, sino porque no forma parte del protocolo que la tesis describe: es la
+verificación de que ese protocolo no depende de la fuga, y su lugar natural es la
+defensa o el cierre de investigación. Si usted prefiere que aparezca como una
+sección corta de validación adicional, lo escribo; mi reserva es que abriría la
+pregunta sobre la estabilidad del IV del punto 7, que no tengo resuelta.
 
-Quedo pendiente de su opinión para seguir con el Capítulo 4.
+El ejercicio completo está en una rama aparte del repositorio, con su propia
+carpeta, su bitácora y los archivos de salida. El pickle de pesos conserva su
+huella digital original y el WoE reentrenado nunca se guardó en disco.
+
+Me queda una duda de forma sobre el Capítulo 1, aparte de todo lo anterior. Al
+sustituir las cuatro hipótesis particulares por la hipótesis general, los
+Capítulos 5 y 6 quedaron remitiendo a unas H1 a H4 que ya no estaban enunciadas.
+Seguí la salida que usted misma apunta en su comentario y las convertí en cuatro
+criterios de evaluación, C1 a C4, uno por cada pregunta de investigación. Si
+prefiere otra solución, el cambio es acotado.
+
+Quedo pendiente de su opinión.
 
 Saludos cordiales,
 

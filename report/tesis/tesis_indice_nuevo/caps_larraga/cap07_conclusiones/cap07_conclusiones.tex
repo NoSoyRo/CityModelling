@@ -6,14 +6,14 @@
 \label{ch:conclusiones}
 
 \begin{resumen}
-Este capítulo sintetiza los hallazgos de la investigación, delimita sus alcances, identifica las limitaciones del modelo y propone direcciones de trabajo futuro, entre ellas el uso del modelo como apoyo a la planeación. Se presentan las respuestas a las preguntas de investigación, la validación de hipótesis y las aportaciones del trabajo al campo del modelado urbano, a la luz de los resultados de la validación quinquenal múltiple (cinco períodos, 2011--2020).
+Este capítulo sintetiza los hallazgos de la investigación, delimita sus alcances, identifica las limitaciones del modelo y propone direcciones de trabajo futuro, entre ellas el uso del modelo como apoyo a la planeación. Se presentan las respuestas a las preguntas de investigación, el contraste de la hipótesis general y las aportaciones del trabajo al campo del modelado urbano, a la luz de los resultados de la validación quinquenal múltiple (cinco períodos, 2011--2020).
 \end{resumen}
 
 % ============================================================
 \section{Principales hallazgos}
 % ============================================================
 
-Esta sección sintetiza los resultados centrales de la investigación, presenta las respuestas a las preguntas formuladas en el Capítulo~\ref{ch:introduccion} y evalúa el estado de cada hipótesis a la luz de la validación quinquenal múltiple sobre cinco períodos desplazados.
+Esta sección sintetiza los resultados centrales de la investigación, presenta las respuestas a las preguntas formuladas en el Capítulo~\ref{ch:introduccion} y evalúa el estado de cada criterio de evaluación a la luz de la validación quinquenal múltiple sobre cinco períodos desplazados.
 
 \subsection{Síntesis de la investigación}
 
@@ -35,7 +35,7 @@ El FoM varía entre $0{,}240$ y $0{,}384$ según la dinámica observada. El valo
 
 \subsubsection{P4: ¿El flujo corre en código abierto y CPU?}
 
-El pipeline de procesamiento se ejecutó en Python (NumPy, SciPy, scikit-learn) a partir de las capturas, en escritorio, sin GPU ni software propietario, en un cómputo del orden de tres horas en CPU estándar; la obtención de las capturas sí requiere el visor de Google Earth, que no es de código abierto. No se ensayó una réplica geográfica en otra ciudad; H3 afirma la reproducibilidad de \emph{este} flujo, no su transferibilidad ya medida.
+El pipeline de procesamiento se ejecutó en Python (NumPy, SciPy, scikit-learn) a partir de las capturas, en escritorio, sin GPU ni software propietario, en un cómputo del orden de tres horas en CPU estándar; la obtención de las capturas sí requiere el visor de Google Earth, que no es de código abierto. No se ensayó una réplica geográfica en otra ciudad; el criterio C3 se refiere a la reproducibilidad de \emph{este} flujo, no a una transferibilidad ya medida.
 
 \subsection{Cumplimiento de los objetivos específicos}
 
@@ -55,28 +55,28 @@ El Capítulo~\ref{ch:introduccion} fijó cuatro requerimientos (Tabla~\ref{tab:r
 
 El balance es que tres de los cuatro requerimientos se cumplen y el primero lo hace con una reserva localizada y medida. Esa reserva, la sobre-predicción de la magnitud, es la que orienta las extensiones de la Sección~\ref{sec:trabajo-futuro}.
 
-\subsection{Validación de hipótesis}
+\subsection{Contraste de la hipótesis general}
 
-La hipótesis general y sus cuatro particulares, formuladas en el Capítulo~\ref{ch:introduccion}, se contrastan a continuación con los resultados del Capítulo~\ref{ch:resultados-analisis}.
+La hipótesis general y los cuatro criterios de evaluación formulados en el Capítulo~\ref{ch:introduccion} se contrastan a continuación con los resultados del Capítulo~\ref{ch:resultados-analisis}.
 
-\textbf{Hipótesis general.} Un modelo híbrido WoE-AC, calibrado y validado mediante un protocolo multitemporal sobre datos de libre acceso, permite simular de forma interpretable y reproducible el crecimiento urbano de una ciudad intermedia mexicana con un desempeño comparable al reportado en la literatura. \textbf{Estado: apoyada por la evidencia.} El modelo alcanzó en las cinco ventanas quinquenales desplazadas un FoM promedio de $0{,}325$, dentro de la banda intermedia documentada por \textcite{pontius2008comparing}, y un Kappa promedio de $0{,}526$, acuerdo moderado en la escala de \textcite{LandisKoch1977}, con implementación íntegra en Python y datos de acceso libre. La Tabla~\ref{tab:hypothesis_validation} recoge el veredicto de las cuatro hipótesis particulares.
+\textbf{Hipótesis general.} Un modelo de crecimiento urbano basado en autómatas celulares y Pesos de Evidencia, calibrado y evaluado mediante un protocolo de validación multitemporal, permite reproducir el patrón espacial del crecimiento urbano observado en la Zona Metropolitana de Querétaro durante el período 1984--2020, manteniendo una función de transición interpretable a partir de las variables espaciales utilizadas y un flujo de procesamiento reproducible a partir de las imágenes históricas disponibles. \textbf{Estado: apoyada por la evidencia.} El modelo alcanzó en las cinco ventanas quinquenales desplazadas un FoM promedio de $0{,}325$, dentro de la banda intermedia documentada por \textcite{pontius2008comparing}, y un Kappa promedio de $0{,}526$, acuerdo moderado en la escala de \textcite{LandisKoch1977}, con implementación íntegra en Python y datos de acceso libre. La Tabla~\ref{tab:hypothesis_validation} recoge el veredicto de los cuatro criterios.
 
 \begin{xltabular}{\textwidth}{@{}l X c X@{}}
-\caption{Validación de hipótesis particulares}\label{tab:hypothesis_validation}\\
+\caption{Contraste de los criterios de evaluación}\label{tab:hypothesis_validation}\\
 \toprule
-\textbf{Hip.} & \textbf{Enunciado (Cap.~\ref{ch:introduccion})} & \textbf{Estado} & \textbf{Evidencia} \\
+\textbf{Criterio} & \textbf{Enunciado (Cap.~\ref{ch:introduccion})} & \textbf{Estado} & \textbf{Evidencia} \\
 \midrule
 \endfirsthead
 \toprule
-\textbf{Hip.} & \textbf{Enunciado (Cap.~\ref{ch:introduccion})} & \textbf{Estado} & \textbf{Evidencia} \\
+\textbf{Criterio} & \textbf{Enunciado (Cap.~\ref{ch:introduccion})} & \textbf{Estado} & \textbf{Evidencia} \\
 \midrule
 \endhead
 \bottomrule
 \endlastfoot
-H1 & \textit{Interpretabilidad.} La regla de transición WoE ponderada por IV produce un modelo auditable: la distancia al frente urbano y la densidad de vecindad concentran el mayor IV, por encima de fragmentación y gradiente. & Apoyada & IV concentrado en distancia al área urbana y densidad de vecindad ($0{,}782$ del peso normalizado), por encima de fragmentación y gradiente. El orden entre distancia y densidad depende del tratamiento de las celdas no elegibles (Cap.~\ref{ch:resultados-analisis}). \\
-H2 & \textit{Estabilidad temporal.} El desempeño se sostiene en las cinco ventanas quinquenales desplazadas; el valor más bajo se asocia a la única ventana con crecimiento neto observado negativo, no a un fallo de calibración. & Parcial & FoM entre $0{,}240$ y $0{,}384$; el mínimo (2011--2016) coincide con crecimiento neto observado negativo. El patrón morfológico se sostiene; las métricas píxel a píxel varían. \\
-H3 & \textit{Reproducibilidad.} El procesamiento se ejecuta con herramientas de código abierto en CPU estándar, sin GPU ni software propietario. & Apoyada & Implementación íntegra en Python (NumPy, SciPy, scikit-learn); la adquisición de las capturas depende del visor de Google Earth; cómputo del orden de tres horas en CPU (Sección~\ref{sec:accesibilidad}). \\
-H4 & \textit{Desempeño comparable.} Aplicado a la ZMQ, el modelo reproduce el patrón de crecimiento con un FoM en la banda intermedia del espectro de \textcite{pontius2008comparing}, acompañado de Kappa e IoU sostenidos. & Apoyada & FoM promedio $0{,}325$, Kappa $0{,}526$ e IoU $0{,}661$. El contraste con caja negra es cualitativo (sitios y horizontes distintos). \\
+C1 & \textit{Interpretabilidad.} La regla de transición WoE ponderada por IV produce un modelo auditable: la distancia al frente urbano y la densidad de vecindad concentran el mayor IV, por encima de fragmentación y gradiente. & Satisfecho & IV concentrado en distancia al área urbana y densidad de vecindad ($0{,}782$ del peso normalizado), por encima de fragmentación y gradiente. El orden entre distancia y densidad depende del tratamiento de las celdas no elegibles (Cap.~\ref{ch:resultados-analisis}). \\
+C2 & \textit{Comportamiento temporal.} El desempeño se sostiene en las cinco ventanas quinquenales desplazadas; el valor más bajo se asocia a la única ventana con crecimiento neto observado negativo, no a un fallo de calibración. & Parcial & FoM entre $0{,}240$ y $0{,}384$; el mínimo (2011--2016) coincide con crecimiento neto observado negativo. El patrón morfológico se sostiene; las métricas píxel a píxel varían. \\
+C3 & \textit{Reproducibilidad.} El procesamiento se ejecuta con herramientas de código abierto en CPU estándar, sin GPU ni software propietario. & Satisfecho & Implementación íntegra en Python (NumPy, SciPy, scikit-learn); la adquisición de las capturas depende del visor de Google Earth; cómputo del orden de tres horas en CPU (Sección~\ref{sec:accesibilidad}). \\
+C4 & \textit{Desempeño comparable.} Aplicado a la ZMQ, el modelo reproduce el patrón de crecimiento con un FoM en la banda intermedia del espectro de \textcite{pontius2008comparing}, acompañado de Kappa e IoU sostenidos. & Satisfecho & FoM promedio $0{,}325$, Kappa $0{,}526$ e IoU $0{,}661$. El contraste con caja negra es cualitativo (sitios y horizontes distintos). \\
 \end{xltabular}
 
 \subsection{Aportaciones del trabajo}

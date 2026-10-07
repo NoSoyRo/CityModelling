@@ -22,7 +22,7 @@
 \contentsline {table}{\numberline {5.12}{\ignorespaces Descomposición del desacuerdo total en sus componentes de cantidad y de asignación \blx@tocontentsinit {0}\parencite {PontiusMillones2011}, sobre las $5\,419\,008$ celdas de cada ventana. El desacuerdo total es el complemento de la exactitud global de la Tabla~\ref {tab:metrics_all_periods}. La última columna es la fracción del desacuerdo atribuible a la cantidad.}}{83}{table.caption.46}%
 \contentsline {table}{\numberline {5.13}{\ignorespaces Estimación cualitativa de la contribución de fuentes de error (no cuantificada empíricamente)}}{85}{table.caption.48}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Validación de hipótesis particulares}}{93}{table.6.1}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Contraste de los criterios de evaluación}}{93}{table.6.1}%
 \contentsline {table}{\numberline {6.2}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{96}{table.caption.49}%
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{106}{table.caption.51}%
