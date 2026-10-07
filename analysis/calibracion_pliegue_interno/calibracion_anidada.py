@@ -18,7 +18,7 @@ eleccion, que es la objecion de fondo. Si eligen pares distintos, la magnitud de
 la diferencia dice cuanto importaba.
 
 Uso:
-    python tools/calibracion_anidada.py
+    python analysis/calibracion_pliegue_interno/calibracion_anidada.py
 """
 
 from __future__ import annotations
@@ -32,7 +32,7 @@ from pathlib import Path
 
 import numpy as np
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "src"))
 sys.path.insert(0, str(RAIZ / "tools"))
 
@@ -43,7 +43,7 @@ from variables_rapidas import variables_espaciales  # noqa: E402
 from tesis_ac.woe.woe import WoECalculator  # noqa: E402
 
 MAPAS = RAIZ / "data/processed/standardized_maps"
-SALIDA = RAIZ / "data/processed/calibracion_pliegue_interno"
+SALIDA = Path(__file__).resolve().parent / "resultados"
 
 VENTANAS = [(a, a + 5) for a in range(2000, 2006)]
 SEMILLA = 20260918

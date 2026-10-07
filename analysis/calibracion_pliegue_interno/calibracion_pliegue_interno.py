@@ -26,8 +26,8 @@ deliberadas:
   es justo lo que impide comparar configuraciones entre si.
 
 Uso:
-    python tools/calibracion_pliegue_interno.py verificar
-    python tools/calibracion_pliegue_interno.py calibrar
+    python analysis/calibracion_pliegue_interno/calibracion_pliegue_interno.py verificar
+    python analysis/calibracion_pliegue_interno/calibracion_pliegue_interno.py calibrar
 """
 
 from __future__ import annotations
@@ -42,13 +42,13 @@ from pathlib import Path
 import numpy as np
 from scipy.ndimage import convolve
 
-RAIZ = Path(__file__).resolve().parents[1]
+RAIZ = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(RAIZ / "src"))
 sys.path.insert(0, str(RAIZ / "tools"))
 
 MAPAS = RAIZ / "data/processed/standardized_maps"
 PICKLE = RAIZ / "data/processed/woe_pooled_1984_2010.pkl"
-SALIDA = RAIZ / "data/processed/calibracion_pliegue_interno"
+SALIDA = Path(__file__).resolve().parent / "resultados"
 
 # Ventanas de cinco pasos contenidas por completo en el periodo de
 # entrenamiento. La mas reciente termina en 2010 para quedar lo mas cerca

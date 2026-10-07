@@ -4,10 +4,25 @@ Rama `calibracion/pliegue-interno`. No modifica las fuentes de la tesis ni los
 resultados publicados. El pickle `woe_pooled_1984_2010.pkl` se abre solo en
 lectura y su hash sigue siendo idéntico al de `main`.
 
+Todo el experimento vive bajo esta carpeta, igual que `analysis/ga_calibration/`:
+
+```
+analysis/calibracion_pliegue_interno/
+├── ACTA_PLIEGUE_INTERNO.md              este documento
+├── calibracion_pliegue_interno.py       reproduccion y primer barrido
+├── calibracion_anidada.py               6 ventanas, con y sin fuga
+└── resultados/                          los cinco JSON de salida
+```
+
+Lee de `data/processed/standardized_maps/`, del pickle publicado y de
+`tools/variables_rapidas.py`, que ya existía en `main`. No escribe nada fuera de
+`resultados/`.
+
 ```bash
-python tools/calibracion_pliegue_interno.py verificar   # reproduce la tesis
-python tools/calibracion_pliegue_interno.py calibrar    # primer barrido, 3 ventanas
-python tools/calibracion_anidada.py                     # 6 ventanas, con y sin fuga
+cd <raiz del repo>
+.venv/bin/python analysis/calibracion_pliegue_interno/calibracion_pliegue_interno.py verificar   # reproduce la tesis
+.venv/bin/python analysis/calibracion_pliegue_interno/calibracion_pliegue_interno.py calibrar    # primer barrido, 3 ventanas
+.venv/bin/python analysis/calibracion_pliegue_interno/calibracion_anidada.py                     # 6 ventanas, con y sin fuga
 ```
 
 ## Por qué se hizo
