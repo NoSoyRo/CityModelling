@@ -1,11 +1,13 @@
 # Calibración de theta y alpha con un pliegue interno a 1984-2010
 
-Rama `calibracion/pliegue-interno`. No modifica los resultados publicados ni las
-fuentes de la tesis. Reproducible con:
+Rama `calibracion/pliegue-interno`. No modifica las fuentes de la tesis ni los
+resultados publicados. El pickle `woe_pooled_1984_2010.pkl` se abre solo en
+lectura y su hash sigue siendo idéntico al de `main`.
 
 ```bash
-python tools/calibracion_pliegue_interno.py verificar
-python tools/calibracion_pliegue_interno.py calibrar
+python tools/calibracion_pliegue_interno.py verificar   # reproduce la tesis
+python tools/calibracion_pliegue_interno.py calibrar    # primer barrido, 3 ventanas
+python tools/calibracion_anidada.py                     # 6 ventanas, con y sin fuga
 ```
 
 ## Por qué se hizo
@@ -20,35 +22,27 @@ pasajes de la tesis lo afirman de más (`cap06:156` y el pie de figura
 Este ejercicio elige theta y alpha usando únicamente ventanas que terminan en
 2010 o antes, de modo que 2011-2020 deje de intervenir en esa elección.
 
-## Qué demuestra y qué no
-
-Los pesos WoE se ajustaron con el período que contiene las ventanas internas.
-Por tanto esto es selección de hiperparámetros sobre el conjunto de
-entrenamiento, no validación cruzada anidada. La ganancia es concreta y
-limitada: 2011-2020 ya no participa en la elección de theta ni de alpha.
-
-Para un protocolo del todo anidado habría que reestimar el WoE sobre un
-subperíodo (por ejemplo 1984-2005), calibrar en 2006-2010 y recién entonces
-evaluar. Eso cambiaría también los pesos publicados y es trabajo de cierre de
-investigación, no de titulación.
-
 ## Montaje
 
 | Elemento | Valor |
 |---|---|
-| Pesos WoE | `data/processed/woe_pooled_1984_2010.pkl`, sin reestimar |
-| Ventanas internas | 2000-2005, 2002-2007, 2005-2010 (cinco pasos cada una) |
-| Rejilla inicial | theta en 0,55 a 0,85 (paso 0,05); alpha en 0,30 a 0,60 (paso 0,10) |
-| Extensión | theta en 0,85 a 0,95; alpha en 0,60 a 0,80 |
-| Semillas | 20260918, 7, 31415 |
-| Criterio | FoM medio sobre las tres ventanas internas |
+| Ventanas internas | Las seis deslizantes de 2000-2005 a 2005-2010 |
+| Rejilla | theta de 0,55 a 0,90 (paso 0,05); alpha de 0,30 a 0,70 (paso 0,10) |
+| Criterio | FoM medio sobre las seis ventanas internas |
+| Semilla | 20260918 |
 | Variables espaciales | `tools/variables_rapidas.py` |
+
+Las seis ventanas deslizantes replican la misma estructura del protocolo
+externo. El primer barrido usaba solo tres ventanas sueltas, elegidas para
+acotar el tiempo de cómputo antes de saber que cada corrida tarda 3,3 segundos.
+La rejilla se amplió hasta theta 0,90 y alpha 0,70 porque en el primer barrido
+el ganador caía en el borde.
 
 ## Resultado 1: el pipeline publicado es reproducible
 
 El harness reproduce la tabla de la tesis con desviación máxima de 0,0006 en
-FoM. Eso valida a la vez la réplica de la regla y la versión vectorizada de las
-variables.
+FoM. Eso valida a la vez la réplica de la regla de transición y la versión
+vectorizada de las variables espaciales.
 
 | Ventana | FoM en la tesis | FoM aquí, con semilla |
 |---|---|---|
@@ -63,60 +57,99 @@ variables.
 
 Tres semillas sobre 2011-2016 con el par publicado dan FoM de 0,2217, 0,2217 y
 0,2218. La desviación estándar es nula en cuatro decimales. La falta de semilla
-impedía la repetición bit a bit, pero no afectaba ninguna cifra reportada.
+impedía la repetición bit a bit pero no afectaba ninguna cifra reportada.
 
-## Resultado 3: el pliegue interno no elige el par publicado
+## Resultado 3: la fuga del WoE no cambia la elección
 
-El par publicado (0,75, 0,50) queda en la posición 9 de 28 con FoM medio interno
-de 0,2626. El pliegue elige **theta = 0,85 y alpha = 0,60**, con 0,2742.
+Objeción pertinente: las ventanas internas caen dentro del período con el que se
+estimaron los pesos WoE, así que sus transiciones contribuyeron a los conteos
+por bin. Formalmente es selección de hiperparámetros sobre el conjunto de
+entrenamiento, no validación cruzada anidada.
 
-La extensión de la rejilla confirma que ese punto es un óptimo interior y no un
-artefacto del borde: ningún par con theta hasta 0,95 o alpha hasta 0,80 lo
-supera.
+Se midió en lugar de discutirla. Se repitió el barrido completo con un WoE
+reestimado únicamente con 1984-1999, por el mismo procedimiento del script
+publicado, de modo que las transiciones de 2000-2010 nunca intervinieron en los
+pesos.
 
-Conviene registrar dos rasgos de la superficie de respuesta. Hay una meseta
-amplia entre 0,272 y 0,274 que abarca varios pares, de modo que la elección no
-queda determinada con nitidez; y hay celdas de colapso, como (0,85, 0,30) con
-FoM de 0,055, donde el umbral es demasiado alto respecto del peso de vecindad y
-casi nada transita. Los dos parámetros interactúan y no se pueden leer por
-separado.
+| Barrido | WoE | Par elegido | FoM interno |
+|---|---|---|---|
+| A, con fuga | 1984-2010 | theta 0,85, alpha 0,60 | 0,2766 |
+| B, sin fuga | 1984-1999 | theta 0,85, alpha 0,50 | 0,2765 |
 
-## Resultado 4: el par calibrado mejora el desempeño fuera de muestra
+Los dos coinciden en theta = 0,85 y difieren un solo paso de rejilla en alpha. El
+par de B, evaluado en el barrido A, da 0,2757 contra 0,2766 del ganador de A: una
+diferencia de 0,0009, que es tres órdenes de magnitud mayor que el ruido de
+semilla pero despreciable frente a la distancia al par publicado.
 
-Aplicando ambos pares a las cinco ventanas de 2011-2020, que no intervinieron en
-la calibración:
+El par publicado queda en la posición 12 de 40 en A y 14 de 40 en B. La
+conclusión no depende de la fuga.
 
-| Métrica | Par publicado (0,75, 0,50) | Par del pliegue (0,85, 0,60) |
-|---|---|---|
-| FoM promedio | 0,3174 | **0,3245** |
-| Kappa promedio | 0,4446 | **0,5256** |
-| IoU promedio | 0,6329 | **0,6607** |
-| FoM mínimo | 0,2217 | **0,2397** |
-| Factor máx/mín de FoM | 1,71 | **1,60** |
+## Resultado 4: los tres pares sobre las cinco ventanas de evaluación
 
-Por ventana, con el par del pliegue: 0,2397, 0,3446, 0,3471, 0,3075 y 0,3837.
+Aplicando cada par a 2011-2020, que no intervino en ninguna calibración:
+
+| Par | Origen | FoM | Kappa | IoU | Factor máx/mín de FoM |
+|---|---|---|---|---|---|
+| 0,75 / 0,50 | publicado, umbral informado por 2011-2016 | 0,3174 | 0,4446 | 0,6329 | 1,71 |
+| 0,85 / 0,60 | barrido con fuga | **0,3245** | 0,5256 | 0,6607 | 1,60 |
+| 0,85 / 0,50 | barrido sin fuga | 0,3211 | **0,5381** | **0,6644** | **1,57** |
+
+Cualquiera de los dos pares calibrados mejora al publicado en las tres métricas y
+reduce la dispersión entre ventanas. El par sin fuga es el mejor en Kappa, en IoU
+y en estabilidad.
+
+Por ventana, con el par sin fuga: 0,2411, 0,3384, 0,3398, 0,3085 y 0,3776.
 
 ## Lectura
 
 El resultado va en la dirección favorable. El umbral publicado no infló las
-cifras: haberlo informado con 2011-2016 produjo un par ligeramente peor que el
-que se obtiene calibrando a ciegas con datos anteriores a 2011. Con el par
-calibrado el desempeño sube en las tres métricas, la ventana peor mejora y la
-dispersión entre ventanas se reduce.
+cifras: haberlo informado con 2011-2016 produjo un par ligeramente **peor** que
+el que se obtiene calibrando a ciegas con datos anteriores a 2011.
 
-El salto mayor es en Kappa, de 0,445 a 0,526, que dentro de la escala de uso
+El salto mayor es en Kappa, de 0,445 a 0,538, que dentro de la escala de uso
 común de Landis y Koch pasa de la parte baja a la parte media de la banda de
 acuerdo moderado.
 
-Con esto el protocolo verde es alcanzable sin rehacer el WoE: calibrar theta y
-alpha con ventanas anteriores a 2011 y evaluar después en las cinco ventanas.
+Con esto el protocolo verde es alcanzable sin rehacer el WoE publicado:
+calibrar theta y alpha con ventanas anteriores a 2011 y evaluar después en las
+cinco ventanas.
+
+## Hallazgo lateral que conviene revisar: el IV no es estable
+
+Al reestimar el WoE con 1984-1999 en lugar de 1984-2010, la ponderación por
+Information Value cambia de forma marcada en una variable:
+
+| Variable | IV normalizado, 1984-2010 | IV normalizado, 1984-1999 |
+|---|---|---|
+| distance_urban | 0,2815 | **0,0822** |
+| neighbor_density_3x3 | 0,2495 | 0,3171 |
+| neighbor_density_5x5 | 0,1445 | 0,2016 |
+| neighbor_density_7x7 | 0,1067 | 0,1478 |
+| local_fragmentation | 0,1062 | 0,1307 |
+| urban_gradient | 0,0996 | 0,1100 |
+| nearest_cluster_size | 0,0120 | 0,0105 |
+
+`distance_urban` pasa de ser la variable de mayor peso a una de las menores, un
+factor de 3,4. El orden de importancia que la tesis presenta como resultado
+interpretable no se sostiene al cambiar el período de estimación.
+
+Hipótesis no verificada: el IV de `distance_urban` está dominado por el bin
+degenerado de distancia cero, que corresponde a celdas ya urbanas y cuyo WoE es
+-14,28. La proporción de celdas urbanas difiere entre 1984-1999 y 1984-2010, así
+que ese bin pesa distinto. No se ha comprobado el mecanismo.
+
+Lo tranquilizador es que la calibración apenas se mueve pese a ese cambio, lo que
+indica que el comportamiento del autómata está dominado por las densidades de
+vecindad y no por la distancia al frente urbano.
 
 ## Qué no se ha hecho
 
 - No se han tocado los resultados publicados ni los archivos de la tesis.
-- No se ha reestimado el WoE, así que el anidamiento no es completo.
+- El WoE reestimado con 1984-1999 vive solo en memoria; no se guardó a disco.
+- El par del barrido B se eligió con un WoE distinto del publicado y después se
+  aplicó al modelo con el WoE publicado. Es una prueba de robustez, no un
+  protocolo anidado completo, que exigiría también evaluar con el WoE de
+  1984-1999.
 - Las ventanas internas se solapan entre sí, lo que es admisible para elegir un
-  hiperparámetro pero impide tratar su FoM medio como una estimación
-  independiente.
-- No se ha medido la dispersión por semilla en las ventanas internas con la
-  misma profundidad que en 2011-2016.
+  hiperparámetro pero impide tratar su FoM medio como estimación independiente.
+- No se ha confirmado el mecanismo detrás de la inestabilidad del IV.
