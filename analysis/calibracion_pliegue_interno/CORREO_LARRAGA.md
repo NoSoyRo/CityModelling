@@ -7,9 +7,9 @@ trabajo de culminación, fuera del alcance de titulación. Lo corrí. Resultó m
 más barato de lo que suponía y preferí traerle el resultado antes de reescribir
 nada del Capítulo 4.
 
-Le adelanto la conclusión, porque es la que importa: el barrido **no** reproduce
-el umbral de 0,75 de la tesis. Elige 0,85. Pero el par que elige se comporta
-**mejor** que el publicado en las cinco ventanas de 2011–2020, no peor. El umbral
+Le adelanto la conclusión, porque es la que importa: el barrido no reproduce el
+umbral de 0,75 de la tesis. Elige 0,85. Pero el par que elige se comporta mejor
+que el publicado en las cinco ventanas de 2011–2020, no peor. El umbral
 que fijé a mano mirando 2011–2016 no infló las cifras de la tesis; las dejó un
 poco por debajo de donde habrían quedado calibrando a ciegas.
 
@@ -45,11 +45,8 @@ reportada.
 
 3. El barrido no reproduce 0,75
 
-| Barrido | Par elegido | FoM interno |
-|---|---|---|
-| Con el WoE publicado | theta 0,85, alfa 0,60 | 0,2766 |
-
-El par publicado (0,75 y 0,50) da 0,2633 y queda en la posición 12 de 40.
+El par ganador es theta = 0,85 y alfa = 0,60, con un FoM interno de 0,2766. El
+par publicado, 0,75 y 0,50, da 0,2633 y queda en la posición 12 de 40.
 
 Dicho de otro modo: si hubiera calibrado el umbral con datos anteriores a 2011,
 como corresponde, no habría llegado a 0,75.
@@ -67,10 +64,10 @@ reestimado únicamente con 1984–1999, por el mismo procedimiento del script
 publicado, de modo que ninguna transición de 2000–2010 participara en los pesos.
 Son 4 430 952 transiciones y el reentrenamiento tarda 30 segundos.
 
-| Barrido | WoE estimado con | Par elegido | FoM interno |
-|---|---|---|---|
-| A, con fuga | 1984–2010 | theta 0,85, alfa 0,60 | 0,2766 |
-| B, sin fuga | 1984–1999 | theta 0,85, alfa 0,50 | 0,2765 |
+Los dos barridos, uno al lado del otro:
+
+- Con fuga, WoE de 1984–2010: elige theta 0,85 y alfa 0,60, FoM interno 0,2766.
+- Sin fuga, WoE de 1984–1999: elige theta 0,85 y alfa 0,50, FoM interno 0,2765.
 
 Los dos coinciden en theta = 0,85 y difieren un solo paso de rejilla en alfa. La
 superficie de respuesta es plana en esa región: en el barrido sin fuga, las dos
@@ -86,11 +83,9 @@ Lo que estaba desalineado era el umbral, no el peso de vecindad.
 Apliqué los tres pares a 2011–2020, que no intervino en ninguno de los dos
 barridos.
 
-| Par | Origen | FoM | Kappa | IoU |
-|---|---|---|---|---|
-| 0,75 / 0,50 | publicado | 0,317 | 0,445 | 0,633 |
-| 0,85 / 0,60 | barrido con fuga | 0,325 | 0,526 | 0,661 |
-| 0,85 / 0,50 | barrido sin fuga | 0,321 | 0,538 | 0,664 |
+- Par publicado, 0,75 y 0,50: FoM 0,317, Kappa 0,445, IoU 0,633.
+- Par del barrido con fuga, 0,85 y 0,60: FoM 0,325, Kappa 0,526, IoU 0,661.
+- Par del barrido sin fuga, 0,85 y 0,50: FoM 0,321, Kappa 0,538, IoU 0,664.
 
 Cualquiera de los dos pares calibrados mejora al publicado en las tres métricas.
 El salto grande es en Kappa: de 0,445 a 0,538, que en la escala de Landis y Koch
@@ -127,17 +122,16 @@ cinco.
 7. Un hallazgo que no buscaba y que sí me preocupa
 
 Al reestimar el WoE con 1984–1999 en lugar de 1984–2010, la ponderación por
-Information Value cambia mucho en una variable:
+Information Value cambia mucho en una variable. Cada renglón da el IV normalizado
+con 1984–2010 y después con 1984–1999.
 
-| Variable | IV normalizado, 1984–2010 | IV normalizado, 1984–1999 |
-|---|---|---|
-| distance_urban | 0,2815 | 0,0822 |
-| neighbor_density_3x3 | 0,2495 | 0,3171 |
-| neighbor_density_5x5 | 0,1445 | 0,2016 |
-| neighbor_density_7x7 | 0,1067 | 0,1478 |
-| local_fragmentation | 0,1062 | 0,1307 |
-| urban_gradient | 0,0996 | 0,1100 |
-| nearest_cluster_size | 0,0120 | 0,0105 |
+- distance_urban: 0,2815 y 0,0822.
+- neighbor_density_3x3: 0,2495 y 0,3171.
+- neighbor_density_5x5: 0,1445 y 0,2016.
+- neighbor_density_7x7: 0,1067 y 0,1478.
+- local_fragmentation: 0,1062 y 0,1307.
+- urban_gradient: 0,0996 y 0,1100.
+- nearest_cluster_size: 0,0120 y 0,0105.
 
 La distancia al área urbana pasa de ser la variable de mayor peso a una de las
 menores, un factor de 3,4. Las demás se mueven poco y conservan su orden. Es
@@ -146,7 +140,7 @@ resultado interpretable, no se sostiene al cambiar el período de estimación.
 
 Mi hipótesis, y la marco como no verificada, es que esto viene del punto que ya
 habíamos discutido: el muestreo WoE incluye las celdas ya urbanas, y por eso
-`distance_urban` tiene un bin degenerado en distancia cero con WoE de −14,28. La
+distance_urban tiene un bin degenerado en distancia cero con WoE de −14,28. La
 proporción de celdas urbanas difiere entre los dos períodos, así que ese bin pesa
 distinto. No he comprobado el mecanismo.
 
