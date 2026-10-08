@@ -2,37 +2,53 @@
 \chapter*{Resumen}
 \addcontentsline{toc}{chapter}{Resumen}
 \markboth{Resumen}{Resumen}
+\vspace*{-1.2cm}
 
-Se presenta una estrategia de integración, calibración y validación
-para construir un modelo reproducible de crecimiento urbano a partir de imágenes
-históricas \textcolor{red}{de consulta gratuita}, evaluado mediante un protocolo multitemporal
-con cinco ventanas quinquenales desplazadas. El modelo combina Pesos de Evidencia (WoE) con un autómata
-celular (AC) y se aplica como caso de uso a la Zona Metropolitana de Querétaro
-sobre una serie anual de 37 años (1984--2020).
+% CAMBIO RM: dentro del texto de la Dra. Lárraga solo se corrigieron, en rojo,
+% la errata «Es esta» -> «En esta», la precisión de que la calibración usó
+% ventanas anteriores a 2011 y las cuatro métricas, que eran las de la
+% calibración anterior (0.317, 0.445, 0.722, 0.633). Valores vigentes en
+% analysis/calibracion_pliegue_interno/resultados/evaluacion_final_cinco_ventanas.json.
+{\color{blue}
+El crecimiento urbano disperso dificulta la planeación territorial, especialmente cuando se dispone de información histórica limitada para analizar la expansión de las ciudades. En este contexto, es necesario contar con modelos que permitan interpretar los factores de crecimiento, evaluar su desempeño en distintos periodos y reproducir el proceso con datos y herramientas accesibles. \textcolor{red}{En} esta dirección, el objetivo de este trabajo es diseñar e implementar un modelo de crecimiento urbano basado en autómatas celulares y Pesos de Evidencia (WoE), y evaluar su desempeño mediante un protocolo de validación multitemporal. Como caso de estudio se utilizó la Zona Metropolitana de Querétaro (ZMQ), para la cual se construyó una serie histórica anual de mapas binarios urbano/no urbano para el periodo 1984--2020 a partir de imágenes históricas de Google Earth. Las imágenes se procesaron mediante patrones binarios locales (LBP), agrupamiento K-Means y un clasificador SVM lineal. A partir de los mapas obtenidos se calcularon siete variables espaciales utilizadas como evidencia para el modelo WoE. Estas variables, junto con una vecindad de Moore, se incorporaron a un autómata celular probabilístico para simular la expansión urbana. Los parámetros del modelo se calibraron mediante una búsqueda sistemática \textcolor{red}{sobre ventanas anteriores a 2011} y su desempeño se evaluó\textcolor{red}{, sin reajuste,} en cinco ventanas quinquenales desplazadas, de 2011--2016 a 2015--2020, utilizando Figure of Merit (FoM), Kappa e Intersection over Union (IoU).
 
-Las capturas RGB obtenidas con la herramienta de imagen histórica de Google
-Earth se transformaron en mapas binarios urbano/no-urbano mediante un
-\textit{pipeline} de clasificación abierto: patrones binarios locales (LBP),
-agrupamiento K-Means y un clasificador SVM lineal. Los Pesos de Evidencia
-cuantifican, sin supuestos de linealidad, la influencia espacial de siete
-variables derivadas del mapa binario histórico, y alimentan junto con la
-vecindad de Moore una regla de transición probabilística. El umbral de transición y el peso de
-vecindad se eligieron por búsqueda en cuadrícula sobre ventanas anteriores a
-2011, y el modelo así fijado se evaluó después, sin reajuste, sobre cinco
-ventanas quinquenales desplazadas (2011--2016 a 2015--2020), un protocolo
-que distingue un desempeño estructural de un ajuste puntual.
+El modelo obtuvo un FoM promedio de \textcolor{red}{$0{,}325$}, un Kappa promedio de \textcolor{red}{$0{,}526$}, una exactitud de \textcolor{red}{$0{,}763$} y un IoU de \textcolor{red}{$0{,}661$} en las cinco ventanas de evaluación. Los resultados muestran que el modelo reproduce parte del patrón espacial de crecimiento observado y mantiene un desempeño comparable entre los periodos evaluados. La función de transición basada en WoE permite identificar la contribución de las variables utilizadas y el procesamiento posterior a la adquisición de las imágenes puede ejecutarse con herramientas de código abierto y CPU, sin requerir GPU ni software propietario. La principal aportación del trabajo es el protocolo de evaluación multitemporal aplicado al modelo WoE-AC y su implementación reproducible para el análisis del crecimiento urbano de la ZMQ.
+}
 
-La aportación no reside en el acoplamiento WoE-AC, documentado en la
-literatura, sino en el protocolo de evaluación multitemporal, en la
-interpretabilidad auditable variable por variable y en la reproducibilidad
-completa del procesamiento sobre CPU, sin GPU ni software propietario. El desempeño promedio
-alcanza un \textit{Figure of Merit} de $0{,}325$, dentro de la banda intermedia
-del espectro empírico documentado por \textcite{pontius2008comparing} (seis de
-trece aplicaciones con FoM inferior a $0{,}15$ y una sola por encima de $0{,}50$),
-junto con un coeficiente Kappa de $0{,}526$, una exactitud de $0{,}763$ y un
-\textit{IoU} de $0{,}661$, sostenidos en las cinco ventanas.
+% CAMBIO RM: versión anterior del resumen, sustituida por la redacción de la
+% Dra. Lárraga. Se conserva comentada por si se quiere recuperar algún pasaje.
+%
+% Se presenta una estrategia de integración, calibración y validación
+% para construir un modelo reproducible de crecimiento urbano a partir de imágenes
+% históricas de consulta gratuita, evaluado mediante un protocolo multitemporal
+% con cinco ventanas quinquenales desplazadas. El modelo combina Pesos de Evidencia (WoE) con un autómata
+% celular (AC) y se aplica como caso de uso a la Zona Metropolitana de Querétaro
+% sobre una serie anual de 37 años (1984--2020).
+%
+% Las capturas RGB obtenidas con la herramienta de imagen histórica de Google
+% Earth se transformaron en mapas binarios urbano/no-urbano mediante un
+% \textit{pipeline} de clasificación abierto: patrones binarios locales (LBP),
+% agrupamiento K-Means y un clasificador SVM lineal. Los Pesos de Evidencia
+% cuantifican, sin supuestos de linealidad, la influencia espacial de siete
+% variables derivadas del mapa binario histórico, y alimentan junto con la
+% vecindad de Moore una regla de transición probabilística. El umbral de transición y el peso de
+% vecindad se eligieron por búsqueda en cuadrícula sobre ventanas anteriores a
+% 2011, y el modelo así fijado se evaluó después, sin reajuste, sobre cinco
+% ventanas quinquenales desplazadas (2011--2016 a 2015--2020), un protocolo
+% que distingue un desempeño estructural de un ajuste puntual.
+%
+% La aportación no reside en el acoplamiento WoE-AC, documentado en la
+% literatura, sino en el protocolo de evaluación multitemporal, en la
+% interpretabilidad auditable variable por variable y en la reproducibilidad
+% completa del procesamiento sobre CPU, sin GPU ni software propietario. El desempeño promedio
+% alcanza un \textit{Figure of Merit} de $0{,}325$, dentro de la banda intermedia
+% del espectro empírico documentado por \textcite{pontius2008comparing} (seis de
+% trece aplicaciones con FoM inferior a $0{,}15$ y una sola por encima de $0{,}50$),
+% junto con un coeficiente Kappa de $0{,}526$, una exactitud de $0{,}763$ y un
+% \textit{IoU} de $0{,}661$, sostenidos en las cinco ventanas.
 
-\vspace{0.6cm}
+\enlargethispage{\baselineskip}
+\vspace{0.3cm}
 \noindent\textbf{Palabras clave:} crecimiento urbano; autómatas celulares;
 Pesos de Evidencia; validación multitemporal; \textit{Figure of Merit};
 Zona Metropolitana de Querétaro.
