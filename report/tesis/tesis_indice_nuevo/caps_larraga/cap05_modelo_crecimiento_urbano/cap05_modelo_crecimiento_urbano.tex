@@ -447,7 +447,7 @@ La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evol
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F2_transicion_ai}
-  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la regla de transición de la ecuación~\ref{eq:woe_sigmoid}.}}
+  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo \textcolor{red}{puede transitar a urbana} cuando $P_{i,j}>\theta$\textcolor{red}{, y lo hace si además un sorteo uniforme lo confirma}. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la regla de transición de la ecuación~\textcolor{red}{\ref{eq:transicion}}.}}
   \label{fig:transicion}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -479,7 +479,7 @@ Llegados a este punto aparece la decisión de acoplar el campo WoE a un autómat
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F6_paso_ac_ai}
-  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el algoritmo del autómata descrito en esta sección.}}
+  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla \textcolor{red}{de la ecuación~\ref{eq:transicion}} y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$\textcolor{red}{ y el sorteo lo confirma}. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el algoritmo del autómata descrito en esta sección.}}
   \label{fig:paso-ac}
   \vspace{-6pt}
 \end{wrapfigure}
