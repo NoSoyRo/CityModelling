@@ -49,22 +49,19 @@ México tiene instrumentos de ordenamiento territorial, por ejemplo: la Ley Gene
 	\caption{2020}
 	\label{fig:raw_zmq_2020}
 \end{subfigure}
-\caption{Secuencia de \textbf{capturas RGB} (insumo \textit{raw}) obtenidas con Google Earth en modo imagen histórica sobre la Zona Metropolitana de Querétaro (\textbf{1984}, \textbf{2010} y \textbf{2020}), en orden cronológico y con encuadre homogéneo según el procedimiento manual descrito para la serie temporal. Visualmente se aprecia la expansión periférica y un patrón de ocupación predominantemente disperso.}
+\caption{Secuencia de \textbf{capturas RGB} (insumo \textit{raw}) obtenidas con Google Earth en modo imagen histórica sobre la Zona Metropolitana de Querétaro (\textbf{1984}, \textbf{2010} y \textbf{2020}), en orden cronológico y con encuadre homogéneo según el procedimiento manual descrito para la serie temporal. Visualmente se aprecia la expansión periférica y un patrón de ocupación predominantemente disperso. \textcolor{red}{Cada captura cubre unos $80{,}8 \times 47{,}9$~km con píxeles de $26{,}7$~m; el marco no está orientado al norte, que queda unos $22^\circ$ en sentido horario respecto de la vertical de la imagen (Capítulo~\ref{ch:modelo-crecimiento-urbano}).}}
 \label{fig:crecimiento_disperso_zmq_1984_2020}
 \end{figure}
 
-Como se observa en la figura~\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona metropolitana que rebasó el millón y medio de habitantes en el censo de 2020 \parencite{INEGI2020Censo}, tras décadas de expansión sostenida a una tasa media anual del $2{,}8$\% \parencite{CONAPO2018Delimitacion}.
+Como se observa en la Figura~\ref{fig:crecimiento_disperso_zmq_1984_2020}, la mancha urbana de Querétaro se expandió de forma dispersa entre 1984 y 2020, sobre una zona metropolitana que rebasó el millón y medio de habitantes en el censo de 2020 \parencite{INEGI2020Censo}, tras décadas de expansión sostenida a una tasa media anual del $2{,}8$\% \parencite{CONAPO2018Delimitacion}.
 
 Ese patrón se ha documentado para Querétaro en relación con la producción de vivienda \parencite{ObservatorioCiudades2022Queretaro}, \textcolor{blue}{y plantea la necesidad de contar con herramientas que permitan analizar dónde y cómo podría continuar la expansión urbana, información que puede ser útil para estudiar escenarios de crecimiento y para apoyar la planeación del uso de recursos y de la infraestructura que demanda el crecimiento urbano.}
 
-\textcolor{blue}{Para estudiar este problema, el trabajo implementa un modelo que integra autómatas celulares y Pesos de Evidencia (WoE), y establece un protocolo de validación multitemporal para evaluar su desempeño en la ZMQ.} Para que un modelo de simulación sea útil como herramienta de apoyo a la planeación, debe satisfacer los cuatro requerimientos de la Tabla~\ref{tab:requerimientos_modelo_1}.
+\textcolor{blue}{Para estudiar este problema, el trabajo implementa un modelo que integra autómatas celulares y Pesos de Evidencia (WoE), y establece un protocolo de validación multitemporal para evaluar su desempeño en la ZMQ.} \textcolor{red}{El acoplamiento consiste en un autómata celular cuya función de transición es una probabilidad: $\sigma$ aplicada a la suma de los pesos de evidencia, ponderados por su Information Value. Sirve porque convierte evidencia espacial no acotada en una probabilidad de cambio que el autómata puede usar, y porque el argumento de $\sigma$ sigue siendo una suma de pesos que se pueden leer variable por variable.} Para que un modelo de simulación sea útil como herramienta de apoyo a la planeación, debe satisfacer los cuatro requerimientos de la Tabla~\ref{tab:requerimientos_modelo_1}.
 
-\textcolor{red}{El acoplamiento no se limita a emplear los pesos de evidencia como insumo del autómata. La regla de transición combina cuatro elementos: los pesos de evidencia de las siete variables espaciales, ponderados entre sí por su Information Value normalizado; una función logística que convierte esa suma ponderada en una probabilidad de aptitud; un término aditivo proporcional a la fracción de vecinos urbanos en la vecindad de Moore, con peso $\alpha$; y un umbral $\theta$ que la probabilidad resultante debe superar, junto con un sorteo que confirma la transición, para que la celda cambie de estado. El Capítulo~\ref{ch:modelo-crecimiento-urbano} la formaliza.}
-
-% CAMBIO RM: La descripción anterior se quedaba en "integra autómatas celulares
-% y Pesos de Evidencia", que no distingue este modelo de cualquier otro
-% acoplamiento WoE-AC. Los cuatro componentes de la regla son lo que el
-% Capítulo 4 formaliza y lo que el Capítulo 5 audita variable por variable.
+% CAMBIO RM: Se añade a la frase de la Dra., sin sustituirla, la adecuación:
+% no es solo AC + WoE, sino un AC con probabilidad sigma de la suma ponderada
+% de los pesos, y por qué esa forma es útil.
 
 \begin{table}[H]
 	\centering
@@ -99,7 +96,7 @@ Ese patrón se ha documentado para Querétaro en relación con la producción de
 % COMENTARIO: Mantengo R1--R4 porque posteriormente se utilizan para organizar
 % los objetivos. Conviene comprobar en el capítulo de resultados que cada
 % requerimiento tenga evidencia concreta de cumplimiento y no solamente una
-% descripción metodológica.
+% descripción metodológica. - Listo. P
 
 \section{Justificación}
 
@@ -131,64 +128,7 @@ Los modelos de caja blanca más citados \parencite{Clarke1998}, y las revisiones
 % solo uno satisface R1 parcialmente", porque conviene sostener cada uno de
 % esos juicios con una tabla comparativa explícita en el estado del arte.
 
-\textcolor{blue}{A partir de estos antecedentes, el proyecto diseñó e implementó un modelo que acopla Pesos de Evidencia con Autómatas Celulares para simular el crecimiento urbano en un caso particular de la Zona Metropolitana de Querétaro durante el período 1984--2020. El modelo se evalúa mediante métricas espaciales cuantitativas a lo largo de cinco ventanas quinquenales desplazadas y los resultados se comparan con valores de referencia reportados en la literatura.}
-
-\section{Objetivos}
-
-\subsection{Objetivo general}
-
-\textcolor{blue}{Diseñar e implementar un modelo de crecimiento urbano basado en autómatas celulares y Pesos de Evidencia, y evaluar su desempeño mediante un protocolo de validación multitemporal aplicado a la Zona Metropolitana de Querétaro durante el período 1984--2020. El modelo deberá cumplir con los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} y permitir una simulación interpretable del crecimiento urbano.}
-
-% COMENTARIO: Se evita "simular auditablemente", que resulta poco natural.
-% La auditabilidad se expresa mediante la interpretabilidad de la función de
-% transición y se demuestra mediante los pesos de evidencia y los valores de IV.
-
-\subsection{Objetivos específicos}
-
-\textcolor{blue}{El primer objetivo específico (OE1) consiste en construir una serie histórica anual (1984--2020) de mapas binarios urbano/no-urbano para la ZMQ a partir de imágenes de archivo de Google Earth, empleando clasificación no supervisada para reducir la necesidad de etiquetas manuales y obtener un flujo de procesamiento reproducible.}
-
-% COMENTARIO: Se corrigió la frase original "de modo que el flujo de adquisición
-% y preprocesamiento sea cuyo procesamiento es replicable", que estaba incompleta.
-% Además, conviene distinguir entre la adquisición mediante Google Earth y el
-% procesamiento posterior, ya que Google Earth no es una herramienta de código
-% abierto.
-
-Sobre esa serie, el segundo objetivo (OE2) selecciona y calcula las variables espaciales derivadas de los mapas binarios, que sirven de evidencia empírica al modelo WoE. La elección de WoE como función de transición, frente a alternativas como la regresión logística o las redes neuronales, responde a su capacidad de descomponer la contribución de cada variable mediante el \textit{Information Value} (IV), propiedad que hace auditable la decisión celda a celda y cumple el requerimiento R4 de la Tabla~\ref{tab:requerimientos_modelo_1}. \textcolor{red}{En este trabajo el IV cumple además una función operativa y no únicamente diagnóstica: normalizado sobre el conjunto de las siete variables, es el peso con que cada peso de evidencia entra en la suma que alimenta la función logística. Se trata de una decisión instrumental derivada de los propios datos, no de un conjunto de coeficientes ajustados por separado.}
-
-% CAMBIO RM: Se hace explícito que el IV no solo mide la importancia de cada
-% variable, sino que la pondera dentro de la regla. El Capítulo 5 reporta esos
-% pesos normalizados, de modo que la afirmación es verificable en la tesis.
-
-% COMENTARIO: Conviene comprobar en el capítulo metodológico que "Information
-% Value" se utiliza exactamente con la definición implementada en el modelo.
-% Si IV se calcula por clases o intervalos de las variables, esa precisión debe
-% quedar explícita en el método.
-
-\textcolor{blue}{El tercer objetivo (OE3) consiste en diseñar e implementar el autómata celular WoE-AC para simular la transición de no urbano a urbano en la ZMQ.} La decisión de usar AC sobre enfoques basados en agentes (ABM), que exigen declarar el comportamiento de cada agente \parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de difusión espacial emergente sin requerir la especificación de reglas de comportamiento individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial \parencite{Clarke1998,Sante2010,Batty2005}. \textcolor{red}{El autómata que se implementa es probabilístico: la probabilidad de aptitud y el término de vecindad determinan una probabilidad combinada, y la transición se produce únicamente cuando esa probabilidad supera el umbral $\theta$ y un sorteo uniforme la confirma.}
-
-% COMENTARIO: La comparación con ABM y modelos estadísticos es útil aquí como
-% justificación de la elección metodológica, pero no es necesario desarrollar
-% una comparación extensa en la introducción. El detalle puede quedar en el
-% marco teórico.
-
-\textcolor{blue}{El cuarto objetivo (OE4) consiste en calibrar sistemáticamente los parámetros del WoE-AC (umbral de transición y peso de vecindad) mediante una búsqueda en cuadrícula y establecer un protocolo de validación multitemporal con cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU.} \textcolor{red}{La búsqueda en cuadrícula se realiza sobre ventanas quinquenales internas al período de estimación, las seis que terminan en 2010 o antes (2000--2005 a 2005--2010). El par $(\theta, \alpha)$ que resulta de esa búsqueda queda fijado y solo entonces se aplica, sin reajuste alguno, a las cinco ventanas de evaluación. Ninguna de las cinco ventanas de 2011--2020 interviene, por tanto, en la elección de los parámetros.} \textcite{pontius2008comparing} documentan que las aplicaciones con mayor cambio neto observado tienden a obtener un FoM más alto, de modo que un único horizonte no permite separar el mérito del modelo del de la fase de crecimiento medida. La validación en ventanas desplazadas responde a esa dependencia: al repetir la evaluación sobre cinco períodos, \textcolor{blue}{se puede analizar si el desempeño se mantiene cuando cambia el período evaluado.}
-
-% CAMBIO RM: Se precisa con qué datos se eligen theta y alpha. La búsqueda se
-% hace sobre ventanas anteriores a 2011, de modo que la selección de parámetros
-% y la evaluación no comparten datos. Esto responde a la observación de que el
-% período 2011--2020 no podía describirse como reservado si había intervenido
-% en la calibración.
-
-% COMENTARIO: Aquí no conviene afirmar de antemano que el desempeño "se sostiene"
-% o que la validación demuestra estabilidad. Eso corresponde a los resultados.
-% Las cinco ventanas además se solapan, por lo que deben describirse como
-% ventanas desplazadas y no como períodos completamente independientes.
-
-\textcolor{blue}{Por último, el quinto objetivo (OE5) analiza el comportamiento del modelo a lo largo de los cinco períodos y compara los valores de FoM e IoU obtenidos con los rangos reportados en la literatura para modelos de caja blanca y de caja negra, con el fin de posicionar los resultados del trabajo en el contexto del estado del arte.}
-
-% COMENTARIO: Se sustituyó "analiza la estabilidad temporal" por "analiza el
-% comportamiento", porque la estabilidad es una conclusión que deberá sustentarse
-% con los resultados individuales de cada ventana.
+\textcolor{blue}{A partir de estos antecedentes, el proyecto diseñó e implementó un modelo que acopla Pesos de Evidencia con Autómatas Celulares para simular el crecimiento urbano en un caso particular de la Zona Metropolitana de Querétaro durante el período 1984--2020. El modelo se evalúa mediante métricas espaciales cuantitativas a lo largo de cinco ventanas quinquenales desplazadas y los resultados se comparan con valores de referencia reportados en la literatura.} \textcolor{red}{En el acoplamiento, los pesos de evidencia, ponderados por su Information Value, definen mediante una función logística la probabilidad de aptitud de cada celda; el autómata añade a esa probabilidad la influencia de la vecindad de Moore y decide la transición frente a un umbral.}
 
 \section{Preguntas de investigación e hipótesis}
 
@@ -249,6 +189,63 @@ La investigación se articula en torno a cuatro preguntas, que se identifican co
 
 % La sección "Alcances y limitaciones" se trasladó al capítulo de conclusiones
 % (orden exigido: Alcances -> Limitaciones -> Trabajo futuro).
+
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+\textcolor{blue}{Diseñar e implementar un modelo de crecimiento urbano basado en autómatas celulares y Pesos de Evidencia, y evaluar su desempeño mediante un protocolo de validación multitemporal aplicado a la Zona Metropolitana de Querétaro durante el período 1984--2020. El modelo deberá cumplir con los requerimientos R1--R4 de la Tabla~\ref{tab:requerimientos_modelo_1} y permitir una simulación interpretable del crecimiento urbano.} \textcolor{red}{La interpretabilidad se apoya en que la probabilidad de transición del autómata se obtiene de los pesos de evidencia ponderados por su Information Value, de modo que la contribución de cada variable a la decisión puede leerse por separado.}
+
+% COMENTARIO: Se evita "simular auditablemente", que resulta poco natural.
+% La auditabilidad se expresa mediante la interpretabilidad de la función de
+% transición y se demuestra mediante los pesos de evidencia y los valores de IV.
+
+\subsection{Objetivos específicos}
+
+\textcolor{blue}{El primer objetivo específico (OE1) consiste en construir una serie histórica anual (1984--2020) de mapas binarios urbano/no-urbano para la ZMQ a partir de imágenes de archivo de Google Earth, empleando clasificación no supervisada para reducir la necesidad de etiquetas manuales y obtener un flujo de procesamiento reproducible.}
+
+% COMENTARIO: Se corrigió la frase original "de modo que el flujo de adquisición
+% y preprocesamiento sea cuyo procesamiento es replicable", que estaba incompleta.
+% Además, conviene distinguir entre la adquisición mediante Google Earth y el
+% procesamiento posterior, ya que Google Earth no es una herramienta de código
+% abierto.
+
+Sobre esa serie, el segundo objetivo (OE2) selecciona y calcula las variables espaciales derivadas de los mapas binarios, que sirven de evidencia empírica al modelo WoE. La elección de WoE como función de transición, frente a alternativas como la regresión logística o las redes neuronales, responde a su capacidad de descomponer la contribución de cada variable mediante el \textit{Information Value} (IV), propiedad que hace auditable la decisión celda a celda y cumple el requerimiento R4 de la Tabla~\ref{tab:requerimientos_modelo_1}. \textcolor{red}{En este trabajo el IV cumple además una función operativa y no únicamente diagnóstica: normalizado sobre el conjunto de las siete variables, es el peso con que cada peso de evidencia entra en la suma que alimenta la función logística. Se trata de una decisión instrumental derivada de los propios datos, no de un conjunto de coeficientes ajustados por separado.}
+
+% CAMBIO RM: Se hace explícito que el IV no solo mide la importancia de cada
+% variable, sino que la pondera dentro de la regla. El Capítulo 5 reporta esos
+% pesos normalizados, de modo que la afirmación es verificable en la tesis.
+
+% COMENTARIO: Conviene comprobar en el capítulo metodológico que "Information
+% Value" se utiliza exactamente con la definición implementada en el modelo.
+% Si IV se calcula por clases o intervalos de las variables, esa precisión debe
+% quedar explícita en el método.
+
+\textcolor{blue}{El tercer objetivo (OE3) consiste en diseñar e implementar el autómata celular WoE-AC para simular la transición de no urbano a urbano en la ZMQ.} La decisión de usar AC sobre enfoques basados en agentes (ABM), que exigen declarar el comportamiento de cada agente \parencite{Li2007}, o modelos estadísticos puros se fundamenta en que los AC capturan la dinámica de difusión espacial emergente sin requerir la especificación de reglas de comportamiento individual, y mantienen la interpretabilidad del modelo al nivel de la rejilla espacial \parencite{Clarke1998,Sante2010,Batty2005}. \textcolor{red}{El autómata que se implementa es probabilístico: la probabilidad de aptitud y el término de vecindad determinan una probabilidad combinada, y la transición se produce únicamente cuando esa probabilidad supera el umbral $\theta$ y un sorteo uniforme la confirma.}
+
+% COMENTARIO: La comparación con ABM y modelos estadísticos es útil aquí como
+% justificación de la elección metodológica, pero no es necesario desarrollar
+% una comparación extensa en la introducción. El detalle puede quedar en el
+% marco teórico.
+
+\textcolor{blue}{El cuarto objetivo (OE4) consiste en calibrar sistemáticamente los parámetros del WoE-AC (umbral de transición y peso de vecindad) mediante una búsqueda en cuadrícula y establecer un protocolo de validación multitemporal con cinco ventanas quinquenales desplazadas (2011--2016 a 2015--2020), evaluadas con FoM, Kappa e IoU.} \textcolor{red}{La búsqueda en cuadrícula se realiza sobre ventanas quinquenales internas al período de estimación, las seis que terminan en 2010 o antes (2000--2005 a 2005--2010). El par $(\theta, \alpha)$ que resulta de esa búsqueda queda fijado y solo entonces se aplica, sin reajuste alguno, a las cinco ventanas de evaluación. Ninguna de las cinco ventanas de 2011--2020 interviene, por tanto, en la elección de los parámetros.} \textcite{pontius2008comparing} documentan que las aplicaciones con mayor cambio neto observado tienden a obtener un FoM más alto, de modo que un único horizonte no permite separar el mérito del modelo del de la fase de crecimiento medida. La validación en ventanas desplazadas responde a esa dependencia: al repetir la evaluación sobre cinco períodos, \textcolor{blue}{se puede analizar si el desempeño se mantiene cuando cambia el período evaluado.}
+
+% CAMBIO RM: Se precisa con qué datos se eligen theta y alpha. La búsqueda se
+% hace sobre ventanas anteriores a 2011, de modo que la selección de parámetros
+% y la evaluación no comparten datos. Esto responde a la observación de que el
+% período 2011--2020 no podía describirse como reservado si había intervenido
+% en la calibración.
+
+% COMENTARIO: Aquí no conviene afirmar de antemano que el desempeño "se sostiene"
+% o que la validación demuestra estabilidad. Eso corresponde a los resultados.
+% Las cinco ventanas además se solapan, por lo que deben describirse como
+% ventanas desplazadas y no como períodos completamente independientes.
+
+\textcolor{blue}{Por último, el quinto objetivo (OE5) analiza el comportamiento del modelo a lo largo de los cinco períodos y compara los valores de FoM e IoU obtenidos con los rangos reportados en la literatura para modelos de caja blanca y de caja negra, con el fin de posicionar los resultados del trabajo en el contexto del estado del arte.}
+
+% COMENTARIO: Se sustituyó "analiza la estabilidad temporal" por "analiza el
+% comportamiento", porque la estabilidad es una conclusión que deberá sustentarse
+% con los resultados individuales de cada ventana.
 
 \section{Aportaciones del trabajo}
 
