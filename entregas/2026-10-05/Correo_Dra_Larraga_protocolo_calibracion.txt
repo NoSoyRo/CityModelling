@@ -1,0 +1,122 @@
+Asunto: Capítulo 4 — respuesta a las dudas de WoE, umbral y las cinco ventanas
+
+Estimada Dra. Lárraga:
+
+Le escribo para responder, con el código y los archivos de resultados delante, las dos dudas metodológicas del Capítulo 4 y las preguntas que adelantó sobre resultados, comparación y alcance de la contribución. Revisé los scripts que generaron el modelo publicado, el pickle de pesos, la configuración que quedó registrada y las cinco corridas quinquenales. Donde el texto actual dice más de lo que hace la implementación, se lo marco.
+
+No adjunto todavía un capítulo reescrito. Prefiero que vea primero el diagnóstico, porque de él depende qué se puede afirmar.
+
+
+1. Cómo se estiman los pesos WoE (1984–2010)
+
+Las dos posibilidades que plantea no son equivalentes. La implementación publicada es la segunda.
+
+Para cada uno de los 26 pares anuales de 1984 a 2010 se calculan las siete variables espaciales sobre el mapa de ese año. Esas 26 capas se promedian celda a celda. Queda un solo mapa por variable. Ese mapa promedio se repite 26 veces y se contrasta con las 26 capas de transición apiladas (celda no urbana en t que pasa a urbana en t+1). Sobre ese emparejamiento se estiman bins, pesos e Information Value, una sola vez.
+
+El archivo que usa la tesis es data/processed/woe_pooled_1984_2010.pkl, generado por train_woe_pooled.py. El pickle tiene 8 196 264 transiciones y 132 697 944 no-transiciones. La suma es exactamente 26 × 5 419 008 celdas, que es toda la rejilla repetida 26 veces. Eso solo sale si se usa el mapa promedio contra el conjunto acumulado de transiciones, no si se empareja cada año con su transición.
+
+Hay un script alternativo (train_woe_1984_2010.py) que sí hace el emparejamiento año por año, y solo sobre celdas no urbanas. No es el que generó el modelo publicado: usa otro tamaño mínimo de bin y otro metadato.
+
+Los pesos se estiman una vez y quedan fijos. Las cinco ventanas leen el mismo pickle. En la simulación lo que se recalcula cada paso son las siete variables sobre el mapa actualizado; lo que se les aplica son los mismos bins, los mismos pesos y los mismos IV. No se reestima WoE por ventana ni por año simulado.
+
+Eso explica por qué el capítulo parece contener ambas lecturas. La estimación usa el promedio. La simulación usa las variables del paso corriente con pesos fijos. Son dos momentos distintos. El párrafo que describe el promedio es el correcto para la estimación. El que habla de “acumular 26 relaciones anuales” describe el procedimiento que no se usó.
+
+Un detalle que conviene no ocultar: el muestreo WoE incluye todas las celdas, también las ya urbanas. De ahí los bins degenerados (distancia cero, densidad uno). No intervienen en la simulación, porque el autómata solo evalúa celdas no urbanas. Sí mueven el Information Value y, por tanto, la ponderación entre variables. Eso ya está documentado en el Capítulo 5.
+
+
+2. Con qué datos se eligieron theta y alfa
+
+Aquí el protocolo no es el ideal, y el texto actual lo presenta como si lo fuera.
+
+Los pesos y los IV sí se estimaron solo con 1984–2010. 2011–2020 no entra en esa estimación.
+
+Alfa = 0,50 no se buscó contra las cinco ventanas ni contra 1984–2010. Se adoptó de un ensayo exploratorio previo (data/processed/ga_calibrated_params.json, neighbor_weight = 0,50, fuente “Quick test: steps_10”). Es un valor redondo, heredado. El campo distance_weight = 1,963 se carga en los scripts y no interviene en la regla publicada. La probabilidad es la sigmoide del WoE ponderado por IV, más alfa por la fracción de vecinos urbanos en la vecindad de Moore. La celda transita si esa probabilidad supera theta y un sorteo uniforme lo confirma.
+
+Theta = 0,75 se fijó a mano. Los scripts de validación no lo buscan: lo tienen escrito. El umbral del ensayo previo (0,596) se sustituye en validate_quinquenal_2011_2016.py, en el script que corre precisamente la primera ventana de evaluación. El archivo data/processed/quinquenal_best_config.json describe ese par como “mejor configuración para validación quinquenal 2011–2016”. Su last_run es el 1 de marzo de 2026. Las cinco ventanas publicadas se corrieron el 14 de marzo, en este orden: 2011–2016, 2012–2017, 2013–2018, 2014–2019 y 2015–2020. Theta ya estaba fijado antes de las otras cuatro.
+
+No hay en el repositorio una tabla de barrido de theta y alfa sobre 1984–2010 para la regla publicada. El FoM de 0,172 con 2 203 593 transiciones simuladas frente a 391 095 observadas, que el Capítulo 5 cita como exploración del rango 0,40–0,60, proviene de analysis/ga_calibration/best_ac_config.json (theta ≈ 0,40). No coincide con ninguna ventana 2011–2020. En los mapas actuales, 2011–2016 tiene 425 822 transiciones de no-urbano a urbano.
+
+Los parámetros no se recalcularon por ventana. Las cinco corridas usan los mismos pesos, el mismo theta y el mismo alfa. No es el caso de un modelo reajustado a cada período.
+
+Hay dos scripts que sí miran años de 2011–2020 cuando se habla de umbral. optimize_ac_parameters.py hace grid search, pero por defecto sobre 2016–2017 y sobre otros parámetros (tasa de crecimiento, pesos LBP, etc.), no sobre el theta y el alfa publicados. tools/ablacion_ponderacion.py barre umbrales 0,60–0,85 sobre las cinco ventanas ya publicadas, con alfa fijo en 0,50; es posterior y toma 0,75 como el valor de la tesis. Ninguno de los dos es una calibración de theta y alfa con solo 1984–2010.
+
+
+3. Qué se puede afirmar y qué no
+
+El protocolo ideal que usted describe (1984–2010 estima WoE y calibra parámetros; 2011–2020 queda fuera; las cinco ventanas evalúan el modelo ya definido) se cumple para los pesos. No se cumple para el umbral.
+
+Tampoco es el caso peor: no se maximizó el FoM de las cinco ventanas para quedarse con el mejor, y no se reajustó un modelo distinto por período.
+
+La formulación que sostiene el código es esta:
+
+Los pesos WoE y los IV se estimaron únicamente con 1984–2010 y permanecen fijos. El umbral theta se fijó de forma manual tras observar sobre-predicción en la primera ventana de evaluación (2011–2016). El peso de vecindad alfa se adoptó de un ensayo exploratorio previo. El mismo par se aplicó, sin reajuste, a las cinco ventanas. El período 2011–2020 no es un hold-out del umbral; sí lo es de los pesos. Las cuatro ventanas posteriores no intervinieron en la elección de theta.
+
+Por eso no debo escribir: “ningún dato de 2011–2020 interviene en el ajuste del modelo” ni “validación fuera de muestra del modelo completo”.
+
+Tampoco debo escribir, a la inversa, que 2011–2020 se usó para calibrar todo el modelo. Eso tampoco es cierto.
+
+Voy a reescribir el Capítulo 4 y el párrafo de calibración del Capítulo 5 con esa distinción. La frase que usted propone (“el período 2011–2020 se utiliza para la calibración y evaluación…”) la usaría solo acotada al umbral y a la primera ventana, no como descripción del modelo entero.
+
+
+4. Las cinco ventanas, no solo el promedio
+
+Sí hay resultados por ventana. Están en la Tabla de métricas del Capítulo 5 y en los cinco validation_results.json. El promedio 0,317 no es la única cifra que se reporta.
+
+Período      Acc     IoU     Prec    Recall     F1     Kappa    FoM
+2011–2016   0,665   0,581   0,590    0,975    0,735    0,349   0,222
+2012–2017   0,750   0,652   0,688    0,925    0,789    0,499   0,345
+2013–2018   0,744   0,648   0,689    0,917    0,787    0,482   0,355
+2014–2019   0,697   0,614   0,628    0,965    0,761    0,396   0,287
+2015–2020   0,755   0,669   0,701    0,936    0,802    0,498   0,378
+Promedio    0,722   0,633   0,659    0,944    0,775    0,445   0,317
+
+El FoM va de 0,222 a 0,378 (factor 1,70 entre mínimo y máximo). El Kappa, de 0,349 a 0,499 (factor 1,43). El IoU, de 0,581 a 0,669 (factor 1,15). El Recall se mantiene por encima de 0,91 en las cinco. La Precision queda entre 0,59 y 0,70.
+
+El mínimo (2011–2016) coincide con la única ventana cuyo crecimiento neto observado es negativo: de 2 699 088 a 2 579 014 celdas urbanas. Eso no es una contracción urbana real; es variabilidad de la clasificación binaria RGB año a año. Las ventanas con crecimiento neto positivo quedan en FoM 0,287–0,378. El máximo (2015–2020) es también el de mayor crecimiento observado (+33,5 %).
+
+El Capítulo 5 ya compara las cinco, no solo el promedio. La figura de métricas quinquenales y el texto de H2 lo dicen: el desempeño se sostiene, pero no hay estabilidad numérica estricta. H2 queda apoyada de forma parcial. El patrón que sí se repite es otro: Recall alto, Precision moderada, desacuerdo de cantidad dominante (79,4 % del desacuerdo total en promedio). El modelo acierta dónde crece la ciudad y sobre-predice cuánto.
+
+Conviene declarar, además, que la ventana de FoM más bajo es también la que informó el umbral. No la escondo: si acaso, evita el sesgo de haber elegido theta y reportar solo la mejor.
+
+
+5. Comparación con trabajos similares
+
+Sí está hecha, con el alcance que los números permiten.
+
+Pontius (2008): el FoM promedio 0,317 queda en la banda intermedia de su muestra multi-sitio (seis de trece aplicaciones con FoM menor a 0,15; una sola por encima de 0,50). Ese estudio no reporta Kappa. El Kappa 0,445 se lee contra Landis y Koch (1977): acuerdo moderado, parte baja del rango 0,41–0,60.
+
+Tang (2024), GSA-CA en Urumqi: FoM 0,430 en calibración y 0,376 en validación. Queda por encima de este trabajo. El sitio, las clases y el horizonte difieren, y ese modelo usa capas topográficas, de infraestructura y de exclusión por agua. Aquí solo hay variables derivadas del mapa binario. La comparación es cualitativa.
+
+Jiménez López, Chávez y Garrocho (2018), autómatas celulares para Querétaro 2003–2017: Kappa 0,53 y Jaccard 0,76. No reportan FoM. El horizonte es de catorce años y las métricas se calculan sobre la clase urbana completa, no solo sobre el cambio. La diferencia de diseño es la que importa: en ese trabajo el mapa de 2017 sirve para elegir la regla entre 256 posibles y para medir el ajuste de la regla elegida. Aquí los pesos no se reestiman por ventana y se reporta el rango completo, incluida la peor. Por eso esas cifras no se ponen en la misma tabla como si fueran el mismo experimento.
+
+En los trabajos mexicanos revisados en el Capítulo 3, lo habitual es una sola ventana temporal por ciudad. Eso es lo que las cinco ventanas añaden, aunque el umbral no sea hold-out: se ve que el FoM se mueve con la señal de cambio, que el mecanismo (contagio de borde, sobre-predicción de cantidad) se repite, y que 0,317 no es un lustro afortunado.
+
+
+6. Alcance de la contribución
+
+La aportación no está en el acoplamiento WoE-AC, que la literatura ya documenta. Está en integrar y evaluar ese acoplamiento con una serie anual y cinco ventanas quinquenales desplazadas, con el mismo modelo congelado, reportando el rango y no solo el promedio, con código y datos abiertos.
+
+Con el protocolo real, eso se sostiene si se recorta la frase de “evaluación independiente del modelo”. Lo que las cinco ventanas permiten concluir es la variación temporal del desempeño de un mismo modelo, no la generalización fuera de muestra de todos los parámetros.
+
+Si theta y alfa se hubieran fijado solo con 1984–2010, sí se podría hablar de evaluación temporal independiente. No es el caso del umbral. Tampoco es el caso de un modelo distinto por ventana: el par no se recalcula.
+
+Para titulación propongo acotar el texto a lo anterior y no rehacer las cinco corridas. Para el período de culminación de la investigación sí se puede cerrar el protocolo verde: un pliegue interno dentro de 1984–2010 (por ejemplo 2000–2005, 2003–2008 y 2005–2010), barrido de theta y alfa con la misma regla, congelar el par y recién entonces volver a las cinco ventanas de 2011–2020. Si ese barrido reproduce 0,75 y 0,50, las cifras de la tesis se pueden conservar y el hold-out queda documentado. Si sale otro par, ese resultado pertenece al cierre de investigación, no a un parche de la tesis ya enviada.
+
+No le presento ese barrido como hecho. Es el trabajo de culminación, fuera del alcance de titulación.
+
+
+7. Qué voy a cambiar en el Capítulo 4
+
+Tres afirmaciones del texto actual no se sostienen y las voy a bajar:
+
+1. Que 2011–2020 se reserva sin tocarlo durante el ajuste.
+2. Que ningún dato del período de prueba interviene en el ajuste del modelo (incluido el pie de la figura de ventanas).
+3. Que theta se calibró por búsqueda sistemática sobre 1984–2010, si eso se lee como un grid search documentado de la regla publicada.
+
+En su lugar queda la distinción de la sección 3: pesos fijos de 1984–2010; theta fijado con la primera ventana de evaluación y congelado; alfa heredado; mismo modelo en las cinco ventanas; se reporta el rango.
+
+Quedo atento a si prefiere que reescriba ya esos párrafos con esa formulación, o si quiere ver primero el pliegue interno como trabajo de culminación antes de tocar el capítulo.
+
+Saludos cordiales,
+
+José Rodrigo Moreno López
