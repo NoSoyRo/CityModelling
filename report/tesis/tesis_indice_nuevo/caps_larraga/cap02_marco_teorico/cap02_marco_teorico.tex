@@ -149,9 +149,11 @@ La vecindad determina qué celdas influyen en la transición de una celda dada, 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.86\linewidth]{F3_moore_ai}
-	\caption{Vecindad de Moore ($8$ celdas adyacentes) frente a Von~Neumann ($4$ ortogonales). La de Von~Neumann propaga el crecimiento solo en las direcciones cardinales; la de Moore admite además frentes diagonales. \textit{Imagen elaborada con IA generativa, con base en las reglas bidimensionales de \textcite{PackardWolfram1985}.}}
+	\caption{Vecindad de Moore ($8$ celdas adyacentes) frente a Von~Neumann ($4$ ortogonales). La de Von~Neumann propaga el crecimiento solo en las direcciones cardinales; la de Moore admite además frentes diagonales. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en las reglas bidimensionales de \textcite{PackardWolfram1985}.}}
 	\label{fig:vecindades}
 \end{figure}
+% CAMBIO RM: Nota de autoría unificada en todas las figuras elaboradas con
+% inteligencia artificial generativa.
 
 Queda por resolver el tratamiento de las celdas del borde, que no tienen vecindad completa. Las tres convenciones habituales son la frontera periódica, que identifica cada borde con el opuesto y convierte el dominio en un toro; la frontera fija o absorbente, que asigna a las celdas exteriores un estado constante; y la frontera reflejante, que replica hacia fuera el estado de las celdas interiores. La Figura~\ref{fig:fronteras} ilustra las tres. En aplicaciones urbanas la frontera periódica carece de sentido físico, porque uniría zonas geográficamente distantes, de modo que se prefiere una frontera fija en estado no urbano. La consecuencia es doble: el crecimiento cerca del borde queda subestimado y el dominio debe elegirse con margen suficiente alrededor del área de interés.
 
@@ -228,9 +230,11 @@ P_{i,j}^{\text{WoE}} = \frac{1}{1 + e^{-W_{i,j}}}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{F9_concepto_woe_ai}
-  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{blue}{Elaboración propia con apoyo de IA}, con base en la formulación de \textcite{BonhamCarter1994}.}}
+  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la formulación de \textcite{BonhamCarter1994}.}}
   \label{fig:concepto-woe}
 \end{figure}
+% CAMBIO RM: Nota de autoría unificada en todas las figuras elaboradas con
+% inteligencia artificial generativa.
 
 La Figura~\ref{fig:concepto-woe} ilustra el procedimiento sobre una variable típica. La distancia al frente urbano se discretiza en intervalos; los intervalos próximos al frente acumulan pesos positivos, porque en ellos la transición se observa con más frecuencia de la que correspondería a su superficie, y los intervalos lejanos acumulan pesos negativos. La lectura relevante de la figura es que la relación entre distancia y probabilidad no es lineal: los pesos caen con rapidez en los primeros intervalos y después se estabilizan, un comportamiento que un modelo con forma funcional impuesta reproduciría mal.
 

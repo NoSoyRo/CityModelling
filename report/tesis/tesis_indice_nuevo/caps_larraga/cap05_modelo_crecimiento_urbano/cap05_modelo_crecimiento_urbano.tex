@@ -28,7 +28,7 @@ El diagrama indica además la ruta del artefacto que produce cada etapa y un eje
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{framework_woe_ac_bn}
-  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{Imagen elaborada con IA generativa, con base en la arquitectura propia descrita en este capítulo.}}
+  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en la arquitectura descrita en este capítulo.}}
   \label{fig:pipeline-woe-ac}
 \end{figure}
 
@@ -87,7 +87,7 @@ El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas bi
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F1_mapa_binario_ai}
-  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{Imagen elaborada con IA generativa, con base en la definición de $U_t$ dada en esta sección.}}
+  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en la definición de $U_t$ dada en esta sección.}}
   \label{fig:mapa-binario}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -246,7 +246,7 @@ El efecto de la cadena sobre un fragmento concreto de la imagen se aprecia en la
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{E1_subpipeline_celdas}
-  \caption{Sub-pipeline de clasificación aplicado a un recorte de $8\times8$ celdas: de la captura RGB al mapa binario. El agrupamiento separa dos clases pero no las nombra; la asignación urbano/no urbano se fija en un paso posterior, con la convención descrita en el texto de esta sección. \textit{Imagen elaborada con IA generativa, con base en el pipeline de clasificación propio descrito en esta sección.}}
+  \caption{Sub-pipeline de clasificación aplicado a un recorte de $8\times8$ celdas: de la captura RGB al mapa binario. El agrupamiento separa dos clases pero no las nombra; la asignación urbano/no urbano se fija en un paso posterior, con la convención descrita en el texto de esta sección. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en el pipeline de clasificación descrito en esta sección.}}
   \label{fig:subpipeline-celdas}
 \end{figure}
 
@@ -306,7 +306,7 @@ La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evol
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F2_transicion_ai}
-  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$. \textit{Imagen elaborada con IA generativa, con base en la regla de transición propia de la ecuación~\ref{eq:woe_sigmoid}.}}
+  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en la regla de transición de la ecuación~\ref{eq:woe_sigmoid}.}}
   \label{fig:transicion}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -320,7 +320,7 @@ La segunda decisión es qué variables espaciales alimentan el WoE (Figura~\ref{
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F5_variables_espaciales_ai}
-  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas. \textit{Imagen elaborada con IA generativa, con base en las siete variables definidas en esta sección.}}
+  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en las siete variables definidas en esta sección.}}
   \label{fig:variables-espaciales}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -338,7 +338,7 @@ Llegados a este punto aparece la decisión de acoplar el campo WoE a un autómat
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F6_paso_ac_ai}
-  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$. \textit{Imagen elaborada con IA generativa, con base en el algoritmo propio del autómata descrito en esta sección.}}
+  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en el algoritmo del autómata descrito en esta sección.}}
   \label{fig:paso-ac}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -365,7 +365,7 @@ Definido el modelo, queda la pregunta de si sus predicciones son confiables. La 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.90\linewidth]{F7_ventanas_validacion_ai}
-  \caption{Protocolo de validación: separación temporal entre el período de ajuste (1984--2010, donde se estiman los pesos WoE y se eligen $\theta$ y $\alpha$) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en la estimación de los pesos ni en la selección de los parámetros. \textit{Imagen elaborada con IA generativa, con base en el protocolo propio de validación quinquenal múltiple.}}
+  \caption{Protocolo de validación: separación temporal entre el período de ajuste (1984--2010, donde se estiman los pesos WoE y se eligen $\theta$ y $\alpha$) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en la estimación de los pesos ni en la selección de los parámetros. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en el protocolo de validación quinquenal múltiple.}}
   \label{fig:ventanas-validacion}
 \end{figure}
 
@@ -377,7 +377,7 @@ El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F8_fom_ai}
-  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Las celdas donde se observó y se predijo permanencia quedan fuera del cálculo; las celdas estables que el modelo predice como cambio sí entran, en el denominador. Las letras siguen la Ecuación~\ref{eq:fom_formula} del Capítulo~\ref{ch:marco-teorico}, no la notación original de \textcite{pontius2008comparing}. \textit{Imagen elaborada con IA generativa.}}
+  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Las celdas donde se observó y se predijo permanencia quedan fuera del cálculo; las celdas estables que el modelo predice como cambio sí entran, en el denominador. Las letras siguen la Ecuación~\ref{eq:fom_formula} del Capítulo~\ref{ch:marco-teorico}, no la notación original de \textcite{pontius2008comparing}. \textit{Elaboración propia con apoyo de inteligencia artificial generativa.}}
   \label{fig:fom-componentes}
   \vspace{-6pt}
 \end{wrapfigure}
