@@ -7,7 +7,7 @@
 \label{ch:marco-teorico}
 
 \begin{resumen}
-En este capítulo se presentan los conceptos necesarios para comprender la propuesta. Se define primero la cadena que permite convertir una imagen en un mapa de dos clases: la percepción remota como fuente de datos, la clasificación de cobertura del suelo, los descriptores de color y de textura, y los métodos de reducción dimensional, agrupamiento y clasificación. Se define después el autómata celular, con sus dimensiones, vecindades y condiciones de frontera, y su versión probabilística. Se expone enseguida el método de Pesos de Evidencia, con sus ventajas y sus límites, y la razón por la que se articula con la función de transición de un autómata celular. Se cierra con las métricas empleadas para evaluar modelos de cambio de cobertura. La aplicación de estos conceptos al caso estudiado corresponde al Capítulo~\ref{ch:modelo-crecimiento-urbano}.
+En este capítulo, se presentan los conceptos necesarios para comprender la propuesta. Se define primero la cadena que permite convertir una imagen en un mapa de dos clases: la percepción remota como fuente de datos, la clasificación de cobertura del suelo, los descriptores de color y de textura, y los métodos de reducción dimensional, agrupamiento y clasificación. Se define después el autómata celular, con sus dimensiones, vecindades y condiciones de frontera, y su versión probabilística. Se expone enseguida el método de Pesos de Evidencia, con sus ventajas y sus límites, y la razón por la que se articula con la función de transición de un autómata celular. Se cierra con las métricas empleadas para evaluar modelos de cambio de cobertura. La aplicación de estos conceptos al caso estudiado corresponde al Capítulo~\ref{ch:modelo-crecimiento-urbano}.
 \end{resumen}
 
 % ============================================================
@@ -37,10 +37,39 @@ A partir de las bandas visibles pueden construirse índices que realzan la prese
 
 \subsection{Patrones binarios locales}
 
-El color por sí solo distingue mal el tejido construido, porque una superficie de concreto y un suelo desnudo pueden compartir tonalidad. Lo que los separa es la textura: la regularidad de bordes y contrastes a escala de unos pocos píxeles. Los patrones binarios locales, en la formulación circular generalizada de \textcite{Ojala2002}, describen esa textura comparando la intensidad de cada píxel con la de sus vecinos sobre un círculo de radio $r$ con $P$ puntos de muestreo, y codificando el resultado de las comparaciones como un número binario. El descriptor resultante es invariante a cambios monótonos de iluminación, porque depende de comparaciones relativas y no de valores absolutos, y admite versiones invariantes a la rotación. Esa robustez explica su uso en series de imágenes tomadas en fechas distintas, donde las condiciones de captura no son homogéneas.
+El color por sí solo \textcolor{blue}{puede ser insuficiente para distinguir el
+tejido construido de otras superficies}, porque una superficie de concreto y
+un suelo desnudo pueden compartir tonalidad. \textcolor{blue}{Por ello, también
+puede utilizarse la textura de la imagen.} Los patrones binarios locales
+\textcolor{blue}{(LBP, por sus siglas en inglés)} son un descriptor de textura
+que \textcolor{blue}{compara la intensidad de un píxel con la de sus vecinos}
+\parencite{Ojala2002}. \textcolor{blue}{En su formulación circular, se
+consideran $P$ puntos de muestreo distribuidos sobre un círculo de radio $r$
+alrededor del píxel central. Cada vecino se compara con este píxel y el
+resultado de las comparaciones se representa mediante valores binarios, que en
+conjunto forman el descriptor LBP.}
 
-	
-	
+\textcolor{blue}{El descriptor es poco sensible a cambios monótonos de
+iluminación, ya que se basa en comparaciones relativas entre los niveles de
+intensidad. También existen variantes invariantes a la rotación. Estas
+características permiten utilizar LBP para describir la textura en imágenes
+obtenidas bajo diferentes condiciones de iluminación y orientación.}
+
+% COMENTARIO: Se simplificó la explicación para mantenerla como una subsección
+% de conceptos. La formulación matemática detallada del LBP puede presentarse
+% posteriormente si es necesaria para explicar su implementación; aquí basta
+% con explicar qué describe y, de manera general, cómo se construye.
+
+% COMENTARIO: Se cambió "Lo que los separa es la textura" porque es una
+% afirmación demasiado categórica. En este trabajo la textura es una
+% característica adicional que ayuda a distinguir las clases, pero no
+% necesariamente las separa por sí sola.
+
+% COMENTARIO: Se eliminó la frase "Esa robustez explica su uso en series de
+% imágenes tomadas en fechas distintas..." y se sustituyó por una explicación
+% más general. La aplicación específica de LBP a las imágenes históricas de
+% este trabajo corresponde al capítulo de metodología.
+
 \subsection{Estandarización y análisis de componentes principales}
 
 Cuando cada píxel se describe con muchas variables, dos problemas aparecen antes de cualquier clasificación. El primero es de escala: variables medidas en unidades distintas contribuyen de forma desigual a cualquier distancia, de modo que las de mayor rango numérico dominan el resultado. La estandarización lo corrige restando la media y dividiendo entre la desviación estándar de cada variable, con lo que todas quedan centradas y con dispersión comparable. El segundo problema es de redundancia: los descriptores derivados de una misma imagen están correlacionados entre sí, y esa correlación no aporta información nueva pero sí encarece el cómputo y puede degradar la separación entre clases.
@@ -59,17 +88,38 @@ El pseudocódigo de la estandarización y de la proyección se recoge en el Apé
 \subsection{Agrupamiento K-Means}
 
 El agrupamiento K-Means debe su nombre y su criterio a \textcite{MacQueen1967}: es un método no supervisado que particiona un conjunto de observaciones en $k$ grupos buscando una varianza intraclase baja, medida como la suma de distancias cuadradas de cada punto al centroide de su grupo. La variante que se emplea aquí no es el procedimiento secuencial de una pasada que describe MacQueen, sino el esquema iterativo por lotes que él mismo atribuye a Forgy y a Jennrich, equivalente al procedimiento de cuantización óptima que \textcite{Lloyd1982} había formulado en 1957 y que solo se publicó en 1982: asigna cada observación al centroide más próximo, recalcula los centroides como la media de los puntos asignados y repite hasta que las asignaciones se estabilizan. El resultado depende de la inicialización, por lo que en la práctica se ejecuta varias veces y se conserva la partición de menor inercia. Su utilidad en clasificación de imágenes está en que produce una partición del espacio de características sin necesidad de etiquetas previas; su límite es que esa partición carece de significado semántico, de modo que asociar cada grupo a una clase de cobertura requiere una decisión posterior del analista. El procedimiento completo figura en el Apéndice~\ref{ap:arquitectura} (Algoritmo~\ref{alg:kmeans}).
-	
+
 \subsection{Máquinas de vectores de soporte}
 
-La máquina de vectores de soporte \parencite{CortesVapnik1995} es un clasificador supervisado que busca el hiperplano que separa dos clases con el mayor margen posible, es decir, maximizando la distancia a las observaciones más próximas de cada lado. En su formulación de margen blando admite errores de clasificación penalizados por un parámetro de regularización, lo que la hace tolerante al ruido en las etiquetas. Con núcleo lineal la frontera es un hiperplano en el espacio original, opción adecuada cuando las clases ya resultan casi separables tras la reducción dimensional y cuando interesa un modelo ligero y reproducible.
+La máquina de vectores de soporte \parencite{CortesVapnik1995} es un clasificador supervisado que busca el hiperplano
+que separa dos clases con el mayor margen posible, es decir, maximizando la distancia a las
+observaciones más próximas de cada lado. En su formulación de margen blando admite errores
+de clasificación penalizados por un parámetro de regularización, lo que la hace tolerante al
+ruido en las etiquetas. Con núcleo lineal la frontera es un hiperplano en el espacio original,
+opción adecuada cuando las clases ya resultan casi separables tras la reducción dimensional y
+cuando interesa un modelo ligero y reproducible.
 
-Que el método sea supervisado no obliga a disponer de verdad terreno. Las pseudo-etiquetas producidas por un agrupamiento no supervisado pueden emplearse como conjunto de referencia para el ajuste, y el clasificador resultante predice después la etiqueta del resto de las observaciones. Conviene precisar el alcance de ese procedimiento: al entrenarse sobre pseudo-etiquetas, la exactitud que se mida indica la coherencia interna del clasificador respecto del agrupamiento, no su acierto frente a una referencia externa independiente. El Apéndice~\ref{ap:arquitectura} recoge el pseudocódigo del clasificador (Algoritmo~\ref{alg:svm}).
+\textcolor{blue}{Aunque la SVM requiere etiquetas para su entrenamiento, estas no necesariamente deben provenir de una clasificación manual. También pueden obtenerse mediante procedimientos de agrupamiento no supervisado y utilizarse posteriormente como pseudo-etiquetas para entrenar el clasificador. En este caso, la evaluación del clasificador mide su capacidad para reproducir las clases utilizadas durante el entrenamiento, pero no constituye por sí misma una validación respecto de una referencia externa independiente.} El Apéndice~\ref{ap:arquitectura} recoge el pseudocódigo del clasificador (Algoritmo~\ref{alg:svm}).
+
+% COMENTARIO: Se reescribió el último párrafo porque la idea era correcta, pero
+% la redacción original era demasiado defensiva y hacía que la subsección
+% pareciera justificar una limitación antes de explicar el procedimiento.
+% Aquí primero se explica qué etiquetas utiliza la SVM y después se aclara
+% qué significa la evaluación.
+
+% COMENTARIO: Conviene conservar esta precisión metodológica: al utilizar
+% pseudo-etiquetas generadas por el agrupamiento, una alta exactitud de la SVM
+% no demuestra por sí sola que la clasificación corresponda a la cobertura
+% urbana real. La validación externa tendría que hacerse con datos de referencia
+% independientes.
 
 % ============================================================
 \section{Autómatas Celulares}
 \label{sec:automatas-celulares}
 % ============================================================
+%%%esto lo agreo para que no sea un cambio de tema rápido.
+
+\textcolor{blue}{Las técnicas de clasificación permiten identificar y representar las características espaciales de una imagen, pero para estudiar el crecimiento urbano también es necesario considerar cómo cambia el territorio a través del tiempo. Una forma de representar este tipo de procesos consiste en dividir el espacio en unidades discretas y definir reglas que determinen cómo puede cambiar el estado de cada unidad a partir de su entorno. Los Autómatas Celulares (AC) son un modelo de este tipo.}
 
 Un \textbf{Autómata Celular} (AC) es un sistema dinámico discreto definido sobre una cuadrícula regular de $N$ celdas. \textcite{Wolfram1984} los caracteriza como sistemas construidos con muchos componentes idénticos y simples, en los que el valor de cada celda se actualiza en pasos de tiempo discretos según una regla idéntica que depende de una vecindad. Formalmente, un AC queda definido por la cuádrupla $(Q, \mathcal{N}, \delta, q_0)$. El primer elemento, $Q$, es el conjunto finito de estados posibles de cada celda; en el modelado urbano binario $Q = \{0, 1\}$ distingue lo no-urbano de lo urbano. El segundo, $\mathcal{N}$, es la vecindad: el conjunto de celdas adyacentes cuyo estado influye en la transición. El tercero, $\delta: Q^{|\mathcal{N}|} \to Q$, es la función de transición, que determina el nuevo estado de una celda a partir del estado de sus vecinos. El último, $q_0: \Omega \to Q$, fija la configuración inicial del sistema.
 
@@ -130,6 +180,19 @@ P(s_{i,j}^{t+1} = 1 \mid s_{i,j}^t = 0) = f\!\left(W_{i,j},\; \Omega_{i,j}(r),\;
 
 donde $W_{i,j}$ es la idoneidad espacial asignada por el método WoE (definida a continuación), $\Omega_{i,j}(r)$ es el efecto de vecindad, y $\varepsilon_{i,j}$ es un término estocástico que introduce variabilidad aleatoria en la simulación. La función $f$ combina estos tres factores según parámetros que se fijan en la calibración; los valores adoptados para el caso de estudio se describen en el Capítulo~\ref{ch:modelo-crecimiento-urbano}. Esta función es la que define la transición de una celda no-urbana a una urbana.
 
+\textcolor{red}{En el modelo de esta tesis, $f$ toma una forma explícita. La idoneidad WoE, con cada variable ponderada por su Information Value (ecuación~\ref{eq:woe_ponderado}), pasa por la función logística de la ecuación~\ref{eq:woe_sigmoid}; a la probabilidad resultante se le suma la fracción de vecinos urbanos multiplicada por un peso de vecindad $\alpha$; y la celda solo puede transitar si esa suma supera un umbral $\theta$ y un sorteo uniforme lo confirma, que es el papel de $\varepsilon_{i,j}$. Los parámetros $\theta$ y $\alpha$ se eligen por búsqueda en cuadrícula antes de la evaluación (Capítulo~\ref{ch:modelo-crecimiento-urbano}).}
+
+% CAMBIO RM: La ecuación de f es deliberadamente general. Se añade cómo se
+% concreta en este trabajo, para que la regla completa (IV, sigma, vecindad,
+% umbral y sorteo) quede nombrada desde el marco teórico y el Capítulo 4 la
+% formalice sin sorpresa.
+
+\textcolor{blue}{Los autómatas celulares permiten representar la evolución espacial de un sistema mediante reglas de transición locales. En el crecimiento urbano, estas reglas pueden incorporar distintas características del territorio para determinar la probabilidad de que una celda cambie de estado. Los Pesos de Evidencia (WoE) constituyen una alternativa para cuantificar la relación entre estas características y la ocurrencia del cambio, y pueden utilizarse para definir la función de transición del autómata.}
+
+% COMENTARIO: Se agregó este breve enlace para introducir WoE a partir de la
+% función de transición del autómata, sin repetir en el marco teórico la
+% explicación de la metodología.
+
 % ============================================================
 \section{Pesos de Evidencia}
 \label{sec:woe}
@@ -165,7 +228,7 @@ P_{i,j}^{\text{WoE}} = \frac{1}{1 + e^{-W_{i,j}}}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{F9_concepto_woe_ai}
-  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide y se compara con un umbral de transición $\theta$. \textit{Imagen elaborada con IA generativa, con base en la formulación de \textcite{BonhamCarter1994}.}}
+  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{blue}{Elaboración propia con apoyo de IA}, con base en la formulación de \textcite{BonhamCarter1994}.}}
   \label{fig:concepto-woe}
 \end{figure}
 
@@ -202,13 +265,41 @@ Las limitaciones son cuatro y conviene declararlas para no atribuirle propiedade
 
 Hay además una limitación que no es del método sino de su aplicación, y que afecta a la lectura del IV. Si el muestreo incluye celdas que no pueden experimentar el evento, esas celdas forman bins sin transiciones observadas cuyo peso queda determinado por el suavizado y no por los datos. El IV resultante se infla y deja de ser comparable con la escala convencional. El Capítulo~\ref{ch:resultados-analisis} documenta el alcance de este efecto en los pesos estimados para la zona de estudio.
 
-\subsection{Aplicación: del WoE a la regla de transición del autómata}
+\subsection{Integración del WoE en la regla de transición}
 
-Lo que hace al WoE apropiado para acoplarse a un autómata celular es la naturaleza de su salida. El método estima la influencia de cada factor geográfico sobre la probabilidad de que una celda transite, y esa estimación es por celda, no agregada: la ecuación~\ref{eq:woe_sigmoid} devuelve un valor en $[0,1]$ para cada posición de la rejilla. Un autómata celular necesita exactamente eso, una función que asigne a cada celda una probabilidad de cambiar de estado a partir de su situación local. El WoE surte esa función y la surte de forma auditable, porque el valor que produce se descompone en las contribuciones de cada variable y de cada bin.
+\textcolor{blue}{En un autómata celular, la regla de transición determina la probabilidad de que una celda cambie de estado a partir de las características de su entorno.} En este contexto, el WoE permite cuantificar la relación entre los factores geográficos y la ocurrencia del cambio, \textcolor{blue}{asignando un valor a cada celda de acuerdo con las evidencias asociadas a las variables consideradas.} La ecuación~\ref{eq:woe_sigmoid} \textcolor{blue}{transforma la combinación de estas evidencias en un valor de probabilidad en el intervalo $[0,1]$, que puede utilizarse como parte de la regla de transición del autómata.} \textcolor{red}{En este trabajo la combinación que se transforma no es la suma simple de la ecuación~\ref{eq:woe_total}, sino la suma ponderada por el Information Value de la ecuación~\ref{eq:woe_ponderado}, y la probabilidad resultante es uno de los dos términos de la regla; el otro es la influencia de la vecindad.}
 
-Ahí está la diferencia con las alternativas. Una regresión logística entrega un coeficiente por variable, no un peso por intervalo, de modo que impone la forma de la relación en lugar de estimarla. Una red neuronal puede ajustar mejor, pero sus pesos internos no admiten lectura geográfica: se sabe qué predice y no por qué. Con el WoE se puede reconstruir la decisión de una celda concreta sumando evidencias con significado propio, que es lo que exige un instrumento destinado a la planeación.
+% CAMBIO RM: Se precisa qué suma entra a la sigmoide en el modelo de la tesis
+% y que la probabilidad WoE no es por sí sola la regla de transición, en línea
+% con el último comentario de esta subsección.
 
-Por ello, diversos estudios han integrado ya el WoE con modelos de autómatas celulares para calibrar sus reglas de transición. El Capítulo~\ref{ch:estado-del-arte} revisa esos antecedentes y precisa qué resuelven y qué dejan abierto.
+\textcolor{blue}{Una característica importante del WoE es que este valor puede interpretarse a partir de las contribuciones de las distintas variables y de sus intervalos.} Esto permite relacionar la probabilidad asignada a una celda con las características espaciales que intervienen en el proceso de transición.
+
+\textcolor{blue}{Esta relación entre los Pesos de Evidencia y los autómatas celulares ha sido utilizada en diversos modelos de crecimiento urbano.} El Capítulo~\ref{ch:estado-del-arte} revisa estos antecedentes y \textcolor{blue}{permite ubicar la combinación de ambos enfoques dentro de los modelos existentes.}
+
+% COMENTARIO: Se cambió el título porque "Aplicación" sugiere que aquí comienza
+% la implementación del método. En el marco teórico conviene presentar la relación
+% conceptual entre WoE y la regla de transición; la aplicación concreta se explica
+% posteriormente en metodología.
+
+% COMENTARIO: Se modificó el inicio para que la subsección continúe naturalmente
+% desde los autómatas celulares y la regla de transición, en lugar de comenzar
+% directamente justificando por qué el WoE es "apropiado".
+
+% COMENTARIO: Se eliminó la comparación extensa con regresión logística y redes
+% neuronales. Esa comparación puede ser útil en el estado del arte o en la
+% justificación de la elección metodológica, pero aquí interrumpe la explicación
+% conceptual de cómo se relacionan WoE y AC.
+
+% COMENTARIO: Se evitó afirmar que el WoE "surte" la función de transición.
+% El WoE proporciona evidencias que pueden incorporarse a la función de transición;
+% la regla completa depende también de la formulación del autómata.
+
+\textcolor{blue}{La definición de una regla de transición permite generar predicciones sobre el cambio de estado de las celdas, pero es necesario contar con criterios que permitan evaluar qué tan bien reproducen el comportamiento observado. Para ello, se utilizan métricas de evaluación que permiten comparar las predicciones del modelo con los cambios registrados en el territorio.}
+
+% COMENTARIO: Se agregó este párrafo como enlace entre la construcción de la
+% regla de transición y las métricas de evaluación. Se mantiene breve porque
+% la explicación de cada métrica corresponde a la siguiente sección.
 
 % ============================================================
 \section{Métricas de evaluación de modelos predictivos}
