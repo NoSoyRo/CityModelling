@@ -8,29 +8,170 @@
 \label{ch:modelo-crecimiento-urbano}
 
 \begin{resumen}
-Este capítulo presenta el modelo híbrido WoE-AC propuesto: un autómata celular cuya función de transición se construye a partir de Pesos de Evidencia estimados sobre series históricas de cobertura. El capítulo es donde comienza la aportación propia del trabajo. Se presentan el área de estudio y los datos que alimentan al modelo, el pipeline de preprocesamiento que transforma imágenes RGB de Google Earth en mapas binarios urbano/no urbano mediante clasificación LBP+K-Means+SVM, y se formalizan los componentes del modelo: cuantificación de evidencia espacial, regla de transición, vecindad, calibración por búsqueda sistemática y protocolo de validación quinquenal, junto con las decisiones de diseño que los sostienen. La novedad no es el acoplamiento WoE-AC en sí, que cuenta con antecedentes en la literatura, sino su calibración reproducible y su validación sobre cinco ventanas quinquenales desplazadas aplicadas a una ciudad intermedia mexicana con código y datos de libre acceso.
+Este capítulo presenta el modelo híbrido WoE-AC propuesto: un autómata celular cuya función de transición se construye a partir de Pesos de Evidencia estimados sobre series históricas de cobertura. \textcolor{blue}{Se presenta la propuesta metodológica propia del trabajo,} incluyendo el área de estudio y los datos que alimentan al modelo, así como el \textcolor{blue}{flujo de preprocesamiento que transforma imágenes RGB obtenidas de Google Earth en mapas binarios urbano/no urbano mediante la combinación de LBP, K-Means y SVM}. A continuación se formalizan los componentes del modelo: cuantificación de evidencia espacial, regla de transición, vecindad, calibración mediante búsqueda sistemática y protocolo de validación quinquenal, junto con las decisiones de diseño que los sustentan. \textcolor{blue}{La aportación metodológica no consiste en el acoplamiento WoE-AC en sí mismo, que cuenta con antecedentes en la literatura, sino en la integración de un flujo de procesamiento reproducible, una calibración sistemática y un protocolo de evaluación basado en cinco ventanas quinquenales desplazadas para analizar el crecimiento urbano de la Zona Metropolitana de Querétaro. La implementación del procesamiento y del modelo se realiza con herramientas de código abierto, mientras que las imágenes históricas utilizadas como fuente se obtienen de Google Earth.} \textcolor{red}{La regla de transición es probabilística: los pesos de evidencia, ponderados por su Information Value, pasan por una función logística, se suman a la influencia de la vecindad y se comparan con un umbral. El umbral y el peso de vecindad se eligen por búsqueda en cuadrícula sobre ventanas anteriores a 2011, de modo que las ventanas de evaluación no intervienen en la calibración.}
 \end{resumen}
+
+% CAMBIO RM: Se añade al resumen la forma de la regla y el protocolo de
+% calibración de theta y alpha, que este capítulo formaliza.
+
+% COMENTARIO: Se cambió "donde comienza la aportación propia" por "propuesta
+% metodológica propia", porque el capítulo también utiliza componentes y
+% técnicas existentes (LBP, K-Means, SVM, WoE y AC). La aportación está en
+% cómo se integran, calibran y evalúan dentro del procedimiento propuesto.
+% COMENTARIO: Se evitó afirmar que los "datos son de libre acceso", ya que las
+% imágenes históricas proceden de Google Earth. Conviene distinguir entre la
+% fuente externa de las imágenes y el carácter abierto del procesamiento y de
+% la implementación.
+% COMENTARIO: Se mantiene explícitamente que el acoplamiento WoE-AC no es una
+% novedad en sí mismo, porque esta precisión debe ser consistente con el estado
+% del arte y evita sobrevalorar la originalidad de la propuesta.
+
+% CAMBIO RM: La revisión traía dos veces la sección "Consideraciones del
+% modelo" con la misma etiqueta, lo que rompe la compilación. Se conserva la
+% segunda versión, más completa; la primera queda aquí como comentario:
+% \textcolor{blue}{La formulación del modelo establece cómo se representa el
+% espacio, cómo se incorpora la dimensión temporal y qué factores intervienen en
+% la simulación del crecimiento urbano. En este trabajo, el espacio se
+% representa mediante una rejilla discreta de celdas de igual tamaño, donde cada
+% celda corresponde a un píxel de las imágenes de Google Earth, con una
+% resolución efectiva del orden de $27$~m/píxel.}
 
 \section{Consideraciones del modelo}
 \label{sec:consideraciones-modelo}
 
-Todo modelo de crecimiento urbano toma decisiones sobre qué incluir y qué dejar fuera. En este trabajo el espacio se representa como una rejilla discreta de celdas iguales, cuya unidad espacial es el píxel de las capturas de Google Earth, con una resolución efectiva del orden de $27$~m/píxel. El tiempo avanza en pasos anuales: cada iteración del autómata corresponde a un año de la serie histórica. El dominio tiene condiciones de frontera fijas (las celdas exteriores nunca transitan a urbano), lo que es coherente con el hecho de que la ventana de captura delimita el área de interés. El modelo no incluye capas externas de infraestructura (vialidades, pendientes, uso de suelo oficial) ni un término de decaimiento explícito por distancia a centros de empleo, que es el mecanismo alrededor del cual se construye la teoría clásica de la renta del suelo urbano \parencite{alonso1964location}; la atracción ejercida por las zonas ya urbanizadas se captura implícitamente en el campo de evidencia WoE y en la vecindad local del autómata. Estas simplificaciones son deliberadas: reducen el número de parámetros que deben ser estimados y hacen al modelo más auditable, con el costo de ignorar el rol de la infraestructura en la dirección del crecimiento.
+\textcolor{blue}{La formulación del modelo establece los elementos que se
+representan y aquellos que quedan fuera de su alcance.} En este trabajo el
+espacio se representa como una rejilla discreta de celdas iguales, \textcolor{blue}{donde
+cada celda corresponde a un píxel} de las capturas de Google Earth, con una
+resolución efectiva del orden de $27$~m/píxel. El tiempo avanza en pasos
+anuales: cada iteración del autómata corresponde a un año de la serie
+histórica. El dominio tiene condiciones de frontera fijas \textcolor{red}{(las
+celdas situadas fuera de la rejilla se tratan como no urbanas en todo momento
+al calcular la vecindad y las variables espaciales; las celdas del borde de la
+rejilla sí pueden transitar)}, lo que es coherente con el hecho de que
+la ventana de captura delimita el área de interés. \textcolor{red}{La
+transición es irreversible: una celda urbana no vuelve a ser no urbana, de modo
+que el modelo representa expansión y no abandono ni redensificación.} El modelo no incluye capas
+externas de infraestructura (vialidades, pendientes, uso de suelo oficial) ni
+un término de decaimiento explícito por distancia a centros de empleo, que es
+el mecanismo alrededor del cual se construye la teoría clásica de la renta del
+suelo urbano \parencite{alonso1964location}; \textcolor{blue}{la influencia de
+las zonas ya urbanizadas se incorpora mediante el campo de evidencia WoE y la
+vecindad local del autómata.} Estas simplificaciones son deliberadas:
+\textcolor{blue}{reducen la cantidad de información y elementos considerados
+explícitamente en el modelo y favorecen una formulación más auditable,} con el
+costo de ignorar el rol de la infraestructura en la dirección del crecimiento.
 
-Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de forma entrelazada pero que son conceptualmente distintos. El primero es el \textbf{modelo conceptual}: las reglas matemáticas generales del acoplamiento WoE-AC (la cuantificación de evidencia, la regla de transición probabilística y la actualización del estado), válidas para cualquier ciudad. El segundo es la \textbf{implementación}: el recálculo iterativo del campo de evidencia y de la vecindad sobre el estado actualizado del mapa en cada paso de simulación. El tercero es la \textbf{configuración experimental}: los valores concretos fijados para la Zona Metropolitana de Querétaro (el umbral $\theta = 0{,}85$, el peso de vecindad $\alpha = 0{,}60$, la ponderación por \textit{Information Value} y las ventanas quinquenales de validación), que son objeto del Capítulo~\ref{ch:resultados-analisis}. La narración avanza del primero al tercero.
+% CAMBIO RM: Se verificó la condición de frontera en el código
+% (validate_quinquenal_2011_2016.py y los scripts de calibración). La vecindad
+% y las variables se calculan con relleno de ceros fuera de la rejilla
+% (mode="constant", cval=0): lo que nunca es urbano es el exterior virtual, no
+% las celdas del borde. Se precisa en ese sentido. Se añade además la
+% irreversibilidad, que la implementación impone (solo transitan celdas con
+% estado 0) y que el texto no declaraba.
+
+Conviene distinguir, desde aquí, tres planos que en lo que sigue se exponen de
+forma entrelazada pero que son conceptualmente distintos. El primero es el
+\textbf{modelo conceptual}: las reglas matemáticas generales del acoplamiento
+WoE-AC (la cuantificación de evidencia, la regla de transición probabilística
+y la actualización del estado), \textcolor{blue}{que constituyen la formulación
+general del modelo}. El segundo es la \textbf{implementación}: el recálculo
+iterativo del campo de evidencia y de la vecindad sobre el estado actualizado
+del mapa en cada paso de simulación. El tercero es la \textbf{configuración
+experimental}: los valores concretos fijados para la Zona Metropolitana de
+Querétaro (el umbral \textcolor{red}{$\theta = 0{,}85$}, el peso de vecindad \textcolor{red}{$\alpha = 0{,}60$},
+la ponderación por \textit{Information Value} y las ventanas quinquenales de
+validación), \textcolor{blue}{que corresponden a las condiciones utilizadas
+para la calibración y evaluación del modelo y se describen en las secciones
+correspondientes.} \textcolor{red}{Los dos primeros valores no se fijaron a
+mano: se eligieron por búsqueda en cuadrícula sobre ventanas anteriores a las
+de evaluación, con el procedimiento de la
+Sección~\ref{ssec:calibracion-parametros}.}
+
+% CAMBIO RM: Los valores 0,75 y 0,50 se sustituyen por el par que produce la
+% calibración con ventanas internas a 1984--2010 (0,85 y 0,60), y se remite a
+% la subsección que describe cómo se obtienen.
+
+% COMENTARIO: Se precisó que cada celda corresponde a un píxel, para mantener
+% consistente la representación espacial del autómata con la resolución de las
+% imágenes.
+
+% COMENTARIO: Se sustituyó "la atracción ejercida por las zonas ya
+% urbanizadas se captura implícitamente" por una formulación más neutral.
+% "Atracción" puede implicar un mecanismo específico que debe estar formalmente
+% definido en el modelo. La nueva redacción describe únicamente que la
+% influencia se incorpora mediante los componentes que el alumno ya menciona.
+
+% COMENTARIO: Se modificó la explicación de las simplificaciones porque no
+% todas las capas o variables excluidas necesariamente implicarían parámetros
+% adicionales que debieran estimarse. Se conserva la idea original de que la
+% selección reduce los elementos representados explícitamente.
+
+% COMENTARIO: Se eliminó la afirmación "válidas para cualquier ciudad", ya que
+% las reglas generales pueden ser transferibles, pero su parametrización y las
+% variables utilizadas dependen del caso de estudio.
+
+% COMENTARIO: Se cambió la descripción de la configuración experimental.
+% Los valores de $\theta$, $\alpha$ y las demás condiciones corresponden a la
+% calibración y evaluación del modelo; no deben presentarse como si fueran
+% únicamente resultados del capítulo posterior.
+
+% COMENTARIO: Conviene verificar que "las celdas exteriores nunca transitan a
+% urbano" corresponda exactamente a la implementación. La condición de frontera
+% debe describirse de acuerdo con la regla realmente utilizada.
 
 \section{Arquitectura del modelo}
 \label{sec:arquitectura-modelo}
 
-La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en seis etapas, con lo que recibe, lo que hace y lo que entrega cada una. La primera adquiere las capturas RGB desde el visor de Google Earth y conforma la serie temporal. La segunda las clasifica: 23 descriptores por píxel, reducción por PCA, agrupamiento K-Means y consolidación con un SVM lineal. La tercera fija la convención de etiquetas, de modo que el valor 1 corresponda siempre a urbano. La cuarta estima los pesos de evidencia sobre los 26 pares históricos anuales (1984--2010): esos pesos quedan fijos. La quinta ejecuta el autómata celular de forma iterativa sobre el horizonte de predicción; en cada paso se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican los pesos ya estimados. La sexta evalúa el resultado contra los mapas observados mediante cinco ventanas quinquenales desplazadas, cada una con sus propias métricas de desempeño. Las secciones siguientes describen cada etapa en el orden en que intervienen.
+La Figura~\ref{fig:pipeline-woe-ac} presenta el flujo completo del modelo en seis etapas, con lo que recibe, lo que hace y lo que entrega cada una. La primera adquiere las capturas RGB desde el visor de Google Earth y conforma la serie temporal. La segunda las clasifica: 23 descriptores por píxel, reducción por PCA, agrupamiento K-Means y consolidación con un SVM lineal. La tercera fija la convención de etiquetas, de modo que el valor 1 corresponda siempre a urbano. La cuarta estima los pesos de evidencia sobre los 26 pares históricos anuales (1984--2010):
+\textcolor{blue}{una vez estimados, estos pesos se mantienen fijos durante la
+simulación y la evaluación.} \textcolor{red}{Con esos pesos ya fijos se eligen, antes de simular, el umbral $\theta$ y el peso de vecindad $\alpha$, por búsqueda en cuadrícula sobre ventanas internas a 1984--2010 (Sección~\ref{ssec:calibracion-parametros}).} La quinta ejecuta el autómata celular de forma iterativa sobre el horizonte de predicción; en cada paso se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican los pesos ya estimados. La sexta evalúa el resultado contra los mapas observados mediante cinco ventanas quinquenales desplazadas, cada una con sus propias métricas de desempeño.
+\textcolor{blue}{De esta manera, el período 2011--2020 se utiliza para la evaluación
+y no interviene en la estimación de los pesos de evidencia.} \textcolor{red}{Tampoco interviene en la selección de $\theta$ y $\alpha$.} Las secciones siguientes
+describen cada etapa en el orden en que intervienen.
 
 El diagrama indica además la ruta del artefacto que produce cada etapa y un ejemplo tomado de la corrida que se reporta en el Capítulo~\ref{ch:resultados-analisis}. La intención es que el flujo pueda contrastarse contra los archivos del repositorio y no solo leerse como un esquema.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{framework_woe_ac_bn}
-  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en la arquitectura descrita en este capítulo.}}
+  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la arquitectura descrita en este capítulo.}}
   \label{fig:pipeline-woe-ac}
 \end{figure}
+
+% CAMBIO RM: Se añade el paso de calibración de theta y alpha entre la
+% estimación de los pesos y la simulación, y se precisa que 2011--2020 tampoco
+% interviene en él. Nota de autoría unificada en todas las figuras elaboradas
+% con inteligencia artificial generativa.
+%
+% CAMBIO RM: Se verificó en el código lo que piden los dos últimos comentarios.
+% Los pesos se leen una sola vez de data/processed/woe_pooled_1984_2010.pkl y
+% no se modifican durante las cinco ventanas; lo que se recalcula en cada paso
+% son las siete variables espaciales, sobre el estado simulado del mapa, a las
+% que se aplican esos mismos pesos.
+
+% COMENTARIO: Se hizo explícita la separación entre la estimación de los pesos de
+% evidencia y la evaluación temporal. El texto original ya indicaba que los pesos
+% "quedan fijos"; aquí se precisa que no se reestiman para cada ventana de evaluación.
+
+% COMENTARIO: Se agregó que el período 2011--2020 no interviene en la estimación de
+% los pesos porque esta separación es metodológicamente importante: los pesos se
+% estiman con la información disponible hasta 2010 y las cinco ventanas posteriores
+% se utilizan para evaluar el desempeño del modelo.
+
+% COMENTARIO: No se agregó ningún procedimiento de promediado. Si en el Capítulo 5
+% se presenta un promedio de las métricas de las cinco ventanas, debe quedar claro
+% que corresponde al resumen del desempeño de las ventanas y no a un promedio o
+% reestimación de los pesos de evidencia.
+
+% COMENTARIO: Conviene verificar en la implementación que los pesos calculados a partir
+% de las 26 transiciones de 1984--2010 efectivamente se mantienen sin cambios durante
+% las cinco ventanas de evaluación.
+
+% COMENTARIO: También conviene verificar que las siete variables espaciales se
+% recalculen en cada paso exactamente como se describe aquí. Esto es compatible con
+% mantener fijos los pesos, siempre que lo que se actualice sean las variables
+% espaciales y no los pesos de evidencia.
 
 \section{Área de estudio}
 \label{sec:area-estudio}
@@ -87,7 +228,7 @@ El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas bi
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F1_mapa_binario_ai}
-  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en la definición de $U_t$ dada en esta sección.}}
+  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la definición de $U_t$ dada en esta sección.}}
   \label{fig:mapa-binario}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -246,7 +387,7 @@ El efecto de la cadena sobre un fragmento concreto de la imagen se aprecia en la
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{E1_subpipeline_celdas}
-  \caption{Sub-pipeline de clasificación aplicado a un recorte de $8\times8$ celdas: de la captura RGB al mapa binario. El agrupamiento separa dos clases pero no las nombra; la asignación urbano/no urbano se fija en un paso posterior, con la convención descrita en el texto de esta sección. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en el pipeline de clasificación descrito en esta sección.}}
+  \caption{Sub-pipeline de clasificación aplicado a un recorte de $8\times8$ celdas: de la captura RGB al mapa binario. El agrupamiento separa dos clases pero no las nombra; la asignación urbano/no urbano se fija en un paso posterior, con la convención descrita en el texto de esta sección. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el pipeline de clasificación descrito en esta sección.}}
   \label{fig:subpipeline-celdas}
 \end{figure}
 
@@ -306,7 +447,7 @@ La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evol
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F2_transicion_ai}
-  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en la regla de transición de la ecuación~\ref{eq:woe_sigmoid}.}}
+  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo transita a urbana cuando $P_{i,j}>\theta$. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la regla de transición de la ecuación~\ref{eq:woe_sigmoid}.}}
   \label{fig:transicion}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -320,7 +461,7 @@ La segunda decisión es qué variables espaciales alimentan el WoE (Figura~\ref{
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F5_variables_espaciales_ai}
-  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en las siete variables definidas en esta sección.}}
+  \caption{\small Las siete variables espaciales derivadas del mapa binario $U_t$. Todas se calculan exclusivamente a partir de la configuración urbana histórica, sin capas externas. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en las siete variables definidas en esta sección.}}
   \label{fig:variables-espaciales}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -338,11 +479,11 @@ Llegados a este punto aparece la decisión de acoplar el campo WoE a un autómat
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F6_paso_ac_ai}
-  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en el algoritmo del autómata descrito en esta sección.}}
+  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla WoE y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el algoritmo del autómata descrito en esta sección.}}
   \label{fig:paso-ac}
   \vspace{-6pt}
 \end{wrapfigure}
-La regla de transición (Figura~\ref{fig:paso-ac}) integra, finalmente, tres componentes. A la probabilidad WoE de cada celda se le añade la influencia del vecindario de Moore (ocho celdas adyacentes, ecuación~\ref{eq:neighborhood}), ponderada por un peso vecinal; se elige la vecindad de Moore por ser la mínima que captura tanto adyacencias ortogonales como diagonales del frente urbano. La probabilidad combinada se compara contra un umbral de transición: solo las celdas que lo superan pueden urbanizarse. Este umbral se fijó en $0{,}85$ mediante una búsqueda en cuadrícula sobre ventanas quinquenales anteriores a 2011, de modo que no interviniera en ella ninguna de las ventanas de evaluación; su calibración y la del peso vecinal se detallan en el Capítulo~\ref{ch:resultados-analisis}. Por último, la transición no es determinista: una celda apta se urbaniza solo si un sorteo aleatorio lo confirma. Esta componente estocástica refleja que, incluso bajo condiciones favorables, la urbanización de una parcela depende de factores no modelados (decisiones de propietarios, permisos, mercado), y es lo que hace que distintas corridas del modelo generen escenarios ligeramente distintos en lugar de una única predicción rígida.
+La regla de transición (Figura~\ref{fig:paso-ac}) integra, finalmente, tres componentes. A la probabilidad WoE de cada celda se le añade la influencia del vecindario de Moore (ocho celdas adyacentes, ecuación~\ref{eq:neighborhood}), ponderada por un peso vecinal; se elige la vecindad de Moore por ser la mínima que captura tanto adyacencias ortogonales como diagonales del frente urbano. La probabilidad combinada se compara contra un umbral de transición: solo las celdas que lo superan pueden urbanizarse. \textcolor{red}{El umbral y el peso vecinal se eligen por búsqueda en cuadrícula sobre ventanas quinquenales anteriores a 2011, de modo que no interviene en esa elección ninguna de las ventanas de evaluación; el procedimiento se describe en la Sección~\ref{ssec:calibracion-parametros}.} Por último, la transición no es determinista: una celda apta se urbaniza solo si un sorteo aleatorio lo confirma. Esta componente estocástica refleja que, incluso bajo condiciones favorables, la urbanización de una parcela depende de factores no modelados (decisiones de propietarios, permisos, mercado), y es lo que hace que distintas corridas del modelo generen escenarios ligeramente distintos en lugar de una única predicción rígida.
 
 Los tres componentes se condensan en una sola expresión, que constituye el núcleo formal del modelo y coincide con la implementación validada. Para una celda no urbana $(i,j)$, la probabilidad de transición es
 
@@ -353,23 +494,80 @@ P_{i,j} = \min\!\left(1,\; \sigma\!\Big( \sum_{k} \omega_k\, \mathrm{WoE}_k(i,j)
 \label{eq:transicion}
 \end{equation}
 
-donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija $\theta = 0{,}85$ y $\alpha = 0{,}60$ (Capítulo~\ref{ch:resultados-analisis}).
+donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija \textcolor{red}{$\theta = 0{,}85$ y $\alpha = 0{,}60$ (Sección~\ref{ssec:calibracion-parametros})}.
 
-Conviene precisar en qué se aparta esta formulación del esquema WoE-AC más habitual. Conviene precisar cómo entra el WoE al autómata, porque de ahí depende su comportamiento. Aquí el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC, que la literatura ya documenta ampliamente, sino en el protocolo de evaluación: la calibración y la validación reproducibles sobre cinco ventanas quinquenales desplazadas, con código y datos abiertos, que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suma la serie larga de 37 años. La ciudad, en cambio, no es terreno inexplorado: existe un antecedente de simulación con autómatas celulares para Querétaro entre 2003 y 2017 \parencite{JimenezLopez2018}, de manera que la diferencia con este trabajo está en el protocolo de evaluación y en la auditabilidad de los pesos, no en el caso de estudio.
+Conviene precisar cómo entra el WoE al autómata, porque de ahí depende su comportamiento. Aquí el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC, que la literatura ya documenta ampliamente, sino en el protocolo de evaluación: \textcolor{red}{la calibración de $\theta$ y $\alpha$ sobre ventanas anteriores a 2011 y la validación, sin reajuste, sobre cinco ventanas quinquenales desplazadas, con código abierto,} que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suma la serie larga de 37 años. La ciudad, en cambio, no es terreno inexplorado: existe un antecedente de simulación con autómatas celulares para Querétaro entre 2003 y 2017 \parencite{JimenezLopez2018}, de manera que la diferencia con este trabajo está en el protocolo de evaluación y en la auditabilidad de los pesos, no en el caso de estudio.
+
+% CAMBIO RM: Se corrigió la descripción del umbral: ya no se fijó tras observar
+% la sobre-predicción en una ventana de evaluación, sino por búsqueda en
+% cuadrícula sobre ventanas anteriores a 2011. Se eliminó una oración repetida
+% ("Conviene precisar en qué se aparta...") y se sustituyó "código y datos
+% abiertos" por "código abierto", en línea con la corrección del resumen sobre
+% el origen de las imágenes.
+
+\subsection{\textcolor{red}{Calibración del umbral y del peso de vecindad}}
+\label{ssec:calibracion-parametros}
+
+\textcolor{red}{Los pesos de evidencia y su \textit{Information Value} no agotan
+los parámetros de la regla. La ecuación~\ref{eq:transicion} deja dos valores
+libres, el umbral $\theta$ y el peso de vecindad $\alpha$, que no se derivan
+directamente de los datos y que controlan cuánto crece la mancha simulada:
+$\theta$ fija qué tan exigente es la regla y $\alpha$ cuánto pesa la presencia
+de vecinos urbanos. Como la regla no incluye un módulo externo que fije la
+cantidad de cambio, a diferencia de los marcos que combinan una matriz
+markoviana con un autómata (Capítulo~\ref{ch:estado-del-arte}), esa cantidad
+depende de los dos valores. Su elección es, por tanto, parte de la calibración
+del modelo y no un detalle de implementación.}
+
+\textcolor{red}{La calibración se organiza en dos etapas, las dos contenidas en
+el período 1984--2010. En la primera se estiman los pesos de evidencia y el
+\textit{Information Value} de cada variable con las 26 transiciones anuales,
+como se describió antes en esta sección. En la segunda, con esos pesos ya
+fijos, $\theta$ y $\alpha$ se eligen por búsqueda en cuadrícula. La rejilla
+recorre $\theta$ de $0{,}55$ a $0{,}90$ en pasos de $0{,}05$ y $\alpha$ de
+$0{,}30$ a $0{,}70$ en pasos de $0{,}10$, es decir, cuarenta combinaciones.
+Cada combinación se evalúa en las seis ventanas quinquenales que terminan en
+2010 o antes (2000--2005, 2001--2006, 2002--2007, 2003--2008, 2004--2009 y
+2005--2010) con el mismo procedimiento que después se aplica en la evaluación:
+se parte del mapa observado del año inicial, se ejecutan cinco pasos anuales y
+el mapa simulado se compara con el observado del año final. El criterio de
+selección es el FoM medio sobre las seis ventanas, y el sorteo de la regla
+lleva una semilla fija para que el barrido pueda repetirse.}
+
+\textcolor{red}{Se optó por una búsqueda en cuadrícula, y no por un método de
+optimización, porque el espacio tiene solo dos dimensiones y cada simulación es
+barata, de modo que puede recorrerse completo. Recorrerlo completo permite,
+además, observar toda la superficie de desempeño y no solo su máximo, lo que
+resulta pertinente ante el problema de equifinalidad discutido en el
+Capítulo~\ref{ch:estado-del-arte}.}
+
+\textcolor{red}{El par resultante es $\theta = 0{,}85$ y $\alpha = 0{,}60$. A
+partir de ahí, pesos y parámetros quedan fijos y no se reajustan: el período
+2011--2020 no interviene en ninguna de las dos etapas. Las seis ventanas
+internas se solapan entre sí, lo que es admisible para elegir dos parámetros
+pero impide leer su FoM medio como una estimación independiente del desempeño;
+esa estimación corresponde a las ventanas de evaluación de la
+Sección~\ref{sec:validacion-protocolo}. Los resultados del barrido se presentan
+en el Capítulo~\ref{ch:resultados-analisis}.}
+
+% CAMBIO RM: Subsección nueva. El resumen del capítulo anuncia la calibración
+% como uno de los componentes que aquí se formalizan, pero el procedimiento solo
+% estaba descrito en el Capítulo 5. Se describe aquí el protocolo de dos etapas
+% con el que se obtuvieron theta y alpha.
 
 \section{Validación}
 \label{sec:validacion-protocolo}
 
-Definido el modelo, queda la pregunta de si sus predicciones son confiables. La primera decisión de la validación ya se tomó al entrenar: el WoE se ajustó únicamente con las transiciones de 1984--2010, dejando intacto el período 2011--2020. Esta separación temporal es lo que hace honesta a la evaluación, pues el modelo se prueba sobre años que nunca vio durante el ajuste, de la misma forma en que tendría que operar al proyectar el futuro. Validar sobre los mismos datos de entrenamiento solo mediría la capacidad de memorizar, no la de predecir.
+Definido el modelo, queda la pregunta de si sus predicciones son confiables. La primera decisión de la validación ya se tomó al entrenar: el WoE se ajustó únicamente con las transiciones de 1984--2010, dejando intacto el período 2011--2020\textcolor{red}{, y $\theta$ y $\alpha$ se eligieron con ventanas que terminan en 2010 o antes}. Esta separación temporal es lo que hace honesta a la evaluación, pues el modelo se prueba sobre años que nunca vio durante el ajuste, de la misma forma en que tendría que operar al proyectar el futuro. Validar sobre los mismos datos de entrenamiento solo mediría la capacidad de memorizar, no la de predecir.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.90\linewidth]{F7_ventanas_validacion_ai}
-  \caption{Protocolo de validación: separación temporal entre el período de ajuste (1984--2010, donde se estiman los pesos WoE y se eligen $\theta$ y $\alpha$) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en la estimación de los pesos ni en la selección de los parámetros. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en el protocolo de validación quinquenal múltiple.}}
+  \caption{Protocolo de validación: separación temporal entre el período de ajuste (1984--2010, donde se estiman los pesos WoE y se eligen $\theta$ y $\alpha$) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en la estimación de los pesos ni en la selección de los parámetros. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el protocolo de validación quinquenal múltiple.}}
   \label{fig:ventanas-validacion}
 \end{figure}
 
-La segunda decisión, y la que define el aporte metodológico de este trabajo, es no validar sobre una única ventana sino sobre cinco ventanas quinquenales desplazadas (Figura~\ref{fig:ventanas-validacion}): 2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020. Cada ventana es hold-out respecto del período de ajuste 1984--2010, tanto de la estimación de los pesos como de la selección de $\theta$ y $\alpha$; entre sí se solapan cuatro de cinco años. Una sola ventana puede resultar engañosamente favorable o desfavorable según las particularidades de ese lustro; cinco ventanas que se desplazan año con año permiten distinguir entre un acierto puntual y un comportamiento que se sostiene. Gran parte de la literatura revisada en el Capítulo~\ref{ch:estado-del-arte} valida sobre un solo período, lo que impide saber si el desempeño reportado se sostiene en el tiempo.
+La segunda decisión, y la que define el aporte metodológico de este trabajo, es no validar sobre una única ventana sino sobre cinco ventanas quinquenales desplazadas (Figura~\ref{fig:ventanas-validacion}): 2011--2016, 2012--2017, 2013--2018, 2014--2019 y 2015--2020. Cada ventana es hold-out respecto del \textcolor{red}{período de ajuste 1984--2010, tanto de la estimación de los pesos como de la selección de $\theta$ y $\alpha$}; entre sí se solapan cuatro de cinco años. Una sola ventana puede resultar engañosamente favorable o desfavorable según las particularidades de ese lustro; cinco ventanas que se desplazan año con año permiten distinguir entre un acierto puntual y un comportamiento que se sostiene. Gran parte de la literatura revisada en el Capítulo~\ref{ch:estado-del-arte} valida sobre un solo período, lo que impide saber si el desempeño reportado se sostiene en el tiempo.
 
 El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año inicial como estado de partida, se ejecuta el autómata celular durante cinco pasos anuales recalculando las variables espaciales en cada uno, y el mapa predicho para el año final se compara, celda a celda, contra el mapa observado de ese año. De esa comparación se construye la matriz de confusión (ecuación~\ref{eq:confusion_matrix}) y, a partir de ella, todas las métricas.
 
@@ -377,10 +575,10 @@ El procedimiento es el mismo en cada ventana. Se toma el mapa observado del año
   \vspace{-4pt}
   \centering
   \includegraphics[width=\linewidth]{F8_fom_ai}
-  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Las celdas donde se observó y se predijo permanencia quedan fuera del cálculo; las celdas estables que el modelo predice como cambio sí entran, en el denominador. Las letras siguen la Ecuación~\ref{eq:fom_formula} del Capítulo~\ref{ch:marco-teorico}, no la notación original de \textcite{pontius2008comparing}. \textit{Elaboración propia con apoyo de inteligencia artificial generativa.}}
+  \caption{\small Componentes del \textit{Figure of Merit}: acierto~(B), falsa alarma~(A) y omisión~(C). Las celdas donde se observó y se predijo permanencia quedan fuera del cálculo; las celdas estables que el modelo predice como cambio sí entran, en el denominador. Las letras siguen la Ecuación~\ref{eq:fom_formula} del Capítulo~\ref{ch:marco-teorico}, no la notación original de \textcite{pontius2008comparing}. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}.}}
   \label{fig:fom-componentes}
   \vspace{-6pt}
 \end{wrapfigure}
 Aquí aparece una decisión sobre cómo medir el acierto. Las métricas globales como la exactitud o el coeficiente Kappa (ecuación~\ref{eq:kappa}) son engañosas en este problema: como la mayoría del territorio no cambia de un año a otro, un modelo que se limitara a copiar el mapa inicial obtendría una exactitud alta sin predecir crecimiento alguno. Por eso la métrica central de la validación es el \textit{Figure of Merit} (ecuación~\ref{eq:fom_formula}; Figura~\ref{fig:fom-componentes}), que evalúa exclusivamente las celdas en transición e ignora la clase mayoritaria de permanencia. Se reportan, no obstante, las métricas complementarias (IoU, Precision, Recall, F1 y Kappa) y la descomposición del error en sus componentes de cantidad y de asignación, porque cada una ilumina un aspecto distinto del desempeño.
 
-Las cifras por ventana, la calibración y el contraste con los criterios de evaluación se presentan en el Capítulo~\ref{ch:resultados-analisis}.
+Las cifras por ventana, la calibración y el contraste con \textcolor{red}{los criterios de evaluación} se presentan en el Capítulo~\ref{ch:resultados-analisis}.
