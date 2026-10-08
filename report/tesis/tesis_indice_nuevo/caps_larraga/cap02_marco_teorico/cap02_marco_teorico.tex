@@ -229,8 +229,45 @@ P_{i,j}^{\text{WoE}} = \frac{1}{1 + e^{-W_{i,j}}}
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{F9_concepto_woe_ai}
-  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la formulación de \textcite{BonhamCarter1994}.}}
+  \shorthandoff{<>}%
+  \resizebox{\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm,
+    caja/.style={draw=black, line width=0.5pt, fill=white, rounded corners=1.5pt,
+      font=\scriptsize, align=left, text width=6.0cm, inner sep=3pt, anchor=north west},
+    flecha/.style={-{Stealth[length=1.8mm]}, line width=0.6pt}]
+  \node[font=\small\bfseries, anchor=south] at (7.0,0.45) {Pesos de evidencia y regla de transición: ejemplo para una celda};
+  % ---- panel izquierdo: tabla de conteos ----
+  \node[font=\footnotesize\bfseries, anchor=north west] at (0,0) {1. Peso de cada intervalo (distancia al frente)};
+  \node[font=\scriptsize, anchor=north west, inner sep=0pt] at (0,-0.55) {%
+    \renewcommand{\arraystretch}{1.25}%
+    \begin{tabular}{@{}lrrr@{}}
+      \textbf{Intervalo} & \textbf{transita} & \textbf{no transita} & \textbf{$W^{+}$}\\\hline
+      $0$--$100$~m & 847 & 312 & \textcolor{Acerto}{$+2{,}39$}\\
+      $100$--$300$~m & 423 & 621 & \textcolor{Acerto}{$+1{,}01$}\\
+      $>300$~m & 89 & 4\,521 & \textcolor{Transicion}{$-2{,}54$}\\\hline
+      total & 1\,359 & 5\,454 & \\
+    \end{tabular}};
+  \node[font=\scriptsize, anchor=north west, text width=6.4cm, align=left] at (0,-2.85)
+    {$W^{+}=\ln\dfrac{\text{fracción de las que transitan}}{\text{fracción de las que no transitan}}$;\\[2pt]
+     cerca del frente el peso es positivo (favorece la transición) y lejos es negativo.};
+  % ---- panel derecho: una celda ----
+  \node[font=\footnotesize\bfseries, anchor=north west] at (7.4,0) {2. Una celda candidata};
+  \node[caja] (c1) at (7.4,-0.55) {%
+    distancia: $\omega=0{,}28$, $W=+2{,}39$\\
+    densidad $3{\times}3$: $\omega=0{,}25$, $W=+0{,}91$\\
+    otras cinco variables: $\sum\omega_k W_k=+0{,}10$\\[2pt]
+    $\sum_k\omega_k W_k = 0{,}67+0{,}23+0{,}10\approx +1{,}00$};
+  \node[caja, below=0.22cm of c1.south west, anchor=north west] (c2) {%
+    aptitud: $\sigma(1{,}00)=0{,}73$\\
+    vecindad: 3 de 8 vecinos urbanos, $\alpha N=0{,}60\cdot\tfrac{3}{8}=0{,}23$};
+  \node[caja, below=0.22cm of c2.south west, anchor=north west, draw=Transicion, line width=0.8pt] (c3) {%
+    $P=0{,}73+0{,}23=0{,}96>\theta=0{,}85$: la celda es candidata\\
+    y transita si el sorteo da $u<0{,}96$.\\[1pt]
+    \textit{Solo con la aptitud ($0{,}73$) no superaría el umbral.}};
+  \draw[flecha] (c1.south) ++(-2.2,0) -- ++(0,-0.22);
+  \draw[flecha] (c2.south) ++(-2.2,0) -- ++(0,-0.22);
+  \end{tikzpicture}}
+  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{red}{Elaboración propia}, con base en la formulación de \textcite{BonhamCarter1994}\textcolor{red}{; los conteos son ilustrativos y $\omega$, $\alpha$ y $\theta$ son los del modelo calibrado}.}}
   \label{fig:concepto-woe}
 \end{figure}
 % CAMBIO RM: Nota de autoría unificada en todas las figuras elaboradas con

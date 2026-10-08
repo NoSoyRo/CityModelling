@@ -251,8 +251,33 @@ La Figura~\ref{fig:metricas-quinquenales} presenta esas mismas cifras en forma g
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.92\linewidth]{F11_metricas_quinquenales_ai}
-  \caption{Desempeño comparado del modelo WoE-AC en las cinco ventanas quinquenales. Las líneas verticales punteadas señalan el promedio de cada métrica: FoM $=0{,}325$, Kappa $=0{,}526$, IoU $=0{,}661$. El FoM más bajo coincide con la única ventana cuyo crecimiento neto observado es negativo. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en los resultados de validación de la Tabla~\ref{tab:metrics_all_periods}.}}
+  \shorthandoff{<>}%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.92\linewidth, height=8.6cm,
+    xbar, bar width=5pt,
+    xmin=0, xmax=0.82,
+    ytick={1,2,3,4,5},
+    yticklabels={2011--2016,2012--2017,2013--2018,2014--2019,2015--2020},
+    y dir=reverse, ymin=0.45, ymax=5.55,
+    xlabel={Valor de la métrica},
+    tick label style={font=\footnotesize},
+    xticklabel style={/pgf/number format/use comma, /pgf/number format/fixed, /pgf/number format/precision=1},
+    nodes near coords={\pgfmathprintnumber[use comma, fixed, fixed zerofill, precision=3]{\pgfplotspointmeta}},
+    nodes near coords style={font=\tiny, anchor=west},
+    legend style={at={(0.5,-0.20)}, anchor=north, legend columns=3, draw=none, font=\footnotesize},
+    axis x line*=bottom, axis y line*=left,
+  ]
+  \addplot[fill=Acento, draw=none] coordinates {(0.240,1) (0.345,2) (0.347,3) (0.307,4) (0.384,5)};
+  \addplot[fill=BarraCalib!55, draw=none] coordinates {(0.438,1) (0.571,2) (0.550,3) (0.490,4) (0.578,5)};
+  \addplot[fill=Permanente!55, draw=none] coordinates {(0.614,1) (0.677,2) (0.669,3) (0.649,4) (0.696,5)};
+  \legend{FoM, Kappa, IoU}
+  \draw[Acento, densely dotted, thick] (axis cs:0.325,0.45) -- (axis cs:0.325,5.55);
+  \draw[BarraCalib, densely dotted, thick] (axis cs:0.526,0.45) -- (axis cs:0.526,5.55);
+  \draw[Permanente, densely dotted, thick] (axis cs:0.661,0.45) -- (axis cs:0.661,5.55);
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Desempeño comparado del modelo WoE-AC en las cinco ventanas quinquenales. Las líneas verticales punteadas señalan el promedio de cada métrica: FoM $=0{,}325$, Kappa $=0{,}526$, IoU $=0{,}661$. El FoM más bajo coincide con la única ventana cuyo crecimiento neto observado es negativo. \textit{\textcolor{red}{Elaboración propia}, con base en los resultados de validación de la Tabla~\ref{tab:metrics_all_periods}.}}
   \label{fig:metricas-quinquenales}
 \end{figure}
 
@@ -449,8 +474,8 @@ El promedio, sin embargo, oculta que la componente dominante no es la misma en t
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.90\linewidth]{F12_predicho_vs_observado_ai}
-  \caption{Mapa de error para la ventana 2015$\rightarrow$2020 (FoM $=0{,}384$). Las celdas verdes (B) son aciertos, es decir, transiciones correctamente predichas; las ámbar (A) son falsas alarmas; las rojas (C) son omisiones. Solo las celdas en transición entran al cálculo del FoM; las permanencias urbanas y no urbanas aparecen en gris. \textit{Elaboración propia con apoyo de inteligencia artificial generativa, con base en los mapas predicho y observado de la ventana 2015--2020.}}
+  \includegraphics[width=\linewidth]{F12_mapa_error_2015_2020}
+  \caption{\textcolor{red}{Mapa de error de la ventana 2015$\rightarrow$2020 ($\theta=0{,}85$, $\alpha=0{,}60$; FoM $=0{,}384$), sobre la rejilla completa de la captura. Entre las celdas no urbanas en 2015, las verdes (B) son aciertos, las ámbar (A) falsas alarmas y las rojas (C) omisiones; solo estas tres clases entran en el FoM. En gris oscuro, las celdas ya urbanas en 2015, que quedan fuera del cálculo; en gris claro, las que no son urbanas ni en lo observado ni en lo predicho. El panel derecho amplía el recuadro central. El marco no está orientado al norte; la flecha indica su dirección.} \textit{\textcolor{red}{Elaboración propia}, con base en los mapas predicho y observado de la ventana 2015--2020.}}
   \label{fig:mapa-error}
 \end{figure}
 

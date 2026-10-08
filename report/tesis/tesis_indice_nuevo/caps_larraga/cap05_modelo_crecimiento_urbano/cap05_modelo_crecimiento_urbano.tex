@@ -95,30 +95,52 @@ Sección~\ref{ssec:calibracion-parametros}.}
 % COMENTARIO: Se precisó que cada celda corresponde a un píxel, para mantener
 % consistente la representación espacial del autómata con la resolución de las
 % imágenes.
+% RESPUESTA RM: De acuerdo; se conserva su precisión. Es además coherente con
+% la geometría medida de las capturas: cada píxel, y por tanto cada celda, mide
+% 26,7 m de lado.
 
 % COMENTARIO: Se sustituyó "la atracción ejercida por las zonas ya
 % urbanizadas se captura implícitamente" por una formulación más neutral.
 % "Atracción" puede implicar un mecanismo específico que debe estar formalmente
 % definido en el modelo. La nueva redacción describe únicamente que la
 % influencia se incorpora mediante los componentes que el alumno ya menciona.
+% RESPUESTA RM: De acuerdo; se conserva su redacción. El término "atracción" ya
+% no aparece en el capítulo.
 
 % COMENTARIO: Se modificó la explicación de las simplificaciones porque no
 % todas las capas o variables excluidas necesariamente implicarían parámetros
 % adicionales que debieran estimarse. Se conserva la idea original de que la
 % selección reduce los elementos representados explícitamente.
+% RESPUESTA RM: De acuerdo; se conserva su versión, que no afirma que cada capa
+% excluida implique parámetros adicionales.
 
 % COMENTARIO: Se eliminó la afirmación "válidas para cualquier ciudad", ya que
 % las reglas generales pueden ser transferibles, pero su parametrización y las
 % variables utilizadas dependen del caso de estudio.
+% RESPUESTA RM: De acuerdo. La afirmación ya no aparece en el capítulo: las
+% reglas se presentan como formulación general del modelo, y los valores de
+% theta y alpha como configuración propia del caso de Querétaro.
 
 % COMENTARIO: Se cambió la descripción de la configuración experimental.
 % Los valores de $\theta$, $\alpha$ y las demás condiciones corresponden a la
 % calibración y evaluación del modelo; no deben presentarse como si fueran
 % únicamente resultados del capítulo posterior.
+% RESPUESTA RM: Atendido y ampliado. Los valores se actualizaron al par de la
+% calibración definitiva (theta = 0,85, alpha = 0,60) y se añadió la subsección
+% "Calibración del umbral y del peso de vecindad" (ssec:calibracion-parametros),
+% que explica cómo se obtienen: búsqueda en cuadrícula de 40 combinaciones sobre
+% seis ventanas internas a 1984--2010, con el FoM medio como criterio y los pesos
+% de evidencia fijos. Las ventanas de evaluación 2011--2020 no intervienen.
 
 % COMENTARIO: Conviene verificar que "las celdas exteriores nunca transitan a
 % urbano" corresponda exactamente a la implementación. La condición de frontera
 % debe describirse de acuerdo con la regla realmente utilizada.
+% RESPUESTA RM: Verificado en el código; la redacción anterior no era exacta.
+% La vecindad y las variables se calculan con relleno de ceros fuera de la
+% rejilla: lo que siempre se considera no urbano es ese exterior virtual, y las
+% celdas del borde sí pueden transitar. El texto se corrigió en ese sentido y se
+% añadió la irreversibilidad de la transición (solo transitan celdas no
+% urbanas), que la implementación impone y el texto no declaraba.
 
 \section{Arquitectura del modelo}
 \label{sec:arquitectura-modelo}
@@ -134,8 +156,77 @@ El diagrama indica además la ruta del artefacto que produce cada etapa y un eje
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{framework_woe_ac_bn}
-  \caption{Framework operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la arquitectura descrita en este capítulo.}}
+  \shorthandoff{<>}%
+  \tikzset{
+    caja/.style={draw=black, line width=0.65pt, fill=white,
+      minimum width=4.55cm, minimum height=5.25cm,
+      inner sep=0pt, outer sep=0pt, anchor=north west},
+    ejemplo/.style={draw=BordeCelda, line width=0.4pt, fill=EjemploFondo,
+      font=\scriptsize, align=center, text width=4.18cm,
+      inner sep=2.4pt, outer sep=0pt, anchor=south},
+    cuerpo/.style={anchor=north west, inner sep=0pt, outer sep=0pt},
+    flecha/.style={-{Stealth[length=2.2mm]}, line width=0.75pt, black}}%
+  \newcommand{\ruta}[1]{{\fontsize{6.1pt}{7.2pt}\selectfont\ttfamily #1}}%
+  \newcommand{\bloque}[7]{%
+    \node[caja] (#1) at #2 {};%
+    \node[cuerpo] at ([shift={(0.15cm,-0.10cm)}]#1.north west) {%
+      \begin{minipage}[t][3.75cm][t]{4.28cm}%
+        \scriptsize
+        \textbf{#3}\\[1pt]%
+        \vspace{1pt}{\hrule height 0.4pt}\vspace{3.5pt}%
+        \renewcommand{\arraystretch}{1.14}%
+        \begin{tabular}{@{}>{\bfseries}l@{\hspace{3pt}}>{\raggedright\arraybackslash}p{3.30cm}@{}}%
+          Entra & #4\\[1pt]
+          Hace & #5\\[1pt]
+          Sale & #6\\
+        \end{tabular}%
+      \end{minipage}%
+    };%
+    \node[ejemplo] at ([yshift=0.11cm]#1.south) {\textit{Ejemplo:} #7};%
+  }%
+  \resizebox{\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm]
+  \node[font=\bfseries\large, anchor=south] at (7.345, 0.78) {Modelo WoE-AC};
+  \node[font=\small, anchor=south] at (7.345, 0.32)
+    {entradas, proceso y salidas $\cdot$ ZMQ 1984--2020};
+  \bloque{e0}{(0,0)}{E0\quad Adquisición}%
+    {visor de Google Earth (imagen histórica)}%
+    {captura RGB, mismo encuadre, temporada seca}%
+    {\ruta{data/raw/imagen\_2011.png}}%
+    {$1792\times 3024$~px $\cdot$ 3 canales $\cdot$ $\sim 5{,}4$~M píxeles}
+  \bloque{e1}{(5.07,0)}{E1\quad Clasificación}%
+    {\ruta{imagen\_2011.png}}%
+    {23 descriptores $\to$ PCA(8) $\to$ K-Means(2) $\to$ SVM}%
+    {\ruta{\ldots/svm\_2\_classes.npy}}%
+    {PCA(8) retiene $\approx 96\%$ de la varianza}
+  \bloque{e2}{(10.14,0)}{E2\quad Etiquetas}%
+    {\ruta{svm\_2\_classes.npy} (0/1 aún intercambiables)}%
+    {centro $30\%$: si domina el 0, se invierte el mapa}%
+    {\ruta{standardized\_maps/\allowbreak 2011.npy}}%
+    {2\,699\,088 celdas urbanas en 2011}
+  \bloque{e3}{(0,-5.75)}{E3\quad WoE y calibración}%
+    {mapas \ruta{1984.npy} \ldots\ \ruta{2010.npy} (26 pares)}%
+    {pesos WoE e IV de 7 capas del propio mapa; después, $\theta$ y $\alpha$ por cuadrícula (40 pares) en 6 ventanas internas}%
+    {\ruta{woe\_pooled\_\allowbreak 1984\_2010.pkl}, \ruta{calibracion\_\allowbreak anidada.json}}%
+    {IV de la distancia: $0{,}28$\\ par elegido: $\theta=0{,}85$, $\alpha=0{,}60$}
+  \bloque{e4}{(5.07,-5.75)}{E4\quad Simulación AC}%
+    {pesos + \ruta{2015.npy} $\cdot$ $\theta=0{,}85$ $\cdot$ $\alpha=0{,}60$}%
+    {5 pasos anuales; si $\sigma(\sum\omega_k W_k)+\alpha N$ supera $0{,}85$ y el sorteo lo confirma, la celda pasa a urbana}%
+    {mapa predicho de 2020 (\ruta{evaluacion\_final.py})}%
+    {2015: $2{,}15$~M urbanas $\to$ predicho 2020: $3{,}41$~M (observado: $2{,}86$~M)}
+  \bloque{e5}{(10.14,-5.75)}{E5\quad Validación}%
+    {predicho 2020 frente a observado \ruta{2020.npy}}%
+    {compara celda a celda; FoM, Kappa, IoU; 5 ventanas}%
+    {\ruta{evaluacion\_final\_\allowbreak cinco\_ventanas.json}}%
+    {2015$\to$2020: FoM $0{,}384$\\ promedio de las cinco ventanas: $0{,}325$}
+  \draw[flecha] (e0.east) -- (e1.west);
+  \draw[flecha] (e1.east) -- (e2.west);
+  \draw[flecha] (e3.east) -- (e4.west);
+  \draw[flecha] (e4.east) -- (e5.west);
+  \node[font=\footnotesize\itshape, anchor=north] at (7.345, -11.15)
+    {2011--2020 no interviene en los pesos ni en la calibración. Sin capas de vialidades ni de relieve. Código abierto, sin GPU.};
+  \end{tikzpicture}}
+  \caption{Esquema operativo del modelo WoE-AC. Para cada una de las seis etapas se indica la entrada que recibe, la operación que realiza y el artefacto que entrega, con ejemplos tomados de la serie y de la ventana 2015--2020. El período 2011--2020 no interviene en la estimación de los pesos de evidencia \textcolor{red}{ni en la selección de $\theta$ y $\alpha$}. \textit{\textcolor{red}{Elaboración propia}, con base en la arquitectura descrita en este capítulo\textcolor{red}{; las cifras de los ejemplos provienen de los archivos de resultados del repositorio}.}}
   \label{fig:pipeline-woe-ac}
 \end{figure}
 
@@ -153,25 +244,44 @@ El diagrama indica además la ruta del artefacto que produce cada etapa y un eje
 % COMENTARIO: Se hizo explícita la separación entre la estimación de los pesos de
 % evidencia y la evaluación temporal. El texto original ya indicaba que los pesos
 % "quedan fijos"; aquí se precisa que no se reestiman para cada ventana de evaluación.
+% RESPUESTA RM: De acuerdo; se conserva su precisión. Los pesos se estiman una
+% sola vez y no se reestiman en la calibración ni en ninguna ventana.
 
 % COMENTARIO: Se agregó que el período 2011--2020 no interviene en la estimación de
 % los pesos porque esta separación es metodológicamente importante: los pesos se
 % estiman con la información disponible hasta 2010 y las cinco ventanas posteriores
 % se utilizan para evaluar el desempeño del modelo.
+% RESPUESTA RM: De acuerdo. Se añadió en rojo que 2011--2020 tampoco interviene
+% en la selección de theta y alpha, de modo que la separación es completa: pesos
+% y parámetros se fijan con información hasta 2010 y las cinco ventanas
+% posteriores solo evalúan. El diagrama del modelo y su pie lo indican igual.
 
 % COMENTARIO: No se agregó ningún procedimiento de promediado. Si en el Capítulo 5
 % se presenta un promedio de las métricas de las cinco ventanas, debe quedar claro
 % que corresponde al resumen del desempeño de las ventanas y no a un promedio o
 % reestimación de los pesos de evidencia.
+% RESPUESTA RM: Revisado el Capítulo 5. Sus promedios (FoM 0,325, Kappa 0,526,
+% IoU 0,661) son promedios de las métricas de las cinco ventanas, es decir, un
+% resumen del desempeño; los pesos no se promedian entre ventanas ni se
+% reestiman. El único promedio que interviene en los pesos ocurre una vez, en el
+% entrenamiento: las siete variables se promedian sobre los 26 pares de
+% 1984--2010 antes de calcular el WoE (train_woe_pooled.py), como describe el
+% Capítulo 5.
 
 % COMENTARIO: Conviene verificar en la implementación que los pesos calculados a partir
 % de las 26 transiciones de 1984--2010 efectivamente se mantienen sin cambios durante
 % las cinco ventanas de evaluación.
+% RESPUESTA RM: Verificado. Los pesos se leen una sola vez de
+% data/processed/woe_pooled_1984_2010.pkl y no se modifican durante la
+% calibración ni en ninguna de las cinco ventanas de evaluación.
 
 % COMENTARIO: También conviene verificar que las siete variables espaciales se
 % recalculen en cada paso exactamente como se describe aquí. Esto es compatible con
 % mantener fijos los pesos, siempre que lo que se actualice sean las variables
 % espaciales y no los pesos de evidencia.
+% RESPUESTA RM: Verificado. En cada paso anual las siete variables se
+% recalculan sobre el estado simulado del mapa y se les aplican los mismos pesos
+% fijos: lo que se actualiza son las variables, no los pesos.
 
 \section{Área de estudio}
 \label{sec:area-estudio}
@@ -227,8 +337,27 @@ El modelo WoE-AC no parte de las imágenes crudas, sino de una serie de mapas bi
 \begin{wrapfigure}{r}{0.42\linewidth}
   \vspace{-4pt}
   \centering
-  \includegraphics[width=\linewidth]{F1_mapa_binario_ai}
-  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la definición de $U_t$ dada en esta sección.}}
+  \shorthandoff{<>}%
+  \resizebox{\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm,
+    dig/.style={inner sep=0pt, outer sep=0pt, anchor=center, font=\scriptsize}]
+  \node[font=\small, anchor=south] at (2.76, 0.18) {Mapa binario: $U_t(i,j)\in\{0,1\}$};
+  \fill[NoUrbano] (0,0) rectangle (5.52,-4.60);
+  \foreach \r/\c in {2/5,2/6,3/4,3/5,3/6,3/7,4/3,4/4,4/5,4/6,4/7,4/8,5/3,5/4,5/5,5/6,5/7,5/8,6/4,6/5,6/6,6/7,7/5,7/6,7/7,8/6}{%
+    \fill[Urbano] ({\c*0.46},{-\r*0.46}) rectangle ++(0.46,-0.46);}
+  \draw[BordeCelda, line width=0.35pt] (0,0) grid[step=0.46] (5.52,-4.60);
+  \foreach \r in {0,...,9}{\foreach \c in {0,...,11}{%
+    \node[dig, text=TextoSuave] at ({(\c+0.5)*0.46},{-(\r+0.5)*0.46}) {0};}}
+  \foreach \r/\c in {2/5,2/6,3/4,3/5,3/6,3/7,4/3,4/4,4/5,4/6,4/7,4/8,5/3,5/4,5/5,5/6,5/7,5/8,6/4,6/5,6/6,6/7,7/5,7/6,7/7,8/6}{%
+    \fill[Urbano] ({(\c+0.15)*0.46},{-(\r+0.15)*0.46}) rectangle ++(0.322,-0.322);
+    \node[dig, text=white] at ({(\c+0.5)*0.46},{-(\r+0.5)*0.46}) {1};}
+  \fill[Urbano] (0.15,-5.05) rectangle ++(0.32,-0.32);
+  \node[anchor=west, font=\scriptsize] at (0.56,-5.21) {$=$ Urbano ($U_t=1$)};
+  \fill[NoUrbano, draw=BordeCelda, line width=0.4pt] (3.15,-5.05) rectangle ++(0.32,-0.32);
+  \node[anchor=west, font=\scriptsize] at (3.56,-5.21) {$=$ No urbano ($U_t=0$)};
+  \node[font=\scriptsize\itshape, anchor=north] at (2.76,-5.55) {cada celda mide $26{,}7$~m de lado};
+  \end{tikzpicture}}
+  \caption{\small Representación binaria $U_t(i,j)\in\{0,1\}$: celdas oscuras urbanas y claras no urbanas. \textit{\textcolor{red}{Elaboración propia}, con base en la definición de $U_t$ dada en esta sección.}}
   \label{fig:mapa-binario}
   \vspace{-6pt}
 \end{wrapfigure}
@@ -332,14 +461,12 @@ Antes de describirlo conviene justificar por qué se eligió esta cadena y no un
 	Básicas (8) + Texturales (6) + Espectrales/color (9)
 };
 
-
 % Paso 2: Preprocesamiento Estadístico
 \node[step2] (step2) at (0, -6.0) {
 	\textbf{2. Preprocesamiento Estadístico}\\[2pt]
 	StandardScaler + PCA ($23\to 8$ dim)\\
 	96,1\% varianza retenida (promedio serie)
 };
-
 
 % Paso 3: Clustering K-means
 \node[step3] (step3) at (0, -8.5) {
@@ -348,7 +475,6 @@ Antes de describirlo conviene justificar por qué se eligió esta cadena y no un
 	Sin información previa
 };
 
-
 % Paso 4: Clasificación SVM
 \node[step4] (step4) at (0, -10.6) {
 	\textbf{4. Clasificación SVM}\\[2pt]
@@ -356,14 +482,12 @@ Antes de describirlo conviene justificar por qué se eligió esta cadena y no un
 	Validación interna (train/test)
 };
 
-
 % Paso 5: Matriz Binaria Final
 \node[step5] (step5) at (0, -13.4) {
 	\textbf{5. Matriz Binaria Final}\\[2pt]
 	1=Urbano (map) • 0=No-urbano (verde)\\
 	Lista para Autómatas Celulares
 };
-
 
 % Flechas de conexión
 \draw[arrow] (step1) -- (step2);
@@ -443,14 +567,50 @@ La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evol
 \section{Definición del modelo}
 \label{sec:definicion-modelo}
 
-\begin{wrapfigure}{l}{0.52\linewidth}
-  \vspace{-4pt}
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{F2_transicion_ai}
-  \caption{\small Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo \textcolor{red}{puede transitar a urbana} cuando $P_{i,j}>\theta$\textcolor{red}{, y lo hace si además un sorteo uniforme lo confirma}. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en la regla de transición de la ecuación~\textcolor{red}{\ref{eq:transicion}}.}}
+  \shorthandoff{<>}%
+  \newcommand{\rejillabase}[1]{%
+    \begin{scope}[shift={(#1,0)}]%
+      \fill[NoUrbano] (0,0) rectangle (5.20,-5.20);%
+      \foreach \r/\c in {2/4,2/5,3/3,3/4,3/5,4/2,4/3,4/4,4/5,4/6,5/1,5/2,5/3,5/4,5/5,5/6,6/2,6/3,6/4,6/5,6/6,7/3,7/4,7/5}{%
+        \fill[Urbano] ({\c*0.52},{-\r*0.52}) rectangle ++(0.52,-0.52);}%
+      \foreach \k in {1,...,10}{%
+        \node[inner sep=0.5pt, font=\scriptsize, anchor=south] at ({(\k-0.5)*0.52},0.04) {\k};%
+        \node[inner sep=0.5pt, font=\scriptsize, anchor=east] at (-0.05,{-(\k-0.5)*0.52}) {\k};}%
+    \end{scope}}%
+  \resizebox{0.85\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm, flecha/.style={-{Stealth[length=2.4mm]}, line width=0.9pt, black}]
+  \node[font=\small\bfseries, anchor=south] at (7.145, 0.95) {Transición: $U_t(i,j)=0 \to U_{t+1}(i,j)=1$};
+  \node[font=\small, anchor=south] at (3.02, 0.42) {Año $t$};
+  \node[font=\small, anchor=south] at (11.69, 0.42) {Año $t+1$};
+  \rejillabase{0.42}
+  \rejillabase{9.09}
+  \begin{scope}[shift={(0.42,0)}]
+    \node[font=\small] at ({2.5*0.52},{-3.5*0.52}) {0};
+    \draw[BordeCelda, line width=0.3pt] (0,0) grid[step=0.52] (5.20,-5.20);
+    \draw[Transicion, line width=1.15pt] ({2*0.52},{-3*0.52}) rectangle ++(0.52,-0.52);
+  \end{scope}
+  \begin{scope}[shift={(9.09,0)}]
+    \fill[Transicion] ({2*0.52},{-3*0.52}) rectangle ++(0.52,-0.52);
+    \node[font=\small, text=white] at ({2.5*0.52},{-3.5*0.52}) {1};
+    \draw[BordeCelda, line width=0.3pt] (0,0) grid[step=0.52] (5.20,-5.20);
+  \end{scope}
+  \node[font=\small, anchor=south] at (7.145, -2.05) {Regla de transición};
+  \draw[flecha] (5.72,-2.55) -- (8.55,-2.55);
+  \node[font=\small, anchor=north] at (7.145, -2.72) {$P_{i,j}>\theta=0{,}85$};
+  \node[font=\scriptsize, align=center, anchor=north] at (7.145, -3.22) {y sorteo: $u<P_{i,j}$};
+  \node[draw=Transicion, rounded corners=2pt, line width=0.6pt, font=\scriptsize,
+        align=center, text width=4.9cm, inner sep=3pt, anchor=north]
+    at (3.02,-5.38) {Borde rojo $\to$ celda candidata ($U_t=0$)};
+  \node[draw=Transicion, rounded corners=2pt, line width=0.6pt, font=\scriptsize,
+        align=center, text width=4.9cm, inner sep=3pt, anchor=north]
+    at (11.69,-5.38) {Celda roja $\to$ nueva celda urbana ($U_{t+1}=1$)};
+  \end{tikzpicture}}
+  \caption{Transición $U_t(i,j)=0 \to U_{t+1}(i,j)=1$: la celda con borde rojo \textcolor{red}{puede transitar a urbana} cuando $P_{i,j}>\theta$\textcolor{red}{, y lo hace si además un sorteo uniforme lo confirma}. \textit{\textcolor{red}{Elaboración propia}, con base en la regla de transición de la ecuación~\textcolor{red}{\ref{eq:transicion}}.}}
   \label{fig:transicion}
-  \vspace{-6pt}
-\end{wrapfigure}
+\end{figure}
+
 Con la serie de mapas binarios $\{U_t\}_{t=1984}^{2020}$ ya construida, el modelo de crecimiento urbano debe responder a una pregunta distinta de la del preprocesamiento: ya no se trata de decidir qué es urbano, sino de aprender dónde y por qué aparece lo urbano nuevo. El primer paso es, por tanto, definir el objeto de estudio del modelo: la transición (Figura~\ref{fig:transicion}). Una transición ocurre cuando una celda que era no-urbana en el año $t$ pasa a urbana en $t+1$, es decir, $U_t(i,j)=0$ y $U_{t+1}(i,j)=1$. Estas transiciones son los eventos que el modelo busca primero explicar a partir de la historia y, más adelante, reproducir hacia el futuro.
 
 La primera decisión del modelo es cómo cuantificar la evidencia que vincula la configuración espacial de una celda con su probabilidad de transición. La vía más común en la literatura es la regresión logística, pero conlleva un supuesto fuerte: que el logit de la probabilidad es una función lineal de las variables explicativas. Las relaciones espaciales del crecimiento urbano no son lineales; la probabilidad de urbanización cae de forma abrupta en los primeros cientos de metros desde el frente urbano y luego se aplana. Por eso se elige el método de Pesos de Evidencia (WoE, ecuación~\ref{eq:woe} del Capítulo~\ref{ch:marco-teorico}), que no impone ninguna forma funcional: discretiza cada variable en intervalos y estima un peso bayesiano independiente para cada uno, capturando la curvatura real de la relación. Como ventaja adicional, cada peso es interpretable en términos geográficos, lo que satisface el requisito de transparencia que motivó este trabajo y que los enfoques de caja negra no ofrecen.
@@ -510,14 +670,53 @@ basta con eso: lo que se necesita es ordenar las celdas en una escala común.}
 
 Llegados a este punto aparece la decisión de acoplar el campo WoE a un autómata celular, en lugar de usar el mapa de probabilidad como predicción estática. Los \emph{pesos} WoE, estimados en 1984--2010, sí quedan fijos; lo que no es estático es el \emph{campo}: en cada paso anual se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican esos pesos. Una celda muy apta puede no urbanizarse si ningún frente urbano la alcanza dentro del período, y una celda de idoneidad media puede hacerlo si el crecimiento llega a su vecindad. Se adopta la vecindad de Moore, definida en la Figura~\ref{fig:vecindades} del Capítulo~\ref{ch:marco-teorico}, porque admite frentes diagonales y esa es la forma en que avanza una mancha urbana. El autómata celular (Sección~\ref{sec:automatas-celulares} del Capítulo~\ref{ch:marco-teorico}) aplica la regla de forma iterativa. Así, cuando una celda se urbaniza, incrementa de inmediato la densidad de vecinos de sus celdas contiguas y eleva su probabilidad de transición en el paso siguiente. Este mecanismo de contagio borde a borde es coherente con los patrones de mancha compacta, relleno de huecos y extensión de corredores observados en la ZMQ.
 
-\begin{wrapfigure}{l}{0.50\linewidth}
-  \vspace{-4pt}
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{F6_paso_ac_ai}
-  \caption{\small Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla \textcolor{red}{de la ecuación~\ref{eq:transicion}} y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$\textcolor{red}{ y el sorteo lo confirma}. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el algoritmo del autómata descrito en esta sección.}}
+  \shorthandoff{<>}%
+  \newcommand{\mapabase}[1]{%
+    \begin{scope}[shift={(#1,0)}]%
+      \fill[NoUrbano] (0,0) rectangle (5.20,-5.20);%
+      \foreach \r/\c in {2/3,2/4,2/5,3/2,3/3,3/4,3/5,3/6,4/2,4/3,4/4,4/5,4/6,5/2,5/3,5/4,5/5,5/6,5/7,6/3,6/4,6/5,6/6,7/4}{%
+        \fill[Urbano] ({\c*0.52},{-\r*0.52}) rectangle ++(0.52,-0.52);}%
+      \foreach \k in {1,...,10}{%
+        \node[inner sep=0.5pt, font=\scriptsize, anchor=south] at ({(\k-0.5)*0.52},0.04) {\k};%
+        \node[inner sep=0.5pt, font=\scriptsize, anchor=east] at (-0.05,{-(\k-0.5)*0.52}) {\k};}%
+    \end{scope}}%
+  \resizebox{0.85\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm, flecha/.style={-{Stealth[length=2.4mm]}, line width=0.9pt, black}]
+  \node[font=\small\bfseries, anchor=south] at (7.145, 0.95) {Un paso del autómata celular};
+  \node[font=\small, anchor=south] at (3.02, 0.42) {Estado $U_t$};
+  \node[font=\small, anchor=south] at (11.69, 0.42) {Estado $U_{t+1}$};
+  \mapabase{0.42}
+  \mapabase{9.09}
+  \begin{scope}[shift={(0.42,0)}]
+    \draw[BordeCelda, line width=0.3pt] (0,0) grid[step=0.52] (5.20,-5.20);
+    \foreach \r/\c in {1/4,2/7,5/1,5/8,7/5}{%
+      \draw[Transicion, line width=1.15pt] ({\c*0.52},{-\r*0.52}) rectangle ++(0.52,-0.52);}
+  \end{scope}
+  \begin{scope}[shift={(9.09,0)}]
+    \foreach \r/\c in {1/4,2/7,5/1,5/8,7/5}{%
+      \fill[Transicion] ({\c*0.52},{-\r*0.52}) rectangle ++(0.52,-0.52);}
+    \draw[BordeCelda, line width=0.3pt] (0,0) grid[step=0.52] (5.20,-5.20);
+  \end{scope}
+  \node[font=\small\bfseries, anchor=south] at (7.145, -1.55) {En cada paso};
+  \draw[flecha] (5.72,-1.85) -- (8.55,-1.85);
+  \node[font=\scriptsize, anchor=north] at (7.145, -2.02) {recalcular 7 variables};
+  \draw[-{Stealth[length=1.8mm]}, line width=0.6pt] (7.145,-2.42) -- (7.145,-2.72);
+  \node[font=\scriptsize, anchor=north] at (7.145, -2.78) {$\sigma\big(\sum_k\omega_k W_k\big)+\alpha N$};
+  \draw[-{Stealth[length=1.8mm]}, line width=0.6pt] (7.145,-3.30) -- (7.145,-3.60);
+  \node[font=\scriptsize, align=center, anchor=north] at (7.145, -3.66) {$P_{i,j}>\theta=0{,}85$\\ y sorteo};
+  \node[draw=Transicion, rounded corners=2pt, line width=0.6pt, font=\scriptsize,
+        align=center, text width=4.85cm, inner sep=3pt, anchor=north]
+    at (3.02,-5.38) {Borde rojo: celdas candidatas};
+  \node[draw=Transicion, rounded corners=2pt, line width=0.6pt, font=\scriptsize,
+        align=center, text width=4.85cm, inner sep=3pt, anchor=north]
+    at (11.69,-5.38) {Relleno rojo: nuevas celdas urbanas};
+  \end{tikzpicture}}
+  \caption{Un paso del AC: las celdas candidatas (borde rojo) se evalúan con la regla \textcolor{red}{de la ecuación~\ref{eq:transicion}} y transitan a urbanas (relleno rojo) si $P_{i,j}>\theta$ \textcolor{red}{y el sorteo lo confirma}. \textit{\textcolor{red}{Elaboración propia}, con base en el algoritmo del autómata descrito en esta sección.}}
   \label{fig:paso-ac}
-  \vspace{-6pt}
-\end{wrapfigure}
+\end{figure}
+
 La regla de transición (Figura~\ref{fig:paso-ac}) integra, finalmente, tres componentes. A la probabilidad WoE de cada celda se le añade la influencia del vecindario de Moore (ocho celdas adyacentes, ecuación~\ref{eq:neighborhood}), ponderada por un peso vecinal; se elige la vecindad de Moore por ser la mínima que captura tanto adyacencias ortogonales como diagonales del frente urbano. La probabilidad combinada se compara contra un umbral de transición: solo las celdas que lo superan pueden urbanizarse. \textcolor{red}{El umbral y el peso vecinal se eligen por búsqueda en cuadrícula sobre ventanas quinquenales anteriores a 2011, de modo que no interviene en esa elección ninguna de las ventanas de evaluación; el procedimiento se describe en la Sección~\ref{ssec:calibracion-parametros}.} Por último, la transición no es determinista: una celda apta se urbaniza solo si un sorteo aleatorio lo confirma. Esta componente estocástica refleja que, incluso bajo condiciones favorables, la urbanización de una parcela depende de factores no modelados (decisiones de propietarios, permisos, mercado), y es lo que hace que distintas corridas del modelo generen escenarios ligeramente distintos en lugar de una única predicción rígida.
 
 Los tres componentes se condensan en una sola expresión, que constituye el núcleo formal del modelo y coincide con la implementación validada. Para una celda no urbana $(i,j)$, la probabilidad de transición es
@@ -651,8 +850,47 @@ Definido el modelo, queda la pregunta de si sus predicciones son confiables. La 
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.90\linewidth]{F7_ventanas_validacion_ai}
-  \caption{Protocolo de validación: separación temporal entre el período de ajuste (1984--2010, donde se estiman los pesos WoE y se eligen $\theta$ y $\alpha$) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en la estimación de los pesos ni en la selección de los parámetros. \textit{\textcolor{red}{Elaboración propia con apoyo de inteligencia artificial generativa}, con base en el protocolo de validación quinquenal múltiple.}}
+  \shorthandoff{<>}%
+  \newcommand{\X}[1]{0.35+(#1-1984)/36*13.2}%
+  \resizebox{\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm]
+  \node[font=\small\bfseries, anchor=south] at (6.95, 1.05) {Protocolo de calibración y evaluación};
+  \node[font=\scriptsize, anchor=south] at (6.95, 0.58) {Año};
+  \draw[-{Stealth[length=2.2mm]}, line width=0.6pt] (0.15,0) -- (13.85,0);
+  \foreach \y in {1984,1990,1995,2000,2005,2010,2015,2020}{%
+    \draw[line width=0.4pt] ({\X{\y}},0.07) -- ({\X{\y}},-0.07);%
+    \node[font=\scriptsize, inner sep=1pt, anchor=south] at ({\X{\y}},0.10) {\y};}
+  \fill[ZonaTrain] ({\X{1984}},-0.28) rectangle ({\X{2010.5}},-4.85);
+  \fill[ZonaTest] ({\X{2010.5}},-0.28) rectangle ({\X{2020}},-4.85);
+  \node[font=\scriptsize\bfseries, text=Acento] at ({(\X{1984}+\X{2010.5})/2},-0.55) {Período de ajuste (1984--2010)};
+  \node[font=\scriptsize\bfseries, text=BarraTest] at ({(\X{2010.5}+\X{2020})/2},-0.55) {Evaluación};
+  \fill[Urbano] ({\X{1984}+0.08},-0.85) rectangle ({\X{2010}},-1.30);
+  \node[font=\scriptsize, text=white] at ({(\X{1984}+\X{2010})/2},-1.075) {Etapa 1: pesos WoE e IV (26 transiciones anuales)};
+  \foreach \i in {0,...,5}{%
+    \pgfmathsetmacro{\yt}{-1.55-\i*0.50}%
+    \pgfmathtruncatemacro{\a}{2000+\i}%
+    \pgfmathtruncatemacro{\b}{2005+\i}%
+    \fill[BarraCalib] ({\X{\a}},{\yt}) rectangle ({\X{\b}},{\yt-0.40});%
+    \node[font=\scriptsize, text=white] at ({(\X{\a}+\X{\b})/2},{\yt-0.20}) {\a\,$\to$\,\b};}
+  \node[font=\scriptsize, text=Acento, align=center, text width=5.0cm] at ({(\X{1984}+\X{2000})/2},-2.95)
+    {Etapa 2: selección de $\theta$ y $\alpha$\\ 40 combinaciones; criterio: FoM medio en las seis ventanas internas};
+  \foreach \i/\a/\b in {0/2011/2016,1/2012/2017,2/2013/2018,3/2014/2019,4/2015/2020}{%
+    \pgfmathsetmacro{\yt}{-0.85-\i*0.60}%
+    \fill[BarraTest] ({\X{\a}},{\yt}) rectangle ({\X{\b}},{\yt-0.45});%
+    \node[font=\scriptsize, text=white] at ({(\X{\a}+\X{\b})/2},{\yt-0.225}) {\a\,$\to$\,\b};}
+  \node[font=\scriptsize, align=center, text width=3.3cm] at ({(\X{2010.5}+\X{2020})/2},-4.25)
+    {$\theta=0{,}85$ y $\alpha=0{,}60$ fijos, sin reajuste};
+  \draw[black!75, line width=0.7pt, dash pattern=on 1.3pt off 1.2pt] ({\X{2010.5}},0.02) -- ({\X{2010.5}},-4.85);
+  \fill[Urbano] (0.35,-5.20) rectangle ++(0.38,-0.26);
+  \node[anchor=west, font=\scriptsize] at (0.84,-5.33) {Etapa 1: estimación de pesos};
+  \fill[BarraCalib] (4.85,-5.20) rectangle ++(0.38,-0.26);
+  \node[anchor=west, font=\scriptsize] at (5.34,-5.33) {Etapa 2: ventanas internas};
+  \fill[BarraTest] (9.45,-5.20) rectangle ++(0.38,-0.26);
+  \node[anchor=west, font=\scriptsize] at (9.94,-5.33) {Ventanas de evaluación};
+  \node[font=\scriptsize\itshape, anchor=north] at (6.95,-5.65)
+    {Dentro de cada grupo las ventanas comparten cuatro de cinco años; no son muestras independientes.};
+  \end{tikzpicture}}
+  \caption{Protocolo de validación: separación temporal entre el período de ajuste (1984--2010, donde se estiman los pesos WoE y se eligen $\theta$ y $\alpha$) y las cinco ventanas quinquenales de prueba (2011--2020). Ningún dato del período de prueba interviene en la estimación de los pesos ni en la selección de los parámetros. \textit{\textcolor{red}{Elaboración propia}, con base en el protocolo de validación quinquenal múltiple.}}
   \label{fig:ventanas-validacion}
 \end{figure}
 
