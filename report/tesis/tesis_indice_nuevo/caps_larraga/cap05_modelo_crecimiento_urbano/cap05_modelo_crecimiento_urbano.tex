@@ -473,6 +473,41 @@ El período 2011--2020 se reserva deliberadamente, sin tocarlo durante el ajuste
 
 Con los pesos calculados, surge una cuarta decisión: cómo combinarlos. No todas las variables aportan lo mismo. El peso total por celda no se obtiene como la suma simple de la ecuación~\ref{eq:woe_total}, sino con la suma ponderada de la ecuación~\ref{eq:woe_ponderado}, que pesa cada variable por su \textit{Information Value} (ecuación~\ref{eq:information_value}) normalizado, de modo que las variables con mayor poder discriminativo pesen más en la decisión final. En el caso de la Zona Metropolitana de Querétaro, esto hace que la distancia al frente urbano domine la combinación, concentra cerca del $28\%$ del peso total, el \textit{Information Value} más alto de las siete variables, seguida de la densidad de vecinos inmediatos. La suma ponderada se transforma con la función sigmoide (ecuación~\ref{eq:woe_sigmoid}) para obtener una probabilidad de transición acotada en $[0,1]$.
 
+\textcolor{red}{Ninguna de estas dos operaciones es un adorno, y conviene decir qué
+resuelve cada una. La ponderación responde a un problema que el
+Capítulo~\ref{ch:estado-del-arte} identifica en el WoE: la suma simple supone
+que las variables son condicionalmente independientes, y aquí no lo son. Las
+tres densidades de vecinos miden, a escalas distintas, casi lo mismo. Con la
+suma simple, esa evidencia se contaría tres veces y el total crecería con el
+número de variables incluidas, no con la evidencia real. Como los pesos
+$\omega_k$ suman uno, la suma ponderada es en realidad un promedio ponderado de
+los pesos de evidencia: su valor queda dentro del rango de los pesos
+individuales, por muchas variables que se añadan, y las variables que apenas
+discriminan, como el tamaño del \textit{cluster} más cercano, con un
+\textit{Information Value} normalizado cercano al $1\%$, apenas mueven el
+resultado. La ponderación atenúa así la sobreestimación por redundancia,
+aunque no la elimina: las tres densidades siguen reuniendo cerca de la mitad
+del peso total. Tampoco añade parámetros que ajustar, porque el
+\textit{Information Value} se calcula con los mismos conteos que producen los
+pesos.}
+
+\textcolor{red}{La sigmoide, por su parte, resuelve un problema de escala. Los
+pesos de evidencia son logaritmos de cocientes de probabilidad y no están
+acotados, de modo que su suma no puede compararse directamente con un umbral
+fijo ni usarse en un sorteo. La función logística es la inversa natural de esa
+escala logarítmica: devuelve un valor entre $0$ y $1$, conserva el orden entre
+celdas y hace que un mismo umbral signifique lo mismo en todo el mapa. El
+resultado debe leerse como un índice de aptitud acotado y no como una
+probabilidad posterior calibrada en sentido estricto, porque la suma ponderada
+omite el término previo de la formulación bayesiana original. Para la regla
+basta con eso: lo que se necesita es ordenar las celdas en una escala común.}
+
+% CAMBIO RM: Se explica qué problema resuelve cada operación. La ponderación
+% por IV atenúa la redundancia entre variables correlacionadas (el supuesto de
+% independencia condicional discutido en el Cap. 3) porque convierte la suma
+% en un promedio ponderado; la sigmoide lleva la escala logarítmica del WoE a
+% [0,1] para poder compararla con un umbral y con un sorteo.
+
 Llegados a este punto aparece la decisión de acoplar el campo WoE a un autómata celular, en lugar de usar el mapa de probabilidad como predicción estática. Los \emph{pesos} WoE, estimados en 1984--2010, sí quedan fijos; lo que no es estático es el \emph{campo}: en cada paso anual se recalculan las siete variables espaciales sobre el estado actualizado del mapa y se les aplican esos pesos. Una celda muy apta puede no urbanizarse si ningún frente urbano la alcanza dentro del período, y una celda de idoneidad media puede hacerlo si el crecimiento llega a su vecindad. Se adopta la vecindad de Moore, definida en la Figura~\ref{fig:vecindades} del Capítulo~\ref{ch:marco-teorico}, porque admite frentes diagonales y esa es la forma en que avanza una mancha urbana. El autómata celular (Sección~\ref{sec:automatas-celulares} del Capítulo~\ref{ch:marco-teorico}) aplica la regla de forma iterativa. Así, cuando una celda se urbaniza, incrementa de inmediato la densidad de vecinos de sus celdas contiguas y eleva su probabilidad de transición en el paso siguiente. Este mecanismo de contagio borde a borde es coherente con los patrones de mancha compacta, relleno de huecos y extensión de corredores observados en la ZMQ.
 
 \begin{wrapfigure}{l}{0.50\linewidth}
@@ -495,6 +530,60 @@ P_{i,j} = \min\!\left(1,\; \sigma\!\Big( \sum_{k} \omega_k\, \mathrm{WoE}_k(i,j)
 \end{equation}
 
 donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija \textcolor{red}{$\theta = 0{,}85$ y $\alpha = 0{,}60$ (Sección~\ref{ssec:calibracion-parametros})}.
+
+\textcolor{red}{La suma de la vecindad después de la sigmoide, y no como una
+variable más dentro del WoE, también responde a una razón concreta. Los pesos
+WoE describen un régimen espacial promedio de 1984 a 2010 y no cambian durante
+la simulación; la vecindad, en cambio, refleja lo que ocurrió en el paso
+anterior. Mantener los dos términos separados permite que el autómata
+reaccione a su propio crecimiento sin reestimar nada, y permite también leer
+qué parte de la probabilidad de una celda proviene de su aptitud y qué parte
+de sus vecinos. Con los valores calibrados, la regla admite una lectura
+directa. Como $P_{i,j} > \theta$ equivale a
+$\sigma(\cdot) > 0{,}85 - 0{,}60\,N_{i,j}$, una celda sin vecinos urbanos
+necesita una aptitud superior a $0{,}85$ para poder transitar, mientras que
+una celda rodeada por completo de urbanización, un hueco dentro de la mancha,
+solo necesita superar $0{,}25$. Ninguna celda transita únicamente por tener
+vecinos, porque $\alpha < \theta$: siempre hace falta algo de aptitud. Y como
+el umbral es alto, el sorteo descarta como mucho un $15\%$ de las celdas que
+lo superan, de modo que la componente aleatoria matiza el resultado pero no lo
+determina.}
+
+\textcolor{red}{Esta forma es también deliberadamente parsimoniosa. Los pesos de
+evidencia y su ponderación se obtienen contando transiciones, sin
+optimización iterativa, y la regla solo deja dos parámetros libres, $\theta$ y
+$\alpha$, cuyo significado es explícito. Basta comparar con los cinco
+coeficientes de SLEUTH, cada uno con cien valores posibles, o con los pesos de
+una red neuronal, que no admiten esta lectura. Cada simulación quinquenal tarda
+unos segundos en un equipo sin GPU, lo que permite recorrer la cuadrícula
+completa de parámetros en lugar de muestrearla.}
+
+% CAMBIO RM: Se justifica la forma aditiva con la vecindad y se muestra que la
+% regla se puede leer con los valores calibrados (umbral efectivo según la
+% fracción de vecinos urbanos), además de su bajo número de parámetros.
+
+\textcolor{red}{Vistas en conjunto, estas decisiones se conectan con el
+problema planteado en el Capítulo~\ref{ch:introduccion} a través de los
+requerimientos de la Tabla~\ref{tab:requerimientos_modelo_1}. Para R4, la
+probabilidad de cada celda se descompone en contribuciones que se pueden
+nombrar: el peso de cada variable, su ponderación y el término de vecindad.
+Para R2, $\theta$ y $\alpha$ funcionan como palancas con significado: subir
+$\alpha$ da más peso a la cercanía con la mancha existente, lo que favorece un
+crecimiento compacto pero también aumenta la cantidad de cambio, y subir
+$\theta$ la reduce, de modo que los escenarios pueden
+compararse sabiendo qué se modificó. Para R3, la regla cabe en una línea y se
+reimplementa sin depender de software cerrado. Para R1, la forma aditiva
+está pensada para representar los dos patrones que dominan la serie, el
+avance del frente y el relleno de huecos, que es donde el término de vecindad
+reduce la aptitud exigida. Esta formulación, sin embargo, no resuelve
+todo: como no hay un módulo externo de demanda, la cantidad de cambio depende
+de $\theta$ y $\alpha$, y el Capítulo~\ref{ch:resultados-analisis} muestra
+que el desacuerdo de cantidad es precisamente la componente mayoritaria del
+error.}
+
+% CAMBIO RM: Párrafo que conecta cada componente de la regla con R1--R4 y
+% declara su límite principal, para que la complejidad del modelo quede
+% justificada por el problema y no por sí misma.
 
 Conviene precisar cómo entra el WoE al autómata, porque de ahí depende su comportamiento. Aquí el WoE se incorpora como un campo probabilístico continuo ponderado por el \textit{Information Value} normalizado de cada variable, que se recompone en cada paso al recalcular las variables espaciales sobre el estado actualizado del mapa, y se acopla a la vecindad mediante una regla deliberadamente sencilla y auditable. Ahora bien, la aportación metodológica central no reside en el uso del WoE y del AC, que la literatura ya documenta ampliamente, sino en el protocolo de evaluación: \textcolor{red}{la calibración de $\theta$ y $\alpha$ sobre ventanas anteriores a 2011 y la validación, sin reajuste, sobre cinco ventanas quinquenales desplazadas, con código abierto,} que permiten distinguir un desempeño estable de un ajuste a un único período. A ello se suma la serie larga de 37 años. La ciudad, en cambio, no es terreno inexplorado: existe un antecedente de simulación con autómatas celulares para Querétaro entre 2003 y 2017 \parencite{JimenezLopez2018}, de manera que la diferencia con este trabajo está en el protocolo de evaluación y en la auditabilidad de los pesos, no en el caso de estudio.
 
