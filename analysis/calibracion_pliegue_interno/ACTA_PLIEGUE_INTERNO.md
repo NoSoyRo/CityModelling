@@ -95,6 +95,32 @@ vectorizada de las variables espaciales.
 | 2015-2020 | 0,3777 | 0,3781 |
 | Promedio | 0,3175 | 0,3174 |
 
+### Verificación del 14 de octubre: reentrenar el WoE
+
+Se reentrenó en memoria el WoE de 1984-2010 con `entrenar_woe(1984, 2010)` de
+`calibracion_anidada.py`, que sigue el procedimiento de `train_woe_pooled.py`
+pero calcula las variables con `tools/variables_rapidas.py`, y se comparó con
+el pickle publicado. Los mapas `AAAA.npy` y `year_AAAA/svm_2_classes.npy` son
+idénticos en los 27 años, así que la comparación aísla el cálculo de variables.
+
+- Cinco variables salen **idénticas** al último decimal: cortes, pesos, IV y
+  conteos (`distance_urban`, las tres densidades y `urban_gradient`).
+- `local_fragmentation` gana un corte en 0: la versión rápida deja más celdas
+  en cero exacto, y el primer bin se parte en dos (WoE -4,75 y -3,89 en lugar
+  de un solo -4,25). Del tercer bin en adelante, los pesos coinciden a dos
+  milésimas.
+- `nearest_cluster_size` mueve ligeramente los cortes y cambia los pesos en
+  hasta 0,013.
+- El IV normalizado de las siete variables cambia como mucho en 0,0013
+  (`local_fragmentation`, 0,1062 contra 0,1075).
+
+Así que la versión rápida es casi igual a la original, pero no idéntica en esas
+dos variables. Esto no afecta a las cifras de la tesis: las métricas vigentes se
+calcularon con el pickle publicado y con la versión rápida, y reproducirlas da
+el mismo JSON byte por byte (re-ejecución de `evaluacion_final.py` el 14 de
+octubre, `git diff` vacío). El pickle sigue con sha1
+`2c8be3a35639ccd1ad5c96e95d05a551e1cebebf`.
+
 ## Resultado 2: la aleatoriedad sin sembrar era cosmética
 
 Tres semillas sobre 2011-2016 con el par publicado dan FoM de 0,2217, 0,2217 y
