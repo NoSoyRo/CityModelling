@@ -592,7 +592,7 @@ estadística, no una relación causal. Los dos intervalos degenerados de la
 Sección~\ref{ssec:alcance-iv}, que corresponden a celdas ya urbanas, se omiten
 porque ninguna celda candidata los alcanza.}
 
-\textcolor{red}{\textbf{Distancia al área urbana.} Es la lectura más directa. Con
+\textcolor{red}{\textbf{Distancia al área urbana.} Es la lectura más directa (Figura~\ref{fig:woe-distancia}). Con
 celdas de $26{,}7$~m de lado, el peso es positivo hasta unos $90$~m de
 distancia media al área urbana y alcanza su máximo, $+0{,}85$, entre unos $9$ y
 $40$~m, es decir, en el primer anillo alrededor de la mancha. A partir de unos
@@ -603,8 +603,34 @@ urbano hace poco probable que una celda se urbanice. El primer intervalo, con
 distancia media casi nula, tiene un peso menor ($+0{,}21$) porque agrupa celdas
 que fueron urbanas durante casi todo el período.}
 
+\begin{figure}[htbp]
+  \centering
+  \shorthandoff{<>}%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.86\linewidth, height=5.4cm,
+    ybar, bar width=9pt, ymin=-2.5, ymax=1.5,
+    xmin=0.4, xmax=8.6,
+    xtick={1,2,3,4,5,6,7,8},
+    xticklabels={{1--9},{9--22},{22--39},{39--60},{60--88},{88--132},{132--219},{219--1534}},
+    xlabel={Distancia media al área urbana (m)}, ylabel={Peso WoE},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize},
+    yticklabel style={/pgf/number format/use comma, /pgf/number format/fixed},
+    nodes near coords={\pgfmathprintnumber[use comma, fixed, fixed zerofill, precision=2, showpos]{\pgfplotspointmeta}},
+    nodes near coords style={font=\tiny},
+    axis x line*=bottom, axis y line*=left, extra y ticks={0}, extra y tick style={grid=major, grid style={TextoSuave!50}},
+  ]
+  \addplot[fill=Acerto, draw=none, bar shift=0pt] coordinates {(1,0.21) (2,0.85) (3,0.81) (4,0.56) (5,0.22)};
+  \addplot[fill=Transicion, draw=none, bar shift=0pt] coordinates {(6,-0.23) (7,-0.85) (8,-1.95)};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{\textcolor{red}{Peso WoE de la distancia media al área urbana por intervalo, en metros. El peso es positivo en los primeros $90$~m, máximo en el primer anillo alrededor de la mancha, y cada vez más negativo al alejarse. Se omite el intervalo degenerado de distancia nula, que corresponde a celdas ya urbanas (Sección~\ref{ssec:alcance-iv}).} \textit{\textcolor{red}{Elaboración propia}, con base en los pesos WoE estimados en 1984--2010 (\texttt{woe\_pooled\_1984\_2010.pkl}).}}
+  \label{fig:woe-distancia}
+\end{figure}
+
+
 \textcolor{red}{\textbf{Densidad de vecinos urbanos ($3\times3$, $5\times5$ y
-$7\times7$).} Las tres escalas cuentan la misma historia. Una celda sin vecinos
+$7\times7$).} Las tres escalas cuentan la misma historia (Figura~\ref{fig:woe-densidad}). Una celda sin vecinos
 urbanos tiene peso negativo; el peso se vuelve positivo cuando entre un $10$ y
 un $15\%$ de la ventana es urbana, según la escala, y alcanza su máximo cuando la
 ventana está urbanizada entre un $37$ y un $55\%$ ($+0{,}93$ en $3\times3$,
@@ -615,7 +641,31 @@ no la aislada ni la que ya está dentro de la mancha consolidada. Que el máximo
 sea algo mayor en la ventana más pequeña indica que los vecinos inmediatos
 pesan un poco más que los lejanos.}
 
-\textcolor{red}{\textbf{Fragmentación local.} Mide qué tan mezclada está una
+\begin{figure}[htbp]
+  \centering
+  \shorthandoff{<>}%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.86\linewidth, height=5.8cm,
+    xmin=0, xmax=100, ymin=-6.5, ymax=1.5,
+    xlabel={Fracción urbana de la ventana (\%)}, ylabel={Peso WoE},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize},
+    yticklabel style={/pgf/number format/use comma, /pgf/number format/fixed},
+    legend style={at={(0.5,-0.30)}, anchor=north, legend columns=3, draw=none, font=\footnotesize, /tikz/every even column/.append style={column sep=10pt}},
+    axis x line*=bottom, axis y line*=left, extra y ticks={0}, extra y tick style={grid=major, grid style={TextoSuave!50}},
+  ]
+  \addplot[color=Acento, mark=*, mark size=1.6pt, thick] coordinates {(0.0,-5.58) (1.5,-2.60) (6.6,-0.40) (16.2,0.36) (29.7,0.77) (46.2,0.93) (64.7,0.78) (83.3,0.21) (96.2,-1.42)};
+  \addplot[color=BarraCalib, mark=square*, mark size=1.6pt, thick] coordinates {(0.2,-5.83) (2.5,-1.67) (8.9,-0.31) (19.0,0.35) (31.6,0.72) (46.3,0.87) (62.8,0.73) (79.9,0.21) (93.8,-1.09) (99.5,-5.28)};
+  \addplot[color=TextoSuave, mark=triangle*, mark size=1.6pt, thick] coordinates {(0.5,-4.53) (3.7,-1.28) (10.9,-0.22) (21.0,0.34) (32.9,0.67) (46.4,0.80) (61.3,0.68) (77.2,0.22) (91.5,-0.83) (98.9,-3.68)};
+  \legend{$3\times3$, $5\times5$, $7\times7$}
+  \end{axis}
+  \end{tikzpicture}
+  \caption{\textcolor{red}{Peso WoE de la densidad de vecinos urbanos según la fracción urbana de la ventana, en las tres escalas. El peso es negativo en vecindades casi vacías, máximo cuando la ventana está urbanizada entre un $37$ y un $55\%$ y vuelve a caer cerca de la saturación. Cada punto es el centro de un intervalo; se omite el intervalo degenerado de densidad unitaria del radio $3\times3$ (Sección~\ref{ssec:alcance-iv}).} \textit{\textcolor{red}{Elaboración propia}, con base en los pesos WoE estimados en 1984--2010 (\texttt{woe\_pooled\_1984\_2010.pkl}).}}
+  \label{fig:woe-densidad}
+\end{figure}
+
+
+\textcolor{red}{\textbf{Fragmentación local} (Figura~\ref{fig:woe-fragmentacion}). Mide qué tan mezclada está una
 ventana de $5\times5$ celdas entre lo urbano y lo no urbano, sin distinguir cuál
 de los dos es minoritario. Las ventanas uniformes, todas urbanas o todas
 rurales, tienen el peso más negativo ($-4{,}25$). El peso se vuelve positivo
@@ -623,20 +673,98 @@ cuando la clase minoritaria ocupa alrededor de dos de las veinticinco celdas y
 se mantiene en torno a $+0{,}6$ en las ventanas más mezcladas. La lectura es
 que la urbanización ocurre donde lo urbano y lo rural se encuentran.}
 
-\textcolor{red}{\textbf{Gradiente de urbanización.} Mide qué tan brusco es el
+\begin{figure}[htbp]
+  \centering
+  \shorthandoff{<>}%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.86\linewidth, height=5.4cm,
+    ybar, bar width=9pt, ymin=-5.0, ymax=1.5,
+    xmin=0.4, xmax=9.6,
+    xtick={1,2,3,4,5,6,7,8,9},
+    xticklabels={{1},{2},{3},{4},{5},{6},{7},{8},{9}},
+    xlabel={Intervalo de fragmentación (de ventana uniforme a ventana mezclada)}, ylabel={Peso WoE},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize},
+    yticklabel style={/pgf/number format/use comma, /pgf/number format/fixed},
+    nodes near coords={\pgfmathprintnumber[use comma, fixed, fixed zerofill, precision=2, showpos]{\pgfplotspointmeta}},
+    nodes near coords style={font=\tiny},
+    axis x line*=bottom, axis y line*=left, extra y ticks={0}, extra y tick style={grid=major, grid style={TextoSuave!50}},
+  ]
+  \addplot[fill=Acerto, draw=none, bar shift=0pt] coordinates {(5,0.27) (6,0.47) (7,0.59) (8,0.67) (9,0.64)};
+  \addplot[fill=Transicion, draw=none, bar shift=0pt] coordinates {(1,-4.25) (2,-1.53) (3,-0.59) (4,-0.04)};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{\textcolor{red}{Peso WoE de la fragmentación local por intervalo, ordenados de la ventana más uniforme a la más mezclada. Las ventanas uniformes desalientan la transición; las mezcladas la favorecen.} \textit{\textcolor{red}{Elaboración propia}, con base en los pesos WoE estimados en 1984--2010 (\texttt{woe\_pooled\_1984\_2010.pkl}).}}
+  \label{fig:woe-fragmentacion}
+\end{figure}
+
+
+\textcolor{red}{\textbf{Gradiente de urbanización} (Figura~\ref{fig:woe-gradiente}). Mide qué tan brusco es el
 cambio entre lo urbano y lo no urbano en torno a la celda. En las zonas
 uniformes vale cero y su peso es negativo ($-2{,}97$); el peso crece de forma
 sostenida con el gradiente y llega a $+0{,}76$ en los bordes más marcados. Es
 la misma lectura de la fragmentación desde otra medida: el borde de la mancha
 es donde se concentra el cambio.}
 
-\textcolor{red}{\textbf{Tamaño del \textit{cluster} urbano más cercano.} Sus
+\begin{figure}[htbp]
+  \centering
+  \shorthandoff{<>}%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.86\linewidth, height=5.4cm,
+    ybar, bar width=9pt, ymin=-3.5, ymax=1.5,
+    xmin=0.4, xmax=8.6,
+    xtick={1,2,3,4,5,6,7,8},
+    xticklabels={{1},{2},{3},{4},{5},{6},{7},{8}},
+    xlabel={Intervalo de gradiente (de zona uniforme a borde marcado)}, ylabel={Peso WoE},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize},
+    yticklabel style={/pgf/number format/use comma, /pgf/number format/fixed},
+    nodes near coords={\pgfmathprintnumber[use comma, fixed, fixed zerofill, precision=2, showpos]{\pgfplotspointmeta}},
+    nodes near coords style={font=\tiny},
+    axis x line*=bottom, axis y line*=left, extra y ticks={0}, extra y tick style={grid=major, grid style={TextoSuave!50}},
+  ]
+  \addplot[fill=Acerto, draw=none, bar shift=0pt] coordinates {(4,0.25) (5,0.46) (6,0.60) (7,0.70) (8,0.76)};
+  \addplot[fill=Transicion, draw=none, bar shift=0pt] coordinates {(1,-2.97) (2,-0.79) (3,-0.12)};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{\textcolor{red}{Peso WoE del gradiente de urbanización por intervalo, ordenados de la zona uniforme al borde más marcado. El peso crece de forma sostenida hacia el borde de la mancha.} \textit{\textcolor{red}{Elaboración propia}, con base en los pesos WoE estimados en 1984--2010 (\texttt{woe\_pooled\_1984\_2010.pkl}).}}
+  \label{fig:woe-gradiente}
+\end{figure}
+
+
+\textcolor{red}{\textbf{Tamaño del \textit{cluster} urbano más cercano} (Figura~\ref{fig:woe-cluster}). Sus
 pesos son pequeños, entre $-0{,}85$ y $+0{,}38$. Estar cerca de un
 \textit{cluster} de pocas celdas desalienta ligeramente la transición, y estar
 cerca de uno grande la favorece un poco; junto a la mancha mayor el peso
 vuelve a ser negativo ($-0{,}82$). Con un \textit{Information Value}
 normalizado del $1{,}2\%$, la variable apenas discrimina y conviene no leer
 más en ella.}
+
+\begin{figure}[htbp]
+  \centering
+  \shorthandoff{<>}%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=0.86\linewidth, height=5.4cm,
+    ybar, bar width=9pt, ymin=-1.5, ymax=1.0,
+    xmin=0.4, xmax=10.6,
+    xtick={1,2,3,4,5,6,7,8,9,10},
+    xticklabels={{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}},
+    xlabel={Intervalo de tamaño (de \textit{cluster} pequeño a la mancha mayor)}, ylabel={Peso WoE},
+    tick label style={font=\footnotesize}, label style={font=\footnotesize},
+    yticklabel style={/pgf/number format/use comma, /pgf/number format/fixed},
+    nodes near coords={\pgfmathprintnumber[use comma, fixed, fixed zerofill, precision=2, showpos]{\pgfplotspointmeta}},
+    nodes near coords style={font=\tiny},
+    axis x line*=bottom, axis y line*=left, extra y ticks={0}, extra y tick style={grid=major, grid style={TextoSuave!50}},
+  ]
+  \addplot[fill=Acerto, draw=none, bar shift=0pt] coordinates {(3,0.05) (4,0.15) (5,0.24) (6,0.38) (7,0.22) (8,0.22)};
+  \addplot[fill=Transicion, draw=none, bar shift=0pt] coordinates {(1,-0.85) (2,-0.19) (9,-0.08) (10,-0.82)};
+  \end{axis}
+  \end{tikzpicture}
+  \caption{\textcolor{red}{Peso WoE del tamaño del \textit{cluster} urbano más cercano por intervalo, ordenados del \textit{cluster} más pequeño a la mancha mayor. Los pesos son pequeños en todo el rango, coherentes con un \textit{Information Value} normalizado del $1{,}2\%$.} \textit{\textcolor{red}{Elaboración propia}, con base en los pesos WoE estimados en 1984--2010 (\texttt{woe\_pooled\_1984\_2010.pkl}).}}
+  \label{fig:woe-cluster}
+\end{figure}
+
 
 \begin{table}[htbp]
 \centering
@@ -677,7 +805,8 @@ razón de su límite: un modelo que solo ve el borde no anticipa el crecimiento
 que salta lejos de él.}
 
 % CAMBIO RM: Sección nueva al final del capítulo con la lectura intuitiva de los
-% pesos WoE de las siete variables y del IV. Cifras tomadas de
+% pesos WoE de las siete variables y del IV, con una figura pgfplots por
+% variable generada a partir del pickle. Cifras tomadas de
 % data/processed/woe_pooled_1984_2010.pkl (cortes en celdas de 26,7 m; razones
 % e^W). El párrafo de transición al capítulo siguiente se movió al final de
 % esta sección, sin cambios.
