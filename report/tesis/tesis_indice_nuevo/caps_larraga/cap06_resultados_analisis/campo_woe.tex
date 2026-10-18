@@ -1,0 +1,36 @@
+% Panel (b) de las figuras de la Sección "Lectura intuitiva de las variables":
+% el campo de pesos WoE de una variable sobre una porción de 36 x 36 celdas del
+% mapa de 2011 (filas 312-347, columnas 2590-2625). Los datos los escribe
+% tools/generar_campo_woe.py en cap06_resultados_analisis/datos/.
+%
+% Uso: \campoWoE{<variable>}{<subtítulo>}, dentro de un subfigure.
+% La barra de escala mide 500 m / 26,7 m = 18,73 celdas.
+
+\newcommand{\campoWoE}[2]{%
+  \begin{tikzpicture}
+  \begin{axis}[
+    width=\linewidth, axis equal image, enlargelimits=false, scale only axis,
+    xmin=-0.5, xmax=35.5, ymin=-0.5, ymax=35.5, y dir=reverse,
+    xtick=\empty, ytick=\empty, axis line style={draw=TextoSuave, line width=0.4pt},
+    clip=false,
+  ]
+  \addplot[matrix plot*, mesh/cols=36, mesh/color input=explicit, point meta=explicit symbolic,
+           draw=white, line width=0.15pt]
+    table[meta=c] {cap06_resultados_analisis/datos/campo_#1.dat};
+  \addplot[only marks, mark=*, mark size=0.75pt, mark options={fill=black, draw=white, line width=0.25pt}]
+    table {cap06_resultados_analisis/datos/transiciones_2011_2016.dat};
+  \draw[line width=1.1pt, TextoSuave] (axis cs:-0.5,36.90) -- (axis cs:18.23,36.90);
+  \draw[line width=0.4pt, TextoSuave] (axis cs:-0.5,36.50) -- (axis cs:-0.5,37.30) (axis cs:18.23,36.50) -- (axis cs:18.23,37.30);
+  \node[font=\tiny, TextoSuave, anchor=west] at (axis cs:18.73,36.90) {$500$~m};
+  \end{axis}
+  \end{tikzpicture}\\[3pt]
+  \begin{tikzpicture}[font=\tiny, text=TextoSuave]
+  \shade[left color=Transicion, right color=Acerto, middle color={rgb,255:red,250;green,250;blue,247}] (0,0) rectangle (3.0,0.16);
+  \draw[TextoSuave, line width=0.3pt] (0,0) rectangle (3.0,0.16);
+  \node[anchor=north] at (0,0) {$\le -2$}; \node[anchor=north] at (1.5,0) {$0$}; \node[anchor=north] at (3.0,0) {$\ge +2$};
+  \node[anchor=south] at (1.5,0.18) {peso WoE de la celda};
+  \fill[Urbano] (3.45,0.0) rectangle ++(0.16,0.16); \node[anchor=west] at (3.63,0.08) {urbana en 2011};
+  \fill[black] (3.53,-0.30) circle (0.055); \node[anchor=west] at (3.63,-0.30) {urbanizada 2011--2016};
+  \end{tikzpicture}
+  \caption{\textcolor{red}{#2}}%
+}

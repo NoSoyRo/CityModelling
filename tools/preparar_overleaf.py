@@ -141,6 +141,8 @@ def main() -> None:
             if tex.name.endswith("_standalone.tex"):
                 continue
             shutil.copy2(tex, carpeta / tex.name)
+        if (origen / "datos").is_dir():
+            shutil.copytree(origen / "datos", carpeta / "datos")
 
     usadas, sin_resolver = figuras_referenciadas()
     destino_figuras = DESTINO / "figures"
