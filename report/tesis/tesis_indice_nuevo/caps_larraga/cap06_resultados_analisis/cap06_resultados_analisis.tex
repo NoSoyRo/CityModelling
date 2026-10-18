@@ -572,4 +572,114 @@ Vistas en conjunto, las cinco ventanas dibujan un comportamiento consistente má
 
 Ese patrón es coherente con la lectura de los pesos WoE. La distancia al área urbana y la densidad de vecindad concentran $78{,}2$\% del \textit{Information Value}, de modo que la señal que gobierna la simulación es la difusión por contigüidad. Ahí está, a la vez, la fortaleza y el límite del enfoque: como es un modelo de caja blanca, se puede leer qué lo mueve; pero al apoyarse solo en variables derivadas del propio mapa binario, no captura el desarrollo disperso ni los factores socioeconómicos que explican parte del crecimiento real. La validación multi-período, más que un número único, es lo que da solidez a esta lectura, porque muestra que el comportamiento se sostiene bajo distintas dinámicas observadas. Las cinco corridas concentran el crecimiento en los mismos núcleos urbanos consolidados y corredores, de modo que el patrón espacial predicho depende sobre todo del estado inicial de cada ventana. Conviene precisar el alcance de esa observación: es una regularidad de las cinco simulaciones, no un resultado de convergencia, porque este trabajo no analizó el comportamiento asintótico del autómata ni su sensibilidad al estado inicial.
 
+% ============================================================
+\section{\textcolor{red}{Lectura intuitiva de las variables del modelo}}
+% ============================================================
+\label{sec:lectura-intuitiva}
+
+\textcolor{red}{Las secciones anteriores reportan los pesos en la escala en que se
+calculan. Esta sección los traduce a una lectura directa, variable por
+variable, para que quede explícito qué tipo de celda favorece el modelo y cuál
+desalienta. Dos precisiones orientan la lectura. La primera es de escala: un
+peso $W^+$ positivo indica que la fracción de transiciones que cae en ese
+intervalo es mayor que la fracción de celdas sin transición, y la razón entre
+ambas es $e^{W^+}$; un peso de $+0{,}85$ significa una proporción unas $2{,}3$
+veces mayor, y uno de $-1{,}95$, unas siete veces menor. La segunda es de
+alcance: los pesos se estimaron sobre el valor medio de cada variable en
+1984--2010 (Capítulo~\ref{ch:modelo-crecimiento-urbano}), de modo que la
+lectura describe el régimen promedio de ese período y una asociación
+estadística, no una relación causal. Los dos intervalos degenerados de la
+Sección~\ref{ssec:alcance-iv}, que corresponden a celdas ya urbanas, se omiten
+porque ninguna celda candidata los alcanza.}
+
+\textcolor{red}{\textbf{Distancia al área urbana.} Es la lectura más directa. Con
+celdas de $26{,}7$~m de lado, el peso es positivo hasta unos $90$~m de
+distancia media al área urbana y alcanza su máximo, $+0{,}85$, entre unos $9$ y
+$40$~m, es decir, en el primer anillo alrededor de la mancha. A partir de unos
+$90$~m el peso se vuelve negativo y se hace más negativo con la distancia:
+$-0{,}23$ entre $90$ y $130$~m, $-0{,}85$ entre $130$ y $220$~m y $-1{,}95$ más
+allá de $220$~m. En términos llanos, alejarse unos cientos de metros de lo ya
+urbano hace poco probable que una celda se urbanice. El primer intervalo, con
+distancia media casi nula, tiene un peso menor ($+0{,}21$) porque agrupa celdas
+que fueron urbanas durante casi todo el período.}
+
+\textcolor{red}{\textbf{Densidad de vecinos urbanos ($3\times3$, $5\times5$ y
+$7\times7$).} Las tres escalas cuentan la misma historia. Una celda sin vecinos
+urbanos tiene peso negativo; el peso se vuelve positivo cuando entre un $10$ y
+un $15\%$ de la ventana es urbana, según la escala, y alcanza su máximo cuando la
+ventana está urbanizada entre un $37$ y un $55\%$ ($+0{,}93$ en $3\times3$,
+$+0{,}87$ en $5\times5$ y $+0{,}80$ en $7\times7$). Por encima de ese nivel el
+peso baja, y en las ventanas casi saturadas vuelve a ser negativo. La celda
+más propensa a urbanizarse es, por tanto, la que está parcialmente rodeada,
+no la aislada ni la que ya está dentro de la mancha consolidada. Que el máximo
+sea algo mayor en la ventana más pequeña indica que los vecinos inmediatos
+pesan un poco más que los lejanos.}
+
+\textcolor{red}{\textbf{Fragmentación local.} Mide qué tan mezclada está una
+ventana de $5\times5$ celdas entre lo urbano y lo no urbano, sin distinguir cuál
+de los dos es minoritario. Las ventanas uniformes, todas urbanas o todas
+rurales, tienen el peso más negativo ($-4{,}25$). El peso se vuelve positivo
+cuando la clase minoritaria ocupa alrededor de dos de las veinticinco celdas y
+se mantiene en torno a $+0{,}6$ en las ventanas más mezcladas. La lectura es
+que la urbanización ocurre donde lo urbano y lo rural se encuentran.}
+
+\textcolor{red}{\textbf{Gradiente de urbanización.} Mide qué tan brusco es el
+cambio entre lo urbano y lo no urbano en torno a la celda. En las zonas
+uniformes vale cero y su peso es negativo ($-2{,}97$); el peso crece de forma
+sostenida con el gradiente y llega a $+0{,}76$ en los bordes más marcados. Es
+la misma lectura de la fragmentación desde otra medida: el borde de la mancha
+es donde se concentra el cambio.}
+
+\textcolor{red}{\textbf{Tamaño del \textit{cluster} urbano más cercano.} Sus
+pesos son pequeños, entre $-0{,}85$ y $+0{,}38$. Estar cerca de un
+\textit{cluster} de pocas celdas desalienta ligeramente la transición, y estar
+cerca de uno grande la favorece un poco; junto a la mancha mayor el peso
+vuelve a ser negativo ($-0{,}82$). Con un \textit{Information Value}
+normalizado del $1{,}2\%$, la variable apenas discrimina y conviene no leer
+más en ella.}
+
+\begin{table}[htbp]
+\centering
+\color{red}
+\small
+\caption{\textcolor{red}{Lectura intuitiva de las siete variables: qué tipo de celda favorece la transición y cuál la desalienta, según los pesos WoE estimados en 1984--2010.}}
+\label{tab:lectura-intuitiva}
+\begin{tabularx}{\textwidth}{@{}l X X r@{}}
+\toprule
+\textbf{Variable} & \textbf{Favorece la transición} & \textbf{La desalienta} & \textbf{Peso} \\
+\midrule
+Distancia & A menos de unos $90$~m de lo urbano & A más de unos $90$~m; sobre todo, más allá de $220$~m & $28\%$ \\
+Densidad $3\times3$ & Ventana urbanizada entre un $10$ y un $90\%$, con máximo hacia la mitad & Sin vecinos urbanos o casi saturada & $25\%$ \\
+Densidad $5\times5$ & Igual que $3\times3$, con un efecto algo menor & Igual que $3\times3$ & $14\%$ \\
+Densidad $7\times7$ & Igual que $3\times3$, con un efecto algo menor & Igual que $3\times3$ & $11\%$ \\
+Fragmentación & Ventana mezclada entre urbano y rural & Ventana uniforme & $11\%$ \\
+Gradiente & Borde marcado de la mancha & Zona uniforme & $10\%$ \\
+\textit{Cluster} más cercano & Cerca de un \textit{cluster} grande (efecto débil) & Cerca de uno pequeño (efecto débil) & $1\%$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textcolor{red}{La última columna de la Tabla~\ref{tab:lectura-intuitiva} es el
+\textit{Information Value} normalizado de la Tabla~\ref{tab:iv_weights}, y
+también admite una lectura llana: indica cuánto cuenta cada variable en la
+decisión del modelo. Un IV alto significa que, en esa variable, las celdas que
+se urbanizaron y las que no se distribuyen de forma muy distinta, de modo que
+conocer su valor ayuda a separarlas; un IV cercano a cero significa que la
+variable no distingue a unas de otras. El primer lugar de la distancia debe
+leerse con la salvedad de la Sección~\ref{ssec:alcance-iv}.}
+
+\textcolor{red}{Leídas en conjunto, las siete variables describen un mismo
+patrón: la urbanización nueva aparece en el borde de la ciudad existente, en
+celdas cercanas, parcialmente rodeadas y en zonas de mezcla, y es poco
+probable lejos de la mancha o dentro de la mancha ya consolidada. Es el
+patrón de difusión por contigüidad que gobierna la simulación y, también, la
+razón de su límite: un modelo que solo ve el borde no anticipa el crecimiento
+que salta lejos de él.}
+
+% CAMBIO RM: Sección nueva al final del capítulo con la lectura intuitiva de los
+% pesos WoE de las siete variables y del IV. Cifras tomadas de
+% data/processed/woe_pooled_1984_2010.pkl (cortes en celdas de 26,7 m; razones
+% e^W). El párrafo de transición al capítulo siguiente se movió al final de
+% esta sección, sin cambios.
+
 Estos resultados son el insumo del capítulo siguiente, donde se consolidan los criterios en un cuadro único, se precisan las contribuciones del trabajo y se discuten las líneas para corregir las debilidades aquí identificadas, en particular la sobre-predicción y el crecimiento tipo \textit{leapfrog}.
