@@ -23,9 +23,9 @@
 \contentsline {table}{\numberline {5.13}{\ignorespaces Estimación cualitativa de la contribución de fuentes de error (no cuantificada empíricamente)}}{89}{table.caption.48}%
 \contentsline {table}{\numberline {5.14}{\ignorespaces \textcolor {red}{Lectura intuitiva de las siete variables: qué tipo de celda favorece la transición y cuál la desalienta, según los pesos WoE estimados en 1984--2010.}}}{96}{table.caption.54}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {6.1}{\ignorespaces Contraste de los criterios de evaluación}}{101}{table.6.1}%
-\contentsline {table}{\numberline {6.2}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{104}{table.caption.55}%
+\contentsline {table}{\numberline {6.1}{\ignorespaces Contraste de los criterios de evaluación}}{103}{table.6.1}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces Características operativas del enfoque WoE-AC frente a modelos de aprendizaje profundo}}{106}{table.caption.55}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{114}{table.caption.57}%
-\contentsline {table}{\numberline {A.2}{\ignorespaces Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}}{115}{table.caption.58}%
-\contentsline {table}{\numberline {A.3}{\ignorespaces Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}}{116}{table.caption.59}%
+\contentsline {table}{\numberline {A.1}{\ignorespaces Características extraídas por píxel a partir de cada captura RGB.}}{116}{table.caption.57}%
+\contentsline {table}{\numberline {A.2}{\ignorespaces Estimación cualitativa de las principales fuentes de error del conjunto de imágenes, su efecto sobre los mapas binarios y su mitigación. Los niveles son apreciaciones del autor, no medidas formales de incertidumbre.}}{117}{table.caption.58}%
+\contentsline {table}{\numberline {A.3}{\ignorespaces Resumen agregado del preprocesamiento aplicado a la serie 1984--2020.}}{118}{table.caption.59}%
