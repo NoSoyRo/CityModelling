@@ -239,7 +239,7 @@ La Tabla~\ref{tab:metrics_all_periods} resume las métricas obtenidas en los cin
 }
 \end{table}
 
-La variación entre períodos refleja diferencias en la dinámica observada. El período 2011--2016 muestra el FoM más bajo ($0{,}240$): el área urbana clasificada en 2016 \textit{decreció} levemente respecto a 2011, una anomalía atribuible a la variabilidad de la clasificación binaria RGB año a año, más que a una contracción urbana real. Los períodos 2012--2017, 2013--2018 y 2015--2020, en los que el crecimiento neto observado es positivo, exhiben FoM entre $0{,}345$ y $0{,}384$, con mayor concordancia entre el modelo y los mapas observados. La Tabla~\ref{tab:literature_comparison} sitúa estos valores frente al espectro documentado en la literatura.
+La variación entre períodos refleja diferencias en la dinámica observada. El período 2011--2016 muestra el FoM más bajo ($0{,}240$): el área urbana clasificada en 2016 \textit{decreció} levemente respecto a 2011, una anomalía atribuible a la variabilidad de la clasificación binaria RGB año a año, más que a una contracción urbana real. Los períodos 2012--2017, 2013--2018 y 2015--2020, \textcolor{red}{los de mayor crecimiento neto observado (entre $27{,}9$ y $33{,}5\%$, frente a $9{,}5\%$ en 2014--2019)}, exhiben FoM entre $0{,}345$ y $0{,}384$, con mayor concordancia entre el modelo y los mapas observados. La Tabla~\ref{tab:literature_comparison} sitúa estos valores frente al espectro documentado en la literatura.
 
 \begin{table}[htbp]
 \centering
@@ -479,7 +479,7 @@ Las métricas anteriores dicen cuánto se equivoca el modelo, no de qué se equi
 
 El desacuerdo de cantidad concentra el $62{,}4\%$ del desacuerdo total en promedio, de modo que sigue siendo la componente mayoritaria del error: el modelo urbaniza más celdas de las que corresponden, pero las coloca en su mayoría en el lugar adecuado. Ese diagnóstico es consistente con el Recall alto frente a la Precision moderada de la Tabla~\ref{tab:metrics_all_periods}, y con el factor de sobre-predicción que se documenta más adelante.
 
-El promedio, sin embargo, oculta que la componente dominante no es la misma en todas las ventanas, y la división coincide con el signo del crecimiento observado. En las dos ventanas de menor crecimiento, la cantidad domina con holgura: 2011--2016 concentra en cantidad el $86{,}2\%$ de su desacuerdo, algo esperable porque es la única ventana con crecimiento neto observado negativo, de modo que cualquier crecimiento simulado es exceso por definición, y en 2014--2019 la proporción llega al $77{,}5\%$. En las tres ventanas de crecimiento observado positivo, en cambio, la cantidad baja al rango $42{,}7$--$48{,}6\%$ y el desacuerdo de asignación pasa a ser el mayoritario. La implicación metodológica se desplaza según el régimen: cuando la señal de cambio es débil, el margen de mejora está en estimar la magnitud del crecimiento; cuando es clara, el límite lo marca la regla que decide dónde ocurre.
+El promedio, sin embargo, oculta que la componente dominante no es la misma en todas las ventanas, y la división coincide con la \textcolor{red}{magnitud} del crecimiento observado. En las dos ventanas de menor crecimiento, la cantidad domina con holgura: 2011--2016 concentra en cantidad el $86{,}2\%$ de su desacuerdo, algo esperable porque es la única ventana con crecimiento neto observado negativo, de modo que cualquier crecimiento simulado es exceso por definición, y en 2014--2019 la proporción llega al $77{,}5\%$. En las tres ventanas de \textcolor{red}{mayor} crecimiento observado, en cambio, la cantidad baja al rango $42{,}7$--$48{,}6\%$ y el desacuerdo de asignación pasa a ser el mayoritario. La implicación metodológica se desplaza según el régimen: cuando la señal de cambio es débil, el margen de mejora está en estimar la magnitud del crecimiento; cuando es clara, el límite lo marca la regla que decide dónde ocurre.
 
 % ============================================================
 \section{Análisis espacial del error del modelo}
@@ -562,6 +562,12 @@ A continuación se contrasta la hipótesis general enunciada en el Capítulo~\re
 \textbf{C3, reproducibilidad (satisfecho).} El procesamiento completo, a partir de las capturas, se ejecutó en Python (NumPy, SciPy, scikit-learn) en escritorio, sin GPU ni software propietario, en un cómputo del orden de tres horas en CPU estándar. La obtención de las capturas sí requiere el visor de Google Earth, que no es de código abierto.
 
 \textbf{C4, desempeño comparable (satisfecho).} El FoM promedio de $0{,}325$ se ubica en la banda intermedia del espectro multi-sitio de \textcite{pontius2008comparing}, en los términos precisados en la Sección~\ref{sec:evaluacion}. Ese estudio no reporta Kappa, y su FoM es ya una intersección sobre unión restringida a las celdas de cambio, distinta del IoU sobre el estado urbano final que aquí se mide. El Kappa de $0{,}526$ se interpreta entonces frente a la escala de \textcite{LandisKoch1977}, y el IoU de $0{,}661$ mide qué fracción de la unión entre lo urbano observado y lo urbano predicho en el año final coincide. El contraste con modelos de caja negra es cualitativo: sitios, clases y horizontes distintos.
+
+\textcolor{red}{En conjunto, tres de los cuatro criterios se satisfacen y C2 se satisface de forma parcial. La hipótesis general queda apoyada con esa reserva: el modelo reproduce el patrón espacial del crecimiento en las cinco ventanas, con una función de transición interpretable y un flujo reproducible, aunque su desempeño numérico varía con la dinámica de cada período.}
+
+% CAMBIO RM: Se añade el veredicto global de la hipótesis, que esta sección
+% evaluaba solo criterio por criterio, y se deja explícita la reserva de C2
+% para que coincida con el Capítulo 6.
 
 % ============================================================
 \section{Síntesis del desempeño del modelo}

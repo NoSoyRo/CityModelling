@@ -3,36 +3,76 @@
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 \markboth{Abstract}{Abstract}
+\vspace*{-1.2cm}
 
-A strategy for the integration, calibration and validation of a
-reproducible urban growth model is presented. The model is built from \textcolor{red}{freely
-viewable} historical imagery and assessed through a multi-temporal
-validation protocol with five shifted five-year windows. It couples Weights of Evidence (WoE) with a cellular
-automaton (CA) and is applied, as a case study, to the Querétaro Metropolitan
-Area over a 37-year annual series (1984--2020).
+% CAMBIO RM: El abstract se retradujo a partir del resumen vigente de la
+% Dra. Lárraga; el anterior traducía la versión vieja del resumen. Se conserva
+% comentado más abajo.
+{\color{red}
+Dispersed urban growth hinders territorial planning, especially when only
+limited historical information is available to analyze the expansion of cities.
+In this context, models are needed that make it possible to interpret the
+drivers of growth, evaluate their performance over different periods and
+reproduce the process with accessible data and tools. In this direction, the
+objective of this work is to design and implement an urban growth model based on
+cellular automata and Weights of Evidence (WoE), and to evaluate its performance
+through a multi-temporal validation protocol. The Querétaro Metropolitan Area
+(ZMQ, for its Spanish acronym) was used as a case study, for which an annual
+historical series of binary urban/non-urban maps for 1984--2020 was built from
+Google Earth historical imagery. The images were processed with local binary
+patterns (LBP), K-Means clustering and a linear SVM classifier. Seven spatial
+variables were computed from the resulting maps and used as evidence for the
+WoE model. These variables, together with a Moore neighborhood, were
+incorporated into a probabilistic cellular automaton to simulate urban
+expansion. The model parameters were calibrated through a systematic search
+over windows prior to 2011, and its performance was evaluated, without
+readjustment, over five shifted five-year windows, from 2011--2016 to
+2015--2020, using the Figure of Merit (FoM), Kappa and Intersection over Union
+(IoU).
 
-RGB captures from Google Earth's historical imagery tool were converted into
-binary urban/non-urban maps through an open classification pipeline: local
-binary patterns (LBP), K-Means clustering and a linear SVM. The Weights of
-Evidence quantify, without linearity assumptions, the spatial influence of seven
-variables derived from the historical binary map, feeding alongside the Moore
-neighborhood a probabilistic transition rule. \textcolor{red}{The transition threshold and the neighborhood weight
-were chosen by grid search over windows prior to 2011, and the model thus fixed
-was then evaluated, without readjustment,} over five shifted five-year
-windows (2011--2016 to 2015--2020), a protocol designed to distinguish stable
-behavior from overfitting to a single period.
+The model achieved an average FoM of $0.325$, an average Kappa of $0.526$, an
+accuracy of $0.763$ and an IoU of $0.661$ over the five evaluation windows. The
+results show that the model reproduces part of the observed spatial growth
+pattern and maintains comparable performance across the evaluated periods (FoM
+between $0.240$ and $0.384$). The WoE-based transition function makes it
+possible to identify the contribution of the variables used, and the processing
+after image acquisition can be run with open-source tools on a CPU, without
+requiring a GPU or proprietary software. The main contribution of this work is
+the multi-temporal evaluation protocol applied to the WoE-CA model and its
+reproducible implementation for the analysis of urban growth in the ZMQ.
+}
 
-The contribution lies not in the WoE-CA coupling, well documented in the
-literature, but in the multi-temporal evaluation protocol, the variable-by-variable
-auditability and the full reproducibility of the processing on CPU, without GPU
-or proprietary software. Average performance reaches a Figure of Merit of \textcolor{red}{$0.325$}, within the
-intermediate band of the multi-site spectrum documented by
-\textcite{pontius2008comparing} (six of thirteen applications with FoM below
-$0.15$ and only one above $0.50$), together with a Kappa coefficient of
-\textcolor{red}{$0.526$}, an accuracy of \textcolor{red}{$0.763$} and an IoU of \textcolor{red}{$0.661$}, sustained across all
-five windows.
+% Versión anterior:
+%
+% A strategy for the integration, calibration and validation of a
+% reproducible urban growth model is presented. The model is built from freely
+% viewable historical imagery and assessed through a multi-temporal
+% validation protocol with five shifted five-year windows. It couples Weights of
+% Evidence (WoE) with a cellular automaton (CA) and is applied, as a case study,
+% to the Querétaro Metropolitan Area over a 37-year annual series (1984--2020).
+%
+% RGB captures from Google Earth's historical imagery tool were converted into
+% binary urban/non-urban maps through an open classification pipeline: local
+% binary patterns (LBP), K-Means clustering and a linear SVM. The Weights of
+% Evidence quantify, without linearity assumptions, the spatial influence of
+% seven variables derived from the historical binary map, feeding alongside the
+% Moore neighborhood a probabilistic transition rule. The transition threshold
+% and the neighborhood weight were chosen by grid search over windows prior to
+% 2011, and the model thus fixed was then evaluated, without readjustment, over
+% five shifted five-year windows (2011--2016 to 2015--2020), a protocol designed
+% to distinguish stable behavior from overfitting to a single period.
+%
+% The contribution lies not in the WoE-CA coupling, well documented in the
+% literature, but in the multi-temporal evaluation protocol, the
+% variable-by-variable auditability and the full reproducibility of the
+% processing on CPU, without GPU or proprietary software. Average performance
+% reaches a Figure of Merit of 0.325, within the intermediate band of the
+% multi-site spectrum documented by pontius2008comparing (six of thirteen
+% applications with FoM below 0.15 and only one above 0.50), together with a
+% Kappa coefficient of 0.526, an accuracy of 0.763 and an IoU of 0.661,
+% sustained across all five windows.
 
-\vspace{0.6cm}
+\vspace{0.3cm}
 \noindent\textbf{Keywords:} urban growth; cellular automata; Weights of
 Evidence; multi-temporal validation; Figure of Merit; Querétaro Metropolitan
 Area.
