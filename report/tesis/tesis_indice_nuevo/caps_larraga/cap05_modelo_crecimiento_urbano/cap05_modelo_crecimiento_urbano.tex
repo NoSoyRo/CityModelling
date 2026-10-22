@@ -613,7 +613,7 @@ La inspección visual de los mapas binarios anuales (Figura~\ref{fig:binary_evol
 
 Con la serie de mapas binarios $\{U_t\}_{t=1984}^{2020}$ ya construida, el modelo de crecimiento urbano debe responder a una pregunta distinta de la del preprocesamiento: ya no se trata de decidir qué es urbano, sino de aprender dónde y por qué aparece lo urbano nuevo. El primer paso es, por tanto, definir el objeto de estudio del modelo: la transición (Figura~\ref{fig:transicion}). Una transición ocurre cuando una celda que era no-urbana en el año $t$ pasa a urbana en $t+1$, es decir, $U_t(i,j)=0$ y $U_{t+1}(i,j)=1$. Estas transiciones son los eventos que el modelo busca primero explicar a partir de la historia y, más adelante, reproducir hacia el futuro.
 
-La primera decisión del modelo es cómo cuantificar la evidencia que vincula la configuración espacial de una celda con su probabilidad de transición. La vía más común en la literatura es la regresión logística, pero conlleva un supuesto fuerte: que el logit de la probabilidad es una función lineal de las variables explicativas. Las relaciones espaciales del crecimiento urbano no son lineales; la probabilidad de urbanización cae de forma abrupta en los primeros cientos de metros desde el frente urbano y luego se aplana. Por eso se elige el método de Pesos de Evidencia (WoE, ecuación~\ref{eq:woe} del Capítulo~\ref{ch:marco-teorico}), que no impone ninguna forma funcional: discretiza cada variable en intervalos y estima un peso bayesiano independiente para cada uno, capturando la curvatura real de la relación. Como ventaja adicional, cada peso es interpretable en términos geográficos, lo que satisface el requisito de transparencia que motivó este trabajo y que los enfoques de caja negra no ofrecen.
+La primera decisión del modelo es cómo cuantificar la evidencia que vincula la configuración espacial de una celda con su probabilidad de transición. La vía más común en la literatura es la regresión logística, pero conlleva un supuesto fuerte: que el logit de la probabilidad es una función lineal de las variables explicativas. Las relaciones espaciales del crecimiento urbano no son lineales; la probabilidad de urbanización cae de forma abrupta en los primeros cientos de metros desde el frente urbano y luego se aplana. Por eso se elige el método de Pesos de Evidencia (WoE, ecuación~\ref{eq:woe} del Capítulo~\ref{ch:marco-teorico}), que no impone ninguna forma funcional: discretiza cada variable en intervalos y estima un peso bayesiano independiente para cada uno, capturando la curvatura real de la relación. \textcolor{red}{Los intervalos se fijan por cuantiles de cada variable, con un máximo de diez por variable; así, los cortes dependen de la distribución de la variable, con independencia del ajuste, y son los mismos en todas las ventanas de evaluación.} Como ventaja adicional, cada peso es interpretable en términos geográficos, lo que satisface el requisito de transparencia que motivó este trabajo y que los enfoques de caja negra no ofrecen.
 
 La segunda decisión es qué variables espaciales alimentan el WoE (Figura~\ref{fig:variables-espaciales}). Aquí opera de nuevo una restricción de los datos: no se dispone de capas externas homogéneas (vialidades, pendiente, uso de suelo oficial) para los 37 años de la serie. Por tanto, todas las variables deben derivarse de la propia configuración urbana histórica, sin insumos adicionales. Esa restricción tiene una consecuencia favorable para la validez del ejercicio. Como las siete variables se recalculan en cada paso sobre el estado urbano del año simulado, ninguna incorpora información posterior al momento que se predice. Capas como la red vial o la zonificación, cuando se emplean en la versión disponible al momento del estudio, son en parte resultado del mismo crecimiento que se busca explicar; usarlas para modelar décadas anteriores introduce en la predicción información que no existía entonces. El diseño adoptado aquí lo impide por construcción. Se definen siete: la distancia euclidiana a la celda urbana más cercana, la densidad de vecinos urbanos a tres escalas (ventanas $3\times3$, $5\times5$ y $7\times7$), la fragmentación local, el tamaño del cluster urbano contiguo más cercano y el gradiente de urbanización. Cada una captura un aspecto distinto del proceso: la proximidad al frente consolidado, la presión del vecindario a múltiples escalas y la morfología del borde urbano. El que las siete provengan únicamente del mapa binario reduce los insumos necesarios para aplicar el modelo en otra ciudad a la disponibilidad de esa misma serie binaria, sin bases de datos locales. La transferencia geográfica no se verificó en este trabajo y exigiría recalibrar los pesos WoE con las transiciones del sitio objetivo.
 
@@ -632,6 +632,11 @@ Conviene precisar cómo se emparejan los datos, porque la agregación no es sim�
 El período 2011--2020 se reserva deliberadamente, sin tocarlo durante el ajuste, para la validación posterior.
 
 Con los pesos calculados, surge una cuarta decisión: cómo combinarlos. No todas las variables aportan lo mismo. El peso total por celda no se obtiene como la suma simple de la ecuación~\ref{eq:woe_total}, sino con la suma ponderada de la ecuación~\ref{eq:woe_ponderado}, que pesa cada variable por su \textit{Information Value} (ecuación~\ref{eq:information_value}) normalizado, de modo que las variables con mayor poder discriminativo pesen más en la decisión final. En el caso de la Zona Metropolitana de Querétaro, esto hace que la distancia al frente urbano domine la combinación, concentra cerca del $28\%$ del peso total, el \textit{Information Value} más alto de las siete variables, seguida de la densidad de vecinos inmediatos. La suma ponderada se transforma con la función sigmoide (ecuación~\ref{eq:woe_sigmoid}) para obtener una probabilidad de transición acotada en $[0,1]$.
+
+\textcolor{red}{La escala convencional del \textit{Information Value} (Sección~\ref{ssec:information-value}) califica de sospechoso un valor mayor que $0{,}50$, porque en el crédito el predictor y el evento provienen de registros distintos y un valor tan alto suele delatar que la variable ya contiene la respuesta. En este modelo los predictores se derivan del mismo mapa binario que el objetivo, y que la urbanización ocurra junto a lo ya urbano es el mecanismo que se quiere capturar, no un artefacto del muestreo. El alcance de esta lectura en los pesos estimados se precisa en la Sección~\ref{ssec:alcance-iv}.}
+
+% CAMBIO RM: Texto trasladado desde el Capítulo 2 (Information Value), donde
+% describía los predictores del modelo propio.
 
 \textcolor{red}{Ninguna de estas dos operaciones es un adorno, y conviene decir qué
 resuelve cada una. La ponderación responde a un problema que el
@@ -728,7 +733,54 @@ P_{i,j} = \min\!\left(1,\; \sigma\!\Big( \sum_{k} \omega_k\, \mathrm{WoE}_k(i,j)
 \label{eq:transicion}
 \end{equation}
 
-donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija \textcolor{red}{$\theta = 0{,}85$ y $\alpha = 0{,}60$ (Sección~\ref{ssec:calibracion-parametros})}.
+donde $\sigma(\cdot)$ es la función logística; $\mathrm{WoE}_k(i,j)$ es el peso de evidencia de la $k$-ésima variable espacial, ponderado por su \textit{Information Value} normalizado $\omega_k$ (de modo que las variables más discriminativas pesan más); y $N_{i,j} \in [0,1]$ es la influencia del vecindario, definida como la fracción de vecinos urbanos en la vecindad de Moore (las ocho celdas adyacentes), con peso vecinal $\alpha$. Nótese que la idoneidad WoE se transforma primero con la sigmoide y la vecindad se suma después, acotando el resultado a $[0,1]$. La proximidad al frente urbano no aparece como un término separado: la introduce la propia variable de distancia, la de mayor \textit{Information Value}, dentro del campo WoE. En la implementación validada no se incluye un término adicional de decaimiento espacial (por ejemplo, una ponderación por distancia de Chebyshev sobre el vecindario); la distancia al frente urbano actúa únicamente como una variable más dentro del campo WoE, y la vecindad se incorpora como la fracción de vecinos urbanos en la vecindad de Moore. La celda transita a urbana en el paso siguiente solo si $P_{i,j}$ supera el umbral $\theta$ y si, además, un sorteo aleatorio $u \sim \mathcal{U}(0,1)$ lo confirma ($u < P_{i,j}$). La configuración validada en este trabajo fija \textcolor{red}{$\theta = 0{,}85$ y $\alpha = 0{,}60$ (Sección~\ref{ssec:calibracion-parametros})}. \textcolor{red}{La Figura~\ref{fig:concepto-woe} sigue el cálculo completo para una celda candidata, desde los pesos de un intervalo hasta la comparación con el umbral.}
+
+\begin{figure}[htbp]
+  \centering
+  \shorthandoff{<>}%
+  \resizebox{\linewidth}{!}{%
+  \begin{tikzpicture}[x=1cm,y=1cm,
+    caja/.style={draw=black, line width=0.5pt, fill=white, rounded corners=1.5pt,
+      font=\scriptsize, align=left, text width=6.0cm, inner sep=3pt, anchor=north west},
+    flecha/.style={-{Stealth[length=1.8mm]}, line width=0.6pt}]
+  \node[font=\small\bfseries, anchor=south] at (7.0,0.45) {Pesos de evidencia y regla de transición: ejemplo para una celda};
+  % ---- panel izquierdo: tabla de conteos ----
+  \node[font=\footnotesize\bfseries, anchor=north west] at (0,0) {1. Peso de cada intervalo (distancia al frente)};
+  \node[font=\scriptsize, anchor=north west, inner sep=0pt] at (0,-0.55) {%
+    \renewcommand{\arraystretch}{1.25}%
+    \begin{tabular}{@{}lrrr@{}}
+      \textbf{Intervalo} & \textbf{transita} & \textbf{no transita} & \textbf{$W^{+}$}\\\hline
+      $0$--$100$~m & 847 & 312 & \textcolor{Acerto}{$+2{,}39$}\\
+      $100$--$300$~m & 423 & 621 & \textcolor{Acerto}{$+1{,}01$}\\
+      $>300$~m & 89 & 4\,521 & \textcolor{Transicion}{$-2{,}54$}\\\hline
+      total & 1\,359 & 5\,454 & \\
+    \end{tabular}};
+  \node[font=\scriptsize, anchor=north west, text width=6.4cm, align=left] at (0,-2.85)
+    {$W^{+}=\ln\dfrac{\text{fracción de las que transitan}}{\text{fracción de las que no transitan}}$;\\[2pt]
+     cerca del frente el peso es positivo (favorece la transición) y lejos es negativo.};
+  % ---- panel derecho: una celda ----
+  \node[font=\footnotesize\bfseries, anchor=north west] at (7.4,0) {2. Una celda candidata};
+  \node[caja] (c1) at (7.4,-0.55) {%
+    distancia: $\omega=0{,}28$, $W=+2{,}39$\\
+    densidad $3{\times}3$: $\omega=0{,}25$, $W=+0{,}91$\\
+    otras cinco variables: $\sum\omega_k W_k=+0{,}10$\\[2pt]
+    $\sum_k\omega_k W_k = 0{,}67+0{,}23+0{,}10\approx +1{,}00$};
+  \node[caja, below=0.22cm of c1.south west, anchor=north west] (c2) {%
+    aptitud: $\sigma(1{,}00)=0{,}73$\\
+    vecindad: 3 de 8 vecinos urbanos, $\alpha N=0{,}60\cdot\tfrac{3}{8}=0{,}23$};
+  \node[caja, below=0.22cm of c2.south west, anchor=north west, draw=Transicion, line width=0.8pt] (c3) {%
+    $P=0{,}73+0{,}23=0{,}96>\theta=0{,}85$: la celda es candidata\\
+    y transita si el sorteo da $u<0{,}96$.\\[1pt]
+    \textit{Solo con la aptitud ($0{,}73$) no superaría el umbral.}};
+  \draw[flecha] (c1.south) ++(-2.2,0) -- ++(0,-0.22);
+  \draw[flecha] (c2.south) ++(-2.2,0) -- ++(0,-0.22);
+  \end{tikzpicture}}
+  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{red}{Elaboración propia}, con base en la formulación de \textcite{BonhamCarter1994}\textcolor{red}{; los conteos son ilustrativos y $\omega$, $\alpha$ y $\theta$ son los del modelo calibrado}.}}
+  \label{fig:concepto-woe}
+\end{figure}
+% CAMBIO RM: Figura trasladada desde el Capítulo 2 por indicación de la
+% Dra. Lárraga: ilustra la regla del modelo propio con sus valores calibrados.
+
 
 \textcolor{red}{La suma de la vecindad después de la sigmoide, y no como una
 variable más dentro del WoE, también responde a una razón concreta. Los pesos

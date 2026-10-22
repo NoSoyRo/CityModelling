@@ -182,12 +182,10 @@ P(s_{i,j}^{t+1} = 1 \mid s_{i,j}^t = 0) = f\!\left(W_{i,j},\; \Omega_{i,j}(r),\;
 
 donde $W_{i,j}$ es la idoneidad espacial asignada por el método WoE (definida a continuación), $\Omega_{i,j}(r)$ es el efecto de vecindad, y $\varepsilon_{i,j}$ es un término estocástico que introduce variabilidad aleatoria en la simulación. La función $f$ combina estos tres factores según parámetros que se fijan en la calibración; los valores adoptados para el caso de estudio se describen en el Capítulo~\ref{ch:modelo-crecimiento-urbano}. Esta función es la que define la transición de una celda no-urbana a una urbana.
 
-\textcolor{red}{En el modelo de esta tesis, $f$ toma una forma explícita. La idoneidad WoE, con cada variable ponderada por su Information Value (ecuación~\ref{eq:woe_ponderado}), pasa por la función logística de la ecuación~\ref{eq:woe_sigmoid}; a la probabilidad resultante se le suma la fracción de vecinos urbanos multiplicada por un peso de vecindad $\alpha$; y la celda solo puede transitar si esa suma supera un umbral $\theta$ y un sorteo uniforme lo confirma, que es el papel de $\varepsilon_{i,j}$. Los parámetros $\theta$ y $\alpha$ se eligen por búsqueda en cuadrícula antes de la evaluación (Capítulo~\ref{ch:modelo-crecimiento-urbano}).}
-
-% CAMBIO RM: La ecuación de f es deliberadamente general. Se añade cómo se
-% concreta en este trabajo, para que la regla completa (IV, sigma, vecindad,
-% umbral y sorteo) quede nombrada desde el marco teórico y el Capítulo 4 la
-% formalice sin sorpresa.
+% CAMBIO RM: Por indicación de la Dra. Lárraga, el marco teórico solo define
+% conceptos. Se retiró el párrafo que describía la forma concreta de f en el
+% modelo de la tesis; esa forma ya está en el Capítulo 4 (regla de transición,
+% ecuación eq:transicion).
 
 \textcolor{blue}{Los autómatas celulares permiten representar la evolución espacial de un sistema mediante reglas de transición locales. En el crecimiento urbano, estas reglas pueden incorporar distintas características del territorio para determinar la probabilidad de que una celda cambie de estado. Los Pesos de Evidencia (WoE) constituyen una alternativa para cuantificar la relación entre estas características y la ocurrencia del cambio, y pueden utilizarse para definir la función de transición del autómata.}
 
@@ -227,53 +225,11 @@ P_{i,j}^{\text{WoE}} = \frac{1}{1 + e^{-W_{i,j}}}
 \label{eq:woe_sigmoid}
 \end{equation}
 
-\begin{figure}[htbp]
-  \centering
-  \shorthandoff{<>}%
-  \resizebox{\linewidth}{!}{%
-  \begin{tikzpicture}[x=1cm,y=1cm,
-    caja/.style={draw=black, line width=0.5pt, fill=white, rounded corners=1.5pt,
-      font=\scriptsize, align=left, text width=6.0cm, inner sep=3pt, anchor=north west},
-    flecha/.style={-{Stealth[length=1.8mm]}, line width=0.6pt}]
-  \node[font=\small\bfseries, anchor=south] at (7.0,0.45) {Pesos de evidencia y regla de transición: ejemplo para una celda};
-  % ---- panel izquierdo: tabla de conteos ----
-  \node[font=\footnotesize\bfseries, anchor=north west] at (0,0) {1. Peso de cada intervalo (distancia al frente)};
-  \node[font=\scriptsize, anchor=north west, inner sep=0pt] at (0,-0.55) {%
-    \renewcommand{\arraystretch}{1.25}%
-    \begin{tabular}{@{}lrrr@{}}
-      \textbf{Intervalo} & \textbf{transita} & \textbf{no transita} & \textbf{$W^{+}$}\\\hline
-      $0$--$100$~m & 847 & 312 & \textcolor{Acerto}{$+2{,}39$}\\
-      $100$--$300$~m & 423 & 621 & \textcolor{Acerto}{$+1{,}01$}\\
-      $>300$~m & 89 & 4\,521 & \textcolor{Transicion}{$-2{,}54$}\\\hline
-      total & 1\,359 & 5\,454 & \\
-    \end{tabular}};
-  \node[font=\scriptsize, anchor=north west, text width=6.4cm, align=left] at (0,-2.85)
-    {$W^{+}=\ln\dfrac{\text{fracción de las que transitan}}{\text{fracción de las que no transitan}}$;\\[2pt]
-     cerca del frente el peso es positivo (favorece la transición) y lejos es negativo.};
-  % ---- panel derecho: una celda ----
-  \node[font=\footnotesize\bfseries, anchor=north west] at (7.4,0) {2. Una celda candidata};
-  \node[caja] (c1) at (7.4,-0.55) {%
-    distancia: $\omega=0{,}28$, $W=+2{,}39$\\
-    densidad $3{\times}3$: $\omega=0{,}25$, $W=+0{,}91$\\
-    otras cinco variables: $\sum\omega_k W_k=+0{,}10$\\[2pt]
-    $\sum_k\omega_k W_k = 0{,}67+0{,}23+0{,}10\approx +1{,}00$};
-  \node[caja, below=0.22cm of c1.south west, anchor=north west] (c2) {%
-    aptitud: $\sigma(1{,}00)=0{,}73$\\
-    vecindad: 3 de 8 vecinos urbanos, $\alpha N=0{,}60\cdot\tfrac{3}{8}=0{,}23$};
-  \node[caja, below=0.22cm of c2.south west, anchor=north west, draw=Transicion, line width=0.8pt] (c3) {%
-    $P=0{,}73+0{,}23=0{,}96>\theta=0{,}85$: la celda es candidata\\
-    y transita si el sorteo da $u<0{,}96$.\\[1pt]
-    \textit{Solo con la aptitud ($0{,}73$) no superaría el umbral.}};
-  \draw[flecha] (c1.south) ++(-2.2,0) -- ++(0,-0.22);
-  \draw[flecha] (c2.south) ++(-2.2,0) -- ++(0,-0.22);
-  \end{tikzpicture}}
-  \caption{Ejemplo del cálculo de WoE: la variable \textit{distancia al frente urbano} acumula pesos positivos en bins próximos y negativos en bins lejanos. La suma ponderada pasa por la sigmoide \textcolor{red}{y, sumada a la influencia de la vecindad,} se compara con un umbral de transición $\theta$. \textit{\textcolor{red}{Elaboración propia}, con base en la formulación de \textcite{BonhamCarter1994}\textcolor{red}{; los conteos son ilustrativos y $\omega$, $\alpha$ y $\theta$ son los del modelo calibrado}.}}
-  \label{fig:concepto-woe}
-\end{figure}
-% CAMBIO RM: Nota de autoría unificada en todas las figuras elaboradas con
-% inteligencia artificial generativa.
+% CAMBIO RM: La figura del ejemplo de cálculo (fig:concepto-woe) se trasladó al
+% Capítulo 4, junto a la regla de transición, porque su panel derecho usa los
+% valores calibrados del modelo propio (omega, alpha y theta).
 
-La Figura~\ref{fig:concepto-woe} ilustra el procedimiento sobre una variable típica. La distancia al frente urbano se discretiza en intervalos; los intervalos próximos al frente acumulan pesos positivos, porque en ellos la transición se observa con más frecuencia de la que correspondería a su superficie, y los intervalos lejanos acumulan pesos negativos. La lectura relevante de la figura es que la relación entre distancia y probabilidad no es lineal: los pesos caen con rapidez en los primeros intervalos y después se estabilizan, un comportamiento que un modelo con forma funcional impuesta reproduciría mal.
+\textcolor{red}{Una variable típica ilustra el procedimiento.} La distancia al frente urbano se discretiza en intervalos; los intervalos próximos al frente acumulan pesos positivos, porque en ellos la transición se observa con más frecuencia de la que correspondería a su superficie, y los intervalos lejanos acumulan pesos negativos. \textcolor{red}{Lo relevante del ejemplo} es que la relación entre distancia y probabilidad no es lineal: los pesos caen con rapidez en los primeros intervalos y después se estabilizan, un comportamiento que un modelo con forma funcional impuesta reproduciría mal.
 
 El cálculo de los pesos se realiza sobre datos históricos de transición, lo que hace que las probabilidades resultantes reflejen empíricamente los patrones observados en el área de estudio, en lugar de depender de supuestos teóricos sobre el comportamiento urbano.
 
@@ -287,7 +243,10 @@ IV = \sum_{b} \left[ P(X = b \mid \text{transición}) - P(X = b \mid \text{no tr
 \label{eq:information_value}
 \end{equation}
 
-El IV es no negativo y crece cuando las dos distribuciones se separan. La escala convencional de interpretación, tomada de esa misma práctica \parencite{Siddiqi2006}, lo divide en cinco tramos: por debajo de $0{,}02$ la variable no tiene valor predictivo; entre $0{,}02$ y $0{,}10$ es débil; entre $0{,}10$ y $0{,}30$, medio; entre $0{,}30$ y $0{,}50$, fuerte; y por encima de $0{,}50$ la propia fuente lo califica de sospechoso, porque en su ámbito de origen un valor tan alto suele delatar que la variable ya contiene la respuesta. Esa última advertencia se formuló para el crédito, donde el predictor y el evento provienen de registros distintos; aquí los predictores se derivan del mismo mapa binario que el objetivo, y que la urbanización ocurra junto a lo ya urbano es el mecanismo que se quiere capturar, no un artefacto del muestreo.
+El IV es no negativo y crece cuando las dos distribuciones se separan. La escala convencional de interpretación, tomada de esa misma práctica \parencite{Siddiqi2006}, lo divide en cinco tramos: por debajo de $0{,}02$ la variable no tiene valor predictivo; entre $0{,}02$ y $0{,}10$ es débil; entre $0{,}10$ y $0{,}30$, medio; entre $0{,}30$ y $0{,}50$, fuerte; y por encima de $0{,}50$ la propia fuente lo califica de sospechoso, porque en su ámbito de origen un valor tan alto suele delatar que la variable ya contiene la respuesta. Esa última advertencia se formuló para el crédito, donde el predictor y el evento provienen de registros distintos\textcolor{red}{, y su lectura depende de que esa separación exista en la aplicación}.
+
+% CAMBIO RM: La continuación de esta frase hablaba de los predictores del
+% modelo propio; se trasladó al Capítulo 4, junto a la ponderación por IV.
 
 Con el IV se puede sustituir la suma simple por una suma ponderada, en la que cada variable contribuye en proporción a su capacidad discriminante:
 
@@ -296,7 +255,10 @@ W^{\,\omega}_{i,j} = \sum_{k=1}^{V} \omega_k \, W^+(b_{(i,j)k}), \qquad \omega_k
 \label{eq:woe_ponderado}
 \end{equation}
 
-Los pesos $\omega_k$ suman uno por construcción y no son parámetros libres: se derivan de los mismos datos históricos que producen los $W^+(b)$. Esta es la forma que adopta el modelo de esta tesis, y la razón por la que el Capítulo~\ref{ch:resultados-analisis} reporta el IV de cada variable junto con sus pesos.
+Los pesos $\omega_k$ suman uno por construcción y no son parámetros libres: se derivan de los mismos datos históricos que producen los $W^+(b)$.
+
+% CAMBIO RM: Se retiró la frase que indicaba que esta es la forma adoptada en
+% la tesis; el Capítulo 4 ya lo establece al combinar los pesos.
 
 \subsection{Ventajas y limitaciones}
 
@@ -308,11 +270,11 @@ Hay además una limitación que no es del método sino de su aplicación, y que 
 
 \subsection{Integración del WoE en la regla de transición}
 
-\textcolor{blue}{En un autómata celular, la regla de transición determina la probabilidad de que una celda cambie de estado a partir de las características de su entorno.} En este contexto, el WoE permite cuantificar la relación entre los factores geográficos y la ocurrencia del cambio, \textcolor{blue}{asignando un valor a cada celda de acuerdo con las evidencias asociadas a las variables consideradas.} La ecuación~\ref{eq:woe_sigmoid} \textcolor{blue}{transforma la combinación de estas evidencias en un valor de probabilidad en el intervalo $[0,1]$, que puede utilizarse como parte de la regla de transición del autómata.} \textcolor{red}{En este trabajo la combinación que se transforma no es la suma simple de la ecuación~\ref{eq:woe_total}, sino la suma ponderada por el Information Value de la ecuación~\ref{eq:woe_ponderado}, y la probabilidad resultante es uno de los dos términos de la regla; el otro es la influencia de la vecindad.}
+\textcolor{blue}{En un autómata celular, la regla de transición determina la probabilidad de que una celda cambie de estado a partir de las características de su entorno.} En este contexto, el WoE permite cuantificar la relación entre los factores geográficos y la ocurrencia del cambio, \textcolor{blue}{asignando un valor a cada celda de acuerdo con las evidencias asociadas a las variables consideradas.} La ecuación~\ref{eq:woe_sigmoid} \textcolor{blue}{transforma la combinación de estas evidencias en un valor de probabilidad en el intervalo $[0,1]$, que puede utilizarse como parte de la regla de transición del autómata.}
 
-% CAMBIO RM: Se precisa qué suma entra a la sigmoide en el modelo de la tesis
-% y que la probabilidad WoE no es por sí sola la regla de transición, en línea
-% con el último comentario de esta subsección.
+% CAMBIO RM: Se retiró la precisión sobre qué suma entra a la sigmoide en el
+% modelo de la tesis; describe el modelo propio y ya figura en el Capítulo 4
+% (cuarta decisión de la Sección "Definición del modelo").
 
 \textcolor{blue}{Una característica importante del WoE es que este valor puede interpretarse a partir de las contribuciones de las distintas variables y de sus intervalos.} Esto permite relacionar la probabilidad asignada a una celda con las características espaciales que intervienen en el proceso de transición.
 

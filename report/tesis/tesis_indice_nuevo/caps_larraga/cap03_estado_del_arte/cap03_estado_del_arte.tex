@@ -192,30 +192,22 @@ de ajuste excesivo al periodo de calibración: un conjunto de parámetros puede
 reproducir adecuadamente una ventana histórica y presentar un comportamiento
 diferente al evaluarse en otro periodo. Este riesgo no implica que el modelo
 esté necesariamente sobreajustado, pero sí motiva la utilización de periodos
-de evaluación independientes del ajuste.} Esta combinación de costo,
-dependencia de trayectoria y equifinalidad es, precisamente, lo que motiva la
-estrategia de validación multi-ventana que se adopta más adelante. Una sola
+de evaluación independientes del ajuste.} \textcolor{red}{Esta combinación de
+costo, dependencia de trayectoria y equifinalidad hace recomendable evaluar el
+desempeño en más de una ventana temporal.} Una sola
 ventana temporal \textcolor{blue}{limita la posibilidad de distinguir un
 conjunto de parámetros estable de uno que se ajusta particularmente a las
 condiciones de ese periodo}.
 
-Esa literatura deja abierto un recorte distinto: calibrar pocos parámetros que
-combinan evidencia espacial empírica, un umbral de transición y un peso de
-vecindad, en lugar de un espacio de coeficientes geométricos genéricos. El
-capítulo siguiente adopta ese recorte; aquí basta registrar que reduce el
-espacio de búsqueda \textcolor{red}{a dos parámetros, el umbral $\theta$ y el
-peso de vecindad $\alpha$. Los pesos de evidencia se estiman una sola vez con
-los datos históricos y son comunes a todas las configuraciones candidatas, de
-modo que la búsqueda no altera la lectura de cada variable y la ambigüedad
-entre parametrizaciones queda confinada a esos dos valores. La búsqueda se
-realiza, además, sobre ventanas internas al período de estimación, de modo que
-la elección de los parámetros no emplea las ventanas en que el modelo se
-evalúa.}
+\textcolor{red}{Esa literatura deja abierta una vía con menos parámetros
+libres: estimar la evidencia espacial directamente de los datos históricos,
+calibrar solo los parámetros que la combinan con la vecindad y elegirlos con
+datos distintos de los que sirven para evaluar el modelo.}
 
-% CAMBIO RM: El final original decía que "cada configuración candidata produce
-% pesos por variable auditables". No es exacto: los pesos WoE son los mismos
-% para todas las candidatas y la búsqueda solo recorre theta y alpha. Se
-% corrige y se añade sobre qué datos se hace la búsqueda.
+% CAMBIO RM: Por indicación de la Dra. Lárraga, esta sección termina en el
+% hueco que deja la literatura. La descripción de cómo la tesis reduce la
+% búsqueda a theta y alpha sobre ventanas internas se trasladó a la síntesis
+% del capítulo (Sección sec:sintesis-estado-arte).
 
 % COMENTARIO: Se sustituyó "sobreajuste de calibración" por "riesgo de ajuste
 % excesivo al periodo de calibración". La literatura citada permite justificar
@@ -264,17 +256,16 @@ $0{,}95$ sin capturar la dinámica de cambio.
 
 De ahí se sigue un criterio de diseño, no un resultado: validar en varias
 ventanas del mismo sistema, reportando FoM, Kappa e IoU a la vez, \textcolor{blue}{permite
-examinar la estabilidad del desempeño desde diferentes perspectivas}. El
-protocolo concreto se describe en el Capítulo~\ref{ch:modelo-crecimiento-urbano}.
+examinar la estabilidad del desempeño desde diferentes perspectivas}.
 \textcolor{red}{Para que esas ventanas cuenten como evaluación, ninguna de ellas
 debe intervenir en la elección de los parámetros; de lo contrario, el desempeño
-reportado mezcla ajuste y prueba. Por ello, en este trabajo los parámetros del
-autómata se eligen con ventanas anteriores a las de evaluación.}
+reportado mezcla ajuste y prueba.}
 
 % CAMBIO RM: Se añade la segunda condición del criterio de diseño. Validar en
 % varias ventanas no basta si esas mismas ventanas se usaron para calibrar;
 % es la misma objeción que la Sección sobre el contexto mexicano formula a
-% JimenezLopez2018.
+% JimenezLopez2018. La remisión al protocolo de la tesis y la frase sobre cómo
+% se eligen aquí los parámetros pasaron a la síntesis del capítulo.
 
 Vale la pena confrontar una diferencia que la literatura permite observar. Por
 un lado, los trabajos de aprendizaje automático y profundo reportan sus
@@ -295,11 +286,14 @@ ajustes equivalentes puede ser grande \parencite{Dietzel2007}: dos conjuntos
 de coeficientes que empatan en la métrica de ajuste pueden divergir en la
 proyección a largo plazo \parencite{Beven2006}, de modo que reportar un único
 conjunto de coeficientes sin declarar los demás que alcanzan el mismo ajuste
-puede transmitir una unicidad que los datos no necesariamente respaldan. El
-capítulo siguiente no compara su FoM absoluto contra el de otras ciudades como
-si fueran intercambiables; evalúa la estabilidad del FoM entre cinco ventanas
-del mismo sistema urbano y reporta el rango completo en lugar de un único valor
-favorable.
+puede transmitir una unicidad que los datos no necesariamente respaldan.
+\textcolor{red}{De ello se sigue que la comparación más informativa es la del
+desempeño de un mismo modelo entre varias ventanas de un mismo sistema urbano,
+con el rango completo de valores a la vista.}
+
+% CAMBIO RM: La frase sobre lo que hace el capítulo siguiente con el FoM se
+% sustituyó por el criterio que se desprende de la revisión; la decisión de la
+% tesis se recoge en la síntesis del capítulo.
 
 % COMENTARIO: Se evitó afirmar que Kappa o Accuracy "inflan artificialmente"
 % la calidad en todos los casos. El problema depende de la distribución de
@@ -341,11 +335,12 @@ capacidad predictiva y facilidad de interpretación que resulta especialmente
 importante cuando el modelo se utiliza para analizar los factores asociados
 con el cambio urbano}.
 
-El método de Pesos de Evidencia (WoE) provee esa posibilidad de descomposición.
-La elección de WoE en este trabajo no responde a una preferencia estética por
-la transparencia: responde al requerimiento R4 de la
-Tabla~\ref{tab:requerimientos_modelo_1}, que define la auditabilidad como
-condición de uso del modelo, no como propiedad accesoria.
+El método de Pesos de Evidencia (WoE) provee esa posibilidad de
+descomposición\textcolor{red}{, como se revisa en la
+Sección~\ref{sec:woe-literatura}}.
+
+% CAMBIO RM: La justificación de la elección de WoE en la tesis (requerimiento
+% R4) se trasladó a la síntesis del capítulo.
 
 % COMENTARIO: Se conservó la crítica a la interpretabilidad porque es parte
 % importante de la justificación de WoE, pero se eliminaron afirmaciones
@@ -386,8 +381,9 @@ gratuidad. Con un ejecutable cerrado, cualquier discrepancia entre lo publicado
 y lo obtenido \textcolor{blue}{puede ser difícil de diagnosticar o corregir},
 y extender el método obliga a reescribir el flujo de trabajo desde cero o a
 dedicar un esfuerzo considerable a descifrar requerimientos no documentados.
-Conviene, entonces, una implementación en código abierto sobre imágenes de
-archivo de acceso libre. \textcolor{blue}{En este punto debe distinguirse entre
+\textcolor{red}{La revisión deja abierta, entonces, la necesidad de
+implementaciones en código abierto sobre imágenes de archivo de consulta
+gratuita.} \textcolor{blue}{En este punto debe distinguirse entre
 la disponibilidad de las imágenes históricas y la apertura del código utilizado
 para procesarlas: el uso de Google Earth como fuente de las capturas constituye
 una dependencia externa, mientras que el procesamiento y la implementación del
@@ -397,9 +393,11 @@ Python para análisis de aptitud del suelo de \textcite{Chen2022}. La tendencia
 es anterior: ya en la década pasada \textcite{ArribasBel2014} documentaba la
 emergencia de datos gubernamentales en formato abierto, junto con datos de
 sensores móviles y de actividad empresarial en línea, como fuentes nuevas para
-el estudio de las ciudades. En este caso se usan capturas de Google Earth en
-escritorio, no Google Earth Engine. El Capítulo~\ref{ch:modelo-crecimiento-urbano}
-desarrolla esa implementación.
+el estudio de las ciudades.
+
+% CAMBIO RM: Las dos frases sobre la fuente de imágenes de la tesis y su
+% implementación pasaron a la síntesis del capítulo. «De acceso libre» se
+% cambió por «de consulta gratuita», como en el resto de la tesis.
 
 % COMENTARIO: Aquí se distingue explícitamente entre "gratuito" y "código
 % abierto", porque R3 se refiere a reproducibilidad y apertura. También se
@@ -422,19 +420,20 @@ geográfica \parencite{BonhamCarter1989}, se consolidó como procedimiento
 \textcite{BonhamCarter1994} y se formaliza en el
 Capítulo~\ref{ch:marco-teorico} (ecuación~\ref{eq:woe}): para cada clase de
 una variable espacial discretizada se calcula un peso bayesiano que cuantifica
-la asociación entre dicha clase y la ocurrencia del evento de interés, en este
-trabajo, la transición de suelo no urbano a urbano. El peso total por celda es
+la asociación entre dicha clase y la ocurrencia del evento de interés,
+\textcolor{red}{en el modelado urbano}, la transición de suelo no urbano a urbano. El peso total por celda es
 la suma de los pesos de las variables evaluadas en ella, transformada por la
 función logística para obtener una probabilidad acotada
-(ecuación~\ref{eq:woe_sigmoid}). Para ponderar la contribución de cada variable se
-emplea además el Information Value, un estadístico ajeno a la formulación
+(ecuación~\ref{eq:woe_sigmoid}). \textcolor{red}{La contribución de cada
+variable puede ponderarse con} el Information Value, un estadístico ajeno a la formulación
 original del WoE y tomado de la práctica de construcción de tarjetas de
 puntuación \parencite{Siddiqi2006}, que agrega sobre los bins la separación
-entre las distribuciones condicionales del evento. \textcolor{red}{En este
-trabajo es esa suma ponderada por el Information Value, y no la suma simple, la
-que pasa por la función logística (ecuación~\ref{eq:woe_ponderado}).} La presente
+entre las distribuciones condicionales del evento. La presente
 sección no repite la derivación matemática, sino que la sitúa en la literatura
 LUCC.
+
+% CAMBIO RM: Se retiró la frase que indicaba qué suma usa la tesis; está en el
+% Capítulo 4 y en la síntesis de este capítulo.
 
 La adaptación del WoE al modelado de cambio de uso de suelo ocurrió dentro de
 la familia de modelos \textit{Dinamica EGO}. Conviene precisar la genealogía,
@@ -461,8 +460,7 @@ idoneidad derivada de regresión logística con una asignación iterativa
 gobernada por la demanda sectorial de suelo, y FLUS \parencite{Liu2017}
 sustituye esa idoneidad por la probabilidad de una red neuronal y la asigna
 mediante un autómata celular con inercia auto-adaptativa y competencia por
-ruleta. Conviene tomar postura sobre la diferencia con el presente trabajo,
-porque es deliberada: estos marcos descomponen el problema en un módulo de
+ruleta. \textcolor{red}{Estos} marcos descomponen el problema en un módulo de
 cantidad (Markov o demanda exógena) y un módulo de localización (CA), y la
 mayoría se distribuye como software gratuito de interfaz gráfica cuyo código
 fuente no se publica. El esquema de dos módulos ajusta muy bien la cantidad de
@@ -475,20 +473,13 @@ que combine directamente la evidencia espacial y la influencia de la
 vecindad. En este caso se reduce la separación explícita entre la cantidad
 total de cambio y su localización, pero se puede analizar de manera más directa
 la relación entre las características de una celda y su probabilidad de
-transición.} \textcolor{red}{En la formulación que se adopta, la probabilidad
-WoE ponderada por el Information Value se suma a la fracción de vecinos urbanos
-con un peso $\alpha$, y la celda transita si el resultado supera un umbral
-$\theta$ y un sorteo lo confirma. La cantidad de cambio no se fija de antemano
-con una matriz markoviana: resulta de $\theta$ y $\alpha$, y por eso ambos se
-calibran. Esa decisión tiene un costo que conviene anticipar, porque el
-desacuerdo de cantidad pasa a depender de la calibración y no de un módulo
-externo; el Capítulo~\ref{ch:resultados-analisis} lo cuantifica.} El capítulo
-siguiente adopta esta formulación.
+transición.} \textcolor{red}{Sin un módulo de cantidad, el total de cambio
+queda determinado por los parámetros de la propia regla, y el desacuerdo de
+cantidad pasa a depender de su calibración.}
 
-% CAMBIO RM: Se nombra la regla que se adopta y se hace explícita su
-% contrapartida frente a los marcos de dos módulos: sin matriz markoviana, la
-% cantidad la determinan theta y alpha. Es lo que explica el peso del
-% desacuerdo de cantidad en los resultados.
+% CAMBIO RM: La descripción de la regla que adopta la tesis y la frase «El
+% capítulo siguiente adopta esta formulación» pasaron a la síntesis del
+% capítulo. Aquí queda solo la contrapartida general de esa alternativa.
 
 Sin embargo, el WoE tiene cuatro limitaciones estadísticas reconocidas que
 conviene explicitar para evitar atribuirle propiedades que no posee:
@@ -502,24 +493,28 @@ excesivas. La literatura ofrece pruebas formales para diagnosticarlo, entre
 ellas las pruebas por pares y la prueba ómnibus del capítulo 9 de
 \textcite{BonhamCarter1994}, que considera aceptable un exceso de la suma de
 probabilidades posteriores sobre el número de eventos no mayor al $15$~\%, y
-la prueba exacta de \textcite{AgterbergCheng2002}. El presente trabajo no las
-aplica ni introduce una corrección formal para esta dependencia; opta por el
-contraste empírico con el cambio observado, y una validación en varios períodos
+la prueba exacta de \textcite{AgterbergCheng2002}. \textcolor{red}{Cuando
+estas pruebas no se aplican, queda el contraste empírico con el cambio
+observado;} una validación en varios períodos
 \textcolor{blue}{permite evaluar la estabilidad temporal de los resultados,
-aunque no sustituye una prueba formal de independencia condicional}. Aplicar
-la prueba ómnibus sobre las siete variables de evidencia queda como línea de
-trabajo pendiente.
+aunque no sustituye una prueba formal de independencia condicional}.
+
+% CAMBIO RM: Lo que la tesis hace frente a este supuesto (no aplica las
+% pruebas y deja la ómnibus como trabajo pendiente) pasó a la síntesis del
+% capítulo. El texto en azul de la Dra. Lárraga se conserva intacto.
 
 \paragraph{Sensibilidad a la discretización.} Los pesos dependen de cómo se
 categorice cada variable continua. \textcite{BonhamCarter1994} documenta esa
 dependencia y propone elegir los cortes en el máximo del contraste $C$, con el
 contraste estudentizado $C/s(C)$ como criterio auxiliar de significancia; es un
 criterio que optimiza la asociación medida sobre el propio conjunto de
-entrenamiento. Este trabajo opta por discretizar en cuantiles uniformes:
-no es la partición óptima en términos de IV ni de contraste, pero fija los
-cortes por la distribución de la variable y no por el ajuste al período de
-calibración, lo que evita un umbral dependiente de la ventana y mantiene la
-partición idéntica entre las cinco ventanas de validación.
+entrenamiento. \textcolor{red}{La discretización por cuantiles renuncia a la
+partición óptima en términos de IV o de contraste, a cambio de fijar los cortes
+según la distribución de cada variable, con independencia del ajuste al período
+de calibración.}
+
+% CAMBIO RM: La decisión de la tesis de discretizar por cuantiles se trasladó a
+% la síntesis del capítulo y al Capítulo 4; aquí queda la alternativa general.
 
 \paragraph{Multicolinealidad entre drivers.} Variables correlacionadas producen
 pesos redundantes que pueden inflar la magnitud aparente de la evidencia.
@@ -602,11 +597,14 @@ describen ese mismo problema en su muestra: la mayoría de las aplicaciones
 empleó información posterior al tiempo inicial, de modo que sus resultados
 mezclan bondad de ajuste y validación. Comparar el mapa simulado contra un
 solo horizonte temporal impide distinguir entre un desempeño estable y un
-ajuste puntual a las características de ese lustro. Conviene, entonces, un
-protocolo con FoM como métrica primaria, IoU y Kappa como complemento, la
-descomposición de Pontius como diagnóstico y varias ventanas quinquenales
-desplazadas del mismo sistema urbano. El Capítulo~\ref{ch:modelo-crecimiento-urbano}
-desarrolla esa vía.
+ajuste puntual a las características de ese lustro. \textcolor{red}{La revisión
+sugiere, entonces, que un protocolo de validación informativo combine el FoM
+como métrica primaria, la IoU y el Kappa como complemento, la descomposición de
+Pontius como diagnóstico y varias ventanas temporales desplazadas del mismo
+sistema urbano.}
+
+% CAMBIO RM: Se retiró la remisión a la implementación de la tesis; la decisión
+% se recoge en la síntesis del capítulo.
 
 % COMENTARIO: Se mantiene la comparación con Tang2024, pero conviene no utilizar
 % su FoM como un "ranking" directo respecto del resultado de esta tesis. Las
@@ -778,6 +776,8 @@ que después se evalúa.}
 \section{Síntesis: posicionamiento del presente trabajo}
 \label{sec:sintesis-estado-arte}
 
+\subsection{\textcolor{red}{Huecos identificados}}
+
 Los cuatro problemas metodológicos analizados --equifinalidad en la
 calibración, limitaciones de la validación temporal, interpretabilidad de la
 función de transición y dependencia de software de código cerrado-- muestran
@@ -793,25 +793,91 @@ espacial. Sin embargo, no se identificó dentro de la literatura mexicana
 revisada un procedimiento que reúna simultáneamente las características
 señaladas en la sección anterior.}
 
-El capítulo siguiente toma tres decisiones que esta revisión deja abiertas.
-Primera: usar WoE como función de transición, de modo que cada peso sea
-auditable (R4)\textcolor{red}{, dentro de un autómata celular probabilístico en
-el que los pesos, ponderados por su Information Value, pasan por una función
-logística y se combinan con la influencia de la vecindad y un umbral}. Segunda:
-validar en cinco ventanas quinquenales desplazadas
-con FoM, Kappa e IoU, para \textcolor{blue}{examinar la estabilidad temporal
-del desempeño} (R1)\textcolor{red}{, con el umbral y el peso de vecindad
-elegidos por búsqueda en cuadrícula sobre ventanas anteriores a las de
-evaluación}. Tercera: implementar el flujo en código abierto sobre
-imágenes de archivo, \textcolor{blue}{distinguiendo la dependencia externa de
-Google Earth para la obtención de las imágenes del carácter abierto del
-procesamiento y de la implementación del modelo} (R3). La lectura de los
-mapas como escenarios de expansión, no como planes calibrados (R2), se
-discute en las conclusiones.
+\textcolor{red}{Los huecos que deja la revisión pueden enunciarse de forma
+concreta. En la calibración, los marcos más difundidos ajustan varios
+coeficientes en espacios de búsqueda muy amplios, con un costo computacional
+alto y con varias parametrizaciones capaces de un ajuste equivalente. En la
+validación, buena parte de las aplicaciones se evalúa en un único período, a
+menudo con datos que también intervinieron en el ajuste, y el FoM depende de la
+magnitud del cambio, lo que limita la comparación de cifras entre sitios. En la
+interpretabilidad, los modelos de aprendizaje automático no expresan de manera
+directa la contribución de cada variable a la transición de una celda. En la
+reproducibilidad, varias plataformas LUCC se distribuyen sin costo, pero sin un
+código fuente que permita verificar la implementación. A estos cuatro problemas
+se suman las limitaciones del propio WoE: la independencia condicional, la
+sensibilidad a la discretización, la redundancia entre variables
+correlacionadas y la autocorrelación espacial, para la que la literatura no
+ofrece una corrección estándar. En el contexto mexicano, por último, la Zona
+Metropolitana de Querétaro ya fue modelada con autómatas celulares, con una
+regla elegida y evaluada sobre el mismo mapa observado.}
 
-% CAMBIO RM: Las dos primeras decisiones se completan con la regla y con el
-% protocolo de calibración, para que coincidan con lo que el Capítulo 4
-% implementa.
+\subsection{\textcolor{red}{Cómo atiende este trabajo los huecos identificados}}
+
+\textcolor{red}{Frente a estos huecos, el modelo del
+Capítulo~\ref{ch:modelo-crecimiento-urbano} toma un conjunto de decisiones de
+diseño. La primera concierne a la calibración. Los pesos de evidencia y su
+ponderación por Information Value se estiman una sola vez con las transiciones
+de 1984 a 2010 y quedan fijos. La búsqueda recorre solo dos parámetros, el
+umbral de transición $\theta$ y el peso de vecindad $\alpha$, de modo que la
+ambigüedad entre parametrizaciones queda confinada a esos dos valores y no
+altera la lectura de cada variable. Esa búsqueda se hace sobre ventanas
+internas al período de estimación, y ninguna de las ventanas de evaluación
+interviene en ella (Sección~\ref{ssec:calibracion-parametros}).}
+
+\textcolor{red}{La segunda concierne a la validación. El modelo se evalúa, sin
+reajuste, en cinco ventanas quinquenales desplazadas, de 2011--2016 a
+2015--2020, con el FoM como métrica primaria, la IoU y el Kappa como
+complemento y la descomposición del desacuerdo en cantidad y asignación como
+diagnóstico, lo que permite evaluar fuera de muestra la simulación histórica y}
+\textcolor{blue}{examinar la estabilidad temporal del desempeño}
+\textcolor{red}{(R1). Como el FoM depende de la magnitud del cambio, el desempeño se lee como
+estabilidad entre ventanas de un mismo sistema urbano y se reporta el rango
+completo. La comparación con otros estudios se limita a situar ese rango en el
+espectro documentado en la literatura.}
+
+\textcolor{red}{La tercera concierne a la función de transición. Se construye
+con Pesos de Evidencia porque cada peso corresponde a un intervalo concreto de
+una variable y admite lectura espacial, que es lo que exige el requerimiento
+R4. La suma de los pesos, ponderada por el Information Value, pasa por una
+función logística; al resultado se le suma la fracción de vecinos urbanos
+multiplicada por $\alpha$, y la celda transita si el total supera $\theta$ y un
+sorteo lo confirma. La regla integra en un solo paso la evidencia espacial y la
+vecindad. Su costo es que la cantidad de cambio queda determinada por $\theta$
+y $\alpha$, sin una matriz markoviana, de modo que el desacuerdo de cantidad
+depende de la calibración; el Capítulo~\ref{ch:resultados-analisis} lo
+cuantifica.}
+
+\textcolor{red}{La cuarta concierne a la reproducibilidad. El flujo completo,
+desde la clasificación de las imágenes hasta la simulación y la evaluación, se
+implementa con herramientas de código abierto (R3),}
+\textcolor{blue}{distinguiendo la dependencia externa de Google Earth para la
+obtención de las imágenes del carácter abierto del procesamiento y de la
+implementación del modelo}\textcolor{red}{. Las imágenes son capturas de Google
+Earth en escritorio, sin recurrir a Google Earth Engine.}
+
+\textcolor{red}{Las limitaciones del WoE se atienden solo en parte. La
+discretización se hace por cuantiles, de modo que los cortes dependen de la
+distribución de cada variable y son los mismos en todas las ventanas de
+evaluación. La ponderación por Information Value atenúa la redundancia entre
+variables correlacionadas, sin eliminarla. La independencia condicional y la
+autocorrelación espacial quedan sin corrección formal: el trabajo no aplica la
+prueba ómnibus ni la prueba exacta, y la validación en varias ventanas examina
+la estabilidad temporal sin sustituir esas pruebas. Aplicar la prueba ómnibus a
+las siete variables de evidencia queda como trabajo futuro
+(Sección~\ref{sec:trabajo-futuro}).}
+
+\textcolor{red}{Frente al antecedente de Querétaro, la diferencia está en el
+protocolo: los parámetros se fijan antes de observar las ventanas de
+evaluación y el desempeño se reporta en cinco ventanas. La lectura de los
+mapas simulados como escenarios de expansión (R2) se discute en el
+Capítulo~\ref{ch:conclusiones}.}
+
+% CAMBIO RM: Por indicación de la Dra. Lárraga, las secciones del capítulo
+% terminan en el hueco que deja la literatura y las decisiones de la tesis se
+% reúnen aquí. La síntesis se divide en dos partes: los huecos identificados y
+% cómo los atiende el trabajo, incluidas las limitaciones que no resuelve. El
+% párrafo anterior de tres decisiones se sustituyó por esta versión; sus dos
+% fragmentos en azul se conservan literales en la segunda y la cuarta decisión.
 
 \textcolor{blue}{En este sentido, la aportación del trabajo no consiste en
 proponer un nuevo paradigma de modelado urbano, sino en integrar y evaluar de
